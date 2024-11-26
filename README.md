@@ -39,4 +39,18 @@
 
     <script src="scripts.js"></script>
 </body>
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const fileInfoDiv = document.getElementById('file-info');
+    
+    if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        // Här kan du lägga till kod för att visualisera ljudfilen eller videon.
+    }
+}
+
+function saveFile() {
+    alert("Your changes have been saved!");
+    // Här kan du lägga till kod för att spara filen eller ändra den.
+}
 </html>
