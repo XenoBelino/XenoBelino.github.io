@@ -38,4 +38,56 @@
         }
     </script>
 </body>
+/* Bakgrundsfärger och text */
+body.home {
+    background-color: black;
+    color: white;
+    text-align: center;
+    background-image: url('music-notes-animation.gif'); /* Bakgrundsbild */
+    background-size: cover;
+    height: 100vh; /* Full höjd på sidan */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Centrerar vertikalt */
+    justify-content: center; /* Centrerar horisontellt */
+    font-family: Arial, sans-serif; /* Typsnitt */
+}
+
+/* Stil på rubriken */
+h1 {
+    font-size: 36px;
+    color: #FF6347; /* Tomatröd färg för rubriken */
+}
+
+/* Knappar */
+button {
+    background-color: #4CAF50; /* Grön bakgrund för knappar */
+    color: white; /* Vit text på knappar */
+    padding: 15px 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 10px;
+    border-radius: 5px; /* Rundade hörn */
+    transition: background-color 0.3s ease; /* Smidig övergång vid hover */
+}
+
+button:hover {
+    background-color: #45a049; /* Mörkare grön vid hover */
+}
+
+/* Filinfo */
+#file-info {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #FFD700; /* Guldtext för filinformation */
+    background-color: rgba(0, 0, 0, 0.7); /* Svart bakgrund med transparens */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Korrekt formatering av text */
+h1, p {
+    margin: 0;
+    padding: 10px;
+}
 </html>
