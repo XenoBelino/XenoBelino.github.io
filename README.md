@@ -9,6 +9,8 @@
 <body class="editor">
     <div class="editor-content">
         <h1>Edit Your Files</h1>
+        <link rel="stylesheet" href="styles.css">
+
 
         <!-- Browse Button -->
         <button onclick="document.getElementById('file-input').click()">Browse my files</button>
