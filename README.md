@@ -38,3 +38,5 @@
     </script>
 </body>
 </html>
+<link rel="stylesheet" href="styles.css">
+
