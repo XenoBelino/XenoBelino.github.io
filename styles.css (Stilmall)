@@ -37,6 +37,11 @@ button:hover {
     margin-top: 20px;
     font-size: 18px;
     color: #FFD700; /* Guldtext för filinformation */
+    background-color: rgba(0, 0, 0, 0.7); /* Svart bakgrund med transparens */
+    padding: 10px;
+    border-radius: 5px;
+}
+/
 }
 
 /* Bakgrundsbild på hemsidan */
