@@ -10,7 +10,8 @@
     <div class="home-content">
         <h1>Welcome to Your Audio and Video Editor</h1>
         <p>Fix and edit your files with AI tools to separate audio tracks and make custom adjustments.</p>
-        <button onclick="location.href='editor.html'">Get Started</button>
+        <button onclick="location.href='/pages/editor.html'">Get Started</button>
+
     </div>
 </body>
 </html>
