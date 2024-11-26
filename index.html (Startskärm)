@@ -6,7 +6,7 @@
     <title>File Editor</title>
     <link rel="stylesheet" href="styles.css"> <!-- Länk till CSS -->
 </head>
-<body class="editor">
+<body class="home"> <!-- Använd klassen home här -->
     <div class="editor-content">
         <h1>Edit Your Files</h1>
 
