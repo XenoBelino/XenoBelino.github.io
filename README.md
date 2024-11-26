@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Länk till CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="editor">
     <div class="editor-content">
@@ -21,6 +21,7 @@
     </div>
 
     <script>
+        // JavaScript-kod här
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
