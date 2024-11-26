@@ -10,6 +10,19 @@ body.editor {
     justify-content: center; /* Centrerar innehållet vertikalt */
 }
 
+/* Bakgrundsbild på startsidan */
+body.home {
+    background-color: black;
+    color: white;
+    text-align: center;
+    background-image: url('music-notes-animation.gif'); /* Bakgrundsbild */
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Stil på rubriken */
 h1 {
     font-size: 36px;
@@ -26,6 +39,7 @@ button {
     font-size: 18px;
     margin: 10px;
     border-radius: 5px; /* Rundade hörn */
+    transition: background-color 0.3s ease; /* Lägger till en smidig övergång */
 }
 
 button:hover {
@@ -41,39 +55,10 @@ button:hover {
     padding: 10px;
     border-radius: 5px;
 }
-/
-}
-
-/* Bakgrundsbild på hemsidan */
-body.home {
-    background-color: black;
-    color: white;
-    text-align: center;
-    background-image: url('music-notes-animation.gif'); /* Bakgrundsbild */
-    background-size: cover;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 /* Korrekt formatering av text */
 h1, p {
     margin: 0;
     padding: 10px;
 }
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    margin: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease; /* Lägger till en smidig övergång */
-}
 
-button:hover {
-    background-color: #45a049;
-}
