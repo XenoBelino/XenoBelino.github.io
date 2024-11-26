@@ -52,3 +52,44 @@ function saveFile() {
     alert("Your changes have been saved!");
     // Här kan du lägga till kod för att spara filen eller ändra den.
 }
+body.home {
+    background-color: black;
+    color: white;
+    text-align: center;
+    background-image: url('music-notes-animation.gif');
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.editor {
+    background-color: black;
+    color: white;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#file-info {
+    margin-top: 20px;
+    font-size: 18px;
+}
