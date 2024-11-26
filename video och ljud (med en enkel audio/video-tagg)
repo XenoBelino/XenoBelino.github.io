@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Editor with Audio and Video</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="editor">
+    <div class="editor-content">
+        <h1>Edit Your Audio and Video Files</h1>
+
+        <!-- Upload Button -->
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+        
+        <div id="file-info"></div>
+
+        <!-- Audio / Video Player -->
+        <div id="media-container">
+            <!-- Audio or Video will appear here -->
+        </div>
+
+        <!-- Volume Controls -->
+        <div id="volume-controls">
+            <div>
+                <label for="volume-original">Original Volume</label>
+                <input type="range" id="volume-original" min="0" max="1" step="0.01" value="1" onchange="adjustVolume('original')">
+            </div>
+            <div>
+                <label for="volume-hooks">Hooks Volume</label>
+                <input type="range" id="volume-hooks" min="0" max="1" step="0.01" value="1" onchange="adjustVolume('hooks')">
+            </div>
+            <div>
+                <label for="volume-final">Final Volume</label>
+                <input type="range" id="volume-final" min="0" max="1" step="0.01" value="1" onchange="adjustVolume('final')">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mediaElement = null; // Will hold audio or video element
+
+        // Handles file selection and displays the media
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            const mediaContainer = document.getElementById('media-container');
+
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+                let extension = file.name.split('.').pop().toLowerCase();
+                
+                // Clear previous media
+                mediaContainer.innerHTML = '';
+
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // If audio
+                    mediaElement = document.createElement('audio');
+                    mediaElement.controls = true;
+                    mediaElement.src = URL.createObjectURL(file);
+                    mediaContainer.appendChild(mediaElement);
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // If video
+                    mediaElement = document.createElement('video');
+                    mediaElement.controls = true;
+                    mediaElement.src = URL.createObjectURL(file);
+                    mediaContainer.appendChild(mediaElement);
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        // Adjust the volume for different tracks
+        function adjustVolume(trackType) {
+            let volumeControl = null;
+            if (trackType === 'original') {
+                volumeControl = document.getElementById('volume-original');
+            } else if (trackType === 'hooks') {
+                volumeControl = document.getElementById('volume-hooks');
+            } else if (trackType === 'final') {
+                volumeControl = document.getElementById('volume-final');
+            }
+
+            if (mediaElement) {
+                mediaElement.volume = volumeControl.value;
+            }
+        }
+    </script>
+</body>
+</html>
