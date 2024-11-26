@@ -1,26 +1,15 @@
 /* Bakgrundsfärger och text */
-body.editor {
-    background-color: #121212; /* Mörk bakgrundsfärg */
-    color: white; /* Texten ska vara vit */
-    text-align: center; /* Centrerar text */
-    font-family: Arial, sans-serif; /* Typsnitt */
-    height: 100vh; /* Full höjd på sidan */
-    display: flex; /* Flexbox layout */
-    flex-direction: column; /* Vertikal ordning */
-    justify-content: center; /* Centrerar innehållet vertikalt */
-}
-
-/* Bakgrundsbild på startsidan */
 body.home {
     background-color: black;
     color: white;
     text-align: center;
     background-image: url('music-notes-animation.gif'); /* Bakgrundsbild */
     background-size: cover;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100vh; /* Full höjd på sidan */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Centrerar vertikalt */
+    justify-content: center; /* Centrerar horisontellt */
+    font-family: Arial, sans-serif; /* Typsnitt */
 }
 
 /* Stil på rubriken */
@@ -39,7 +28,7 @@ button {
     font-size: 18px;
     margin: 10px;
     border-radius: 5px; /* Rundade hörn */
-    transition: background-color 0.3s ease; /* Lägger till en smidig övergång */
+    transition: background-color 0.3s ease; /* Smidig övergång vid hover */
 }
 
 button:hover {
@@ -61,4 +50,3 @@ h1, p {
     margin: 0;
     padding: 10px;
 }
-
