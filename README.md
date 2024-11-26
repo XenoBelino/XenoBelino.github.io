@@ -23,10 +23,10 @@
     <script>
         function handleFileSelect(event) {
             const file = event.target.files[0];
-            const fileInfoDiv = document.getElementById('file-info');
+            const fileInfoDiv = document.getElementById("file-info");
             
             if (file) {
-                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+                fileInfoDiv.textContent = "Selected file: ${file.name}";
                 // Här kan du lägga till kod för att visualisera ljudfilen eller videon.
             }
         }
@@ -38,19 +38,7 @@
     </script>
 </body>
 </html>
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        // Här kan du lägga till kod för att visualisera ljudfilen eller videon.
-    }
-}
 
-function saveFile() {
-    alert("Your changes have been saved!");
-    // Här kan du lägga till kod för att spara filen eller ändra den.
 }
 body.home {
     background-color: black;
