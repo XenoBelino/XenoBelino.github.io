@@ -9,7 +9,7 @@
 <body class="editor">
     <div class="editor-content">
         <h1>Edit Your Files</h1>
-        <link rel="stylesheet" href="styles.css">
+        
 
 
         <!-- Browse Button -->
