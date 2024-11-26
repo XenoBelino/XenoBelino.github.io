@@ -9,6 +9,8 @@
 <body class="editor">
     <div class="editor-content">
         <h1>Edit Your Files</h1>
+<!-- Lägg till denna rad i .editor-content -->
+<textarea id="file-content" rows="10" cols="50" placeholder="Edit your file content here..."></textarea>
 
         <!-- Browse Button -->
         <button onclick="document.getElementById('file-input').click()">Browse my files</button>
