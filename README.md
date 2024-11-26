@@ -56,7 +56,7 @@ body.home {
     background-color: black;
     color: white;
     text-align: center;
-    background-image: url('music-notes-animation.gif');
+    background-image: url("music-notes-animation.gif");
     background-size: cover;
     height: 100vh;
     display: flex;
