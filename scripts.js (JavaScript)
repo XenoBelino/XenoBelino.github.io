@@ -12,3 +12,18 @@ function saveFile() {
     alert("Your changes have been saved!");
     // Här kan du lägga till kod för att spara filen eller ändra den.
 }
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const fileInfoDiv = document.getElementById('file-info');
+    const fileContentArea = document.getElementById('file-content');
+    
+    if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            fileContentArea.value = e.target.result; // Laddar filens innehåll till textområdet
+        };
+        reader.readAsText(file); // Läs filens innehåll som text
+    }
+}
