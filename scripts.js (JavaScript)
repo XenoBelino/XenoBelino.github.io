@@ -1,29 +1,36 @@
 function handleFileSelect(event) {
     const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById("file-info");
-    
-    if (file) {
-        fileInfoDiv.textContent = "Selected file: ${file.name}";
-        // Här kan du lägga till kod för att visualisera ljudfilen eller videon.
-    }
-}
-
-function saveFile() {
-    alert("Your changes have been saved!");
-    // Här kan du lägga till kod för att spara filen eller ändra den.
-}
-function handleFileSelect(event) {
-    const file = event.target.files[0];
     const fileInfoDiv = document.getElementById('file-info');
-    const fileContentArea = document.getElementById('file-content');
-    
+    const mediaContainer = document.getElementById('media-container');
+
     if (file) {
         fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        let extension = file.name.split('.').pop().toLowerCase();
         
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            fileContentArea.value = e.target.result; // Laddar filens innehåll till textområdet
-        };
-        reader.readAsText(file); // Läs filens innehåll som text
+        // Clear previous media
+        mediaContainer.innerHTML = '';
+
+        if (['mp3', 'wav', 'ogg'].includes(extension)) {
+            // If audio
+            mediaElement = document.createElement('audio');
+            mediaElement.controls = true;
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
+        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+            // If video
+            mediaElement = document.createElement('video');
+            mediaElement.controls = true;
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
+        } else {
+            fileInfoDiv.textContent = "Unsupported file type!";
+        }
     }
 }
+wavesurfer = WaveSurfer.create({
+    container: '#wavesurfer', // This links to the above container
+    waveColor: '#ff6347',
+    progressColor: '#f00',
+    backend: 'MediaElement',
+    mediaElement: mediaElement
+});
