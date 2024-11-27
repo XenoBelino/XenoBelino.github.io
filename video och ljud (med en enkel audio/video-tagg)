@@ -126,13 +126,13 @@ function handleFileSelect(event) {
             // Create visualizer container
             const wavesurferContainer = document.createElement('div');
             wavesurferContainer.id = 'wavesurfer';
+            <div id="wavesurfer"></div> 
             mediaContainer.appendChild(wavesurferContainer);
         }
     }
 }
 
 npm install --save wavesurfer.js
-import WaveSurfer from 'wavesurfer.js'
 <script src="https://unpkg.com/wavesurfer.js@7"></script>
 const wavesurfer = WaveSurfer.create({
   container: '#waveform',
