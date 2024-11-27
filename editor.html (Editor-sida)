@@ -1,46 +1,34 @@
 <!DOCTYPE html>
-<html lang="en-US">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XenoBelino</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=9fb67c53b5c26295064700f2f5b6cb9b6dfd33fc">
+  <title>File Editor</title>
+  <link rel="stylesheet" href="assets/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 </head>
-
-<body>
+<body class="home">
   <div class="container-lg px-3 my-5 markdown-body">
-    <h1><a href="https://xenobelino.github.io/">XenoBelino</a></h1>
-
-    <!-- Din övriga HTML-kod här -->
-    <div class="editor-content">
-      <h1>Edit Your Files</h1>
-      <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-      <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
-      <div id="file-info"></div>
-      <button id="save-button" onclick="saveFile()">Save</button>
-    </div>
-
-    <script>
-      function handleFileSelect(event) {
-        const file = event.target.files[0];
-        const fileInfoDiv = document.getElementById('file-info');
-        if (file) {
-          fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        }
-      }
-
-      function saveFile() {
-        alert("Your changes have been saved!");
-      }
-    </script>
+    <h1>Edit Your Files</h1>
+    <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+    <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+    <div id="file-info"></div>
+    <button id="save-button" onclick="saveFile()">Save</button>
   </div>
 
-  <!-- Externa skript här -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
-  <script>anchors.add();</script>
+  <script>
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      const fileInfoDiv = document.getElementById('file-info');
+      if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+      }
+    }
+    function saveFile() {
+      alert("Your changes have been saved!");
+    }
+  </script>
 </body>
-
 </html>
+
