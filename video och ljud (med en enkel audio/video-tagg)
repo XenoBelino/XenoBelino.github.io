@@ -90,6 +90,7 @@
     </script>
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/wavesurfer.js"></script>
 npm install --save wavesurfer.js
 import WaveSurfer from 'wavesurfer.js'
 <script src="https://unpkg.com/wavesurfer.js@7"></script>
