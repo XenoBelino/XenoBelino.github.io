@@ -39,14 +39,21 @@ button:hover {
 #file-info {
     margin-top: 20px;
     font-size: 18px;
-    color: #FFD700; /* Guldtext för filinformation */
-    background-color: rgba(0, 0, 0, 0.7); /* Svart bakgrund med transparens */
+    color: #FFD700; /* Gold text for file info */
+    background-color: rgba(0, 0, 0, 0.7); /* Black background with transparency */
     padding: 10px;
     border-radius: 5px;
+    display: block; /* Make sure it's visible */
 }
 
 /* Korrekt formatering av text */
 h1, p {
     margin: 0;
     padding: 10px;
+}
+#volume-controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
