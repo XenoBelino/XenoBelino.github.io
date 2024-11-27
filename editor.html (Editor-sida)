@@ -1,43 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Editor</title>
-    <link rel="stylesheet" href="assets/css/style.css?v=9fb67c53b5c26295064700f2f5b6cb9b6dfd33fc">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XenoBelino</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=9fb67c53b5c26295064700f2f5b6cb9b6dfd33fc">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 </head>
-<body class="editor">
+
+<body>
+  <div class="container-lg px-3 my-5 markdown-body">
+    <h1><a href="https://xenobelino.github.io/">XenoBelino</a></h1>
+
+    <!-- Din övriga HTML-kod här -->
     <div class="editor-content">
-        <h1>Edit Your Files</h1>
-<!-- Lägg till denna rad i .editor-content -->
-<textarea id="file-content" rows="10" cols="50" placeholder="Edit your file content here..."></textarea>
-
-        <!-- Browse Button -->
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
-        
-        <div id="file-info"></div>
-
-        <!-- Save Button -->
-        <button id="save-button" onclick="saveFile()">Save</button>
+      <h1>Edit Your Files</h1>
+      <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+      <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+      <div id="file-info"></div>
+      <button id="save-button" onclick="saveFile()">Save</button>
     </div>
 
     <script>
-        // JavaScript-kod här
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfoDiv = document.getElementById('file-info');
-            
-            if (file) {
-                fileInfoDiv.textContent = `Selected file: ${file.name}`;
-                // Här kan du lägga till kod för att visualisera ljudfilen eller videon.
-            }
+      function handleFileSelect(event) {
+        const file = event.target.files[0];
+        const fileInfoDiv = document.getElementById('file-info');
+        if (file) {
+          fileInfoDiv.textContent = `Selected file: ${file.name}`;
         }
+      }
 
-        function saveFile() {
-            alert("Your changes have been saved!");
-            // Här kan du lägga till kod för att spara filen eller ändra den.
-        }
+      function saveFile() {
+        alert("Your changes have been saved!");
+      }
     </script>
+  </div>
+
+  <!-- Externa skript här -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+  <script>anchors.add();</script>
 </body>
+
 </html>
