@@ -32,4 +32,9 @@
   </script>
 </body>
 </html>
+<div id="original-track"></div>
+<div id="hooks-track"></div>
+<div id="music-track"></div>
+<div id="final-track"></div>
+
 
