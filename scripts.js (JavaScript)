@@ -27,10 +27,43 @@ function handleFileSelect(event) {
         }
     }
 }
-wavesurfer = WaveSurfer.create({
-    container: '#wavesurfer', // This links to the above container
-    waveColor: '#ff6347',
-    progressColor: '#f00',
-    backend: 'MediaElement',
-    mediaElement: mediaElement
-});
+let wavesurfer;
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const fileInfoDiv = document.getElementById('file-info');
+    const mediaContainer = document.getElementById('media-container');
+    
+    if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        let extension = file.name.split('.').pop().toLowerCase();
+        
+        mediaContainer.innerHTML = ''; // Rensa tidigare media
+        
+        if (['mp3', 'wav', 'ogg'].includes(extension)) {
+            // Skapa ett ljud-element
+            const mediaElement = document.createElement('audio');
+            mediaElement.src = URL.createObjectURL(file);
+            mediaElement.controls = true;
+            mediaContainer.appendChild(mediaElement);
+
+            // Skapa en Wavesurfer-instans för att visualisera ljudvågorna
+            wavesurfer = WaveSurfer.create({
+                container: '#wavesurfer',
+                waveColor: '#ff6347',
+                progressColor: '#f00',
+                mediaElement: mediaElement
+            });
+            
+            // Ladda ljudfilen i Wavesurfer
+            wavesurfer.load(URL.createObjectURL(file));
+        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+            const mediaElement = document.createElement('video');
+            mediaElement.src = URL.createObjectURL(file);
+            mediaElement.controls = true;
+            mediaContainer.appendChild(mediaElement);
+        } else {
+            fileInfoDiv.textContent = "Unsupported file type!";
+        }
+    }
+}
