@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Länk till CSS -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
 </head>
 <body class="home"> <!-- Använd klassen home här -->
     <div class="editor-content">
