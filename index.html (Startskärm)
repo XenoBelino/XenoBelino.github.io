@@ -1,47 +1,31 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XenoBelino</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=9fb67c53b5c26295064700f2f5b6cb9b6dfd33fc">
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
- <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Editor</title>
+    <link rel="stylesheet" href="/assets/css/style.css?v=3ec72214fc9469b8ff6bd730c1f1cd23da6d2cc4">
 </head>
-
-<body>
-  <div class="container-lg px-3 my-5 markdown-body">
-    <h1><a href="https://xenobelino.github.io/">XenoBelino</a></h1>
-
-    <!-- Din övriga HTML-kod här -->
+<body class="home">
     <div class="editor-content">
-      <h1>Edit Your Files</h1>
-      <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-      <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
-      <div id="file-info"></div>
-      <button id="save-button" onclick="saveFile()">Save</button>
+        <h1>Edit Your Files</h1>
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+        <div id="file-info"></div>
+        <button id="save-button" onclick="saveFile()">Save</button>
     </div>
-
     <script>
-      function handleFileSelect(event) {
-        const file = event.target.files[0];
-        const fileInfoDiv = document.getElementById('file-info');
-        if (file) {
-          fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+            }
         }
-      }
 
-      function saveFile() {
-        alert("Your changes have been saved!");
-      }
+        function saveFile() {
+            alert("Your changes have been saved!");
+        }
     </script>
-  </div>
-
-  <!-- Externa skript här -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
-  <script>anchors.add();</script>
 </body>
-
 </html>
