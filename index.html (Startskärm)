@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=3ec72214fc9469b8ff6bd730c1f1cd23da6d2cc4">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" />
+
 </head>
 <body class="home">
     <div class="editor-content">
