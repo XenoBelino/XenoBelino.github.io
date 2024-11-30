@@ -67,3 +67,10 @@ function handleFileSelect(event) {
         }
     }
 }
+var wavesurfer = WaveSurfer.create({
+  container: '#waveform', // Här definierar du vart ljudgrafen ska visas
+  waveColor: 'violet',
+  progressColor: 'purple',
+});
+
+wavesurfer.load('path_to_audio_file.mp3');
