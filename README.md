@@ -85,4 +85,18 @@
 
     </script>
 </body>
+function adjustVolume(trackType) {
+    let volumeControl = null;
+    if (trackType === 'original') {
+        volumeControl = document.getElementById('volume-original');
+    } else if (trackType === 'hooks') {
+        volumeControl = document.getElementById('volume-hooks');
+    } else if (trackType === 'final') {
+        volumeControl = document.getElementById('volume-final');
+    }
+
+    if (mediaElement) {
+        mediaElement.volume = volumeControl.value;
+    }
+}
 
