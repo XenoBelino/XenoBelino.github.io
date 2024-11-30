@@ -74,3 +74,10 @@ button {
 button:hover {
   background-color: #45a049;
 }
+var wavesurfer = WaveSurfer.create({
+  container: '#waveform', // Detta ska matcha ID:t du definierar i HTML
+  waveColor: 'violet',
+  progressColor: 'purple',
+});
+
+wavesurfer.load('path_to_audio_file.mp3');
