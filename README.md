@@ -4,6 +4,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<script src="https://unpkg.com/wavesurfer.js"></script>
+<input type="range" min="0" max="100" value="50" id="volume-slider">
+<script>
+  var slider = document.getElementById("volume-slider");
+  var wavesurfer = WaveSurfer.create({ container: '#waveform' });
+
+  slider.oninput = function() {
+    wavesurfer.setVolume(slider.value / 100);
+  };
+</script>
+<video id="video-player" width="320" height="240" controls>
+  <source src="path_to_video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+<script>
+  var video = document.getElementById('video-player');
+  video.addEventListener('click', function() {
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  });
+</script>
 
 </head>
 <body class="home"> <!-- Använd klassen home här -->
