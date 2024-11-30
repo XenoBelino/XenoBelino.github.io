@@ -2,23 +2,23 @@ function handleFileSelect(event) {
     const file = event.target.files[0];
     const fileInfoDiv = document.getElementById('file-info');
     const mediaContainer = document.getElementById('media-container');
-
+    
     if (file) {
         fileInfoDiv.textContent = `Selected file: ${file.name}`;
         let extension = file.name.split('.').pop().toLowerCase();
         
         // Clear previous media
         mediaContainer.innerHTML = '';
-
+        
         if (['mp3', 'wav', 'ogg'].includes(extension)) {
-            // If audio
-            mediaElement = document.createElement('audio');
+            // Create an audio player
+            const mediaElement = document.createElement('audio');
             mediaElement.controls = true;
             mediaElement.src = URL.createObjectURL(file);
             mediaContainer.appendChild(mediaElement);
         } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-            // If video
-            mediaElement = document.createElement('video');
+            // Create a video player
+            const mediaElement = document.createElement('video');
             mediaElement.controls = true;
             mediaElement.src = URL.createObjectURL(file);
             mediaContainer.appendChild(mediaElement);
@@ -27,6 +27,7 @@ function handleFileSelect(event) {
         }
     }
 }
+
 let wavesurfer;
 
 function handleFileSelect(event) {
