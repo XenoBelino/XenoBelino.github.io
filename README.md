@@ -60,6 +60,26 @@
             alert("Your changes have been saved!");
             // Här kan du lägga till kod för att spara filen eller ändra den.
         }
+   function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const fileInfoDiv = document.getElementById('file-info');
+    
+    if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        
+        // Skapa en URL för den valda filen
+        const fileURL = URL.createObjectURL(file);
+        
+        // Hitta video-elementet och uppdatera src
+        const videoPlayer = document.getElementById('video-player');
+        const videoSource = videoPlayer.querySelector('source');
+        videoSource.src = fileURL; // Sätt den valda filen som src
+        
+        // Uppdatera video och ladda om den
+        videoPlayer.load(); // Detta tvingar webbläsaren att ladda om videon
+    }
+}
+
     </script>
 </body>
 
