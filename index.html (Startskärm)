@@ -83,6 +83,6 @@
     wavesurfer.setVolume(slider.value / 100);
   };
 </script>
-
+<div id="waveform"></div>
 </body>
 </html>
