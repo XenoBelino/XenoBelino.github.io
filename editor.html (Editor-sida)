@@ -42,5 +42,14 @@
             alert("Your changes have been saved!");
         }
     </script>
+ <input type="range" min="0" max="100" value="50" id="volume-slider">
+<script>
+  var slider = document.getElementById("volume-slider");
+  var wavesurfer = WaveSurfer.create({ container: '#waveform' });
+
+  slider.oninput = function() {
+    wavesurfer.setVolume(slider.value / 100);
+  };
+</script>
 </body>
 </html>
