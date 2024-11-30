@@ -79,6 +79,7 @@
         videoPlayer.load(); // Detta tvingar webbläsaren att ladda om videon
     }
 }
+<link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
 
     </script>
 </body>
