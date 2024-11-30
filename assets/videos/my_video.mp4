@@ -42,3 +42,43 @@ function adjustVolume(trackType) {
         mediaElement.volume = volumeControl.value;
     }
 }
+let wavesurfer;
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const fileInfoDiv = document.getElementById('file-info');
+    const mediaContainer = document.getElementById('media-container');
+
+    if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        let extension = file.name.split('.').pop().toLowerCase();
+        
+        // Clear previous media
+        mediaContainer.innerHTML = '';
+
+        if (['mp3', 'wav', 'ogg'].includes(extension)) {
+            // Initialize Wavesurfer for audio files
+            const mediaElement = document.createElement('audio');
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
+            
+            // Create the Wavesurfer instance
+            wavesurfer = WaveSurfer.create({
+                container: '#waveform',
+                waveColor: '#4F4A85',
+                progressColor: '#383351',
+                backend: 'MediaElement',
+                mediaElement: mediaElement,
+            });
+
+            wavesurfer.load(mediaElement.src); // Load the selected audio file
+        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+            // Video element
+            const mediaElement = document.createElement('video');
+            mediaElement.controls = true;
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
+        } else {
+            fileInfoDiv.textContent = "Unsupported file type!";
+        }
+    }
+}
