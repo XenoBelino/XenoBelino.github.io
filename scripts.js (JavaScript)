@@ -148,3 +148,149 @@ function handleFileSelect(event) {
         }
     }
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Editor</title>
+    <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: 'Lato', sans-serif;
+        }
+
+        .editor-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 2px solid #4F4A85;
+            background-color: #383351;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4F4A85;
+        }
+
+        video {
+            margin-top: 20px;
+            border-radius: 12px;
+        }
+
+        #waveform {
+            margin-top: 20px;
+            width: 100%;
+            height: 100px;
+        }
+
+        #file-info {
+            margin-top: 10px;
+            color: #383351;
+        }
+
+        /* Volume slider */
+        #volume-slider {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="home">
+
+    <div class="editor-content">
+        <h1>Edit Your Files</h1>
+
+        <!-- Browse Button -->
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+        
+        <div id="file-info"></div>
+
+        <!-- Save Button -->
+        <button id="save-button" onclick="saveFile()">Save</button>
+
+        <!-- Media Container -->
+        <div id="media-container">
+            <video id="video-player" width="320" height="240" controls>
+                <source src="assets/videos/my_video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div id="waveform"></div>
+        </div>
+
+        <!-- Volume Slider -->
+        <input type="range" min="0" max="100" value="50" id="volume-slider">
+    </div>
+
+    <script>
+        // Initialize Wavesurfer instance
+        var wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#4F4A85',
+            progressColor: '#383351',
+            backend: 'MediaElement',
+        });
+
+        // Handle volume control for audio files
+        var slider = document.getElementById("volume-slider");
+        slider.oninput = function() {
+            wavesurfer.setVolume(slider.value / 100);
+        };
+
+        // Handle file selection and load media
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            const mediaContainer = document.getElementById('media-container');
+            const videoPlayer = document.getElementById('video-player');
+
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+
+                // Create a URL for the selected file
+                const fileURL = URL.createObjectURL(file);
+
+                let extension = file.name.split('.').pop().toLowerCase();
+
+                // Clear previous media
+                mediaContainer.innerHTML = '';
+
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // Handle audio files with Wavesurfer
+                    const mediaElement = document.createElement('audio');
+                    mediaElement.src = fileURL;
+                    mediaContainer.appendChild(mediaElement);
+
+                    // Create the Wavesurfer instance
+                    wavesurfer.load(mediaElement.src);
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // Handle video files
+                    const mediaElement = document.createElement('video');
+                    mediaElement.controls = true;
+                    mediaElement.src = fileURL;
+                    mediaContainer.appendChild(mediaElement);
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        // Save file logic
+        function saveFile() {
+            alert("Your changes have been saved!");
+            // You can add additional logic here to handle file saving.
+        }
+    </script>
+</body>
+</html>
