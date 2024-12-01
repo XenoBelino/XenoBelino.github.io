@@ -4,12 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    <!-- Korrekt användning av Lato-fonten -->
+    
+    <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
     <script src="https://unpkg.com/wavesurfer.js"></script>
+
     <style>
         body {
             font-family: 'Lato', sans-serif;
+            background-color: lightblue;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .editor-content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        button {
+            border-radius: 8px; /* Runda hörn på knappar */
+            padding: 10px 20px;
+            background-color: #4F4A85;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #383351;
+        }
+
+        #waveform {
+            width: 100%;
+            height: 150px;
+            background-color: #f0f0f0;
+            margin-top: 20px;
+        }
+
+        video {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        #file-info {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -26,12 +67,15 @@
         <!-- Save Button -->
         <button id="save-button" onclick="saveFile()">Save</button>
 
-        <div id="waveform"></div>
+        <!-- Volume Slider -->
         <input type="range" min="0" max="100" value="50" id="volume-slider">
-        
+
+        <!-- Waveform -->
+        <div id="waveform"></div>
+
         <!-- Video player -->
-        <video id="video-player" width="320" height="240" controls>
-            <source src="assets/videos/my_video.mp4" type="video/mp4">
+        <video id="video-player" controls>
+            <source id="video-source" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -87,7 +131,6 @@
         // Save file logic
         function saveFile() {
             alert("Your changes have been saved!");
-            // You can add additional logic here to handle file saving.
         }
     </script>
 </body>
