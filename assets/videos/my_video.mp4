@@ -1,84 +1,105 @@
-<video id="video-player" width="320" height="240" controls>
-  <source src="assets/videos/my_video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-<video id="video-player" width="320" height="240" controls>
-  <source src="videos/my_video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-<video id="video-player" width="320" height="240" controls>
-  <source src="path_to_video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-https://xenobelino.github.io/assets/videos/my_video.mp4
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        
-        // Skapa en URL för den valda filen
-        const fileURL = URL.createObjectURL(file);
-        
-        // Hitta video-elementet och uppdatera src
-        const videoPlayer = document.getElementById('video-player');
-        const videoSource = videoPlayer.querySelector('source');
-        videoSource.src = fileURL; // Sätt den valda filen som src
-        
-        // Uppdatera video och ladda om den
-        videoPlayer.load(); // Detta tvingar webbläsaren att ladda om videon
-    }
-}
-function adjustVolume(trackType) {
-    let volumeControl = null;
-    if (trackType === 'original') {
-        volumeControl = document.getElementById('volume-original');
-    } else if (trackType === 'hooks') {
-        volumeControl = document.getElementById('volume-hooks');
-    } else if (trackType === 'final') {
-        volumeControl = document.getElementById('volume-final');
-    }
-
-    if (mediaElement) {
-        mediaElement.volume = volumeControl.value;
-    }
-}
-let wavesurfer;
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    const mediaContainer = document.getElementById('media-container');
-
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        let extension = file.name.split('.').pop().toLowerCase();
-        
-        // Clear previous media
-        mediaContainer.innerHTML = '';
-
-        if (['mp3', 'wav', 'ogg'].includes(extension)) {
-            // Initialize Wavesurfer for audio files
-            const mediaElement = document.createElement('audio');
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-            
-            // Create the Wavesurfer instance
-            wavesurfer = WaveSurfer.create({
-                container: '#waveform',
-                waveColor: '#4F4A85',
-                progressColor: '#383351',
-                backend: 'MediaElement',
-                mediaElement: mediaElement,
-            });
-
-            wavesurfer.load(mediaElement.src); // Load the selected audio file
-        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-            // Video element
-            const mediaElement = document.createElement('video');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-        } else {
-            fileInfoDiv.textContent = "Unsupported file type!";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Editor with Audio and Video</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
         }
-    }
-}
+    </style>
+</head>
+<body>
+    <div class="editor-content">
+        <h1>Edit Your Audio and Video Files</h1>
+
+        <!-- Upload Button -->
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+        
+        <div id="file-info"></div>
+
+        <!-- Media Container for Audio or Video -->
+        <div id="media-container">
+            <!-- Audio or Video will appear here -->
+        </div>
+
+        <!-- Video Player -->
+        <video id="video-player" width="320" height="240" controls>
+            <source id="video-source" src="assets/videos/my_video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Volume Controls -->
+        <div id="volume-controls">
+            <div>
+                <label for="volume">Volume</label>
+                <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume()">
+            </div>
+        </div>
+
+        <!-- Wavesurfer Container for Audio -->
+        <div id="wavesurfer" style="width: 100%; height: 128px;"></div>
+    </div>
+
+    <script>
+        let mediaElement = null; // Will hold audio or video element
+        let wavesurfer = null; // Will hold Wavesurfer instance
+
+        // Handles file selection and displays the media
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            const mediaContainer = document.getElementById('media-container');
+            const videoPlayer = document.getElementById('video-player');
+            const videoSource = videoPlayer.querySelector('source');
+
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+                let extension = file.name.split('.').pop().toLowerCase();
+                
+                // Clear previous media
+                mediaContainer.innerHTML = '';
+
+                // Handle audio files
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // Create an audio element
+                    mediaElement = document.createElement('audio');
+                    mediaElement.controls = true;
+                    mediaElement.src = URL.createObjectURL(file);
+                    mediaContainer.appendChild(mediaElement);
+
+                    // Initialize Wavesurfer
+                    wavesurfer = WaveSurfer.create({
+                        container: '#wavesurfer',
+                        waveColor: '#ff6347',
+                        progressColor: '#f00',
+                        backend: 'MediaElement',
+                        mediaElement: mediaElement
+                    });
+
+                    wavesurfer.load(mediaElement.src); // Load the selected audio file
+
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // Handle video files
+                    videoSource.src = URL.createObjectURL(file); // Set the selected video as the source
+                    videoPlayer.load(); // Reload the video player with the new source
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        // Adjust the volume for the media element
+        function adjustVolume() {
+            let volumeControl = document.getElementById('volume');
+            if (mediaElement) {
+                mediaElement.volume = volumeControl.value;
+            }
+        }
+    </script>
+</body>
+</html>
