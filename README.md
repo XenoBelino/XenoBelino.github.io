@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     
-    <!-- Google Fonts - Lato -->
+    <!-- Google Fonts - Lato with preload fixed -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/wavesurfer.js"></script>
@@ -13,7 +13,8 @@
     <style>
         body {
             font-family: 'Lato', sans-serif;
-            background-color: lightblue;
+            background-color: black;  /* Set background color to black */
+            color: white;             /* Make text white for contrast */
             margin: 0;
             padding: 0;
         }
@@ -68,6 +69,14 @@
             max-width: 500px;
         }
 
+        .button-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
         @media (max-width: 600px) {
             .editor-content {
                 padding: 10px;
@@ -89,9 +98,6 @@
         
         <div id="file-info"></div>
 
-        <!-- Save Button -->
-        <button id="save-button" onclick="saveFile()">Save</button>
-
         <!-- Volume Slider -->
         <input type="range" min="0" max="100" value="50" id="volume-slider">
 
@@ -103,6 +109,11 @@
             <source id="video-source" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+    </div>
+
+    <!-- Save Button in bottom-right -->
+    <div class="button-container">
+        <button id="save-button" onclick="saveFile()">Save</button>
     </div>
 
     <script>
