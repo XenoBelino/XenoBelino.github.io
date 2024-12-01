@@ -1,80 +1,53 @@
-/* Bakgrundsfärger och text */
-body.home {
-    background-color: black;
-    color: white;
-    text-align: center;
-    background-image: url('assets/images/music-notes-animation.gif'); /* Kontrollera sökvägen */
-    background-size: cover;
-    height: 100vh; /* Full höjd på sidan */
-    display: flex; /* Flexbox layout */
-    align-items: center; /* Centrerar vertikalt */
-    justify-content: center; /* Centrerar horisontellt */
-    font-family: Arial, sans-serif; /* Typsnitt */
-}
-
-/* Grundläggande stil för text och layout */
 body {
     font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #24292e;
-    background-color: #fff;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
 }
 
-h1 {
-    font-size: 36px;
-    color: #FF6347; /* Tomatröd färg för rubriken */
+.editor-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
 }
 
-/* Knappar */
 button {
-    background-color: #4CAF50; /* Grön bakgrund för knappar */
-    color: white; /* Vit text på knappar */
-    padding: 15px 30px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
     margin: 10px;
-    border-radius: 5px; /* Rundade hörn */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smidig övergång vid hover */
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 2px solid #4F4A85;
+    background-color: #383351;
+    color: white;
+    cursor: pointer;
 }
 
 button:hover {
-    background-color: #45a049; /* Mörkare grön vid hover */
+    background-color: #4F4A85;
 }
 
-button:focus {
-    outline: none;
-    box-shadow: 0 0 10px rgba(72, 187, 120, 0.6); /* Lägger till en fokusskugga */
-}
-
-/* Filinfo */
 #file-info {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #FFD700; /* Gold text for file info */
-    background-color: rgba(0, 0, 0, 0.7); /* Black background with transparency */
-    padding: 10px;
-    border-radius: 5px;
-    display: block; /* Make sure it's visible */
+    margin-top: 10px;
+    color: #383351;
 }
 
-/* Ljudvågform */
-#waveform {
+#volume-controls {
+    margin-top: 10px;
+}
+
+#media-container {
+    margin-top: 20px;
+}
+
+#wavesurfer {
     margin-top: 20px;
     width: 100%;
     height: 100px;
 }
 
-#volume-controls {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Fjärran överflödiga upprepningar */
-h1, p {
-    margin: 0;
-    padding: 10px;
+/* Position the buttons at the bottom-right */
+button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
 }
