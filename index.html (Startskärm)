@@ -5,22 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>XenoBelino</title>
+    <!-- CSS-länk -->
     <link rel="stylesheet" href="/assets/css/style.css?v=d3ce28286d786a925efd094a00169177a4390637">
-    <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+    <!-- Google Fonts: Lato -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Wavesurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js"></script>
   </head>
   <body>
     <div class="container-lg px-3 my-5 markdown-body">
       <h1><a href="https://xenobelino.github.io/">XenoBelino</a></h1>
 
+      <!-- Wavesurfer Container -->
       <div id="waveform"></div>
+
+      <!-- Volume Control -->
       <input type="range" min="0" max="100" value="50" id="volume-slider" />
 
+      <!-- Video Player -->
       <video id="video-player" width="320" height="240" controls>
-        <source src="path_to_video.mp4" type="video/mp4" />
+        <!-- Uppdatera denna sökväg när du har rätt video -->
+        <source src="assets/videos/default_video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
+      <!-- File Editor Section -->
       <div class="editor-content">
         <h1>Edit Your Files</h1>
 
@@ -35,15 +46,20 @@
       </div>
 
       <script>
-        var slider = document.getElementById("volume-slider");
+        // Wavesurfer setup
         var wavesurfer = WaveSurfer.create({
-          container: '#waveform'
+          container: '#waveform',
+          waveColor: 'violet',
+          progressColor: 'purple'
         });
 
+        // Volume control event
+        var slider = document.getElementById("volume-slider");
         slider.oninput = function() {
           wavesurfer.setVolume(slider.value / 100);
         };
 
+        // Handle file selection (e.g., video file)
         function handleFileSelect(event) {
           const file = event.target.files[0];
           const fileInfoDiv = document.getElementById('file-info');
@@ -61,13 +77,20 @@
             
             // Uppdatera video och ladda om den
             videoPlayer.load(); // Detta tvingar webbläsaren att ladda om videon
+            
+            // Om ljudfilen är en del av filen, ladda den också
+            wavesurfer.load(fileURL);
           }
         }
 
+        // Save functionality (placeholder for now)
         function saveFile() {
           alert("Your changes have been saved!");
           // Här kan du lägga till kod för att spara filen eller ändra den.
         }
+        
+        // Initiala ljudinställningar (kan justeras vid behov)
+        wavesurfer.load('assets/audio/default_audio.mp3'); // Ladda ett ljudfil som standard
       </script>
     </div>
   </body>
