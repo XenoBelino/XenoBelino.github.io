@@ -3,7 +3,7 @@ body.home {
     background-color: black;
     color: white;
     text-align: center;
-    background-image: url('music-notes-animation.gif'); /* Bakgrundsbild */
+    background-image: url('assets/images/music-notes-animation.gif'); /* Kontrollera sökvägen */
     background-size: cover;
     height: 100vh; /* Full höjd på sidan */
     display: flex; /* Flexbox layout */
@@ -11,15 +11,16 @@ body.home {
     justify-content: center; /* Centrerar horisontellt */
     font-family: Arial, sans-serif; /* Typsnitt */
 }
+
+/* Grundläggande stil för text och layout */
 body {
-    font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: 'Lato', sans-serif;
     font-size: 14px;
     line-height: 1.5;
     color: #24292e;
     background-color: #fff;
 }
 
-/* Stil på rubriken */
 h1 {
     font-size: 36px;
     color: #FF6347; /* Tomatröd färg för rubriken */
@@ -35,11 +36,16 @@ button {
     font-size: 18px;
     margin: 10px;
     border-radius: 5px; /* Rundade hörn */
-    transition: background-color 0.3s ease; /* Smidig övergång vid hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smidig övergång vid hover */
 }
 
 button:hover {
     background-color: #45a049; /* Mörkare grön vid hover */
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(72, 187, 120, 0.6); /* Lägger till en fokusskugga */
 }
 
 /* Filinfo */
@@ -53,38 +59,22 @@ button:hover {
     display: block; /* Make sure it's visible */
 }
 
-/* Korrekt formatering av text */
-h1, p {
-    margin: 0;
-    padding: 10px;
+/* Ljudvågform */
+#waveform {
+    margin-top: 20px;
+    width: 100%;
+    height: 100px;
 }
+
 #volume-controls {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-button {
-  border-radius: 10px; /* Rundade kanter */
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-}
-button:hover {
-  background-color: #45a049;
-}
-var wavesurfer = WaveSurfer.create({
-  container: '#waveform', // Detta ska matcha ID:t du definierar i HTML
-  waveColor: 'violet',
-  progressColor: 'purple',
-});
 
-wavesurfer.load('path_to_audio_file.mp3');
-body {
-  font-family: 'Lato', sans-serif;
-}
-
-body {
-  font-family: 'Lato', sans-serif;
+/* Fjärran överflödiga upprepningar */
+h1, p {
+    margin: 0;
+    padding: 10px;
 }
