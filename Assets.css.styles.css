@@ -1,80 +1,104 @@
-/* Bakgrundsfärger och text */
-body.home {
-    background-color: black;
-    color: white;
-    text-align: center;
-    background-image: url('assets/images/music-notes-animation.gif'); /* Kontrollera sökvägen */
-    background-size: cover;
-    height: 100vh; /* Full höjd på sidan */
-    display: flex; /* Flexbox layout */
-    align-items: center; /* Centrerar vertikalt */
-    justify-content: center; /* Centrerar horisontellt */
-    font-family: Arial, sans-serif; /* Typsnitt */
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Editor</title>
+    
+    <!-- Google Fonts - Lato (används direkt utan preload för att undvika varning) -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Ladda Wavesurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js"></script>
 
-/* Grundläggande stil för text och layout */
-body {
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #24292e;
-    background-color: #fff;
-}
+    <style>
+        body {
+            background-color: lightblue;
+            font-family: 'Lato', sans-serif; /* Se till att fonten används direkt */
+        }
+        
+        .editor-content {
+            text-align: center;
+            margin: 20px;
+        }
 
-h1 {
-    font-size: 36px;
-    color: #FF6347; /* Tomatröd färg för rubriken */
-}
+        #waveform {
+            width: 100%;
+            height: 150px;
+            background-color: #f0f0f0;
+            margin-top: 20px;
+        }
 
-/* Knappar */
-button {
-    background-color: #4CAF50; /* Grön bakgrund för knappar */
-    color: white; /* Vit text på knappar */
-    padding: 15px 30px;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    margin: 10px;
-    border-radius: 5px; /* Rundade hörn */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smidig övergång vid hover */
-}
+        video {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="home">
+    <div class="editor-content">
+        <h1>Edit Your Files</h1>
 
-button:hover {
-    background-color: #45a049; /* Mörkare grön vid hover */
-}
+        <!-- Browse Button -->
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+        
+        <div id="file-info"></div>
+        
+        <!-- Save Button -->
+        <button id="save-button" onclick="saveFile()">Save</button>
 
-button:focus {
-    outline: none;
-    box-shadow: 0 0 10px rgba(72, 187, 120, 0.6); /* Lägger till en fokusskugga */
-}
+        <!-- Volume Slider -->
+        <input type="range" min="0" max="100" value="50" id="volume-slider" />
 
-/* Filinfo */
-#file-info {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #FFD700; /* Gold text for file info */
-    background-color: rgba(0, 0, 0, 0.7); /* Black background with transparency */
-    padding: 10px;
-    border-radius: 5px;
-    display: block; /* Make sure it's visible */
-}
+        <!-- Waveform container -->
+        <div id="waveform"></div>
 
-/* Ljudvågform */
-#waveform {
-    margin-top: 20px;
-    width: 100%;
-    height: 100px;
-}
+        <!-- Video player -->
+        <video id="video-player" width="320" height="240" controls>
+            <source src="path_to_video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
-#volume-controls {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    <script>
+        // Hantera filval
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            const videoPlayer = document.getElementById('video-player');
 
-/* Fjärran överflödiga upprepningar */
-h1, p {
-    margin: 0;
-    padding: 10px;
-}
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+
+                const fileURL = URL.createObjectURL(file);
+
+                // Om filen är en ljudfil
+                let extension = file.name.split('.').pop().toLowerCase();
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // Hantera ljudfil med Wavesurfer
+                    wavesurfer.load(fileURL);
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // Om det är en videofil, sätt den som källa för videoelementet
+                    videoPlayer.src = fileURL;
+                    videoPlayer.load(); // Ladda om videon
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        // Spara fil (exempel)
+        function saveFile() {
+            alert("Your changes have been saved!");
+        }
+
+        // Hantera ljudvolym
+        var slider = document.getElementById("volume-slider");
+        var wavesurfer = WaveSurfer.create({ container: '#waveform' });
+
+        slider.oninput = function() {
+            wavesurfer.setVolume(slider.value / 100);
+        };
+    </script>
+</body>
+</html>
