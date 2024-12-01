@@ -1,135 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Editor</title>
-    <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-    <style>
-        body {
-            font-family: 'Lato', sans-serif;
-        }
+let mediaElement = null; // Will hold audio or video element
+let wavesurfer = null; // Will hold Wavesurfer instance
 
-        .editor-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
+// Handles file selection and displays the media
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const fileInfoDiv = document.getElementById('file-info');
+    const mediaContainer = document.getElementById('media-container');
 
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            border-radius: 12px;
-            border: 2px solid #4F4A85;
-            background-color: #383351;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #4F4A85;
-        }
-
-        video {
-            margin-top: 20px;
-            border-radius: 12px;
-        }
-
-        #waveform {
-            margin-top: 20px;
-            width: 100%;
-            height: 100px;
-        }
-
-        #file-info {
-            margin-top: 10px;
-            color: #383351;
-        }
-
-        #volume-slider {
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body class="home">
-
-    <div class="editor-content">
-        <h1>Edit Your Files</h1>
-
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+    if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        let extension = file.name.split('.').pop().toLowerCase();
         
-        <div id="file-info"></div>
-        <button id="save-button" onclick="saveFile()">Save</button>
+        // Clear previous media
+        mediaContainer.innerHTML = '';
 
-        <div id="media-container">
-            <video id="video-player" width="320" height="240" controls>
-                <source src="" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div id="waveform"></div>
-        </div>
+        // Handle audio files
+        if (['mp3', 'wav', 'ogg'].includes(extension)) {
+            // Create an audio element
+            mediaElement = document.createElement('audio');
+            mediaElement.controls = true;
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
 
-        <input type="range" min="0" max="100" value="50" id="volume-slider">
-    </div>
+            // Initialize Wavesurfer
+            wavesurfer = WaveSurfer.create({
+                container: '#wavesurfer',
+                waveColor: '#ff6347',
+                progressColor: '#f00',
+                backend: 'MediaElement',
+                mediaElement: mediaElement
+            });
 
-    <script>
-        // Initialize Wavesurfer instance
-        var wavesurfer;
+            wavesurfer.load(mediaElement.src); // Load the selected audio file
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfoDiv = document.getElementById('file-info');
-            const mediaContainer = document.getElementById('media-container');
-            const videoPlayer = document.getElementById('video-player');
-
-            if (file) {
-                fileInfoDiv.textContent = `Selected file: ${file.name}`;
-                const fileURL = URL.createObjectURL(file);
-                let extension = file.name.split('.').pop().toLowerCase();
-
-                mediaContainer.innerHTML = ''; // Clear previous media
-
-                if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    const mediaElement = document.createElement('audio');
-                    mediaElement.src = fileURL;
-                    mediaContainer.appendChild(mediaElement);
-
-                    // Initialize Wavesurfer for audio files
-                    wavesurfer = WaveSurfer.create({
-                        container: '#waveform',
-                        waveColor: '#4F4A85',
-                        progressColor: '#383351',
-                        backend: 'MediaElement',
-                        mediaElement: mediaElement
-                    });
-                    wavesurfer.load(mediaElement.src);
-                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    const mediaElement = document.createElement('video');
-                    mediaElement.controls = true;
-                    mediaElement.src = fileURL;
-                    mediaContainer.appendChild(mediaElement);
-                } else {
-                    fileInfoDiv.textContent = "Unsupported file type!";
-                }
-            }
+        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+            // Handle video files
+            mediaElement = document.createElement('video');
+            mediaElement.controls = true;
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
+        } else {
+            fileInfoDiv.textContent = "Unsupported file type!";
         }
+    }
+}
 
-        // Handle volume adjustment
-        var slider = document.getElementById("volume-slider");
-        slider.oninput = function() {
-            if (wavesurfer) {
-                wavesurfer.setVolume(slider.value / 100);
-            }
-        };
-
-        // Save file logic
-        function saveFile() {
-            alert("Your changes have been saved!");
-            // Implement additional logic for file saving, if necessary
-        }
-    </script>
-</body>
-</html>
+// Adjust the volume for the media element
+function adjustVolume() {
+    let volumeControl = document.getElementById('volume');
+    if (mediaElement) {
+        mediaElement.volume = volumeControl.value;
+    }
+}
