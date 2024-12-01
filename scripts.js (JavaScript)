@@ -1,153 +1,3 @@
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    const mediaContainer = document.getElementById('media-container');
-    
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        let extension = file.name.split('.').pop().toLowerCase();
-        
-        // Clear previous media
-        mediaContainer.innerHTML = '';
-        
-        if (['mp3', 'wav', 'ogg'].includes(extension)) {
-            // Create an audio player
-            const mediaElement = document.createElement('audio');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-            // Create a video player
-            const mediaElement = document.createElement('video');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-        } else {
-            fileInfoDiv.textContent = "Unsupported file type!";
-        }
-    }
-}
-
-let wavesurfer;
-
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    const mediaContainer = document.getElementById('media-container');
-    
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        let extension = file.name.split('.').pop().toLowerCase();
-        
-        mediaContainer.innerHTML = ''; // Rensa tidigare media
-        
-        if (['mp3', 'wav', 'ogg'].includes(extension)) {
-            // Skapa ett ljud-element
-            const mediaElement = document.createElement('audio');
-            mediaElement.src = URL.createObjectURL(file);
-            mediaElement.controls = true;
-            mediaContainer.appendChild(mediaElement);
-
-            // Skapa en Wavesurfer-instans för att visualisera ljudvågorna
-            wavesurfer = WaveSurfer.create({
-                container: '#wavesurfer',
-                waveColor: '#ff6347',
-                progressColor: '#f00',
-                mediaElement: mediaElement
-            });
-            
-            // Ladda ljudfilen i Wavesurfer
-            wavesurfer.load(URL.createObjectURL(file));
-        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-            const mediaElement = document.createElement('video');
-            mediaElement.src = URL.createObjectURL(file);
-            mediaElement.controls = true;
-            mediaContainer.appendChild(mediaElement);
-        } else {
-            fileInfoDiv.textContent = "Unsupported file type!";
-        }
-    }
-}
-var wavesurfer = WaveSurfer.create({
-  container: '#waveform', // Här definierar du vart ljudgrafen ska visas
-  waveColor: 'violet',
-  progressColor: 'purple',
-});
-
-wavesurfer.load('path_to_audio_file.mp3');
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        
-        // Skapa en URL för den valda filen
-        const fileURL = URL.createObjectURL(file);
-        
-        // Hitta video-elementet och uppdatera src
-        const videoPlayer = document.getElementById('video-player');
-        const videoSource = videoPlayer.querySelector('source');
-        videoSource.src = fileURL; // Sätt den valda filen som src
-        
-        // Uppdatera video och ladda om den
-        videoPlayer.load(); // Detta tvingar webbläsaren att ladda om videon
-    }
-}
-function adjustVolume(trackType) {
-    let volumeControl = null;
-    if (trackType === 'original') {
-        volumeControl = document.getElementById('volume-original');
-    } else if (trackType === 'hooks') {
-        volumeControl = document.getElementById('volume-hooks');
-    } else if (trackType === 'final') {
-        volumeControl = document.getElementById('volume-final');
-    }
-
-    if (mediaElement) {
-        mediaElement.volume = volumeControl.value;
-    }
-}
-let wavesurfer;
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    const mediaContainer = document.getElementById('media-container');
-
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        let extension = file.name.split('.').pop().toLowerCase();
-        
-        // Clear previous media
-        mediaContainer.innerHTML = '';
-
-        if (['mp3', 'wav', 'ogg'].includes(extension)) {
-            // Initialize Wavesurfer for audio files
-            const mediaElement = document.createElement('audio');
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-            
-            // Create the Wavesurfer instance
-            wavesurfer = WaveSurfer.create({
-                container: '#waveform',
-                waveColor: '#4F4A85',
-                progressColor: '#383351',
-                backend: 'MediaElement',
-                mediaElement: mediaElement,
-            });
-
-            wavesurfer.load(mediaElement.src); // Load the selected audio file
-        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-            // Video element
-            const mediaElement = document.createElement('video');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-        } else {
-            fileInfoDiv.textContent = "Unsupported file type!";
-        }
-    }
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,9 +6,7 @@ function handleFileSelect(event) {
     <title>File Editor</title>
     <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <script src="https://unpkg.com/wavesurfer.js"></script>
-
     <style>
-        /* Basic Styling */
         body {
             font-family: 'Lato', sans-serif;
         }
@@ -200,7 +48,6 @@ function handleFileSelect(event) {
             color: #383351;
         }
 
-        /* Volume slider */
         #volume-slider {
             margin-top: 10px;
         }
@@ -211,44 +58,27 @@ function handleFileSelect(event) {
     <div class="editor-content">
         <h1>Edit Your Files</h1>
 
-        <!-- Browse Button -->
         <button onclick="document.getElementById('file-input').click()">Browse my files</button>
         <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
         
         <div id="file-info"></div>
-
-        <!-- Save Button -->
         <button id="save-button" onclick="saveFile()">Save</button>
 
-        <!-- Media Container -->
         <div id="media-container">
             <video id="video-player" width="320" height="240" controls>
-                <source src="assets/videos/my_video.mp4" type="video/mp4">
+                <source src="" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div id="waveform"></div>
         </div>
 
-        <!-- Volume Slider -->
         <input type="range" min="0" max="100" value="50" id="volume-slider">
     </div>
 
     <script>
         // Initialize Wavesurfer instance
-        var wavesurfer = WaveSurfer.create({
-            container: '#waveform',
-            waveColor: '#4F4A85',
-            progressColor: '#383351',
-            backend: 'MediaElement',
-        });
+        var wavesurfer;
 
-        // Handle volume control for audio files
-        var slider = document.getElementById("volume-slider");
-        slider.oninput = function() {
-            wavesurfer.setVolume(slider.value / 100);
-        };
-
-        // Handle file selection and load media
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -257,25 +87,26 @@ function handleFileSelect(event) {
 
             if (file) {
                 fileInfoDiv.textContent = `Selected file: ${file.name}`;
-
-                // Create a URL for the selected file
                 const fileURL = URL.createObjectURL(file);
-
                 let extension = file.name.split('.').pop().toLowerCase();
 
-                // Clear previous media
-                mediaContainer.innerHTML = '';
+                mediaContainer.innerHTML = ''; // Clear previous media
 
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Handle audio files with Wavesurfer
                     const mediaElement = document.createElement('audio');
                     mediaElement.src = fileURL;
                     mediaContainer.appendChild(mediaElement);
 
-                    // Create the Wavesurfer instance
+                    // Initialize Wavesurfer for audio files
+                    wavesurfer = WaveSurfer.create({
+                        container: '#waveform',
+                        waveColor: '#4F4A85',
+                        progressColor: '#383351',
+                        backend: 'MediaElement',
+                        mediaElement: mediaElement
+                    });
                     wavesurfer.load(mediaElement.src);
                 } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    // Handle video files
                     const mediaElement = document.createElement('video');
                     mediaElement.controls = true;
                     mediaElement.src = fileURL;
@@ -286,10 +117,18 @@ function handleFileSelect(event) {
             }
         }
 
+        // Handle volume adjustment
+        var slider = document.getElementById("volume-slider");
+        slider.oninput = function() {
+            if (wavesurfer) {
+                wavesurfer.setVolume(slider.value / 100);
+            }
+        };
+
         // Save file logic
         function saveFile() {
             alert("Your changes have been saved!");
-            // You can add additional logic here to handle file saving.
+            // Implement additional logic for file saving, if necessary
         }
     </script>
 </body>
