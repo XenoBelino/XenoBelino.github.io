@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     
-    <!-- Google Fonts - Lato with preload fixed -->
+    <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/wavesurfer.js"></script>
@@ -13,8 +13,8 @@
     <style>
         body {
             font-family: 'Lato', sans-serif;
-            background-color: black;  /* Set background color to black */
-            color: white;             /* Make text white for contrast */
+            background-color: black;
+            color: white;
             margin: 0;
             padding: 0;
         }
@@ -31,7 +31,7 @@
         }
 
         button {
-            border-radius: 8px; /* Rounded corners for buttons */
+            border-radius: 8px;
             padding: 10px 20px;
             background-color: #4F4A85;
             color: white;
@@ -77,23 +77,17 @@
             flex-direction: column;
         }
 
-        @media (max-width: 600px) {
-            .editor-content {
-                padding: 10px;
-            }
-
-            button {
-                width: 100%;
-            }
+        #browse-button {
+            margin-bottom: 10px;
         }
     </style>
 </head>
-<body class="home">
+<body>
     <div class="editor-content">
         <h1>Edit Your Files</h1>
 
         <!-- Browse Button -->
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <button id="browse-button" onclick="document.getElementById('file-input').click()">Browse my files</button>
         <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
         
         <div id="file-info"></div>
@@ -132,44 +126,4 @@
         };
 
         // Handle file selection and load media
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfoDiv = document.getElementById('file-info');
-            const videoPlayer = document.getElementById('video-player');
-            const mediaContainer = document.getElementById('media-container');
-
-            if (file) {
-                fileInfoDiv.textContent = `Selected file: ${file.name}`;
-
-                // Create a URL for the selected file
-                const fileURL = URL.createObjectURL(file);
-
-                let extension = file.name.split('.').pop().toLowerCase();
-                if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Handle audio files
-                    const mediaElement = document.createElement('audio');
-                    mediaElement.src = fileURL;
-                    mediaContainer.innerHTML = ''; // Clear previous content
-                    mediaContainer.appendChild(mediaElement);
-
-                    // Load the audio with Wavesurfer
-                    wavesurfer.load(mediaElement.src);
-                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    // Handle video files
-                    videoPlayer.src = fileURL;
-                    videoPlayer.load(); // Reload video source
-                    mediaContainer.innerHTML = ''; // Clear previous content
-                    mediaContainer.appendChild(videoPlayer);
-                } else {
-                    fileInfoDiv.textContent = "Unsupported file type! Please upload an MP3, WAV, OGG audio file or an MP4, WEBM, AVI video file.";
-                }
-            }
-        }
-
-        // Save file logic
-        function saveFile() {
-            alert("Your changes have been saved!");
-        }
-    </script>
-</body>
-</html>
+       
