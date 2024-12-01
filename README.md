@@ -21,15 +21,22 @@
         .editor-content {
             text-align: center;
             padding: 20px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #4F4A85;
         }
 
         button {
-            border-radius: 8px; /* Runda hörn på knappar */
+            border-radius: 8px; /* Rounded corners for buttons */
             padding: 10px 20px;
             background-color: #4F4A85;
             color: white;
             border: none;
             cursor: pointer;
+            margin: 10px;
         }
 
         button:hover {
@@ -47,10 +54,28 @@
             margin-top: 20px;
             max-width: 100%;
             height: auto;
+            border-radius: 8px;
         }
 
         #file-info {
             margin-top: 10px;
+            color: #4F4A85;
+        }
+
+        #volume-slider {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        @media (max-width: 600px) {
+            .editor-content {
+                padding: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -122,8 +147,10 @@
                     // Handle video files
                     videoPlayer.src = fileURL;
                     videoPlayer.load(); // Reload video source
+                    mediaContainer.innerHTML = ''; // Clear previous content
+                    mediaContainer.appendChild(videoPlayer);
                 } else {
-                    fileInfoDiv.textContent = "Unsupported file type!";
+                    fileInfoDiv.textContent = "Unsupported file type! Please upload an MP3, WAV, OGG audio file or an MP4, WEBM, AVI video file.";
                 }
             }
         }
