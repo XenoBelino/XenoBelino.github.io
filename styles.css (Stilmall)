@@ -1,10 +1,14 @@
+/* Allmänna inställningar */
 body {
     font-family: 'Lato', sans-serif;
     background-color: #f0f0f0;
     margin: 0;
     padding: 0;
+    color: #383351;
+    line-height: 1.6;
 }
 
+/* Container för centrering och padding */
 .container-lg {
     display: flex;
     flex-direction: column;
@@ -13,45 +17,125 @@ body {
     max-width: 100%;
 }
 
+/* Stil för knappar */
 button {
-    padding: 10px 20px;
-    border-radius: 12px;
+    padding: 12px 24px;
+    border-radius: 8px;
     border: 2px solid #4F4A85;
     background-color: #383351;
     color: white;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 button:hover {
     background-color: #4F4A85;
+    transform: scale(1.05); /* Ger en lätt zoom-effekt på hover */
 }
 
+button:active {
+    transform: scale(0.98); /* Gör knappen lite mindre när den är klickad */
+}
+
+/* Länk under rubriken */
 h1 a {
     color: #383351;
     text-decoration: none;
+    font-weight: 700;
 }
 
+/* Stil för information om filen */
 #file-info {
     margin-top: 10px;
     color: #383351;
+    font-size: 14px;
+    font-weight: 300;
 }
 
+/* Volymreglage */
 #volume-slider {
     margin-top: 20px;
-    width: 100%;
+    width: 80%; /* Lite smalare för att ge utrymme */
+    max-width: 400px; /* Begränsa bredden */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+/* Media container för video och ljud */
 #media-container {
     margin-top: 20px;
     width: 100%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* Save button längst ner */
 #save-button {
     margin-top: 20px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background-color: #4F4A85;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
+#save-button:hover {
+    background-color: #383351;
+    transform: scale(1.05);
+}
+
+#save-button:active {
+    transform: scale(0.98);
+}
+
+/* Stil för video */
 video {
     margin-top: 20px;
     border-radius: 12px;
+    width: 100%;
+    max-width: 800px; /* Begränsar videons max-bredd */
+}
+
+/* För att förbättra layouten på små skärmar */
+@media (max-width: 768px) {
+    .container-lg {
+        padding: 15px;
+    }
+
+    #file-info {
+        font-size: 12px;
+    }
+
+    button, #save-button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    #volume-slider {
+        width: 90%;
+    }
+}
+
+/* För ännu mindre skärmar som telefoner */
+@media (max-width: 480px) {
+    #volume-slider {
+        width: 100%;
+    }
+
+    video {
+        max-width: 100%;
+    }
+}
+
+/* För att ge knapparna ett "fokus" när de är i fokus (för tillgänglighet) */
+button:focus, #save-button:focus {
+    outline: 3px solid #4F4A85;
+    outline-offset: 2px;
 }
