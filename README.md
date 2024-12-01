@@ -7,8 +7,13 @@
     <!-- Korrekt användning av Lato-fonten -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/wavesurfer.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+        }
+    </style>
 </head>
-<body class="home" style="font-family: 'Lato', sans-serif;">
+<body class="home">
     <div class="editor-content">
         <h1>Edit Your Files</h1>
 
@@ -50,4 +55,40 @@
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
-            const videoPlayer = document.getElementById('
+            const videoPlayer = document.getElementById('video-player');
+            const mediaContainer = document.getElementById('media-container');
+
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+
+                // Create a URL for the selected file
+                const fileURL = URL.createObjectURL(file);
+
+                let extension = file.name.split('.').pop().toLowerCase();
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // Handle audio files
+                    const mediaElement = document.createElement('audio');
+                    mediaElement.src = fileURL;
+                    mediaContainer.innerHTML = ''; // Clear previous content
+                    mediaContainer.appendChild(mediaElement);
+
+                    // Load the audio with Wavesurfer
+                    wavesurfer.load(mediaElement.src);
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // Handle video files
+                    videoPlayer.src = fileURL;
+                    videoPlayer.load(); // Reload video source
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        // Save file logic
+        function saveFile() {
+            alert("Your changes have been saved!");
+            // You can add additional logic here to handle file saving.
+        }
+    </script>
+</body>
+</html>
