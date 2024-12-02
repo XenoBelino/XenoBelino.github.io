@@ -119,6 +119,7 @@
     </div>
 
     <script>
+        // Initialize Wavesurfer instance
         var wavesurfer = WaveSurfer.create({
             container: '#waveform',
             waveColor: '#4F4A85',
@@ -131,9 +132,37 @@
             wavesurfer.setVolume(slider.value / 100);
         };
 
+        // Handle file selection and load media
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
                 document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
 
-                if (file
+                if (file.type.startsWith('video')) {
+                    const videoPlayer = document.getElementById('video-player');
+                    const videoSource = document.getElementById('video-source');
+
+                    // Kontrollera att video source får rätt URL
+                    videoSource.src = URL.createObjectURL(file);
+                    videoPlayer.load();  // Ladda om videospelaren med den nya källan
+                    videoPlayer.style.display = 'block';  // Se till att videoelementet visas
+
+                    // Lägg till eventuella felhanterare för video
+                    videoPlayer.onerror = function() {
+                        document.getElementById('file-info').innerText = "Error loading video.";
+                    };
+                }
+
+                if (file.type.startsWith('audio')) {
+                    wavesurfer.load(URL.createObjectURL(file));
+                }
+            }
+        }
+
+        // Function to save the file (stub for now)
+        function saveFile() {
+            alert("Saving file functionality not yet implemented.");
+        }
+    </script>
+</body>
+</html>
