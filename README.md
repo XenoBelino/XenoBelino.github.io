@@ -41,12 +41,13 @@
 
         button {
             border-radius: 8px;
-            padding: 10px 20px;
+            padding: 15px 30px;
             background-color: #4F4A85;
             color: white;
             border: none;
             cursor: pointer;
             margin: 10px;
+            font-size: 16px;
         }
 
         button:hover {
@@ -62,7 +63,7 @@
 
         video {
             margin-top: 20px;
-            max-width: 100%;
+            max-width: 80%; /* Made the video player larger */
             height: auto;
             border-radius: 8px;
         }
@@ -81,15 +82,15 @@
         .button-container {
             position: fixed;
             bottom: 20px;
-            left: 20px;
+            right: 20px;
             display: flex;
             justify-content: space-between;
-            width: 250px;
+            width: 350px;
             z-index: 100;
         }
 
         #browse-button {
-            width: 120px;
+            width: 150px; /* Increased button size */
             margin-right: 10px;
         }
 
@@ -99,8 +100,8 @@
     <div class="editor-content">
         <h1>Edit Your Files</h1>
 
-        <!-- Video player now at the top -->
-        <video id="video-player" controls>
+        <!-- Video player -->
+        <video id="video-player" controls style="display: none;">
             <source id="video-source" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -114,7 +115,7 @@
         <div id="file-info"></div>
     </div>
 
-    <!-- Save and Browse buttons at the bottom-left -->
+    <!-- Save and Browse buttons at the bottom-right -->
     <div class="button-container">
         <button id="save-button" onclick="saveFile()">Save</button>
         <button id="browse-button" onclick="document.getElementById('file-input').click()">Browse my files</button>
@@ -140,18 +141,30 @@
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
+                console.log("File selected:", file.name); // For debugging
                 document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
 
+                // Check for supported video types
                 if (file.type.startsWith('video')) {
                     const videoPlayer = document.getElementById('video-player');
                     const videoSource = document.getElementById('video-source');
-                    videoSource.src = URL.createObjectURL(file);
-                    videoPlayer.load();
-                    videoPlayer.style.display = 'block';  // Show video player
-                }
 
-                if (file.type.startsWith('audio')) {
+                    // Check for MP4 format (which is commonly supported by browsers)
+                    if (file.name.toLowerCase().endsWith('.mp4')) {
+                        videoSource.src = URL.createObjectURL(file);
+                        videoPlayer.load();
+                        videoPlayer.style.display = 'block';  // Show video player
+                    } else {
+                        // If file is not MP4, give feedback to the user
+                        alert("Sorry, only MP4 videos are supported. Please convert the file to MP4.");
+                        videoPlayer.style.display = 'none';
+                    }
+                } else if (file.type.startsWith('audio')) {
+                    // Handle audio files (using WaveSurfer)
                     wavesurfer.load(URL.createObjectURL(file));
+                    document.getElementById('video-player').style.display = 'none';  // Hide video player for audio
+                } else {
+                    alert("Unsupported file type. Please upload a video or audio file.");
                 }
             }
         }
