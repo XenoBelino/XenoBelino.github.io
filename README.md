@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    
-    <!-- Google Fonts - Lato with crossorigin attribute for preload -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
-    
+
+    <!-- Google Fonts - Lato (with correct crossorigin handling) -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -20,6 +20,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow: hidden;
         }
 
         .editor-content {
@@ -32,6 +33,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            background-color: black;  /* Ensure background stays black */
         }
 
         h1 {
@@ -41,15 +43,15 @@
 
         button {
             border-radius: 8px;
-            padding: 12px 24px;  /* Smaller button size */
+            padding: 8px 16px;  /* Smaller button size */
             background-color: #4F4A85;
             color: white;
             border: none;
             cursor: pointer;
-            margin: 10px;
-            font-size: 14px;
+            margin: 5px;
+            font-size: 12px;
             transition: 0.3s;
-            width: 150px;  /* Button width */
+            width: 120px;  /* Smaller button width */
         }
 
         button:hover {
@@ -65,10 +67,11 @@
 
         video {
             margin-top: 20px;
-            max-width: 80%;
+            max-width: 90%;
             height: auto;
             border-radius: 8px;
             display: none;  /* Initially hidden */
+            background-color: #000;  /* Background for video element */
         }
 
         #file-info {
@@ -87,13 +90,13 @@
             bottom: 20px;
             right: 20px;
             display: flex;
-            justify-content: space-evenly; /* Place buttons closer together */
-            width: 320px;  /* Button container width */
+            justify-content: space-evenly;
+            width: 280px;  /* Adjust width of button container */
             z-index: 100;
         }
 
         #browse-button {
-            width: 150px; /* Adjusted button size */
+            width: 120px; /* Adjusted button size */
             margin-right: 10px;
         }
 
@@ -157,13 +160,13 @@
                         videoSource.src = URL.createObjectURL(file);
                         videoPlayer.load();
                         videoPlayer.style.display = 'block';  // Show video player
-                    } else if (file.name.toLowerCase().endsWith('.flv')) {
-                        // FLV files are not directly supported by HTML5, provide feedback to the user
-                        alert("Sorry, FLV videos are not supported. Please convert the file to MP4.");
-                        videoPlayer.style.display = 'none';
+                    } else if (file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
+                        videoSource.src = URL.createObjectURL(file);
+                        videoPlayer.load();
+                        videoPlayer.style.display = 'block';  // Show video player
                     } else {
-                        // If file is not MP4 or FLV, give feedback
-                        alert("Unsupported video format. Only MP4 files are supported.");
+                        // If the video file is unsupported, show an error message
+                        alert("Unsupported video format. Please upload an MP4, WebM, or Ogg video.");
                         videoPlayer.style.display = 'none';
                     }
                 } else if (file.type.startsWith('audio')) {
@@ -183,3 +186,4 @@
     </script>
 </body>
 </html>
+
