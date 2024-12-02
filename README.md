@@ -41,14 +41,15 @@
 
         button {
             border-radius: 8px;
-            padding: 15px 30px;
+            padding: 12px 24px;  /* Smaller button size */
             background-color: #4F4A85;
             color: white;
             border: none;
             cursor: pointer;
             margin: 10px;
-            font-size: 16px;
+            font-size: 14px;
             transition: 0.3s;
+            width: 150px;  /* Button width */
         }
 
         button:hover {
@@ -67,7 +68,7 @@
             max-width: 80%;
             height: auto;
             border-radius: 8px;
-            display: none;
+            display: none;  /* Initially hidden */
         }
 
         #file-info {
@@ -87,7 +88,7 @@
             right: 20px;
             display: flex;
             justify-content: space-evenly; /* Place buttons closer together */
-            width: 350px;
+            width: 320px;  /* Button container width */
             z-index: 100;
         }
 
