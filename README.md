@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
 
-    <!-- Google Fonts - Lato (with correct crossorigin handling) -->
+    <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -132,7 +130,7 @@
     </div>
 
     <script>
-        // Initialize Wavesurfer instance
+        // Initialize Wavesurfer instance (for audio files)
         var wavesurfer = WaveSurfer.create({
             container: '#waveform',
             waveColor: '#4F4A85',
