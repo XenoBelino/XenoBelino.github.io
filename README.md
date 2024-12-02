@@ -14,7 +14,7 @@
     <style>
         body {
             font-family: 'Lato', sans-serif;
-            background-color: black;
+            background-color: black; /* Ensuring background is black */
             color: white;
             margin: 0;
             padding: 0;
@@ -24,7 +24,7 @@
             overflow: hidden;
         }
 
-        /* Ensuring the entire page has black background */
+        /* Editor content with consistent black background */
         .editor-content {
             text-align: center;
             padding: 20px;
@@ -45,15 +45,15 @@
 
         button {
             border-radius: 8px;
-            padding: 12px 24px;  /* Increased button size */
+            padding: 8px 16px;  /* Reduced button size */
             background-color: #4F4A85;
             color: white;
             border: none;
             cursor: pointer;
-            margin: 8px;
-            font-size: 14px;
+            margin: 6px;
+            font-size: 12px;
             transition: 0.3s;
-            width: 150px;  /* Slightly larger buttons */
+            width: 120px;  /* Adjusted button size */
         }
 
         button:hover {
@@ -65,6 +65,7 @@
             height: 150px;
             background-color: #f0f0f0;
             margin-top: 20px;
+            display: none; /* Initially hidden */
         }
 
         video {
@@ -93,12 +94,12 @@
             right: 20px;
             display: flex;
             justify-content: space-evenly;
-            width: 320px;  /* Adjusted width of button container */
+            width: 240px;  /* Adjusted width of button container */
             z-index: 100;
         }
 
         #browse-button {
-            width: 150px; /* Adjusted button size */
+            width: 120px; /* Adjusted button size */
             margin-right: 10px;
         }
 
@@ -117,7 +118,7 @@
         <!-- Volume Slider -->
         <input type="range" min="0" max="100" value="50" id="volume-slider">
 
-        <!-- Waveform -->
+        <!-- Waveform (for audio) -->
         <div id="waveform"></div>
 
         <div id="file-info"></div>
@@ -157,14 +158,16 @@
                     const videoPlayer = document.getElementById('video-player');
                     const videoSource = document.getElementById('video-source');
 
-                    // Check for MP4 format (which is commonly supported by browsers)
-                    if (file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.flv') || file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
+                    // Check for MP4, WebM, Ogg and FLV formats
+                    if (file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
                         videoSource.src = URL.createObjectURL(file);
                         videoPlayer.load();
                         videoPlayer.style.display = 'block';  // Show video player
+                    } else if (file.name.toLowerCase().endsWith('.flv')) {
+                        alert("FLV files are not supported in HTML5. Please convert them to MP4 format.");
+                        videoPlayer.style.display = 'none';
                     } else {
-                        // If the video file is unsupported, show an error message
-                        alert("Unsupported video format. Please upload a MP4, WebM, Ogg, or FLV video.");
+                        alert("Unsupported video format. Please upload an MP4, WebM, Ogg video.");
                         videoPlayer.style.display = 'none';
                     }
                 } else if (file.type.startsWith('audio')) {
