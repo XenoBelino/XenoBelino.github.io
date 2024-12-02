@@ -7,6 +7,7 @@
 
     <!-- Google Fonts - Lato (with correct crossorigin handling) -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
@@ -23,6 +24,7 @@
             overflow: hidden;
         }
 
+        /* Ensuring the entire page has black background */
         .editor-content {
             text-align: center;
             padding: 20px;
@@ -43,15 +45,15 @@
 
         button {
             border-radius: 8px;
-            padding: 8px 16px;  /* Smaller button size */
+            padding: 12px 24px;  /* Increased button size */
             background-color: #4F4A85;
             color: white;
             border: none;
             cursor: pointer;
-            margin: 5px;
-            font-size: 12px;
+            margin: 8px;
+            font-size: 14px;
             transition: 0.3s;
-            width: 120px;  /* Smaller button width */
+            width: 150px;  /* Slightly larger buttons */
         }
 
         button:hover {
@@ -67,7 +69,7 @@
 
         video {
             margin-top: 20px;
-            max-width: 90%;
+            max-width: 100%;
             height: auto;
             border-radius: 8px;
             display: none;  /* Initially hidden */
@@ -91,12 +93,12 @@
             right: 20px;
             display: flex;
             justify-content: space-evenly;
-            width: 280px;  /* Adjust width of button container */
+            width: 320px;  /* Adjusted width of button container */
             z-index: 100;
         }
 
         #browse-button {
-            width: 120px; /* Adjusted button size */
+            width: 150px; /* Adjusted button size */
             margin-right: 10px;
         }
 
@@ -156,17 +158,13 @@
                     const videoSource = document.getElementById('video-source');
 
                     // Check for MP4 format (which is commonly supported by browsers)
-                    if (file.name.toLowerCase().endsWith('.mp4')) {
-                        videoSource.src = URL.createObjectURL(file);
-                        videoPlayer.load();
-                        videoPlayer.style.display = 'block';  // Show video player
-                    } else if (file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
+                    if (file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.flv') || file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
                         videoSource.src = URL.createObjectURL(file);
                         videoPlayer.load();
                         videoPlayer.style.display = 'block';  // Show video player
                     } else {
                         // If the video file is unsupported, show an error message
-                        alert("Unsupported video format. Please upload an MP4, WebM, or Ogg video.");
+                        alert("Unsupported video format. Please upload a MP4, WebM, Ogg, or FLV video.");
                         videoPlayer.style.display = 'none';
                     }
                 } else if (file.type.startsWith('audio')) {
@@ -186,4 +184,3 @@
     </script>
 </body>
 </html>
-
