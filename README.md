@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     
-    <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Lato with crossorigin attribute for preload -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
@@ -48,6 +48,7 @@
             cursor: pointer;
             margin: 10px;
             font-size: 16px;
+            transition: 0.3s;
         }
 
         button:hover {
@@ -63,9 +64,10 @@
 
         video {
             margin-top: 20px;
-            max-width: 80%; /* Made the video player larger */
+            max-width: 80%;
             height: auto;
             border-radius: 8px;
+            display: none;
         }
 
         #file-info {
@@ -84,13 +86,13 @@
             bottom: 20px;
             right: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-evenly; /* Place buttons closer together */
             width: 350px;
             z-index: 100;
         }
 
         #browse-button {
-            width: 150px; /* Increased button size */
+            width: 150px; /* Adjusted button size */
             margin-right: 10px;
         }
 
@@ -101,7 +103,7 @@
         <h1>Edit Your Files</h1>
 
         <!-- Video player -->
-        <video id="video-player" controls style="display: none;">
+        <video id="video-player" controls>
             <source id="video-source" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -154,9 +156,13 @@
                         videoSource.src = URL.createObjectURL(file);
                         videoPlayer.load();
                         videoPlayer.style.display = 'block';  // Show video player
+                    } else if (file.name.toLowerCase().endsWith('.flv')) {
+                        // FLV files are not directly supported by HTML5, provide feedback to the user
+                        alert("Sorry, FLV videos are not supported. Please convert the file to MP4.");
+                        videoPlayer.style.display = 'none';
                     } else {
-                        // If file is not MP4, give feedback to the user
-                        alert("Sorry, only MP4 videos are supported. Please convert the file to MP4.");
+                        // If file is not MP4 or FLV, give feedback
+                        alert("Unsupported video format. Only MP4 files are supported.");
                         videoPlayer.style.display = 'none';
                     }
                 } else if (file.type.startsWith('audio')) {
