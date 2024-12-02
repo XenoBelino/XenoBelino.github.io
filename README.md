@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     
-    <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" as="font" type="font/woff2" crossorigin="anonymous">
+    <!-- Google Fonts - Lato (Utan preload för att undvika varning) -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
@@ -69,100 +69,4 @@
         }
 
         #volume-slider {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .button-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: space-between;
-            width: 250px;
-            z-index: 100;
-        }
-
-        #browse-button {
-            width: 120px;
-            margin-right: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div class="editor-content">
-        <h1>Edit Your Files</h1>
-
-        <!-- Browse Button -->
-        <button id="browse-button" onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" accept="video/*,audio/*,image/*">
-        
-        <div id="file-info"></div>
-
-        <!-- Volume Slider -->
-        <input type="range" min="0" max="100" value="50" id="volume-slider">
-
-        <!-- Waveform -->
-        <div id="waveform"></div>
-
-        <!-- Video player -->
-        <video id="video-player" controls>
-            <source id="video-source" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-
-    <!-- Save Button in bottom-right -->
-    <div class="button-container">
-        <button id="save-button" onclick="saveFile()">Save</button>
-    </div>
-
-    <script>
-        // Initialize Wavesurfer instance
-        var wavesurfer = WaveSurfer.create({
-            container: '#waveform',
-            waveColor: '#4F4A85',
-            progressColor: '#383351',
-            backend: 'MediaElement',
-        });
-
-        var slider = document.getElementById("volume-slider");
-        slider.oninput = function() {
-            wavesurfer.setVolume(slider.value / 100);
-        };
-
-        // Handle file selection and load media
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
-
-                if (file.type.startsWith('video')) {
-                    const videoPlayer = document.getElementById('video-player');
-                    const videoSource = document.getElementById('video-source');
-
-                    // Kontrollera att video source får rätt URL
-                    videoSource.src = URL.createObjectURL(file);
-                    videoPlayer.load();  // Ladda om videospelaren med den nya källan
-                    videoPlayer.style.display = 'block';  // Se till att videoelementet visas
-
-                    // Lägg till eventuella felhanterare för video
-                    videoPlayer.onerror = function() {
-                        document.getElementById('file-info').innerText = "Error loading video.";
-                    };
-                }
-
-                if (file.type.startsWith('audio')) {
-                    wavesurfer.load(URL.createObjectURL(file));
-                }
-            }
-        }
-
-        // Function to save the file (stub for now)
-        function saveFile() {
-            alert("Saving file functionality not yet implemented.");
-        }
-    </script>
-</body>
-</html>
+            margin
