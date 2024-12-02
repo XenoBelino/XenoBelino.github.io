@@ -74,7 +74,8 @@
             bottom: 20px;
             right: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            width: 300px;
         }
 
         #browse-button {
@@ -88,7 +89,7 @@
 
         <!-- Browse Button -->
         <button id="browse-button" onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" accept="video/*,audio/*,image/*">
         
         <div id="file-info"></div>
 
@@ -126,4 +127,32 @@
         };
 
         // Handle file selection and load media
-       
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Display file info
+                document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
+
+                // If it's a video file, load it in the video player
+                if (file.type.startsWith('video')) {
+                    const videoPlayer = document.getElementById('video-player');
+                    const videoSource = document.getElementById('video-source');
+                    videoSource.src = URL.createObjectURL(file);
+                    videoPlayer.load();
+                    videoPlayer.style.display = 'block';  // Show video player
+                }
+
+                // If it's an audio file, load it in Wavesurfer
+                if (file.type.startsWith('audio')) {
+                    wavesurfer.load(URL.createObjectURL(file));
+                }
+            }
+        }
+
+        // Function to save the file (stub for now)
+        function saveFile() {
+            alert("Saving file functionality not yet implemented.");
+        }
+    </script>
+</body>
+</html>
