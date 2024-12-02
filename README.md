@@ -6,7 +6,7 @@
     <title>File Editor</title>
     
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" as="font" type="font/woff2" crossorigin="anonymous">
     
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
@@ -17,17 +17,22 @@
             color: white;
             margin: 0;
             padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
-        
+
         .editor-content {
             text-align: center;
             padding: 20px;
             max-width: 100%;
             box-sizing: border-box;
+            flex: 1;
         }
 
         h1 {
             color: #4F4A85;
+            margin-top: 0;
         }
 
         button {
@@ -75,11 +80,13 @@
             right: 20px;
             display: flex;
             justify-content: space-between;
-            width: 300px;
+            width: 250px;
+            z-index: 100;
         }
 
         #browse-button {
-            margin-bottom: 10px;
+            width: 120px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -112,7 +119,6 @@
     </div>
 
     <script>
-        // Initialize Wavesurfer instance
         var wavesurfer = WaveSurfer.create({
             container: '#waveform',
             waveColor: '#4F4A85',
@@ -120,39 +126,14 @@
             backend: 'MediaElement',
         });
 
-        // Handle volume control for audio files
         var slider = document.getElementById("volume-slider");
         slider.oninput = function() {
             wavesurfer.setVolume(slider.value / 100);
         };
 
-        // Handle file selection and load media
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
-                // Display file info
                 document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
 
-                // If it's a video file, load it in the video player
-                if (file.type.startsWith('video')) {
-                    const videoPlayer = document.getElementById('video-player');
-                    const videoSource = document.getElementById('video-source');
-                    videoSource.src = URL.createObjectURL(file);
-                    videoPlayer.load();
-                    videoPlayer.style.display = 'block';  // Show video player
-                }
-
-                // If it's an audio file, load it in Wavesurfer
-                if (file.type.startsWith('audio')) {
-                    wavesurfer.load(URL.createObjectURL(file));
-                }
-            }
-        }
-
-        // Function to save the file (stub for now)
-        function saveFile() {
-            alert("Saving file functionality not yet implemented.");
-        }
-    </script>
-</body>
-</html>
+                if (file
