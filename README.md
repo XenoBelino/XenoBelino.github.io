@@ -39,6 +39,8 @@
         h1 {
             color: #4F4A85;
             margin-top: 0;
+            text-align: left; /* Flyttar rubriken till vänster */
+            padding-left: 20px; /* Lägg till lite padding för avstånd från vänster */
         }
 
         button {
@@ -118,7 +120,7 @@
 </head>
 <body>
     <div class="editor-content">
-        <h1>Edit Your Files</h1>
+        <h1>XenoBelino</h1> <!-- Flyttad rubrik till vänster -->
 
         <!-- Video player -->
         <video id="video-player" controls>
