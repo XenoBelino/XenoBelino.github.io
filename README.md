@@ -146,7 +146,7 @@
             container: '#waveform',
             waveColor: '#4F4A85',
             progressColor: '#383351',
-            backend: 'MediaElement',
+            backend: 'WebAudio', // Byt till WebAudio istället för MediaElement
         });
 
         var slider = document.getElementById("volume-slider");
@@ -176,6 +176,7 @@
                         videoPlayer.style.display = 'none';
                     }
                 } else if (file.type.startsWith('audio')) {
+                    // Ladda ljudfilen och visa ljudvågorna
                     wavesurfer.load(URL.createObjectURL(file));
                     document.getElementById('video-player').style.display = 'none';
                     document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna
