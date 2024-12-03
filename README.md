@@ -6,13 +6,14 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" as="font" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
+        /* Grundläggande styling */
         body {
             font-family: 'Lato', sans-serif;
-            background-color: black; /* Ensuring background is black */
+            background-color: black;
             color: white;
             margin: 0;
             padding: 0;
@@ -65,12 +66,13 @@
             display: none;
         }
 
+        /* Större videospelare */
         video {
             margin-top: 20px;
-            max-width: 100%;
+            max-width: 80%; /* Gör videospelaren större */
             height: auto;
             border-radius: 8px;
-            display: block;  /* Ensuring video player is always visible */
+            display: block;
             background-color: #000;
         }
 
@@ -99,6 +101,18 @@
             width: 120px;
             margin-right: 10px;
         }
+
+        /* Återställ stil vid kopiering */
+        ::selection {
+            background-color: #4F4A85;
+            color: white;
+        }
+
+        ::-moz-selection {
+            background-color: #4F4A85;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
