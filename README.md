@@ -34,8 +34,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #111;  /* Bakgrundsfärg ändrad till en mörkare nyans */
-            padding-top: 40px;  /* Flyttade upp innehållet */
+            padding-top: 20px;  /* Flyttade upp innehållet mer */
         }
 
         h1 {
@@ -91,13 +90,12 @@
         }
 
         video {
-            margin-top: 20px;
+            margin-top: 10px;
             width: 250%;
             height: auto;
             border-radius: 8px;
             display: block;
             background-color: #000;
-            margin-top: 10px;
         }
 
         #file-info {
