@@ -20,7 +20,9 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            overflow-y: auto;  /* Möjliggör att scrolla om innehållet är för stort */
+            background-image: linear-gradient(to right, #4F4A85, #ffffff, #4F4A85); /* Blå, vit och lila bakgrund */
+            background-size: cover; /* Fyll hela bakgrunden */
+            overflow-y: auto;
         }
 
         .editor-content {
@@ -107,12 +109,12 @@
 
         /* Återställ stil vid kopiering */
         ::selection {
-            background-color: #4F4A85;
+            background-color: transparent;
             color: white;
         }
 
         ::-moz-selection {
-            background-color: #4F4A85;
+            background-color: transparent;
             color: white;
         }
 
@@ -148,13 +150,12 @@
             container: '#waveform',
             waveColor: '#4F4A85',
             progressColor: '#383351',
-            backend: 'WebAudio', // Byt till WebAudio istället för MediaElement
+            backend: 'WebAudio',
         });
 
         // Gör så att ljudvågorna alltid visas, även om ingen ljudfil är vald
         wavesurfer.empty = function() {
-            // Hantera fallet när ingen ljudfil har valts
-            document.getElementById('waveform').style.backgroundColor = 'black';  // Håll bakgrundsfärgen svart
+            document.getElementById('waveform').style.backgroundColor = 'black';
         };
 
         var slider = document.getElementById("volume-slider");
@@ -171,32 +172,4 @@
                     const videoPlayer = document.getElementById('video-player');
                     const videoSource = document.getElementById('video-source');
 
-                    if (file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
-                        videoSource.src = URL.createObjectURL(file);
-                        videoPlayer.load();
-                        videoPlayer.style.display = 'block';
-                        document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna när video visas
-                    } else if (file.name.toLowerCase().endsWith('.flv')) {
-                        alert("FLV files are not supported in HTML5.");
-                        videoPlayer.style.display = 'none';
-                    } else {
-                        alert("Unsupported video format.");
-                        videoPlayer.style.display = 'none';
-                    }
-                } else if (file.type.startsWith('audio')) {
-                    // Ladda ljudfilen och visa ljudvågorna
-                    wavesurfer.load(URL.createObjectURL(file));
-                    document.getElementById('video-player').style.display = 'none';
-                    document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna
-                } else {
-                    alert("Unsupported file type.");
-                }
-            }
-        }
-
-        function saveFile() {
-            alert("Saving file functionality not yet implemented.");
-        }
-    </script>
-</body>
-</html>
+                    if (file.name.to
