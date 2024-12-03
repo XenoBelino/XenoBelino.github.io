@@ -62,28 +62,33 @@
         }
 
         /* Sektioner för ljud och video */
-        .section {
+        .section-container {
             width: 100%;
             max-width: 600px;
-            margin: 15px auto;  /* Minskat avstånd */
+            margin: 15px auto;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column; /* Vertikal layout för texterna */
+            align-items: flex-start; /* Justera texten till vänster */
+            padding-left: 20px;
+        }
+
+        .section {
+            width: 100%;
+            display: flex;
             align-items: center;
+            margin-bottom: 10px; /* Mellanrum mellan sektionerna */
         }
 
         .section-text {
             color: #4F4A85;
-            margin-right: 15px;
-            font-size: 18px;  /* Större text */
-            font-weight: bold;  /* Fet stil för tydlighet */
-            text-align: left; /* Justerat för att texten ska vara vänsterjusterad */
-            flex: 1; /* Gör att texten tar upp tillgänglig plats till vänster */
+            font-size: 18px;
+            font-weight: bold;
+            text-align: left;
+            margin-right: 15px; /* Mellanrum mellan text och slider */
         }
 
         .volume-slider {
             width: 100px;  /* Större sliders */
-            margin-left: 10px;
-            flex: 1;  /* Gör att sliderna tar upp plats på höger sida */
         }
 
         /* Ljudvågor (för audio) */
@@ -107,20 +112,6 @@
         #file-info {
             margin-top: 10px;
             color: #4F4A85;
-        }
-
-        #volume-slider {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        /* Sektioner för att justera placeringen av ljudhanterare */
-        .section-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px;
         }
 
         /* Knapp för filuppladdning */
