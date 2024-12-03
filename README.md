@@ -6,7 +6,7 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -35,6 +35,7 @@
             justify-content: center;
             align-items: center;
             background-color: #111;  /* Bakgrundsfärg ändrad till en mörkare nyans */
+            padding-top: 40px;  /* Flyttade upp innehållet */
         }
 
         h1 {
@@ -96,6 +97,7 @@
             border-radius: 8px;
             display: block;
             background-color: #000;
+            margin-top: 10px;
         }
 
         #file-info {
@@ -128,7 +130,7 @@
 </head>
 <body>
     <div class="editor-content">
-        <h1>XenoBelino</h1>  <!-- Flyttat till vänster längst upp -->
+        <h1>Edit Your Files</h1>  <!-- Rubrik ändrad -->
 
         <!-- Video player -->
         <video id="video-player" controls>
@@ -173,6 +175,11 @@
             waveColor: '#4F4A85',
             progressColor: '#383351',
             backend: 'WebAudio',
+        });
+
+        // Initiera ljudvågorna när användaren interagerar
+        document.body.addEventListener('click', function() {
+            wavesurfer.init();
         });
 
         function handleFileSelect(event) {
