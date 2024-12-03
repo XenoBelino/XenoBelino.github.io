@@ -117,11 +117,12 @@
             background-color: transparent;
             color: white;
         }
+
     </style>
 </head>
 <body>
     <div class="editor-content">
-        <h1>XenoBelino</h1> <!-- Flyttad rubrik till vänster -->
+        <h1>Edit Your Files</h1> <!-- Ändrad rubrik till vänster -->
 
         <!-- Video player -->
         <video id="video-player" controls>
@@ -190,6 +191,7 @@
                     document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna
                 } else {
                     alert("Unsupported file type.");
+                    document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna om ogiltig fil
                 }
             }
         }
