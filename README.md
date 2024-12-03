@@ -7,7 +7,6 @@
 
     <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -77,11 +76,14 @@
             margin-right: 15px;
             font-size: 18px;  /* Större text */
             font-weight: bold;  /* Fet stil för tydlighet */
+            text-align: left; /* Justerat för att texten ska vara vänsterjusterad */
+            flex: 1; /* Gör att texten tar upp tillgänglig plats till vänster */
         }
 
         .volume-slider {
             width: 100px;  /* Större sliders */
             margin-left: 10px;
+            flex: 1;  /* Gör att sliderna tar upp plats på höger sida */
         }
 
         /* Ljudvågor (för audio) */
@@ -95,7 +97,7 @@
 
         video {
             margin-top: 10px;
-            width: 250%;
+            width: 80%; /* Minskat videons bredd */
             height: auto;
             border-radius: 8px;
             display: block;
@@ -111,6 +113,14 @@
             margin-top: 20px;
             width: 100%;
             max-width: 500px;
+        }
+
+        /* Sektioner för att justera placeringen av ljudhanterare */
+        .section-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px;
         }
 
         /* Knapp för filuppladdning */
@@ -148,21 +158,23 @@
     </div>
 
     <!-- Sektioner för filhantering och ljudjustering -->
-    <div class="section">
-        <div class="section-text">Your original file</div>
-        <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50">
-    </div>
-    <div class="section">
-        <div class="section-text">Overwriting audio / corrupted audio</div>
-        <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50">
-    </div>
-    <div class="section">
-        <div class="section-text">The Music from your file</div>
-        <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50">
-    </div>
-    <div class="section">
-        <div class="section-text">The Final Result</div>
-        <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50">
+    <div class="section-container">
+        <div class="section">
+            <div class="section-text">Your original file</div>
+            <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50">
+        </div>
+        <div class="section">
+            <div class="section-text">Overwriting audio / corrupted audio</div>
+            <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50">
+        </div>
+        <div class="section">
+            <div class="section-text">The Music from your file</div>
+            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50">
+        </div>
+        <div class="section">
+            <div class="section-text">The Final Result</div>
+            <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50">
+        </div>
     </div>
 
     <div class="button-container">
