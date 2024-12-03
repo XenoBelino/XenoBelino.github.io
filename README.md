@@ -84,7 +84,7 @@
         #waveform {
             width: 100%;
             height: 150px;
-            background-color: black;
+            background-color: transparent;  /* Ändra bakgrundsfärgen till transparent */
             margin-top: 20px;
             display: block;
         }
@@ -177,7 +177,7 @@
 
         // Initiera ljudvågorna när användaren interagerar
         document.body.addEventListener('click', function() {
-            wavesurfer.init();
+            wavesurfer.load('path/to/your/audio/file');
         });
 
         function handleFileSelect(event) {
@@ -186,41 +186,4 @@
                 document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
 
                 if (file.type.startsWith('video')) {
-                    const videoPlayer = document.getElementById('video-player');
-                    const videoSource = document.getElementById('video-source');
-
-                    videoSource.src = URL.createObjectURL(file);
-                    videoPlayer.load();
-                    videoPlayer.style.display = 'block';
-                    document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna när video visas
-                } else if (file.type.startsWith('audio')) {
-                    wavesurfer.load(URL.createObjectURL(file));
-                    document.getElementById('video-player').style.display = 'none';
-                    document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna för ljudfiler
-                } else {
-                    alert("Unsupported file type.");
-                    document.getElementById('waveform').style.display = 'none';
-                }
-            }
-        }
-
-        // Ljudreglage
-        document.getElementById('original-volume').addEventListener('input', function() {
-            wavesurfer.setVolume(this.value / 100);
-        });
-
-        document.getElementById('corrupted-volume').addEventListener('input', function() {
-            // Ändra volym för den korrupta ljuddelen
-        });
-
-        document.getElementById('music-volume').addEventListener('input', function() {
-            // Ändra volym för musiken
-        });
-
-        document.getElementById('final-volume').addEventListener('input', function() {
-            // Ändra volym för slutresultatet
-        });
-
-    </script>
-</body>
-</html>
+                    const videoPlayer = document.getElement
