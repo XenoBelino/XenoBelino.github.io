@@ -58,19 +58,19 @@
             background-color: #383351;
         }
 
-        /* Ljudvågor (för audio) */
+        /* Ljudvågor (för audio) - alltid synliga */
         #waveform {
             width: 100%;
             height: 150px;
             background-color: #f0f0f0;
             margin-top: 20px;
-            display: none;
+            display: block; /* Gör att ljudvågorna alltid syns */
         }
 
-        /* Större videospelare - dubbelt så stor */
+        /* Större videospelare - 5 gånger så stor */
         video {
             margin-top: 20px;
-            width: 90%; /* Gör videospelaren större */
+            width: 500%; /* Gör videospelaren 5 gånger större */
             height: auto;
             border-radius: 8px;
             display: block;
