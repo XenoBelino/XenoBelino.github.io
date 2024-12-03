@@ -62,7 +62,7 @@
         #waveform {
             width: 100%;
             height: 150px;
-            background-color: #f0f0f0;
+            background-color: black;  /* Bakgrundsfärg ändrad till svart */
             margin-top: 20px;
             display: block;
         }
@@ -148,6 +148,12 @@
             progressColor: '#383351',
             backend: 'WebAudio', // Byt till WebAudio istället för MediaElement
         });
+
+        // Gör så att ljudvågorna alltid visas, även om ingen ljudfil är vald
+        wavesurfer.empty = function() {
+            // Hantera fallet när ingen ljudfil har valts
+            document.getElementById('waveform').style.backgroundColor = 'black';  // Håll bakgrundsfärgen svart
+        };
 
         var slider = document.getElementById("volume-slider");
         slider.oninput = function() {
