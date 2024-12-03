@@ -67,10 +67,10 @@
             display: block; /* Gör att ljudvågorna alltid syns */
         }
 
-        /* Större videospelare - 5 gånger så stor */
+        /* Större videospelare - halva storleken från tidigare */
         video {
             margin-top: 20px;
-            width: 500%; /* Gör videospelaren 5 gånger större */
+            width: 250%; /* Minskat till 250% */
             height: auto;
             border-radius: 8px;
             display: block;
@@ -167,6 +167,7 @@
                         videoSource.src = URL.createObjectURL(file);
                         videoPlayer.load();
                         videoPlayer.style.display = 'block';
+                        document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna när video visas
                     } else if (file.name.toLowerCase().endsWith('.flv')) {
                         alert("FLV files are not supported in HTML5.");
                         videoPlayer.style.display = 'none';
