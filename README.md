@@ -19,8 +19,8 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-y: auto;  /* Möjliggör att scrolla om innehållet är för stort */
         }
 
         .editor-content {
@@ -64,7 +64,7 @@
             height: 150px;
             background-color: #f0f0f0;
             margin-top: 20px;
-            display: block; /* Gör att ljudvågorna alltid syns */
+            display: block;
         }
 
         /* Större videospelare - halva storleken från tidigare */
