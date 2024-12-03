@@ -6,7 +6,7 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" as="font" crossorigin="anonymous">
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -22,7 +22,6 @@
             overflow: hidden;
         }
 
-        /* Editor content with consistent black background */
         .editor-content {
             text-align: center;
             padding: 20px;
@@ -33,7 +32,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: black;  /* Ensure background stays black */
+            background-color: black;
         }
 
         h1 {
@@ -43,7 +42,7 @@
 
         button {
             border-radius: 8px;
-            padding: 8px 16px;  /* Reduced button size */
+            padding: 8px 16px;
             background-color: #4F4A85;
             color: white;
             border: none;
@@ -51,7 +50,7 @@
             margin: 6px;
             font-size: 12px;
             transition: 0.3s;
-            width: 120px;  /* Adjusted button size */
+            width: 120px;
         }
 
         button:hover {
@@ -63,7 +62,7 @@
             height: 150px;
             background-color: #f0f0f0;
             margin-top: 20px;
-            display: none; /* Initially hidden */
+            display: none;
         }
 
         video {
@@ -71,8 +70,8 @@
             max-width: 100%;
             height: auto;
             border-radius: 8px;
-            display: none;  /* Initially hidden */
-            background-color: #000;  /* Background for video element */
+            display: block;  /* Ensuring video player is always visible */
+            background-color: #000;
         }
 
         #file-info {
@@ -92,15 +91,14 @@
             right: 20px;
             display: flex;
             justify-content: space-evenly;
-            width: 240px;  /* Adjusted width of button container */
+            width: 240px;
             z-index: 100;
         }
 
         #browse-button {
-            width: 120px; /* Adjusted button size */
+            width: 120px;
             margin-right: 10px;
         }
-
     </style>
 </head>
 <body>
@@ -122,7 +120,6 @@
         <div id="file-info"></div>
     </div>
 
-    <!-- Save and Browse buttons at the bottom-right -->
     <div class="button-container">
         <button id="save-button" onclick="saveFile()">Save</button>
         <button id="browse-button" onclick="document.getElementById('file-input').click()">Browse my files</button>
@@ -130,7 +127,6 @@
     </div>
 
     <script>
-        // Initialize Wavesurfer instance (for audio files)
         var wavesurfer = WaveSurfer.create({
             container: '#waveform',
             waveColor: '#4F4A85',
@@ -138,47 +134,41 @@
             backend: 'MediaElement',
         });
 
-        // Handle volume control for audio files
         var slider = document.getElementById("volume-slider");
         slider.oninput = function() {
             wavesurfer.setVolume(slider.value / 100);
         };
 
-        // Handle file selection and load media
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
-                console.log("File selected:", file.name); // For debugging
                 document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
 
-                // Check for supported video types
                 if (file.type.startsWith('video')) {
                     const videoPlayer = document.getElementById('video-player');
                     const videoSource = document.getElementById('video-source');
 
-                    // Check for MP4, WebM, Ogg and FLV formats
                     if (file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
                         videoSource.src = URL.createObjectURL(file);
                         videoPlayer.load();
-                        videoPlayer.style.display = 'block';  // Show video player
+                        videoPlayer.style.display = 'block';
                     } else if (file.name.toLowerCase().endsWith('.flv')) {
-                        alert("FLV files are not supported in HTML5. Please convert them to MP4 format.");
+                        alert("FLV files are not supported in HTML5.");
                         videoPlayer.style.display = 'none';
                     } else {
-                        alert("Unsupported video format. Please upload an MP4, WebM, Ogg video.");
+                        alert("Unsupported video format.");
                         videoPlayer.style.display = 'none';
                     }
                 } else if (file.type.startsWith('audio')) {
-                    // Handle audio files (using WaveSurfer)
                     wavesurfer.load(URL.createObjectURL(file));
-                    document.getElementById('video-player').style.display = 'none';  // Hide video player for audio
+                    document.getElementById('video-player').style.display = 'none';
+                    document.getElementById('waveform').style.display = 'block';  // Show waveform
                 } else {
-                    alert("Unsupported file type. Please upload a video or audio file.");
+                    alert("Unsupported file type.");
                 }
             }
         }
 
-        // Function to save the file (stub for now)
         function saveFile() {
             alert("Saving file functionality not yet implemented.");
         }
