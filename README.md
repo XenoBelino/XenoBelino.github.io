@@ -6,7 +6,8 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -32,9 +33,9 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Justera så att vi håller avståndet */
+            justify-content: center;
             align-items: center;
-            padding-top: 10px;  /* Justera så att det ligger närmare */
+            padding-top: 20px;  /* Flyttade upp innehållet mer */
         }
 
         h1 {
@@ -65,25 +66,25 @@
         .section {
             width: 100%;
             max-width: 600px;
-            margin: 10px auto; /* Minska avståndet */
+            margin: 15px auto;  /* Minskat avstånd */
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Förstora texterna och justera deras avstånd */
         .section-text {
             color: #4F4A85;
-            font-size: 16px; /* Större text */
             margin-right: 15px;
+            font-size: 18px;  /* Större text */
+            font-weight: bold;  /* Fet stil för tydlighet */
         }
 
-        /* Placera volymreglagen närmare videospelaren */
         .volume-slider {
             width: 100px;  /* Större sliders */
-            margin-left: 20px;
+            margin-left: 10px;
         }
 
+        /* Ljudvågor (för audio) */
         #waveform {
             width: 100%;
             height: 150px;
@@ -151,4 +152,60 @@
         <div class="section-text">Your original file</div>
         <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50">
     </div>
-    <div class="section
+    <div class="section">
+        <div class="section-text">Overwriting audio / corrupted audio</div>
+        <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50">
+    </div>
+    <div class="section">
+        <div class="section-text">The Music from your file</div>
+        <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50">
+    </div>
+    <div class="section">
+        <div class="section-text">The Final Result</div>
+        <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50">
+    </div>
+
+    <div class="button-container">
+        <button id="save-button" onclick="saveFile()">Save</button>
+        <button id="browse-button" onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+    </div>
+
+    <script>
+        var wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#4F4A85',
+            progressColor: '#383351',
+            backend: 'WebAudio',
+        });
+
+        // Initiera ljudvågorna när användaren interagerar
+        document.body.addEventListener('click', function() {
+            wavesurfer.load('path/to/your/audio/file');
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('file-info').innerText = `Selected file: ${file.name}`;
+
+                if (file.type.startsWith('video')) {
+                    const videoPlayer = document.getElementById('video-player');
+                    const videoSource = document.getElementById('video-source');
+                    videoSource.src = URL.createObjectURL(file);
+                    videoPlayer.load();
+                    videoPlayer.style.display = 'block';
+                    document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna när video visas
+                } else if (file.type.startsWith('audio')) {
+                    wavesurfer.load(URL.createObjectURL(file));
+                    document.getElementById('video-player').style.display = 'none';
+                    document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna för ljudfiler
+                } else {
+                    alert("Unsupported file type.");
+                    document.getElementById('waveform').style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
