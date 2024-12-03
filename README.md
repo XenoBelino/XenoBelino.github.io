@@ -6,7 +6,7 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -58,6 +58,7 @@
             background-color: #383351;
         }
 
+        /* Ljudvågor (för audio) */
         #waveform {
             width: 100%;
             height: 150px;
@@ -66,10 +67,10 @@
             display: none;
         }
 
-        /* Större videospelare */
+        /* Större videospelare - dubbelt så stor */
         video {
             margin-top: 20px;
-            max-width: 80%; /* Gör videospelaren större */
+            width: 90%; /* Gör videospelaren större */
             height: auto;
             border-radius: 8px;
             display: block;
@@ -176,7 +177,7 @@
                 } else if (file.type.startsWith('audio')) {
                     wavesurfer.load(URL.createObjectURL(file));
                     document.getElementById('video-player').style.display = 'none';
-                    document.getElementById('waveform').style.display = 'block';  // Show waveform
+                    document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna
                 } else {
                     alert("Unsupported file type.");
                 }
