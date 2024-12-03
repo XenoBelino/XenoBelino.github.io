@@ -13,15 +13,14 @@
         /* Grundläggande styling */
         body {
             font-family: 'Lato', sans-serif;
-            background-color: black;
             color: white;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-image: linear-gradient(to right, #4F4A85, #ffffff, #4F4A85); /* Blå, vit och lila bakgrund */
-            background-size: cover; /* Fyll hela bakgrunden */
+            background-image: linear-gradient(to right, #4F4A85, #ffffff, #4F4A85); /* Bakgrundsfärger */
+            background-size: cover;
             overflow-y: auto;
         }
 
@@ -35,14 +34,14 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: black;
+            background-color: #111;  /* Bakgrundsfärg ändrad till en mörkare nyans */
         }
 
         h1 {
             color: #4F4A85;
             margin-top: 0;
-            text-align: left; /* Flyttar rubriken till vänster */
-            padding-left: 20px; /* Lägg till lite padding för avstånd från vänster */
+            text-align: left;
+            padding-left: 20px;
         }
 
         button {
@@ -62,19 +61,37 @@
             background-color: #383351;
         }
 
-        /* Ljudvågor (för audio) - alltid synliga */
+        /* Sektioner för ljud och video */
+        .section {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-text {
+            color: #4F4A85;
+            margin-right: 20px;
+        }
+
+        .volume-slider {
+            width: 80px;
+        }
+
+        /* Ljudvågor (för audio) */
         #waveform {
             width: 100%;
             height: 150px;
-            background-color: black;  /* Bakgrundsfärg ändrad till svart */
+            background-color: black;
             margin-top: 20px;
             display: block;
         }
 
-        /* Större videospelare - halva storleken från tidigare */
         video {
             margin-top: 20px;
-            width: 250%; /* Minskat till 250% */
+            width: 250%;
             height: auto;
             border-radius: 8px;
             display: block;
@@ -92,6 +109,7 @@
             max-width: 500px;
         }
 
+        /* Knapp för filuppladdning */
         .button-container {
             position: fixed;
             bottom: 20px;
@@ -106,23 +124,11 @@
             width: 120px;
             margin-right: 10px;
         }
-
-        /* Återställ stil vid kopiering */
-        ::selection {
-            background-color: transparent;
-            color: white;
-        }
-
-        ::-moz-selection {
-            background-color: transparent;
-            color: white;
-        }
-
     </style>
 </head>
 <body>
     <div class="editor-content">
-        <h1>Edit Your Files</h1> <!-- Ändrad rubrik till vänster -->
+        <h1>XenoBelino</h1>  <!-- Flyttat till vänster längst upp -->
 
         <!-- Video player -->
         <video id="video-player" controls>
@@ -130,13 +136,29 @@
             Your browser does not support the video tag.
         </video>
 
-        <!-- Volume Slider -->
-        <input type="range" min="0" max="100" value="50" id="volume-slider">
-
-        <!-- Waveform (for audio) -->
+        <!-- Audio waveforms -->
         <div id="waveform"></div>
 
+        <!-- File Information -->
         <div id="file-info"></div>
+    </div>
+
+    <!-- Sektioner för filhantering och ljudjustering -->
+    <div class="section">
+        <div class="section-text">Your original file</div>
+        <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50">
+    </div>
+    <div class="section">
+        <div class="section-text">Overwriting audio / corrupted audio</div>
+        <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50">
+    </div>
+    <div class="section">
+        <div class="section-text">The Music from your file</div>
+        <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50">
+    </div>
+    <div class="section">
+        <div class="section-text">The Final Result</div>
+        <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50">
     </div>
 
     <div class="button-container">
@@ -153,16 +175,6 @@
             backend: 'WebAudio',
         });
 
-        // Gör så att ljudvågorna alltid visas, även om ingen ljudfil är vald
-        wavesurfer.empty = function() {
-            document.getElementById('waveform').style.backgroundColor = 'black';
-        };
-
-        var slider = document.getElementById("volume-slider");
-        slider.oninput = function() {
-            wavesurfer.setVolume(slider.value / 100);
-        };
-
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
@@ -172,29 +184,38 @@
                     const videoPlayer = document.getElementById('video-player');
                     const videoSource = document.getElementById('video-source');
 
-                    if (file.name.toLowerCase().endsWith('.mp4') || file.name.toLowerCase().endsWith('.webm') || file.name.toLowerCase().endsWith('.ogg')) {
-                        videoSource.src = URL.createObjectURL(file);
-                        videoPlayer.load();
-                        videoPlayer.style.display = 'block';
-                        document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna när video visas
-                    } else if (file.name.toLowerCase().endsWith('.flv')) {
-                        alert("FLV files are not supported in HTML5.");
-                        videoPlayer.style.display = 'none';
-                    } else {
-                        alert("Unsupported video format.");
-                        videoPlayer.style.display = 'none';
-                    }
+                    videoSource.src = URL.createObjectURL(file);
+                    videoPlayer.load();
+                    videoPlayer.style.display = 'block';
+                    document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna när video visas
                 } else if (file.type.startsWith('audio')) {
-                    // Ladda ljudfilen och visa ljudvågorna
                     wavesurfer.load(URL.createObjectURL(file));
                     document.getElementById('video-player').style.display = 'none';
-                    document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna
+                    document.getElementById('waveform').style.display = 'block';  // Visa ljudvågorna för ljudfiler
                 } else {
                     alert("Unsupported file type.");
-                    document.getElementById('waveform').style.display = 'none';  // Dölj ljudvågorna om ogiltig fil
+                    document.getElementById('waveform').style.display = 'none';
                 }
             }
         }
+
+        // Ljudreglage
+        document.getElementById('original-volume').addEventListener('input', function() {
+            wavesurfer.setVolume(this.value / 100);
+        });
+
+        document.getElementById('corrupted-volume').addEventListener('input', function() {
+            // Ändra volym för den korrupta ljuddelen
+        });
+
+        document.getElementById('music-volume').addEventListener('input', function() {
+            // Ändra volym för musiken
+        });
+
+        document.getElementById('final-volume').addEventListener('input', function() {
+            // Ändra volym för slutresultatet
+        });
+
     </script>
 </body>
 </html>
