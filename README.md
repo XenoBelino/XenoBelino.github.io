@@ -156,6 +156,11 @@
                 <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
             </div>
         </div>
+        
+        <!-- Overwriting Audio / Corrupted Audio Section -->
+        <div class="section">
+            <div class="section-text" style="color: #FF6347;">Overwriting audio / corrupted audio</div>
+        </div>
     </div>
 
     <script>
