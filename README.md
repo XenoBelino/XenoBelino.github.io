@@ -16,8 +16,8 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; 
-            align-items: flex-start; 
+            justify-content: flex-start;
+            align-items: flex-start;
             height: 100vh;
             background-image: url('path/to/your/image.jpg');
             background-size: cover;
@@ -28,7 +28,7 @@
         }
 
         .editor-content {
-            text-align: left; 
+            text-align: left;
             padding: 20px;
             width: 100%;
             flex: 1;
@@ -41,14 +41,14 @@
             flex-direction: column;
             gap: 20px;
             margin-top: 30px;
-            width: 90%; 
-            padding-left: 0; /* Flytta till vänster */
+            width: 90%;
+            padding-left: 0;
         }
 
         .section {
             display: flex;
             flex-direction: row;
-            justify-content: flex-start; 
+            justify-content: flex-start;
             align-items: center;
             width: 100%;
         }
@@ -57,7 +57,7 @@
             color: #6a0dad;
             font-size: 18px;
             flex: 1;
-            margin-left: 0; /* Flytta text närmare vänsterkanten */
+            margin-left: 0;
         }
 
         .volume-slider-container {
@@ -65,7 +65,7 @@
             flex-direction: row;
             align-items: center;
             gap: 10px;
-            margin-left: 0; 
+            margin-left: 0;
         }
 
         .volume-icon {
@@ -75,7 +75,7 @@
         }
 
         .volume-slider {
-            width: 200px; 
+            width: 200px;
             margin-bottom: 5px;
             cursor: pointer;
         }
@@ -99,7 +99,7 @@
         video {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Gör att videon täcker hela spelaren */
+            object-fit: cover;
         }
 
     </style>
@@ -111,6 +111,7 @@
         <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
+                <!-- Se till att du har rätt sökväg till videon -->
                 <source src="path/to/your/video.mp4" type="video/mp4">
                 Din webbläsare stödjer inte videospelaren.
             </video>
