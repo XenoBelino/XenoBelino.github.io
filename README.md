@@ -35,13 +35,14 @@
             padding: 20px;
             width: 100%;
             flex: 1;
-            background-color: rgba(0, 0, 0, 0.5); /* Lägger till en mörk bakgrundsnyans för att förbättra läsbarheten */
+            background-color: transparent; /* Se till att bakgrunden inte appliceras på den här sektionen */
             border-radius: 10px;
         }
 
         h1 {
             color: #fff; /* Justera färgen för rubriken */
             margin-top: 0;
+            background-color: transparent; /* Ta bort eventuella bakgrundsfärger */
         }
 
         video {
@@ -50,7 +51,7 @@
             height: auto;
             border-radius: 8px;
             display: block;
-            background-color: #000;
+            background-color: transparent; /* Ta bort bakgrundsfärg på video */
         }
 
         .section-container {
@@ -184,14 +185,3 @@
                 volumeIcon.textContent = "🔉"; // Medium volym
             } else {
                 volumeIcon.textContent = "🔊"; // Hög volym
-            }
-        }
-
-        // Hantera muting av ljudet
-        function toggleMute(type) {
-            const volumeSlider = document.getElementById(`${type}-volume`);
-            const volumeIcon = document.getElementById(`${type}-volume-icon`);
-
-            if (volumeSlider.value > 0) {
-                volumeSlider.value = 0;
-                volumeIcon.textContent = "🔇"; // Mutad
