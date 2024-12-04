@@ -76,7 +76,7 @@
 
         .volume-slider-container {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             gap: 10px;
         }
@@ -95,13 +95,6 @@
         .volume-percentage {
             font-size: 14px;
             color: #4F4A85;
-        }
-
-        .volume-slider-container {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
         }
 
         /* För animationen när volymen ändras */
@@ -126,41 +119,41 @@
         <!-- Your original file section -->
         <div class="section">
             <div class="section-text">Your original File</div>
-            <div class="volume-slider-container">
-                <span id="original-volume-icon" class="volume-icon" onclick="toggleMute('original')">🔊</span> 
-                <div class="volume-percentage" id="original-volume-percent">50%</div>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
-            </div>
+        </div>
+        <div class="volume-slider-container">
+            <span id="original-volume-icon" class="volume-icon" onclick="toggleMute('original')">🔊</span> 
+            <div class="volume-percentage" id="original-volume-percent">50%</div>
+            <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
         </div>
 
         <!-- Overwriting audio/corrupted audio section -->
         <div class="section">
             <div class="section-text" style="color: #4F4A85;">Overwriting audio / corrupted audio</div>
-            <div class="volume-slider-container">
-                <span id="corrupted-volume-icon" class="volume-icon" onclick="toggleMute('corrupted')">🔊</span> 
-                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
-            </div>
+        </div>
+        <div class="volume-slider-container">
+            <span id="corrupted-volume-icon" class="volume-icon" onclick="toggleMute('corrupted')">🔊</span> 
+            <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
+            <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
         </div>
 
         <!-- The Music from your file section -->
         <div class="section">
             <div class="section-text">The Music from your file</div>
-            <div class="volume-slider-container">
-                <span id="music-volume-icon" class="volume-icon" onclick="toggleMute('music')">🔊</span> 
-                <div class="volume-percentage" id="music-volume-percent">30%</div>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
-            </div>
+        </div>
+        <div class="volume-slider-container">
+            <span id="music-volume-icon" class="volume-icon" onclick="toggleMute('music')">🔊</span> 
+            <div class="volume-percentage" id="music-volume-percent">30%</div>
+            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
         </div>
 
         <!-- The Final Result section -->
         <div class="section">
             <div class="section-text">The Final Result</div>
-            <div class="volume-slider-container">
-                <span id="final-volume-icon" class="volume-icon" onclick="toggleMute('final')">🔊</span> 
-                <div class="volume-percentage" id="final-volume-percent">70%</div>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
-            </div>
+        </div>
+        <div class="volume-slider-container">
+            <span id="final-volume-icon" class="volume-icon" onclick="toggleMute('final')">🔊</span> 
+            <div class="volume-percentage" id="final-volume-percent">70%</div>
+            <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
         </div>
     </div>
 
