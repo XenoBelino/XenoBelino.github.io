@@ -34,7 +34,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding-top: 20px;  /* Flyttade upp innehållet mer */
+            padding-top: 20px;
         }
 
         h1 {
@@ -65,9 +65,9 @@
         .section-container {
             width: 100%;
             max-width: 600px;
-            margin: 20px auto;  /* Minskat avstånd */
+            margin: 20px auto;
             display: flex;
-            flex-direction: column; /* Ändrat för vertikal ordning */
+            flex-direction: column; /* Vertikal ordning */
             align-items: flex-start;
         }
 
@@ -81,20 +81,20 @@
         .section-text {
             color: #4F4A85;
             margin-right: 15px;
-            font-size: 18px;  /* Större text */
+            font-size: 18px;
             font-weight: bold;
             text-align: left;
-            width: 200px; /* Bestämd bredd */
+            width: 200px;
         }
 
         .volume-slider-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-end; /* Ljudkontroller åt höger */
+            align-items: flex-end; /* Ljudkontroller till höger */
         }
 
         .volume-slider {
-            width: 100px;  /* Större sliders */
+            width: 100px;
             margin-bottom: 5px;
         }
 
@@ -107,14 +107,14 @@
         #waveform {
             width: 100%;
             height: 150px;
-            background-color: transparent;  /* Ändra bakgrundsfärgen till transparent */
+            background-color: transparent;
             margin-top: 20px;
             display: block;
         }
 
         video {
             margin-top: 10px;
-            width: 80%; /* Minskat videons bredd */
+            width: 80%; /* Förstorad videobredd */
             height: auto;
             border-radius: 8px;
             display: block;
@@ -132,7 +132,6 @@
             max-width: 500px;
         }
 
-        /* Sektioner för att justera placeringen av ljudhanterare */
         .button-container {
             position: fixed;
             bottom: 20px;
@@ -241,6 +240,4 @@
         }
 
         // Uppdatera volymprocent
-        function updateVolumePercentage(type) {
-            const volume = document.getElementById(`${type}-volume`).value;
-            document.getElementById(`${type}-volume
+        function updateVolumePercentage(type)
