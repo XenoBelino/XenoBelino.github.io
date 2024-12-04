@@ -102,6 +102,30 @@
             object-fit: cover;
         }
 
+        /* Knappar längst ner till höger */
+        .buttons-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #5c0b8a;
+        }
+
     </style>
 </head>
 <body>
@@ -158,6 +182,12 @@
                 <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
             </div>
         </div>
+    </div>
+
+    <!-- Knappar längst ner till höger -->
+    <div class="buttons-container">
+        <button class="button" id="save-btn">Save</button>
+        <button class="button" id="browse-btn">Browse my files</button>
     </div>
 
     <script>
