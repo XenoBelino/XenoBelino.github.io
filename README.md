@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
 
-    <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Lato (fixat crossorigin problem) -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -26,6 +27,7 @@
             background-attachment: fixed; /* Fixera bakgrunden för att skapa en stillbildseffekt */
             overflow-y: auto;
             padding-left: 3px; /* Justerat för att ge ett mindre avstånd från vänsterkanten */
+            background-color: transparent; /* Se till att inget extra grått bakgrundslager finns */
         }
 
         .editor-content {
@@ -67,8 +69,9 @@
             width: 100%;
         }
 
+        /* Textfärgen för sektionerna ändras till lila */
         .section-text {
-            color: #fff; /* Ändrad till vit färg för texten */
+            color: #6a0dad; /* Lila färg */
             font-size: 18px;
             flex: 1;
             margin-left: 10px;
@@ -191,14 +194,4 @@
 
             if (volumeSlider.value > 0) {
                 volumeSlider.value = 0;
-                volumeIcon.textContent = "🔇"; // Mutad ikon
-            } else {
-                volumeSlider.value = 50; // Återställ volymen
-                volumeIcon.textContent = "🔊"; // Återställ till normal ikon
-            }
-
-            updateVolumePercentage(type);
-        }
-    </script>
-</body>
-</html>
+                volumeIcon.textContent = "🔇"; // Mutad
