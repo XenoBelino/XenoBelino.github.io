@@ -26,7 +26,7 @@
         }
 
         .editor-content {
-            text-align: left;
+            text-align: center;
             padding: 20px;
             max-width: 100%;
             width: 100%;
@@ -35,7 +35,6 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding-top: 20px;
         }
 
         h1 {
@@ -62,14 +61,17 @@
 
         .section {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         .section-text {
             color: #4F4A85;
             font-size: 18px;
-            margin-bottom: 10px;
+            flex: 1;
+            margin-left: 10px;
         }
 
         .volume-slider-container {
@@ -77,41 +79,35 @@
             flex-direction: row;
             align-items: center;
             gap: 10px;
-            transition: transform 0.3s ease;
         }
 
         .volume-icon {
             font-size: 30px;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
 
         .volume-slider {
             width: 100px;
             margin-bottom: 5px;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
 
         .volume-percentage {
             font-size: 14px;
             color: #4F4A85;
-            transition: transform 0.3s ease;
+        }
+
+        .volume-slider-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
         }
 
         /* För animationen när volymen ändras */
         .volume-slider-container:hover {
             transform: scale(1.05);
         }
-
-        .volume-slider {
-            transition: all 0.3s ease;
-        }
-
-        .volume-icon, .volume-percentage {
-            transition: transform 0.3s ease;
-        }
-
     </style>
 </head>
 <body>
@@ -129,11 +125,21 @@
     <div class="section-container">
         <!-- Your original file section -->
         <div class="section">
-            <div class="section-text">Your original file</div>
+            <div class="section-text">Your original File</div>
             <div class="volume-slider-container">
                 <span id="original-volume-icon" class="volume-icon" onclick="toggleMute('original')">🔊</span> 
                 <div class="volume-percentage" id="original-volume-percent">50%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+            </div>
+        </div>
+
+        <!-- Overwriting audio/corrupted audio section -->
+        <div class="section">
+            <div class="section-text" style="color: #4F4A85;">Overwriting audio / corrupted audio</div>
+            <div class="volume-slider-container">
+                <span id="corrupted-volume-icon" class="volume-icon" onclick="toggleMute('corrupted')">🔊</span> 
+                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
             </div>
         </div>
 
@@ -155,11 +161,6 @@
                 <div class="volume-percentage" id="final-volume-percent">70%</div>
                 <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
             </div>
-        </div>
-        
-        <!-- Overwriting Audio / Corrupted Audio Section -->
-        <div class="section">
-            <div class="section-text" style="color: #FF6347;">Overwriting audio / corrupted audio</div>
         </div>
     </div>
 
