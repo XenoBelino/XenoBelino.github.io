@@ -52,27 +52,66 @@
             background-color: #000;
         }
 
+        .section-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+            width: 80%;
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .section-text {
+            color: #4F4A85;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
         .volume-slider-container {
             display: flex;
             flex-direction: row;
             align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
         }
 
         .volume-icon {
-            margin-right: 10px;
-            font-size: 24px;
+            font-size: 30px;
             cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
         .volume-slider {
             width: 100px;
             margin-bottom: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
         .volume-percentage {
             font-size: 14px;
             color: #4F4A85;
+            transition: transform 0.3s ease;
         }
+
+        /* För animationen när volymen ändras */
+        .volume-slider-container:hover {
+            transform: scale(1.05);
+        }
+
+        .volume-slider {
+            transition: all 0.3s ease;
+        }
+
+        .volume-icon, .volume-percentage {
+            transition: transform 0.3s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -88,6 +127,7 @@
     </div>
 
     <div class="section-container">
+        <!-- Your original file section -->
         <div class="section">
             <div class="section-text">Your original file</div>
             <div class="volume-slider-container">
@@ -96,7 +136,26 @@
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
             </div>
         </div>
-        <!-- Repeat for other sliders -->
+
+        <!-- The Music from your file section -->
+        <div class="section">
+            <div class="section-text">The Music from your file</div>
+            <div class="volume-slider-container">
+                <span id="music-volume-icon" class="volume-icon" onclick="toggleMute('music')">🔊</span> 
+                <div class="volume-percentage" id="music-volume-percent">30%</div>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
+            </div>
+        </div>
+
+        <!-- The Final Result section -->
+        <div class="section">
+            <div class="section-text">The Final Result</div>
+            <div class="volume-slider-container">
+                <span id="final-volume-icon" class="volume-icon" onclick="toggleMute('final')">🔊</span> 
+                <div class="volume-percentage" id="final-volume-percent">70%</div>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
+            </div>
+        </div>
     </div>
 
     <script>
