@@ -20,9 +20,8 @@
             justify-content: center;
             align-items: flex-start; /* Justera till vänster */
             height: 100vh;
-            background-image: url('path/to/your/image.jpg'); /* Ersätt med din enda bakgrundsbild */
-            background-size: cover; /* Gör att bilden täcker hela bakgrunden */
-            background-position: center; /* Centrerar bakgrundsbilden */
+            /* Bakgrundsfärg istället för bakgrundsbild */
+            background: linear-gradient(to right, #4F4A85, #A78CC1); /* Din tidigare bakgrundsfärg */
             overflow-y: auto;
             padding-left: 3px; /* Justerat för att ge ett mindre avstånd från vänsterkanten */
         }
@@ -35,7 +34,7 @@
         }
 
         h1 {
-            color: #4F4A85;
+            color: #fff; /* Justera färgen för rubriken */
             margin-top: 0;
         }
 
@@ -65,7 +64,7 @@
         }
 
         .section-text {
-            color: #4F4A85;
+            color: #fff; /* Ändrad till vit färg för texten */
             font-size: 18px;
             flex: 1;
             margin-left: 10px;
@@ -196,6 +195,4 @@
 
             updateVolumePercentage(type);
         }
-    </script>
-</body>
-</html>
+    </script
