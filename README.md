@@ -72,15 +72,15 @@
 
         .volume-slider-container {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start; /* Justera till vänster */
-            gap: 10px;
-            margin-left: 20px; /* Lägg till vänstermarginal för att skapa avstånd */
+            flex-direction: row;
+            align-items: center;
+            gap: 10px; /* Lägg till mellanrum mellan ljudikonen och slider */
         }
 
         .volume-icon {
             font-size: 30px;
             cursor: pointer;
+            margin-left: 10px; /* För att lägga ett avstånd till vänster om ljudikonen */
         }
 
         .volume-slider {
@@ -97,6 +97,10 @@
         /* För animationen när volymen ändras */
         .volume-slider-container:hover {
             transform: scale(1.05);
+        }
+
+        .section-text-bold {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -125,7 +129,7 @@
 
         <!-- Overwriting audio/corrupted audio section -->
         <div class="section">
-            <div class="section-text" style="color: #4F4A85;">Overwriting audio / corrupted audio</div>
+            <div class="section-text section-text-bold">Overwriting audio / corrupted audio</div>
         </div>
         <div class="volume-slider-container">
             <span id="corrupted-volume-icon" class="volume-icon" onclick="toggleMute('corrupted')">🔊</span> 
