@@ -6,7 +6,7 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" as="font" type="font/woff2" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -54,8 +54,14 @@
 
         .volume-slider-container {
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .volume-icon {
+            margin-right: 10px;
+            font-size: 24px;
+            cursor: pointer;
         }
 
         .volume-slider {
@@ -79,9 +85,6 @@
             Your browser does not support the video tag.
         </video>
 
-        <!-- Audio waveforms -->
-        <div id="waveform"></div>
-
         <!-- File Information -->
         <div id="file-info"></div>
     </div>
@@ -90,39 +93,43 @@
         <div class="section">
             <div class="section-text">Your original file</div>
             <div class="volume-slider-container">
+                <span id="original-volume-icon" class="volume-icon" onclick="toggleMute('original')">🔊</span> <!-- Ljudikon -->
                 <div class="volume-percentage" id="original-volume-percent">50%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
             </div>
         </div>
-        <div class="section">
-            <div class="section-text">Overwriting audio / corrupted audio</div>
-            <div class="volume-slider-container">
-                <div class="volume-percentage" id="corrupted-volume-percent">50%</div>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-text">The Music from your file</div>
-            <div class="volume-slider-container">
-                <div class="volume-percentage" id="music-volume-percent">50%</div>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-text">The Final Result</div>
-            <div class="volume-slider-container">
-                <div class="volume-percentage" id="final-volume-percent">50%</div>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
-            </div>
-        </div>
+        <!-- Repeat for other sliders -->
     </div>
 
     <script>
-        // Function to update volume percentage
+        // Uppdatera volymprocenten och ändra ljudikonen baserat på volymnivån
         function updateVolumePercentage(type) {
-            const volume = document.getElementById(`${type}-volume`).value;
-            document.getElementById(`${type}-volume-percent`).textContent = volume + "%";
+            const volumeSlider = document.getElementById(`${type}-volume`);
+            const volume = volumeSlider.value;
+            const volumePercentage = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+
+            volumePercentage.textContent = volume + "%";
+
+            if (volume == 0) {
+                volumeIcon.textContent = "🔇"; // Muted
+            } else if (volume > 0 && volume <= 33) {
+                volumeIcon.textContent = "🔊"; // Låg volym
+            } else if (volume > 33 && volume <= 66) {
+                volumeIcon.textContent = "🔉"; // Medium volym
+            } else {
+                volumeIcon.textContent = "🔊"; // Hög volym
+            }
         }
-    </script>
-</body>
-</html>
+
+        // Hantera muting av ljudet
+        function toggleMute(type) {
+            const volumeSlider = document.getElementById(`${type}-volume`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+
+            if (volumeSlider.value > 0) {
+                volumeSlider.value = 0;
+                volumeIcon.textContent = "🔇"; // Mutad ikon
+            } else {
+                volumeSlider.value = 50; // Återställ volymen
+                volumeIcon.textContent = "🔊"; //
