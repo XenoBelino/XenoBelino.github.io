@@ -19,8 +19,9 @@
             justify-content: center;
             align-items: flex-start; /* Justera till vänster */
             height: 100vh;
-            background-image: linear-gradient(to right, #4F4A85, #ffffff, #4F4A85);
-            background-size: cover;
+            background-image: url('path/to/your/image.jpg'); /* Ersätt med din enda bakgrundsbild */
+            background-size: cover; /* Gör att bilden täcker hela bakgrunden */
+            background-position: center; /* Centrerar bakgrundsbilden */
             overflow-y: auto;
             padding-left: 3px; /* Justerat för att ge ett mindre avstånd från vänsterkanten */
         }
