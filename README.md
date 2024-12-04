@@ -69,6 +69,11 @@
             margin-left: 10px;
         }
 
+        /* Ändrad stil för att göra texten fetstil på alla sektioner */
+        .section-text-bold {
+            font-weight: bold;
+        }
+
         .volume-slider-container {
             display: flex;
             flex-direction: row;
@@ -97,10 +102,6 @@
         .volume-slider-container:hover {
             transform: scale(1.05);
         }
-
-        .section-text-bold {
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -118,7 +119,7 @@
     <div class="section-container">
         <!-- Your original file section -->
         <div class="section">
-            <div class="section-text">Your original File</div>
+            <div class="section-text section-text-bold">Your original File</div>
         </div>
         <div class="volume-slider-container">
             <span id="original-volume-icon" class="volume-icon" onclick="toggleMute('original')">🔊</span> 
@@ -138,7 +139,7 @@
 
         <!-- The Music from your file section -->
         <div class="section">
-            <div class="section-text">The Music from your file</div>
+            <div class="section-text section-text-bold">The Music from your file</div>
         </div>
         <div class="volume-slider-container">
             <span id="music-volume-icon" class="volume-icon" onclick="toggleMute('music')">🔊</span> 
@@ -148,7 +149,7 @@
 
         <!-- The Final Result section -->
         <div class="section">
-            <div class="section-text">The Final Result</div>
+            <div class="section-text section-text-bold">The Final Result</div>
         </div>
         <div class="volume-slider-container">
             <span id="final-volume-icon" class="volume-icon" onclick="toggleMute('final')">🔊</span> 
