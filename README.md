@@ -66,7 +66,8 @@
             align-items: center;
             gap: 10px;
             margin-left: 0;
-            transition: transform 0.2s; /* För att göra hover-övergången smidig */
+            width: fit-content; /* Begränsar bredden till innehållet */
+            transition: transform 0.2s; /* För smidig övergång på hover */
         }
 
         .volume-icon {
@@ -228,13 +229,4 @@
             fileInput.addEventListener("change", function() {
                 const file = fileInput.files[0];
                 if (file) {
-                    alert("File selected: " + file.name);
-                }
-            });
-
-            fileInput.click(); // Öppna filväljaren
-        });
-    </script>
-
-</body>
-</html>
+                    alert("File selected:
