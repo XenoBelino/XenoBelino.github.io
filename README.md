@@ -45,7 +45,7 @@
 
         video {
             margin-top: 20px;
-            width: 70%; /* Adjusted to center the video player */
+            width: 70%;
             height: auto;
             border-radius: 8px;
             display: block;
@@ -79,13 +79,11 @@
     <div class="editor-content">
         <h1>Edit Your Files</h1>
 
-        <!-- Video player -->
         <video id="video-player" controls>
             <source id="video-source" type="video/mp4">
             Your browser does not support the video tag.
         </video>
 
-        <!-- File Information -->
         <div id="file-info"></div>
     </div>
 
@@ -93,7 +91,7 @@
         <div class="section">
             <div class="section-text">Your original file</div>
             <div class="volume-slider-container">
-                <span id="original-volume-icon" class="volume-icon" onclick="toggleMute('original')">🔊</span> <!-- Ljudikon -->
+                <span id="original-volume-icon" class="volume-icon" onclick="toggleMute('original')">🔊</span> 
                 <div class="volume-percentage" id="original-volume-percent">50%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
             </div>
@@ -132,4 +130,11 @@
                 volumeIcon.textContent = "🔇"; // Mutad ikon
             } else {
                 volumeSlider.value = 50; // Återställ volymen
-                volumeIcon.textContent = "🔊"; //
+                volumeIcon.textContent = "🔊"; // Återställ till normal ikon
+            }
+
+            updateVolumePercentage(type);
+        }
+    </script>
+</body>
+</html>
