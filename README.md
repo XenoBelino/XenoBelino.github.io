@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +22,7 @@
             background-image: linear-gradient(to right, #4F4A85, #ffffff, #4F4A85);
             background-size: cover;
             overflow-y: auto;
-            padding-left: 20px; /* Lägg till vänstermarginal */
+            padding-left: 3px; /* Justerat för att ge ett mindre avstånd från vänsterkanten */
         }
 
         .editor-content {
