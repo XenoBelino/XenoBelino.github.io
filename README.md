@@ -18,23 +18,19 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Justera till vänster */
             height: 100vh;
             background-image: linear-gradient(to right, #4F4A85, #ffffff, #4F4A85);
             background-size: cover;
             overflow-y: auto;
+            padding-left: 20px; /* Lägg till vänstermarginal */
         }
 
         .editor-content {
-            text-align: center;
+            text-align: left; /* Justera till vänster */
             padding: 20px;
-            max-width: 100%;
             width: 100%;
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
         h1 {
@@ -62,7 +58,7 @@
         .section {
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
+            justify-content: flex-start; /* Justera till vänster */
             align-items: center;
             width: 100%;
         }
@@ -77,8 +73,9 @@
         .volume-slider-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start; /* Justera till vänster */
             gap: 10px;
+            margin-left: 20px; /* Lägg till vänstermarginal för att skapa avstånd */
         }
 
         .volume-icon {
