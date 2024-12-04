@@ -20,8 +20,10 @@
             justify-content: center;
             align-items: flex-start; /* Justera till vänster */
             height: 100vh;
-            /* Bakgrundsfärg istället för bakgrundsbild */
-            background: linear-gradient(to right, #4F4A85, #A78CC1); /* Din tidigare bakgrundsfärg */
+            background-image: url('path/to/your/image.jpg'); /* Ersätt med rätt bakgrundsbild */
+            background-size: cover; /* Gör att bilden täcker hela bakgrunden */
+            background-position: center; /* Centrerar bakgrundsbilden */
+            background-attachment: fixed; /* Fixera bakgrunden för att skapa en stillbildseffekt */
             overflow-y: auto;
             padding-left: 3px; /* Justerat för att ge ett mindre avstånd från vänsterkanten */
         }
@@ -31,6 +33,8 @@
             padding: 20px;
             width: 100%;
             flex: 1;
+            background-color: rgba(0, 0, 0, 0.5); /* Lägger till en mörk bakgrundsnyans för att förbättra läsbarheten */
+            border-radius: 10px;
         }
 
         h1 {
@@ -195,4 +199,6 @@
 
             updateVolumePercentage(type);
         }
-    </script
+    </script>
+</body>
+</html>
