@@ -66,6 +66,7 @@
             align-items: center;
             gap: 10px;
             margin-left: 0;
+            transition: transform 0.2s; /* För att göra hover-övergången smidig */
         }
 
         .volume-icon {
@@ -86,7 +87,7 @@
         }
 
         .volume-slider-container:hover {
-            transform: scale(1.05);
+            transform: scale(1.05); /* Förstora vid hover */
         }
 
         /* Videospelaren */
@@ -135,7 +136,6 @@
         <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
-                <!-- Se till att du har rätt sökväg till videon -->
                 <source src="path/to/your/video.mp4" type="video/mp4">
                 Din webbläsare stödjer inte videospelaren.
             </video>
@@ -191,6 +191,7 @@
     </div>
 
     <script>
+        // Funktion för att uppdatera volymprocenten och ikonen vid sliderförändring
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volume = volumeSlider.value;
@@ -209,6 +210,30 @@
                 volumeIcon.textContent = "🔊"; // Hög volym
             }
         }
+
+        // Hantera Save-knappen
+        document.getElementById("save-btn").addEventListener("click", function() {
+            alert("Save functionality is triggered!");
+            // Här kan du lägga till den logik som sparar filen
+        });
+
+        // Hantera Browse my files-knappen
+        document.getElementById("browse-btn").addEventListener("click", function() {
+            // Skapa ett osynligt filvalsfält och trigga det när knappen klickas
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.style.display = "none";
+            fileInput.accept = ".mp4, .mp3"; // Begränsa till video eller ljudfiler
+
+            fileInput.addEventListener("change", function() {
+                const file = fileInput.files[0];
+                if (file) {
+                    alert("File selected: " + file.name);
+                }
+            });
+
+            fileInput.click(); // Öppna filväljaren
+        });
     </script>
 
 </body>
