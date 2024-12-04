@@ -91,28 +91,28 @@
             <div class="section-text">Your original file</div>
             <div class="volume-slider-container">
                 <div class="volume-percentage" id="original-volume-percent">50%</div>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('original')">
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
             </div>
         </div>
         <div class="section">
             <div class="section-text">Overwriting audio / corrupted audio</div>
             <div class="volume-slider-container">
                 <div class="volume-percentage" id="corrupted-volume-percent">50%</div>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('corrupted')">
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
             </div>
         </div>
         <div class="section">
             <div class="section-text">The Music from your file</div>
             <div class="volume-slider-container">
                 <div class="volume-percentage" id="music-volume-percent">50%</div>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('music')">
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
             </div>
         </div>
         <div class="section">
             <div class="section-text">The Final Result</div>
             <div class="volume-slider-container">
                 <div class="volume-percentage" id="final-volume-percent">50%</div>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('final')">
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
             </div>
         </div>
     </div>
