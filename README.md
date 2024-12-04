@@ -65,30 +65,42 @@
         .section-container {
             width: 100%;
             max-width: 600px;
-            margin: 15px auto;
+            margin: 20px auto;  /* Minskat avstånd */
             display: flex;
-            flex-direction: column; /* Vertikal layout för texterna */
-            align-items: flex-start; /* Justera texten till vänster */
-            padding-left: 20px;
+            flex-direction: column; /* Ändrat för vertikal ordning */
+            align-items: flex-start;
         }
 
         .section {
-            width: 100%;
             display: flex;
+            justify-content: flex-start;
             align-items: center;
-            margin-bottom: 10px; /* Mellanrum mellan sektionerna */
+            margin: 10px 0;
         }
 
         .section-text {
             color: #4F4A85;
-            font-size: 18px;
+            margin-right: 15px;
+            font-size: 18px;  /* Större text */
             font-weight: bold;
             text-align: left;
-            margin-right: 15px; /* Mellanrum mellan text och slider */
+            width: 200px; /* Bestämd bredd */
+        }
+
+        .volume-slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* Ljudkontroller åt höger */
         }
 
         .volume-slider {
             width: 100px;  /* Större sliders */
+            margin-bottom: 5px;
+        }
+
+        .volume-percentage {
+            font-size: 14px;
+            color: #4F4A85;
         }
 
         /* Ljudvågor (för audio) */
@@ -114,7 +126,13 @@
             color: #4F4A85;
         }
 
-        /* Knapp för filuppladdning */
+        #volume-slider {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Sektioner för att justera placeringen av ljudhanterare */
         .button-container {
             position: fixed;
             bottom: 20px;
@@ -152,19 +170,31 @@
     <div class="section-container">
         <div class="section">
             <div class="section-text">Your original file</div>
-            <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50">
+            <div class="volume-slider-container">
+                <div class="volume-percentage" id="original-volume-percent">50%</div>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('original')">
+            </div>
         </div>
         <div class="section">
             <div class="section-text">Overwriting audio / corrupted audio</div>
-            <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50">
+            <div class="volume-slider-container">
+                <div class="volume-percentage" id="corrupted-volume-percent">50%</div>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('corrupted')">
+            </div>
         </div>
         <div class="section">
             <div class="section-text">The Music from your file</div>
-            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50">
+            <div class="volume-slider-container">
+                <div class="volume-percentage" id="music-volume-percent">50%</div>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('music')">
+            </div>
         </div>
         <div class="section">
             <div class="section-text">The Final Result</div>
-            <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50">
+            <div class="volume-slider-container">
+                <div class="volume-percentage" id="final-volume-percent">50%</div>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('final')">
+            </div>
         </div>
     </div>
 
@@ -209,6 +239,8 @@
                 }
             }
         }
-    </script>
-</body>
-</html>
+
+        // Uppdatera volymprocent
+        function updateVolumePercentage(type) {
+            const volume = document.getElementById(`${type}-volume`).value;
+            document.getElementById(`${type}-volume
