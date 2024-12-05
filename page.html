@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    <!-- Google Fonts -->
+
+    <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Lato', sans-serif;
@@ -122,9 +124,10 @@
 <body>
 
     <div class="editor-content">
+        <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
-                <source src="video.mp4" type="video/mp4"> 
+                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera till rätt fil -->
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
@@ -138,7 +141,33 @@
                 <div class="volume-percentage" id="original-volume-percent">40%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
             </div>
-            <!-- Add more sections as needed -->
+
+            <div class="section">
+                <div class="section-text">Overwriting audio</div>
+            </div>
+            <div class="volume-slider-container">
+                <span id="corrupted-volume-icon" class="volume-icon">🔊</span>
+                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
+            </div>
+
+            <div class="section">
+                <div class="section-text">The Music from your file</div>
+            </div>
+            <div class="volume-slider-container">
+                <span id="music-volume-icon" class="volume-icon">🔊</span>
+                <div class="volume-percentage" id="music-volume-percent">30%</div>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
+            </div>
+
+            <div class="section">
+                <div class="section-text">The Final Result</div>
+            </div>
+            <div class="volume-slider-container">
+                <span id="final-volume-icon" class="volume-icon">🔊</span>
+                <div class="volume-percentage" id="final-volume-percent">70%</div>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
+            </div>
         </div>
     </div>
 
@@ -148,6 +177,7 @@
     </div>
 
     <script>
+        // Funktion för att uppdatera volymprocenten och ikonen vid sliderförändring
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volume = volumeSlider.value;
@@ -155,16 +185,26 @@
             const volumeIcon = document.getElementById(`${type}-volume-icon`);
             
             volumePercentage.textContent = `${volume}%`;
-            if (volume == 0) volumeIcon.textContent = '🔇';
-            else if (volume <= 30) volumeIcon.textContent = '🔈';
-            else if (volume <= 70) volumeIcon.textContent = '🔉';
-            else volumeIcon.textContent = '🔊';
+
+            // Uppdatera ikon baserat på volym
+            if (volume == 0) {
+                volumeIcon.textContent = '🔇';
+            } else if (volume <= 30) {
+                volumeIcon.textContent = '🔈';
+            } else if (volume <= 70) {
+                volumeIcon.textContent = '🔉';
+            } else {
+                volumeIcon.textContent = '🔊';
+            }
         }
 
+        // Funktion för att spara volyminställningar till en fil
         document.getElementById("save-btn").addEventListener("click", function() {
             const settings = {
                 originalVolume: document.getElementById("original-volume").value,
-                // Save other volume settings similarly
+                corruptedVolume: document.getElementById("corrupted-volume").value,
+                musicVolume: document.getElementById("music-volume").value,
+                finalVolume: document.getElementById("final-volume").value
             };
 
             const fileContent = JSON.stringify(settings, null, 2);
@@ -176,6 +216,7 @@
             a.click();
         });
 
+        // Funktion för att browse files
         document.getElementById("browse-btn").addEventListener("click", function() {
             const input = document.createElement("input");
             input.type = "file";
@@ -188,4 +229,3 @@
             };
             input.click();
         });
-    </script
