@@ -218,26 +218,4 @@
             if (volume == 0) {
                 volumeIcon.textContent = "🔇"; // Muted
             } else if (volume > 0 && volume <= 33) {
-                volumeIcon.textContent = "🔊"; // Låg volym
-            } else if (volume > 33 && volume <= 66) {
-                volumeIcon.textContent = "🔉"; // Medium volym
-            } else {
-                volumeIcon.textContent = "🔊"; // Hög volym
-            }
-        }
-
-        // Hantera Save-knappen
-        document.getElementById("save-btn").addEventListener("click", function() {
-            alert("Save functionality is triggered!");
-            // Här kan du lägga till den logik som sparar filen
-        });
-
-        // Hantera Browse my files-knappen
-        document.getElementById("browse-btn").addEventListener("click", function() {
-            // Skapa ett osynligt filvalsfält och trigga det när knappen klickas
-            const fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.style.display = "none";
-            fileInput.accept = ".mp4, .mp3"; // Begränsa till video eller ljudfiler
-
-            fileInput.addEventListener
+                volume
