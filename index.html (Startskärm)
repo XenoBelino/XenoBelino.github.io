@@ -10,7 +10,7 @@
             font-family: 'Lato', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: #f4f4f9; /* Light Mode standard bakgrund */
             color: #333;
         }
 
@@ -49,16 +49,27 @@
     <button class="button" onclick="changeBackground()">Change Background</button>
 
     <script>
+        // Variabel för att hålla reda på nuvarande bakgrundsläge (True = Dark Mode, False = Light Mode)
+        let isDarkMode = false;
+
         function changeBackground() {
-            // Visa en bekräftelse-popup
-            var choice = confirm("Do you want to change the background?");
-            
-            // Om användaren klickar "OK", ändra bakgrunden, annars gör inget
-            if (choice) {
-                document.body.style.background = "linear-gradient(to right, #6a0dad, #f7b7d1)";
-                document.body.style.backgroundSize = "cover";
+            if (isDarkMode) {
+                // Om vi är i Dark Mode, fråga om vi ska växla till Light Mode
+                var choice = confirm("Do you want to change to Light Mode?");
+                if (choice) {
+                    // Växla till Light Mode
+                    document.body.style.background = "#f4f4f9"; // Light Mode bakgrund
+                    isDarkMode = false; // Uppdatera tillståndet
+                }
+            } else {
+                // Om vi är i Light Mode, fråga om vi ska växla till Dark Mode
+                var choice = confirm("Do you want to change to Dark Mode?");
+                if (choice) {
+                    // Växla till Dark Mode
+                    document.body.style.background = "linear-gradient(to right, #6a0dad, #f7b7d1)"; // Dark Mode bakgrund
+                    isDarkMode = true; // Uppdatera tillståndet
+                }
             }
-            // Om användaren trycker "Avbryt" gör vi inget (bakgrunden förblir oförändrad)
         }
     </script>
 </body>
