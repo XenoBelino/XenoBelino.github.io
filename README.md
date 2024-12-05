@@ -223,6 +223,4 @@
             const fileInput = document.createElement("input");
             fileInput.type = "file";
             fileInput.style.display = "none";
-            fileInput.accept = ".mp4, .mp3"; // Begränsa till video eller ljudfiler
-
-            fileInput.addEventListener("change", function()
+            fileInput.accept = ".mp4, .mp3";
