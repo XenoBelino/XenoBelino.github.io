@@ -50,11 +50,15 @@
 
     <script>
         function changeBackground() {
+            // Visa en bekräftelse-popup
             var choice = confirm("Do you want to change the background?");
+            
+            // Om användaren klickar "OK", ändra bakgrunden, annars gör inget
             if (choice) {
                 document.body.style.background = "linear-gradient(to right, #6a0dad, #f7b7d1)";
                 document.body.style.backgroundSize = "cover";
             }
+            // Om användaren trycker "Avbryt" gör vi inget (bakgrunden förblir oförändrad)
         }
     </script>
 </body>
