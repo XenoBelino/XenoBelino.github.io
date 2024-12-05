@@ -3,117 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Editor</title>
-
-    <!-- Google Fonts - Lato -->
+    <title>My Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
+        /* Grundläggande styling */
         body {
             font-family: 'Lato', sans-serif;
-            color: white;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
             height: 100vh;
-            background-image: url('image.jpg'); /* Se till att rätt bild finns */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            overflow-y: auto;
-            padding-left: 10px;
-        }
-
-        .editor-content {
-            text-align: left;
-            padding: 20px;
-            width: 100%;
-            flex: 1;
-            background-color: transparent;
-            border-radius: 10px;
-        }
-
-        .section-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            margin-top: 30px;
-            width: 90%;
-            padding-left: 0;
-        }
-
-        .section {
-            display: flex;
-            flex-direction: row;
+            align-items: center;
             justify-content: flex-start;
-            align-items: center;
-            width: 100%;
+            overflow: hidden;
         }
 
-        .section-text {
-            color: #6a0dad;
-            font-size: 18px;
-            flex: 1;
-        }
-
-        .volume-slider-container {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .volume-icon {
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        .volume-slider {
-            width: 200px;
-            cursor: pointer;
-        }
-
-        .volume-percentage {
-            font-size: 14px;
-            color: #4F4A85;
-        }
-
-        .volume-slider-container:hover {
-            transform: scale(1.05);
-        }
-
-        .video-container {
-            width: 100%;
-            height: 500px;
-            margin-bottom: 20px;
-        }
-
-        video {
+        /* Bakgrund för sidan */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            background: linear-gradient(135deg, #a85ec7, #f0a8d8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background 1s ease;
         }
 
-        .buttons-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        .dark-background {
+            background: linear-gradient(135deg, #000000, #6a0dad);
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            box-shadow: 0px 0px 2px white;
+            transition: transform 1s ease, opacity 1s ease;
+        }
+
+        .falling-star {
+            position: absolute;
+            width: 40px;
+            height: 2px;
+            background: white;
+            opacity: 0.5;
+            transform: rotate(45deg);
+            animation: fall 2s infinite;
+        }
+
+        /* Animation för stjärnfall */
+        @keyframes fall {
+            0% {
+                transform: translate(0, 0) rotate(45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(300px, 400px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        /* Styling för header och knappar */
+        #change-background-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #change-background-btn:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Layout för innehållet */
+        .homepage {
+            padding-top: 100px;
         }
 
         .button {
             padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
+            margin: 20px;
             background-color: #6a0dad;
             color: white;
-            transition: background-color 0.3s;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
         }
 
         .button:hover {
@@ -123,109 +129,72 @@
 </head>
 <body>
 
-    <div class="editor-content">
-        <!-- Videospelaren -->
-        <div class="video-container">
-            <video controls>
-                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera till rätt fil -->
-                Din webbläsare stödjer inte videospelaren.
-            </video>
-        </div>
+<div class="background" id="background">
+    <!-- Stjärnor på bakgrund -->
+    <div class="stars" id="stars"></div>
 
-        <div class="section-container">
-            <div class="section">
-                <div class="section-text">Your original File</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="original-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="original-volume-percent">40%</div>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
-            </div>
+    <!-- Innehåll på sidan -->
+    <div class="content">
+        <button id="change-background-btn">Senge background</button>
 
-            <div class="section">
-                <div class="section-text">Overwriting audio</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="corrupted-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Music from your file</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="music-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="music-volume-percent">30%</div>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Final Result</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="final-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="final-volume-percent">70%</div>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
-            </div>
+        <div class="homepage">
+            <h1>Welcome to My Website</h1>
+            <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
+            <button class="button" id="go-to-page-btn">Go to Page</button>
         </div>
     </div>
+</div>
 
-    <div class="buttons-container">
-        <button class="button" id="save-btn">Save</button>
-        <button class="button" id="browse-btn">Browse my files</button>
-    </div>
+<script>
+    // Funktion för att skapa stjärnor på bakgrunden
+    function createStars() {
+        const starContainer = document.getElementById("stars");
 
-    <script>
-        // Funktion för att uppdatera volymprocenten och ikonen vid sliderförändring
-        function updateVolumePercentage(type) {
-            const volumeSlider = document.getElementById(`${type}-volume`);
-            const volume = volumeSlider.value;
-            const volumePercentage = document.getElementById(`${type}-volume-percent`);
-            const volumeIcon = document.getElementById(`${type}-volume-icon`);
-            
-            volumePercentage.textContent = `${volume}%`;
-
-            // Uppdatera ikon baserat på volym
-            if (volume == 0) {
-                volumeIcon.textContent = '🔇';
-            } else if (volume <= 30) {
-                volumeIcon.textContent = '🔈';
-            } else if (volume <= 70) {
-                volumeIcon.textContent = '🔉';
-            } else {
-                volumeIcon.textContent = '🔊';
-            }
+        for (let i = 0; i < 100; i++) {
+            let star = document.createElement("div");
+            star.classList.add("star");
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+            starContainer.appendChild(star);
         }
 
-        // Funktion för att spara volyminställningar till en fil
-        document.getElementById("save-btn").addEventListener("click", function() {
-            const settings = {
-                originalVolume: document.getElementById("original-volume").value,
-                corruptedVolume: document.getElementById("corrupted-volume").value,
-                musicVolume: document.getElementById("music-volume").value,
-                finalVolume: document.getElementById("final-volume").value
-            };
+        // Stjärnfallseffekt
+        for (let i = 0; i < 5; i++) {
+            let fallingStar = document.createElement("div");
+            fallingStar.classList.add("falling-star");
+            fallingStar.style.top = `${Math.random() * 100}%`;
+            fallingStar.style.left = `${Math.random() * 100}%`;
+            starContainer.appendChild(fallingStar);
+        }
+    }
 
-            const fileContent = JSON.stringify(settings, null, 2);
-            const blob = new Blob([fileContent], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "volume-settings.json";
-            a.click();
-        });
+    // Växla mellan Light Mode och Dark Mode
+    let isDarkMode = false;
 
-        // Funktion för att browse files
-        document.getElementById("browse-btn").addEventListener("click", function() {
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "video/*, image/*";
-            input.onchange = function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    alert("File selected: " + file.name);
-                }
-            };
-            input.click();
-        });
+    function toggleBackground() {
+        const background = document.getElementById("background");
+        if (isDarkMode) {
+            background.classList.remove("dark-background");
+        } else {
+            background.classList.add("dark-background");
+        }
+        isDarkMode = !isDarkMode;
+    }
+
+    // Klickhändelse för knappen "Senge background"
+    document.getElementById("change-background-btn").addEventListener("click", () => {
+        const lightModeOption = confirm("Choose Light Mode (OK) or Dark Mode (Cancel).");
+        if (lightModeOption) {
+            toggleBackground(); // byta till Light Mode
+        } else {
+            toggleBackground(); // byta till Dark Mode
+        }
+    });
+
+    // Skapa stjärnorna när sidan laddas
+    createStars();
+</script>
+
+</body>
+</html>
