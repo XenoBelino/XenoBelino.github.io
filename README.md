@@ -6,7 +6,7 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -19,7 +19,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('image.jpg'); /* Ändra till rätt bildfil */
+            background-image: url('image.jpg'); /* Se till att rätt bild finns */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -57,7 +57,6 @@
             color: #6a0dad;
             font-size: 18px;
             flex: 1;
-            margin-left: 0;
         }
 
         .volume-slider-container {
@@ -65,20 +64,15 @@
             flex-direction: row;
             align-items: center;
             gap: 10px;
-            margin-left: 0;
-            width: fit-content;
-            transition: transform 0.2s;
         }
 
         .volume-icon {
             font-size: 30px;
             cursor: pointer;
-            margin-left: 0;
         }
 
         .volume-slider {
             width: 200px;
-            margin-bottom: 5px;
             cursor: pointer;
         }
 
@@ -130,17 +124,15 @@
 <body>
 
     <div class="editor-content">
-        
         <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
-                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera med rätt filväg -->
+                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera till rätt fil -->
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
 
         <div class="section-container">
-            <!-- Your original file text and volume control -->
             <div class="section">
                 <div class="section-text">Your original File</div>
             </div>
@@ -150,7 +142,6 @@
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
             </div>
 
-            <!-- Overwriting audio text and volume control -->
             <div class="section">
                 <div class="section-text">Overwriting audio</div>
             </div>
@@ -160,7 +151,6 @@
                 <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
             </div>
 
-            <!-- Music from your file text and volume control -->
             <div class="section">
                 <div class="section-text">The Music from your file</div>
             </div>
@@ -170,7 +160,6 @@
                 <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
             </div>
 
-            <!-- Final result text and volume control -->
             <div class="section">
                 <div class="section-text">The Final Result</div>
             </div>
@@ -232,4 +221,11 @@
             const input = document.createElement("input");
             input.type = "file";
             input.accept = "video/*, image/*";
-            input.onchange = function(event
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    alert("File selected: " + file.name);
+                }
+            };
+            input.click();
+        });
