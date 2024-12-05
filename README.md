@@ -19,7 +19,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('path/to/your/image.jpg');
+            background-image: url('image.jpg'); /* Ändra denna till en korrekt bildfil */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -137,7 +137,7 @@
         <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
-                <source src="path/to/your/video.mp4" type="video/mp4">
+                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera denna med en korrekt sökväg -->
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
@@ -223,4 +223,4 @@
             const fileInput = document.createElement("input");
             fileInput.type = "file";
             fileInput.style.display = "none";
-            fileInput.accept = ".mp4, .mp3";
+            fileInput.accept = ".
