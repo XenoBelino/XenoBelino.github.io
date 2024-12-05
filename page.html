@@ -4,26 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src https://fonts.gstatic.com;">
-    <title>My Website</title>
+    <title>Page - My Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Din CSS här */
+        body {
+            font-family: 'Lato', sans-serif;
+            padding: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #5c0b8a;
+        }
     </style>
 </head>
 <body>
-    <div class="background" id="background">
-        <div class="content">
-            <button id="change-background-btn">Senge background</button>
-            <div class="homepage">
-                <h1>Welcome to My Website</h1>
-                <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
-                <a href="page.html" class="button">Go to Page</a>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        // Din JavaScript här
-    </script>
+    <h1>This is a Page on My Website</h1>
+    <p>Here you can find more information about what my website does.</p>
+    <a href="index.html" class="button">Back to Homepage</a>
+
 </body>
 </html>
