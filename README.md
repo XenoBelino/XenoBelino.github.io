@@ -220,13 +220,9 @@
 
         // Hantera Browse my files-knappen
         document.getElementById("browse-btn").addEventListener("click", function() {
-            // Skapa ett osynligt filvalsfält och trigga det när knappen klickas
             const fileInput = document.createElement("input");
             fileInput.type = "file";
             fileInput.style.display = "none";
             fileInput.accept = ".mp4, .mp3"; // Begränsa till video eller ljudfiler
 
-            fileInput.addEventListener("change", function() {
-                const file = fileInput.files[0];
-                if (file) {
-                    alert("File selected:
+            fileInput.addEventListener("change", function()
