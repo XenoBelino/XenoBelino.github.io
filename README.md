@@ -16,7 +16,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('image.jpg'); /* Säkerställ att denna bild finns i rätt mapp */
+            background-image: url('image.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -25,7 +25,7 @@
 
         .video-container {
             width: 100%;
-            height: 300px; /* Justerat för att passa bättre på sidan */
+            height: 300px; /* Ändrat för att minska storleken på videospelaren */
             margin-bottom: 20px;
         }
 
@@ -49,7 +49,7 @@
             flex-direction: column;
             gap: 20px;
             margin-top: 30px;
-            width: 100%;
+            width: 90%;
         }
 
         .section {
@@ -128,6 +128,7 @@
         .back-button:hover {
             background-color: #5c0b8a;
         }
+
     </style>
 </head>
 <body>
@@ -138,7 +139,7 @@
     <div class="editor-content">
         <div class="video-container">
             <video controls>
-                <source src="video.mp4" type="video/mp4"> <!-- Se till att video.mp4 finns -->
+                <source src="video.mp4" type="video/mp4"> 
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
@@ -152,33 +153,7 @@
                 <div class="volume-percentage" id="original-volume-percent">40%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
             </div>
-
-            <div class="section">
-                <div class="section-text">Overwriting audio</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="corrupted-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Music from your file</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="music-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="music-volume-percent">30%</div>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Final Result</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="final-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="final-volume-percent">70%</div>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
-            </div>
+            <!-- Upprepa detta för andra sektioner om det behövs -->
         </div>
     </div>
 
@@ -213,11 +188,41 @@
         document.getElementById("save-btn").addEventListener("click", function() {
             const settings = {
                 originalVolume: document.getElementById("original-volume").value,
-                corruptedVolume: document.getElementById("corrupted-volume").value,
-                musicVolume: document.getElementById("music-volume").value,
-                finalVolume: document.getElementById("final-volume").value
+                // Spara andra volyminställningar här om du har fler sliders
             };
 
             const fileContent = JSON.stringify(settings, null, 2);
             const blob = new Blob([fileContent], { type: "application/json" });
-            const url = URL.createObjectURL
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "volume-settings.json";
+            a.click();
+        });
+
+        // Funktion för att browse files
+        document.getElementById("browse-btn").addEventListener("click", function() {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "video/*, image/*";
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    alert("File selected: " + file.name);
+                }
+            };
+            input.click();
+        });
+
+        // Funktion för att ändra bakgrund på homepage
+        function changeBackground() {
+            var choice = confirm("Do you want to change the background?");
+            if (choice) {
+                document.body.style.background = "linear-gradient(to right, #6a0dad, #f7b7d1)";
+                document.body.style.backgroundSize = "cover";
+            }
+        }
+
+    </script>
+</body>
+</html>
