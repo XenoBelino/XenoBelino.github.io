@@ -193,4 +193,21 @@
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volume = volumeSlider.value;
             const volumePercentage = document.getElementById(`${type}-volume-percent`);
-            const volumeIcon = document.getElement
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            
+            volumePercentage.textContent = `${volume}%`;
+
+            // Uppdatera ikon baserat på volym
+            if (volume == 0) {
+                volumeIcon.textContent = '🔇';
+            } else if (volume <= 30) {
+                volumeIcon.textContent = '🔈';
+            } else if (volume <= 70) {
+                volumeIcon.textContent = '🔉';
+            } else {
+                volumeIcon.textContent = '🔊';
+            }
+        }
+    </script>
+</body>
+</html>
