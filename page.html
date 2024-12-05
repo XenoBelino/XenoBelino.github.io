@@ -16,7 +16,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('image.jpg'); /* Säkerställ att denna bild finns i rätt mapp */
+            background-image: url('image.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -24,9 +24,9 @@
         }
 
         .video-container {
-            width: 100%;
-            height: 300px; /* Justerat för att passa bättre på sidan */
-            margin-bottom: 20px;
+            width: 80%;
+            height: 200px; /* Ändrat till att vara mindre */
+            margin: 40px auto;
         }
 
         video {
@@ -132,7 +132,6 @@
 </head>
 <body>
 
-    <!-- Ny knapp för att gå tillbaka till hemsidan -->
     <button class="back-button" onclick="window.location.href = 'index.html'">Back to Homepage</button>
 
     <div class="editor-content">
@@ -188,7 +187,7 @@
     </div>
 
     <script>
-        // Funktion för att uppdatera volymprocenten och ikonen vid sliderförändring
+        // Uppdatera volymprocenten och ikoner vid sliderförändring
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volume = volumeSlider.value;
@@ -220,4 +219,11 @@
 
             const fileContent = JSON.stringify(settings, null, 2);
             const blob = new Blob([fileContent], { type: "application/json" });
-            const url = URL.createObjectURL
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "audio_settings.json";
+            a.click();
+        });
+
+        // Function for browsing
