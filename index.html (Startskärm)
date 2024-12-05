@@ -1,109 +1,29 @@
 <!DOCTYPE html>
-<html lang="en-US">
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>XenoBelino</title>
-    <!-- CSS-länk -->
-    <link rel="stylesheet" href="/assets/css/style.css?v=d3ce28286d786a925efd094a00169177a4390637">
-
-    <!-- Google Fonts: Lato -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src https://fonts.gstatic.com;">
+    <title>My Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-
-    <!-- Wavesurfer.js -->
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-  </head>
-  <body>
-    <div class="container-lg px-3 my-5 markdown-body">
-      <h1><a href="https://xenobelino.github.io/">XenoBelino</a></h1>
-
-      <!-- Wavesurfer Container (for audio) -->
-      <div id="waveform" style="width: 100%; height: 100px;"></div>
-
-      <!-- Volume Control for Audio -->
-      <input type="range" min="0" max="100" value="50" id="volume-slider" />
-
-      <!-- Video Player (for video files) -->
-      <video id="video-player" width="320" height="240" controls>
-        <source src="assets/videos/default_video.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      <!-- File Editor Section -->
-      <div class="editor-content">
-        <h1>Edit Your Files</h1>
-
-        <!-- Browse Button -->
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
-        
-        <div id="file-info"></div>
-
-        <!-- Save Button -->
-        <button id="save-button" onclick="saveFile()">Save</button>
-      </div>
-
-      <script>
-        // Initialize Wavesurfer for audio files
-        var wavesurfer = WaveSurfer.create({
-          container: '#waveform',
-          waveColor: 'violet',
-          progressColor: 'purple',
-        });
-
-        // Volume control event
-        var slider = document.getElementById("volume-slider");
-        slider.oninput = function() {
-          wavesurfer.setVolume(slider.value / 100);
-        };
-
-        // Handle file selection (audio or video)
-        function handleFileSelect(event) {
-          const file = event.target.files[0];
-          const fileInfoDiv = document.getElementById('file-info');
-          const mediaContainer = document.getElementById('media-container');
-          const videoPlayer = document.getElementById('video-player');
-          const videoSource = videoPlayer.querySelector('source');
-          
-          if (file) {
-            fileInfoDiv.textContent = `Selected file: ${file.name}`;
-            
-            // Create a URL for the selected file
-            const fileURL = URL.createObjectURL(file);
-            let extension = file.name.split('.').pop().toLowerCase();
-
-            // Clear previous media
-            mediaContainer.innerHTML = '';
-
-            if (['mp3', 'wav', 'ogg'].includes(extension)) {
-              // Audio file: set up Wavesurfer and audio player
-              mediaContainer.innerHTML = ''; // clear media container
-
-              // Initialize Wavesurfer for audio files
-              wavesurfer.load(fileURL);
-              wavesurfer.play(); // Auto-play on load
-
-            } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-              // Video file: update video source and player
-              videoSource.src = fileURL;
-              videoPlayer.load();
-              mediaContainer.appendChild(videoPlayer);
-            } else {
-              fileInfoDiv.textContent = "Unsupported file type!";
-            }
-          }
-        }
-
-        // Save functionality (placeholder for now)
-        function saveFile() {
-          alert("Your changes have been saved!");
-          // You can implement code for saving the file or applying changes here
-        }
-
-        // Initial audio setup (loading a default audio file for testing)
-        wavesurfer.load('assets/audio/default_audio.mp3');
-      </script>
+    <style>
+        /* Din CSS här */
+    </style>
+</head>
+<body>
+    <div class="background" id="background">
+        <div class="content">
+            <button id="change-background-btn">Senge background</button>
+            <div class="homepage">
+                <h1>Welcome to My Website</h1>
+                <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
+                <a href="page.html" class="button">Go to Page</a>
+            </div>
+        </div>
     </div>
-  </body>
+
+    <script>
+        // Din JavaScript här
+    </script>
+</body>
 </html>
