@@ -66,8 +66,8 @@
             align-items: center;
             gap: 10px;
             margin-left: 0;
-            width: fit-content; /* Begränsar bredden till innehållet */
-            transition: transform 0.2s; /* För smidig övergång på hover */
+            width: fit-content;
+            transition: transform 0.2s;
         }
 
         .volume-icon {
@@ -88,13 +88,12 @@
         }
 
         .volume-slider-container:hover {
-            transform: scale(1.05); /* Förstora vid hover */
+            transform: scale(1.05);
         }
 
-        /* Videospelaren */
         .video-container {
             width: 100%;
-            height: 500px; /* Gör videospelaren stor */
+            height: 500px;
             margin-bottom: 20px;
         }
 
@@ -104,7 +103,6 @@
             object-fit: cover;
         }
 
-        /* Knappar längst ner till höger */
         .buttons-container {
             position: fixed;
             bottom: 20px;
@@ -127,7 +125,6 @@
         .button:hover {
             background-color: #5c0b8a;
         }
-
     </style>
 </head>
 <body>
@@ -137,7 +134,7 @@
         <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
-                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera denna med en korrekt sökväg -->
+                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera denna med rätt filväg -->
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
@@ -185,7 +182,6 @@
         </div>
     </div>
 
-    <!-- Knappar längst ner till höger -->
     <div class="buttons-container">
         <button class="button" id="save-btn">Save</button>
         <button class="button" id="browse-btn">Browse my files</button>
@@ -204,23 +200,4 @@
             if (volume == 0) {
                 volumeIcon.textContent = "🔇"; // Muted
             } else if (volume > 0 && volume <= 33) {
-                volumeIcon.textContent = "🔊"; // Låg volym
-            } else if (volume > 33 && volume <= 66) {
-                volumeIcon.textContent = "🔉"; // Medium volym
-            } else {
-                volumeIcon.textContent = "🔊"; // Hög volym
-            }
-        }
-
-        // Hantera Save-knappen
-        document.getElementById("save-btn").addEventListener("click", function() {
-            alert("Save functionality is triggered!");
-            // Här kan du lägga till den logik som sparar filen
-        });
-
-        // Hantera Browse my files-knappen
-        document.getElementById("browse-btn").addEventListener("click", function() {
-            const fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.style.display = "none";
-            fileInput.accept = ".
+                volumeIcon.textContent = "
