@@ -19,7 +19,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('image.jpg'); /* Ändra denna till en korrekt bildfil */
+            background-image: url('image.jpg'); /* Ändra till rätt bildfil */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -134,7 +134,7 @@
         <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
-                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera denna med rätt filväg -->
+                <source src="video.mp4" type="video/mp4"> <!-- Uppdatera med rätt filväg -->
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
@@ -193,11 +193,4 @@
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volume = volumeSlider.value;
             const volumePercentage = document.getElementById(`${type}-volume-percent`);
-            const volumeIcon = document.getElementById(`${type}-volume-icon`);
-
-            volumePercentage.textContent = volume + "%";
-
-            if (volume == 0) {
-                volumeIcon.textContent = "🔇"; // Muted
-            } else if (volume > 0 && volume <= 33) {
-                volumeIcon.textContent = "
+            const volumeIcon = document.getElement
