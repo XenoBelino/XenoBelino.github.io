@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -16,23 +17,12 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('image.jpg');
+            background-image: url('image.jpg'); /* Se till att rätt bild finns */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             overflow-y: auto;
-        }
-
-        .video-container {
-            width: 100%;
-            height: 300px; /* Ändrat för att minska storleken på videospelaren */
-            margin-bottom: 20px;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            padding-left: 10px;
         }
 
         .editor-content {
@@ -50,6 +40,7 @@
             gap: 20px;
             margin-top: 30px;
             width: 90%;
+            padding-left: 0;
         }
 
         .section {
@@ -73,19 +64,35 @@
             gap: 10px;
         }
 
+        .volume-icon {
+            font-size: 30px;
+            cursor: pointer;
+        }
+
         .volume-slider {
             width: 200px;
             cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .volume-slider:hover {
-            transform: scale(1.05);
         }
 
         .volume-percentage {
             font-size: 14px;
             color: #4F4A85;
+        }
+
+        .volume-slider-container:hover {
+            transform: scale(1.05);
+        }
+
+        .video-container {
+            width: 100%;
+            height: 500px;
+            margin-bottom: 20px;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .buttons-container {
@@ -110,31 +117,9 @@
         .button:hover {
             background-color: #5c0b8a;
         }
-
-        /* Ny knapp för att gå tillbaka till hemsidan */
-        .back-button {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            background-color: #6a0dad;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .back-button:hover {
-            background-color: #5c0b8a;
-        }
-
     </style>
 </head>
 <body>
-
-    <!-- Ny knapp för att gå tillbaka till hemsidan -->
-    <button class="back-button" onclick="window.location.href = 'index.html'">Back to Homepage</button>
 
     <div class="editor-content">
         <div class="video-container">
@@ -153,7 +138,7 @@
                 <div class="volume-percentage" id="original-volume-percent">40%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
             </div>
-            <!-- Upprepa detta för andra sektioner om det behövs -->
+            <!-- Add more sections as needed -->
         </div>
     </div>
 
@@ -163,7 +148,6 @@
     </div>
 
     <script>
-        // Funktion för att uppdatera volymprocenten och ikonen vid sliderförändring
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volume = volumeSlider.value;
@@ -171,24 +155,16 @@
             const volumeIcon = document.getElementById(`${type}-volume-icon`);
             
             volumePercentage.textContent = `${volume}%`;
-
-            // Uppdatera ikon baserat på volym
-            if (volume == 0) {
-                volumeIcon.textContent = '🔇';
-            } else if (volume <= 30) {
-                volumeIcon.textContent = '🔈';
-            } else if (volume <= 70) {
-                volumeIcon.textContent = '🔉';
-            } else {
-                volumeIcon.textContent = '🔊';
-            }
+            if (volume == 0) volumeIcon.textContent = '🔇';
+            else if (volume <= 30) volumeIcon.textContent = '🔈';
+            else if (volume <= 70) volumeIcon.textContent = '🔉';
+            else volumeIcon.textContent = '🔊';
         }
 
-        // Funktion för att spara volyminställningar till en fil
         document.getElementById("save-btn").addEventListener("click", function() {
             const settings = {
                 originalVolume: document.getElementById("original-volume").value,
-                // Spara andra volyminställningar här om du har fler sliders
+                // Save other volume settings similarly
             };
 
             const fileContent = JSON.stringify(settings, null, 2);
@@ -200,7 +176,6 @@
             a.click();
         });
 
-        // Funktion för att browse files
         document.getElementById("browse-btn").addEventListener("click", function() {
             const input = document.createElement("input");
             input.type = "file";
@@ -213,16 +188,5 @@
             };
             input.click();
         });
+    </script
 
-        // Funktion för att ändra bakgrund på homepage
-        function changeBackground() {
-            var choice = confirm("Do you want to change the background?");
-            if (choice) {
-                document.body.style.background = "linear-gradient(to right, #6a0dad, #f7b7d1)";
-                document.body.style.backgroundSize = "cover";
-            }
-        }
-
-    </script>
-</body>
-</html>
