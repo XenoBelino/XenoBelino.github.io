@@ -8,6 +8,9 @@
     <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- Wavesurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+
     <style>
         body {
             font-family: 'Lato', sans-serif;
@@ -104,6 +107,13 @@
             object-fit: cover;
         }
 
+        /* Wavesurfer container för ljudgrafen */
+        .wavesurfer-container {
+            width: 100%;
+            height: 100px; /* Höjd på ljudgrafen */
+            margin-bottom: 20px;
+        }
+
         /* Knappar längst ner till höger */
         .buttons-container {
             position: fixed;
@@ -152,6 +162,7 @@
                 <div class="volume-percentage" id="original-volume-percent">40%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
             </div>
+            <div class="wavesurfer-container" id="wavesurfer-original"></div> <!-- Ljudgraf för originalfil -->
 
             <!-- Overwriting audio text and volume control -->
             <div class="section">
@@ -162,6 +173,7 @@
                 <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
                 <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
             </div>
+            <div class="wavesurfer-container" id="wavesurfer-corrupted"></div> <!-- Ljudgraf för Overwriting audio -->
 
             <!-- Music from your file text and volume control -->
             <div class="section">
@@ -172,6 +184,7 @@
                 <div class="volume-percentage" id="music-volume-percent">30%</div>
                 <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
             </div>
+            <div class="wavesurfer-container" id="wavesurfer-music"></div> <!-- Ljudgraf för Music from your file -->
 
             <!-- Final result text and volume control -->
             <div class="section">
@@ -182,6 +195,7 @@
                 <div class="volume-percentage" id="final-volume-percent">70%</div>
                 <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
             </div>
+            <div class="wavesurfer-container" id="wavesurfer-final"></div> <!-- Ljudgraf för Final Result -->
         </div>
     </div>
 
@@ -226,7 +240,4 @@
             fileInput.style.display = "none";
             fileInput.accept = ".mp4, .mp3"; // Begränsa till video eller ljudfiler
 
-            fileInput.addEventListener("change", function() {
-                const file = fileInput.files[0];
-                if (file) {
-                    alert("File selected:
+            fileInput.addEventListener
