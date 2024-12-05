@@ -6,7 +6,7 @@
     <title>File Editor</title>
 
     <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" crossorigin="anonymous">
 
     <style>
         body {
@@ -208,6 +208,28 @@
                 volumeIcon.textContent = '🔊';
             }
         }
-    </script>
-</body>
-</html>
+
+        // Funktion för att spara volyminställningar till en fil
+        document.getElementById("save-btn").addEventListener("click", function() {
+            const settings = {
+                originalVolume: document.getElementById("original-volume").value,
+                corruptedVolume: document.getElementById("corrupted-volume").value,
+                musicVolume: document.getElementById("music-volume").value,
+                finalVolume: document.getElementById("final-volume").value
+            };
+
+            const fileContent = JSON.stringify(settings, null, 2);
+            const blob = new Blob([fileContent], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "volume-settings.json";
+            a.click();
+        });
+
+        // Funktion för att browse files
+        document.getElementById("browse-btn").addEventListener("click", function() {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "video/*, image/*";
+            input.onchange = function(event
