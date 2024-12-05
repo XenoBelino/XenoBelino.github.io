@@ -22,7 +22,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('path/to/your/image.jpg');
+            background-image: url('path/to/your/image.jpg'); /* Ändra till korrekt bildväg */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -69,8 +69,7 @@
             align-items: center;
             gap: 10px;
             margin-left: 0;
-            width: fit-content; /* Begränsar bredden till innehållet */
-            transition: transform 0.2s; /* För smidig övergång på hover */
+            width: 100%; /* Gör så att sliden fyller hela raderna */
         }
 
         .volume-icon {
@@ -80,7 +79,8 @@
         }
 
         .volume-slider {
-            width: 200px;
+            width: 100%; /* Slidern ska vara lika lång som texten */
+            max-width: 500px; /* Maxlängd på slider */
             margin-bottom: 5px;
             cursor: pointer;
         }
@@ -88,23 +88,6 @@
         .volume-percentage {
             font-size: 14px;
             color: #4F4A85;
-        }
-
-        .volume-slider-container:hover {
-            transform: scale(1.05); /* Förstora vid hover */
-        }
-
-        /* Videospelaren */
-        .video-container {
-            width: 100%;
-            height: 500px; /* Gör videospelaren stor */
-            margin-bottom: 20px;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         /* Wavesurfer container för ljudgrafen */
@@ -147,13 +130,13 @@
         <!-- Videospelaren -->
         <div class="video-container">
             <video controls>
-                <source src="path/to/your/video.mp4" type="video/mp4">
+                <source src="path/to/your/video.mp4" type="video/mp4"> <!-- Uppdatera till korrekt videoväg -->
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
 
         <div class="section-container">
-            <!-- Your original file text and volume control -->
+            <!-- Originalfilens text och volymkontroll -->
             <div class="section">
                 <div class="section-text">Your original File</div>
             </div>
@@ -162,9 +145,9 @@
                 <div class="volume-percentage" id="original-volume-percent">40%</div>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
             </div>
-            <div class="wavesurfer-container" id="wavesurfer-original"></div> <!-- Ljudgraf för originalfil -->
+            <div class="wavesurfer-container" id="wavesurfer-original"></div>
 
-            <!-- Overwriting audio text and volume control -->
+            <!-- Överskrivning ljud text och volymkontroll -->
             <div class="section">
                 <div class="section-text">Overwriting audio</div>
             </div>
@@ -173,9 +156,9 @@
                 <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
                 <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
             </div>
-            <div class="wavesurfer-container" id="wavesurfer-corrupted"></div> <!-- Ljudgraf för Overwriting audio -->
+            <div class="wavesurfer-container" id="wavesurfer-corrupted"></div>
 
-            <!-- Music from your file text and volume control -->
+            <!-- Musik från din fil text och volymkontroll -->
             <div class="section">
                 <div class="section-text">The Music from your file</div>
             </div>
@@ -184,9 +167,9 @@
                 <div class="volume-percentage" id="music-volume-percent">30%</div>
                 <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
             </div>
-            <div class="wavesurfer-container" id="wavesurfer-music"></div> <!-- Ljudgraf för Music from your file -->
+            <div class="wavesurfer-container" id="wavesurfer-music"></div>
 
-            <!-- Final result text and volume control -->
+            <!-- Slutresultat text och volymkontroll -->
             <div class="section">
                 <div class="section-text">The Final Result</div>
             </div>
@@ -195,7 +178,7 @@
                 <div class="volume-percentage" id="final-volume-percent">70%</div>
                 <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
             </div>
-            <div class="wavesurfer-container" id="wavesurfer-final"></div> <!-- Ljudgraf för Final Result -->
+            <div class="wavesurfer-container" id="wavesurfer-final"></div>
         </div>
     </div>
 
@@ -218,4 +201,16 @@
             if (volume == 0) {
                 volumeIcon.textContent = "🔇"; // Muted
             } else if (volume > 0 && volume <= 33) {
-                volume
+                volumeIcon.textContent = "🔊"; // Låg volym
+            } else if (volume > 33 && volume <= 66) {
+                volumeIcon.textContent = "🔉"; // Medium volym
+            } else {
+                volumeIcon.textContent = "🔊"; // Hög volym
+            }
+        }
+
+        // Skapa ljudgraf med Wavesurfer.js
+        function createWaveform(id, audioUrl) {
+            var wavesurfer = WaveSurfer.create({
+                container: `#${id}`,
+                waveColor
