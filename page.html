@@ -129,6 +129,23 @@
         .back-button:hover {
             background-color: #5c0b8a;
         }
+
+        /* File input style */
+        .file-input {
+            display: none;
+        }
+        .browse-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .browse-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -138,7 +155,7 @@
     <div class="editor-content">
         <div class="video-container">
             <video controls>
-                <source src="video.mp4" type="video/mp4"> <!-- Se till att video.mp4 finns -->
+                <source src="video.mp4" type="video/mp4"> <!-- Kontrollera att video.mp4 finns -->
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
@@ -184,7 +201,8 @@
 
     <div class="buttons-container">
         <button class="button" id="save-btn">Save</button>
-        <button class="button" id="browse-btn">Browse my files</button>
+        <label for="file-input" class="browse-btn">Browse my files</label>
+        <input type="file" id="file-input" class="file-input" onchange="handleFileSelect(event)">
     </div>
 
     <script>
@@ -227,10 +245,14 @@
             a.click();
         });
 
-        // Funktion för att browse-funktion (kan implementeras vid behov)
-        document.getElementById("browse-btn").addEventListener("click", function() {
-            alert("Browse functionality not implemented yet!");
-        });
+        // Funktion för att hantera val av fil
+        function handleFileSelect(event) {
+            const file = event.target.files[0]; // Första valda filen
+            if (file) {
+                alert("File selected: " + file.name);
+                // Här kan du lägga till ytterligare logik för att hantera filen, t.ex. visa den eller bearbeta den.
+            }
+        }
     </script>
 </body>
 </html>
