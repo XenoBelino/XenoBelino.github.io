@@ -24,10 +24,12 @@
         }
 
         .video-container {
-            width: 80%;
-            max-width: 800px; /* Maximal bredd för bättre responsivitet */
-            height: 200px;
-            margin: 40px 0;
+            width: 60%;  /* Smalare bredd på videospelaren */
+            height: 500px; /* Längre höjd på videospelaren */
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         video {
@@ -136,7 +138,7 @@
         }
         .browse-btn {
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #6a0dad; /* Lila bakgrund */
             color: white;
             border: none;
             border-radius: 5px;
@@ -144,7 +146,15 @@
         }
 
         .browse-btn:hover {
-            background-color: #45a049;
+            background-color: #5c0b8a; /* Lila bakgrund vid hover */
+        }
+
+        /* Visar vald fil under videospelaren */
+        .file-info {
+            color: white;
+            font-size: 16px;
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
@@ -205,6 +215,9 @@
         <input type="file" id="file-input" class="file-input" onchange="handleFileSelect(event)">
     </div>
 
+    <!-- Visar vald fil -->
+    <div id="file-info" class="file-info"></div>
+
     <script>
         // Uppdatera volymprocenten och ikoner vid sliderförändring
         function updateVolumePercentage(type) {
@@ -245,12 +258,13 @@
             a.click();
         });
 
-        // Funktion för att hantera val av fil
+        // Funktion för att hantera val av fil och visa filnamnet
         function handleFileSelect(event) {
             const file = event.target.files[0]; // Första valda filen
             if (file) {
-                alert("File selected: " + file.name);
-                // Här kan du lägga till ytterligare logik för att hantera filen, t.ex. visa den eller bearbeta den.
+                // Visa filnamnet under videospelaren
+                const fileInfoDiv = document.getElementById("file-info");
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
             }
         }
     </script>
