@@ -16,17 +16,16 @@
             justify-content: flex-start;
             align-items: flex-start;
             height: 100vh;
-            background-image: url('images/image.jpg'); /* Korrekt filväg för bild */
+            background-image: url('images/image.jpg'); /* Kontrollera filvägen till bilden */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             overflow-y: auto;
         }
 
-        /* Justering av "Back to Homepage"-knappen så att den alltid syns */
         .back-button {
             position: fixed;
-            top: 10px; /* Höjd justerad så att knappen är så högt upp som möjligt */
+            top: 10px;
             left: 20px;
             padding: 10px 20px;
             background-color: #6a0dad;
@@ -35,7 +34,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            z-index: 1000; /* Se till att knappen är ovanpå alla andra element */
+            z-index: 1000;
         }
 
         .back-button:hover {
@@ -43,11 +42,11 @@
         }
 
         .video-container {
-            width: 60%; /* Breddjustering */
-            height: 300px; /* Höjdjustering för att göra videospelaren längre */
+            width: 60%; 
+            height: 300px; 
             margin: 40px auto;
             display: flex;
-            justify-content: flex-end; /* Flyttar videospelaren till höger */
+            justify-content: flex-end;
         }
 
         video {
@@ -139,6 +138,14 @@
         .browse-button:hover {
             background-color: #5c0b8a;
         }
+
+        /* Styler för filnamnet som visas under videospelaren */
+        #file-name {
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -147,11 +154,14 @@
 
     <div class="editor-content">
         <div class="video-container">
-            <video controls>
-                <source src="videos/video.mp4" type="video/mp4"> <!-- Korrekt filväg för video -->
+            <video controls id="video-player">
+                <source src="videos/video.mp4" type="video/mp4"> <!-- Kontrollera filvägen till videon -->
                 Your browser does not support the video tag.
             </video>
         </div>
+
+        <!-- Visa filnamnet här -->
+        <div id="file-name">No file selected</div>
 
         <div class="section-container">
             <div class="section">
@@ -197,6 +207,9 @@
         <button class="button browse-button" id="browse-btn">Browse my files</button>
     </div>
 
+    <!-- File input för att ladda upp en fil -->
+    <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+
     <script>
         // Uppdatera volymprocenten och ikoner vid sliderförändring
         function updateVolumePercentage(type) {
@@ -207,7 +220,6 @@
             
             volumePercentage.textContent = `${volume}%`;
 
-            // Uppdatera ikon baserat på volym
             if (volume == 0) {
                 volumeIcon.textContent = '🔇';
             } else if (volume <= 30) {
@@ -219,7 +231,7 @@
             }
         }
 
-        // Funktion för att spara volyminställningar till en fil
+        // Spara volyminställningar till en fil
         document.getElementById("save-btn").addEventListener("click", function() {
             const settings = {
                 originalVolume: document.getElementById("original-volume").value,
@@ -237,7 +249,22 @@
             a.click();
         });
 
-        // Funktion för att bläddra bland filer (kommer att implementeras här)
+        // Hantera filval från användaren
+        document.getElementById("browse-btn").addEventListener("click", function() {
+            document.getElementById("file-input").click();
+        });
+
+        // Funktion för att visa vald fil under videospelaren
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const fileName = file.name;
+                document.getElementById("file-name").textContent = `Selected file: ${fileName}`;
+                const videoElement = document.getElementById("video-player");
+                const fileURL = URL.createObjectURL(file);
+                videoElement.src = fileURL; // Byt ut videon mot den valda filen
+            }
+        }
     </script>
 
 </body>
