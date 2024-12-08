@@ -66,6 +66,28 @@
             flex: 1;
         }
 
+        .volume-slider-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-slider {
+            width: 200px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .volume-slider:hover {
+            transform: scale(1.05);
+        }
+
+        .volume-percentage {
+            font-size: 14px;
+            color: #4F4A85;
+        }
+
         .buttons-container {
             position: fixed;
             bottom: 20px;
@@ -126,16 +148,94 @@
         </div>
 
         <div class="file-info" id="file-info">No file selected</div>
+
+        <div class="section-container">
+            <div class="section">
+                <div class="section-text">Your original File</div>
+            </div>
+            <div class="volume-slider-container">
+                <span id="original-volume-icon" class="volume-icon">🔊</span>
+                <div class="volume-percentage" id="original-volume-percent">40%</div>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
+            </div>
+
+            <div class="section">
+                <div class="section-text">Overwriting audio</div>
+            </div>
+            <div class="volume-slider-container">
+                <span id="corrupted-volume-icon" class="volume-icon">🔊</span>
+                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
+            </div>
+
+            <div class="section">
+                <div class="section-text">The Music from your file</div>
+            </div>
+            <div class="volume-slider-container">
+                <span id="music-volume-icon" class="volume-icon">🔊</span>
+                <div class="volume-percentage" id="music-volume-percent">30%</div>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
+            </div>
+
+            <div class="section">
+                <div class="section-text">The Final Result</div>
+            </div>
+            <div class="volume-slider-container">
+                <span id="final-volume-icon" class="volume-icon">🔊</span>
+                <div class="volume-percentage" id="final-volume-percent">70%</div>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
+            </div>
+        </div>
     </div>
 
     <div class="buttons-container">
+        <button class="button" id="save-btn">Save</button>
         <button class="button" id="browse-btn">Browse my files</button>
     </div>
 
     <input type="file" id="file-input" style="display: none;" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
 
     <script>
-        // Function to handle file selection
+        // Uppdatera volymprocenten och ikoner vid sliderförändring
+        function updateVolumePercentage(type) {
+            const volumeSlider = document.getElementById(`${type}-volume`);
+            const volume = volumeSlider.value;
+            const volumePercentage = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            
+            volumePercentage.textContent = `${volume}%`;
+
+            // Uppdatera ikon baserat på volym
+            if (volume == 0) {
+                volumeIcon.textContent = '🔇';
+            } else if (volume <= 30) {
+                volumeIcon.textContent = '🔈';
+            } else if (volume <= 70) {
+                volumeIcon.textContent = '🔉';
+            } else {
+                volumeIcon.textContent = '🔊';
+            }
+        }
+
+        // Funktion för att spara volyminställningar till en fil
+        document.getElementById("save-btn").addEventListener("click", function() {
+            const settings = {
+                originalVolume: document.getElementById("original-volume").value,
+                corruptedVolume: document.getElementById("corrupted-volume").value,
+                musicVolume: document.getElementById("music-volume").value,
+                finalVolume: document.getElementById("final-volume").value
+            };
+
+            const fileContent = JSON.stringify(settings, null, 2);
+            const blob = new Blob([fileContent], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "audio_settings.json";
+            a.click();
+        });
+
+        // Funktion för att hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfo = document.getElementById('file-info');
@@ -143,23 +243,22 @@
             const videoSource = document.getElementById('video-source');
 
             if (file) {
-                // Check if file is a valid video type
+                // Kontrollera om filen är en kompatibel videotyp
                 if (file.type === 'video/mp4' || file.type === 'video/webm') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
 
-                    // Update file info message
+                    // Uppdatera filnamnet
                     fileInfo.textContent = `Selected file: ${file.name}`;
-
                 } else {
-                    // If file is not a valid video type
+                    // Om filen inte är kompatibel
                     fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
                 }
             }
         }
 
-        // Trigger file input when button is clicked
+        // Trigger för att öppna filväljaren
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
         });
