@@ -14,39 +14,19 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            align-items: flex-start;
+            align-items: center;
             height: 100vh;
-            background-image: url('images/image.jpg'); /* Kontrollera filvägen till bilden */
+            background-image: url('images/image.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             overflow-y: auto;
         }
 
-        .back-button {
-            position: fixed;
-            top: 10px;
-            left: 20px;
-            padding: 10px 20px;
-            background-color: #6a0dad;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        .back-button:hover {
-            background-color: #5c0b8a;
-        }
-
         .video-container {
-            width: 60%; 
-            height: 300px; 
+            width: 60%;
+            height: auto;
             margin: 40px auto;
-            display: flex;
-            justify-content: flex-end;
         }
 
         video {
@@ -86,28 +66,6 @@
             flex: 1;
         }
 
-        .volume-slider-container {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .volume-slider {
-            width: 200px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .volume-slider:hover {
-            transform: scale(1.05);
-        }
-
-        .volume-percentage {
-            font-size: 14px;
-            color: #4F4A85;
-        }
-
         .buttons-container {
             position: fixed;
             bottom: 20px;
@@ -131,19 +89,26 @@
             background-color: #5c0b8a;
         }
 
-        .browse-button {
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
             background-color: #6a0dad;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        .browse-button:hover {
+        .back-button:hover {
             background-color: #5c0b8a;
         }
 
-        /* Styler för filnamnet som visas under videospelaren */
-        #file-name {
+        .file-info {
             color: #fff;
             font-size: 16px;
-            text-align: center;
             margin-top: 20px;
         }
     </style>
@@ -155,116 +120,49 @@
     <div class="editor-content">
         <div class="video-container">
             <video controls id="video-player">
-                <source src="videos/video.mp4" type="video/mp4"> <!-- Kontrollera filvägen till videon -->
-                Your browser does not support the video tag.
+                <source id="video-source" src="videos/video.mp4" type="video/mp4">
+                Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
 
-        <!-- Visa filnamnet här -->
-        <div id="file-name">No file selected</div>
-
-        <div class="section-container">
-            <div class="section">
-                <div class="section-text">Your original File</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="original-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="original-volume-percent">40%</div>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">Overwriting audio</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="corrupted-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Music from your file</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="music-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="music-volume-percent">30%</div>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Final Result</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="final-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="final-volume-percent">70%</div>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
-            </div>
-        </div>
+        <div class="file-info" id="file-info">No file selected</div>
     </div>
 
     <div class="buttons-container">
-        <button class="button" id="save-btn">Save</button>
-        <button class="button browse-button" id="browse-btn">Browse my files</button>
+        <button class="button" id="browse-btn">Browse my files</button>
     </div>
 
-    <!-- File input för att ladda upp en fil -->
-    <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+    <input type="file" id="file-input" style="display: none;" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
 
     <script>
-        // Uppdatera volymprocenten och ikoner vid sliderförändring
-        function updateVolumePercentage(type) {
-            const volumeSlider = document.getElementById(`${type}-volume`);
-            const volume = volumeSlider.value;
-            const volumePercentage = document.getElementById(`${type}-volume-percent`);
-            const volumeIcon = document.getElementById(`${type}-volume-icon`);
-            
-            volumePercentage.textContent = `${volume}%`;
-
-            if (volume == 0) {
-                volumeIcon.textContent = '🔇';
-            } else if (volume <= 30) {
-                volumeIcon.textContent = '🔈';
-            } else if (volume <= 70) {
-                volumeIcon.textContent = '🔉';
-            } else {
-                volumeIcon.textContent = '🔊';
-            }
-        }
-
-        // Spara volyminställningar till en fil
-        document.getElementById("save-btn").addEventListener("click", function() {
-            const settings = {
-                originalVolume: document.getElementById("original-volume").value,
-                corruptedVolume: document.getElementById("corrupted-volume").value,
-                musicVolume: document.getElementById("music-volume").value,
-                finalVolume: document.getElementById("final-volume").value
-            };
-
-            const fileContent = JSON.stringify(settings, null, 2);
-            const blob = new Blob([fileContent], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "audio_settings.json";
-            a.click();
-        });
-
-        // Hantera filval från användaren
-        document.getElementById("browse-btn").addEventListener("click", function() {
-            document.getElementById("file-input").click();
-        });
-
-        // Funktion för att visa vald fil under videospelaren
+        // Function to handle file selection
         function handleFileSelect(event) {
             const file = event.target.files[0];
+            const fileInfo = document.getElementById('file-info');
+            const videoPlayer = document.getElementById('video-player');
+            const videoSource = document.getElementById('video-source');
+
             if (file) {
-                const fileName = file.name;
-                document.getElementById("file-name").textContent = `Selected file: ${fileName}`;
-                const videoElement = document.getElementById("video-player");
-                const fileURL = URL.createObjectURL(file);
-                videoElement.src = fileURL; // Byt ut videon mot den valda filen
+                // Check if file is a valid video type
+                if (file.type === 'video/mp4' || file.type === 'video/webm') {
+                    const fileURL = URL.createObjectURL(file);
+                    videoSource.src = fileURL;
+                    videoPlayer.load();
+
+                    // Update file info message
+                    fileInfo.textContent = `Selected file: ${file.name}`;
+
+                } else {
+                    // If file is not a valid video type
+                    fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
+                }
             }
         }
+
+        // Trigger file input when button is clicked
+        document.getElementById('browse-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
     </script>
 
 </body>
