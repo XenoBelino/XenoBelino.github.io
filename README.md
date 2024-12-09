@@ -38,92 +38,28 @@
             background: linear-gradient(135deg, #000000, #6a0dad);
         }
 
-        .stars {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
+        /* Styling för knappar */
+        #change-background-btn, .mode-btn {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #6a0dad;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
         }
 
-        .star {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            box-shadow: 0px 0px 2px white;
-            transition: transform 1s ease, opacity 1s ease;
+        #change-background-btn:hover, .mode-btn:hover {
+            background-color: #5c0b8a;
         }
 
-        .falling-star {
-            position: absolute;
-            width: 40px;
-            height: 2px;
-            background: white;
-            opacity: 0.5;
-            transform: rotate(45deg);
-            animation: fall 2s infinite;
-        }
-
-        /* Animation för stjärnfall */
-        @keyframes fall {
-            0% {
-                transform: translate(0, 0) rotate(45deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(300px, 400px) rotate(45deg);
-                opacity: 0;
-            }
-        }
-
+        /* Huvudinnehåll */
         .content {
             position: relative;
             z-index: 2;
             text-align: center;
             color: white;
-        }
-
-        /* Styling för header och knappar */
-        #change-background-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px;
-            background-color: #6a0dad;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        #change-background-btn:hover {
-            background-color: #5c0b8a;
-        }
-
-        /* Layout för innehållet */
-        .homepage {
-            padding-top: 100px;
-        }
-
-        .button {
-            padding: 10px 20px;
-            margin: 20px;
-            background-color: #6a0dad;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .button:hover {
-            background-color: #5c0b8a;
         }
     </style>
 </head>
@@ -131,50 +67,29 @@
 
 <!-- Bakgrund -->
 <div class="background" id="background">
-    <!-- Stjärnor på bakgrund -->
-    <div class="stars" id="stars"></div>
-
     <!-- Innehåll på sidan -->
     <div class="content">
-        <!-- Knappens text ändrad här -->
+        <!-- Knapp för att ändra bakgrund -->
         <button id="change-background-btn">Change Background</button>
+
+        <!-- Knappar för Dark Mode och Light Mode, initialt gömda -->
+        <div id="mode-buttons" style="display: none;">
+            <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
+            <button class="mode-btn" id="light-mode-btn">Light Mode</button>
+        </div>
 
         <div class="homepage">
             <h1>Welcome to My Website</h1>
             <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
-            <!-- Länk till annan sida -->
-            <a href="page.html" class="button">Go to Page</a>
         </div>
     </div>
 </div>
 
 <script>
-    // Funktion för att skapa stjärnor på bakgrunden
-    function createStars() {
-        const starContainer = document.getElementById("stars");
-
-        for (let i = 0; i < 100; i++) {
-            let star = document.createElement("div");
-            star.classList.add("star");
-            star.style.top = `${Math.random() * 100}%`;
-            star.style.left = `${Math.random() * 100}%`;
-            star.style.animationDuration = `${Math.random() * 2 + 1}s`;
-            starContainer.appendChild(star);
-        }
-
-        // Stjärnfallseffekt
-        for (let i = 0; i < 5; i++) {
-            let fallingStar = document.createElement("div");
-            fallingStar.classList.add("falling-star");
-            fallingStar.style.top = `${Math.random() * 100}%`;
-            fallingStar.style.left = `${Math.random() * 100}%`;
-            starContainer.appendChild(fallingStar);
-        }
-    }
-
-    // Växla mellan Light Mode och Dark Mode
+    // För att hålla reda på bakgrundsläget
     let isDarkMode = false;
 
+    // Funktion för att växla bakgrundsläge
     function toggleBackground() {
         const background = document.getElementById("background");
         if (isDarkMode) {
@@ -185,18 +100,27 @@
         isDarkMode = !isDarkMode;
     }
 
-    // Klickhändelse för knappen "Change Background"
+    // Visa/Återställ mode-knappar när användaren klickar på "Change Background"
     document.getElementById("change-background-btn").addEventListener("click", () => {
-        const lightModeOption = confirm("Choose Light Mode (OK) or Dark Mode (Cancel).");
-        if (lightModeOption) {
-            toggleBackground(); // byta till Light Mode
-        } else {
-            toggleBackground(); // byta till Dark Mode
-        }
-    });
+        const modeButtons = document.getElementById("mode-buttons");
+        modeButtons.style.display = "block"; // Visa knapparna
 
-    // Skapa stjärnorna när sidan laddas
-    createStars();
+        // När användaren klickar på "Light Mode"
+        document.getElementById("light-mode-btn").addEventListener("click", () => {
+            if (isDarkMode) {
+                toggleBackground(); // Byt till Light Mode
+            }
+            modeButtons.style.display = "none"; // Dölj knapparna efter val
+        });
+
+        // När användaren klickar på "Dark Mode"
+        document.getElementById("dark-mode-btn").addEventListener("click", () => {
+            if (!isDarkMode) {
+                toggleBackground(); // Byt till Dark Mode
+            }
+            modeButtons.style.display = "none"; // Dölj knapparna efter val
+        });
+    });
 </script>
 
 </body>
