@@ -4,29 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Website</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> <!-- Länkar till din externa CSS-fil -->
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body id="background">
+    <div id="file-info"></div>
+    <div id="media-container"></div>
 
-<!-- Bakgrund -->
-<div class="background" id="background">
-    <!-- Stjärnor på bakgrunden -->
-    <div class="stars" id="stars"></div>
+    <input type="file" id="file-input" onchange="handleFileSelect(event)">
+    <button id="change-background-btn">Change Background</button>
+    <input type="range" id="volume" min="0" max="1" step="0.01" onchange="adjustVolume()">
+    <div id="wavesurfer"></div>
 
-    <!-- Innehåll på sidan -->
-    <div class="content">
-        <!-- Knapp för att ändra bakgrund -->
-        <button id="change-background-btn">Change Background</button>
-
-        <div class="homepage">
-            <h1>Welcome to My Website</h1>
-            <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
-            <a href="page.html" class="button">Go to Page</a>
-        </div>
-    </div>
-</div>
-
-<script src="scripts.js"></script> <!-- Länkar till din externa JavaScript-fil -->
+    <script src="scripts.js"></script>
 </body>
 </html>
