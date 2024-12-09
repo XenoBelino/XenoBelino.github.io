@@ -142,33 +142,3 @@ body {
     position: relative;
     z-index: 2;
 }
-
-/* För responsivitet */
-@media (max-width: 768px) {
-    .container-lg {
-        padding: 15px;
-    }
-
-    #file-info {
-        font-size: 12px;
-    }
-
-    button, #save-button {
-        font-size: 14px;
-        padding: 10px 20px;
-    }
-
-    #volume-slider {
-        width: 90%;
-    }
-}
-
-@media (max-width: 480px) {
-    #volume-slider {
-        width: 100%;
-    }
-
-    video {
-        max-width: 100%;
-    }
-}
