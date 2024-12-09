@@ -9,8 +9,6 @@ body {
     align-items: center;
     justify-content: flex-start;
     overflow: hidden;
-    background-color: #f0f0f0;
-    color: #383351;
 }
 
 /* Bakgrund för sidan */
@@ -20,7 +18,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #a85ec7, #f0a8d8);
+    background: linear-gradient(135deg, #a85ec7, #f0a8d8); /* Standard bakgrund */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,6 +26,7 @@ body {
     transition: background 1s ease;
 }
 
+/* För Dark Mode */
 .dark-background {
     background: linear-gradient(135deg, #000000, #6a0dad);
 }
@@ -58,8 +57,8 @@ body {
 
 /* Justera Change Background knappen till övre höger hörnet */
 #change-background-btn {
-    position: absolute;
-    top: 20px; /* Högt upp på sidan */
+    position: fixed; /* Fixerat läge för att hålla knappen på plats */
+    top: 10px; /* Högt upp på sidan */
     right: 20px; /* Högerställt */
     z-index: 10;
 }
@@ -69,8 +68,8 @@ body {
     display: none;
     flex-direction: column;
     align-items: flex-start;
-    position: absolute;
-    top: 60px; /* Under Change Background knappen */
+    position: fixed;
+    top: 50px; /* Justera avstånd från Change Background */
     right: 20px;
     z-index: 10;
 }
@@ -91,7 +90,7 @@ body {
     justify-content: center;
     align-items: center;
     pointer-events: none;
-    z-index: -1;
+    z-index: -1; /* Gör så att stjärnorna är i bakgrunden */
 }
 
 .star {
@@ -135,10 +134,4 @@ body {
         transform: translate(300px, 400px) rotate(45deg);
         opacity: 0;
     }
-}
-
-/* För att säkerställa att Go to Page-knappen visas överst */
-#go-to-page-btn {
-    position: relative;
-    z-index: 2;
 }
