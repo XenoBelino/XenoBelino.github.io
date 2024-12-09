@@ -52,3 +52,27 @@ function adjustVolume() {
         mediaElement.volume = volumeControl.value;
     }
 }
+
+// Bakgrundshantering
+let isDarkMode = false; // Flagga för att hålla reda på bakgrundsläget
+
+function toggleBackground() {
+    const background = document.getElementById("background");
+    if (isDarkMode) {
+        background.classList.remove("dark-background");
+    } else {
+        background.classList.add("dark-background");
+    }
+    isDarkMode = !isDarkMode;
+}
+
+// Klickhändelse för bakgrundsändring
+document.getElementById("change-background-btn").addEventListener("click", () => {
+    const lightModeOption = confirm("Choose Light Mode (OK) or Dark Mode (Cancel).");
+
+    if (lightModeOption) {
+        toggleBackground(); // Byt bakgrund till Dark Mode eller Light Mode
+    } else {
+        console.log("Bakgrunden förblev oförändrad.");
+    }
+});
