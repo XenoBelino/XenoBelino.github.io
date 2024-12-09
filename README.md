@@ -62,12 +62,20 @@
             color: white;
         }
 
-        /* Flytta Change Background knappen till övre höger hörnet */
+        /* Flytta Change Background knappen till högre upp till vänster */
         #change-background-btn {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 20px;
             z-index: 10;
+        }
+
+        /* Visa knappar för Light Mode och Dark Mode under varandra */
+        #mode-buttons {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
         }
 
         /* Styling för Go to Page knappen */
@@ -153,7 +161,7 @@
         <button id="change-background-btn">Change Background</button>
 
         <!-- Knappar för Dark Mode och Light Mode -->
-        <div id="mode-buttons" style="display: none;">
+        <div id="mode-buttons">
             <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
             <button class="mode-btn" id="light-mode-btn">Light Mode</button>
         </div>
@@ -210,7 +218,7 @@
     // Växla mellan Light Mode och Dark Mode
     document.getElementById("change-background-btn").addEventListener("click", () => {
         const modeButtons = document.getElementById("mode-buttons");
-        modeButtons.style.display = "block"; // Visa knapparna
+        modeButtons.style.display = "flex"; // Visa knapparna vertikalt
 
         // När användaren klickar på "Light Mode"
         document.getElementById("light-mode-btn").addEventListener("click", () => {
