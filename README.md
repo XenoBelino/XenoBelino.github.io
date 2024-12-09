@@ -19,7 +19,6 @@
             overflow: hidden;
         }
 
-
         /* Bakgrund för sidan */
         .background {
             position: absolute;
@@ -35,11 +34,9 @@
             transition: background 1s ease;
         }
 
-
         .dark-background {
             background: linear-gradient(135deg, #000000, #6a0dad);
         }
-
 
         .stars {
             position: absolute;
@@ -52,7 +49,6 @@
             pointer-events: none;
         }
 
-
         .star {
             position: absolute;
             width: 20px;
@@ -63,7 +59,6 @@
             transition: transform 1s ease, opacity 1s ease;
         }
 
-
         .falling-star {
             position: absolute;
             width: 40px;
@@ -73,7 +68,6 @@
             transform: rotate(45deg);
             animation: fall 2s infinite;
         }
-
 
         /* Animation för stjärnfall */
         @keyframes fall {
@@ -87,14 +81,12 @@
             }
         }
 
-
         .content {
             position: relative;
             z-index: 2;
             text-align: center;
             color: white;
         }
-
 
         /* Styling för header och knappar */
         #change-background-btn {
@@ -110,17 +102,14 @@
             z-index: 10;
         }
 
-
         #change-background-btn:hover {
             background-color: #5c0b8a;
         }
-
 
         /* Layout för innehållet */
         .homepage {
             padding-top: 100px;
         }
-
 
         .button {
             padding: 10px 20px;
@@ -133,41 +122,54 @@
             border-radius: 5px;
         }
 
-
         .button:hover {
             background-color: #5c0b8a;
+        }
+
+        /* Filväljare och info */
+        #fileInput {
+            display: none;
+        }
+
+        #fileInfo {
+            margin-top: 20px;
+            color: white;
         }
     </style>
 </head>
 <body>
-
 
 <!-- Bakgrund -->
 <div class="background" id="background">
     <!-- Stjärnor på bakgrund -->
     <div class="stars" id="stars"></div>
 
-
     <!-- Innehåll på sidan -->
     <div class="content">
         <button id="change-background-btn">Senge background</button>
 
-
         <div class="homepage">
             <h1>Welcome to My Website</h1>
             <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
+
             <!-- Länk till annan sida -->
             <a href="page.html" class="button">Go to Page</a>
+
+            <!-- Browse Files knappen -->
+            <button id="browseFilesButton" class="button">Browse my files</button>
+
+            <!-- Filväljare -->
+            <input type="file" id="fileInput" />
+            <!-- Filinformation -->
+            <div id="fileInfo"></div>
         </div>
     </div>
 </div>
-
 
 <script>
     // Funktion för att skapa stjärnor på bakgrunden
     function createStars() {
         const starContainer = document.getElementById("stars");
-
 
         for (let i = 0; i < 100; i++) {
             let star = document.createElement("div");
@@ -177,7 +179,6 @@
             star.style.animationDuration = `${Math.random() * 2 + 1}s`;
             starContainer.appendChild(star);
         }
-
 
         // Stjärnfallseffekt
         for (let i = 0; i < 5; i++) {
@@ -189,10 +190,8 @@
         }
     }
 
-
     // Växla mellan Light Mode och Dark Mode
     let isDarkMode = false;
-
 
     function toggleBackground() {
         const background = document.getElementById("background");
@@ -204,7 +203,6 @@
         isDarkMode = !isDarkMode;
     }
 
-
     // Klickhändelse för knappen "Senge background"
     document.getElementById("change-background-btn").addEventListener("click", () => {
         const lightModeOption = confirm("Choose Light Mode (OK) or Dark Mode (Cancel).");
@@ -215,11 +213,24 @@
         }
     });
 
+    // Klickhändelse för knappen "Browse my files"
+    document.getElementById('browseFilesButton').addEventListener('click', function() {
+        document.getElementById('fileInput').click(); // Simulerar ett klick på filväljaren
+    });
+
+    // Hantera val av fil
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        const file = event.target.files[0]; // Hämta den valda filen
+        if (file) {
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.innerHTML = `Selected File: ${file.name}<br>File Type: ${file.type}<br>File Size: ${file.size} bytes`;
+        }
+    });
 
     // Skapa stjärnorna när sidan laddas
     createStars();
 </script>
 
-
 </body>
 </html>
+
