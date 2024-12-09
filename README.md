@@ -125,6 +125,17 @@
         .button:hover {
             background-color: #5c0b8a;
         }
+
+        /* File info */
+        #fileInfo {
+            margin-top: 20px;
+            color: white;
+        }
+
+        /* Volymkontroll */
+        .volume-control {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -141,8 +152,13 @@
         <div class="homepage">
             <h1>Welcome to My Website</h1>
             <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
-            <!-- Länk till annan sida -->
-            <a href="page.html" class="button">Go to Page</a>
+            
+            <!-- Button to browse files -->
+            <button id="browseFilesButton" class="button">Browse my files</button>
+            <input type="file" id="fileInput" style="display: none;" />
+            
+            <!-- File info -->
+            <div id="fileInfo"></div>
         </div>
     </div>
 </div>
@@ -196,6 +212,63 @@
 
     // Skapa stjärnorna när sidan laddas
     createStars();
+
+    // Browse Files - öppna filväljaren när knappen klickas
+    document.getElementById('browseFilesButton').addEventListener('click', function() {
+        document.getElementById('fileInput').click(); // Simulerar ett klick på filväljaren
+    });
+
+    // Hantera filväljaren
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        const file = event.target.files[0]; // Hämta den valda filen
+        if (file) {
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.innerHTML = `Selected File: ${file.name}<br>File Type: ${file.type}<br>File Size: ${file.size} bytes`;
+
+            // Om filen är en video
+            if (file.type.startsWith('video')) {
+                const videoElement = document.createElement('video');
+                videoElement.controls = true;
+                const fileURL = URL.createObjectURL(file);
+                videoElement.src = fileURL;
+                document.body.appendChild(videoElement); // Lägg till videospelaren på sidan
+
+                // Lägg till volymkontroll
+                const volumeControl = document.createElement('input');
+                volumeControl.type = 'range';
+                volumeControl.min = 0;
+                volumeControl.max = 1;
+                volumeControl.step = 0.01;
+                volumeControl.value = 1; // Initial volym
+                volumeControl.classList.add('volume-control');
+                volumeControl.addEventListener('input', function() {
+                    videoElement.volume = volumeControl.value;
+                });
+                document.body.appendChild(volumeControl);
+            } 
+            // Om filen är ett ljud
+            else if (file.type.startsWith('audio')) {
+                const audioElement = document.createElement('audio');
+                audioElement.controls = true;
+                const fileURL = URL.createObjectURL(file);
+                audioElement.src = fileURL;
+                document.body.appendChild(audioElement); // Lägg till ljudspelaren på sidan
+
+                // Lägg till volymkontroll
+                const volumeControl = document.createElement('input');
+                volumeControl.type = 'range';
+                volumeControl.min = 0;
+                volumeControl.max = 1;
+                volumeControl.step = 0.01;
+                volumeControl.value = 1; // Initial volym
+                volumeControl.classList.add('volume-control');
+                volumeControl.addEventListener('input', function() {
+                    audioElement.volume = volumeControl.value;
+                });
+                document.body.appendChild(volumeControl);
+            }
+        }
+    });
 </script>
 
 </body>
