@@ -136,7 +136,8 @@
 
     <!-- Innehåll på sidan -->
     <div class="content">
-        <button id="change-background-btn">Senge background</button>
+        <!-- Knappens text ändrad här -->
+        <button id="change-background-btn">Change Background</button>
 
         <div class="homepage">
             <h1>Welcome to My Website</h1>
@@ -184,7 +185,7 @@
         isDarkMode = !isDarkMode;
     }
 
-    // Klickhändelse för knappen "Senge background"
+    // Klickhändelse för knappen "Change Background"
     document.getElementById("change-background-btn").addEventListener("click", () => {
         const lightModeOption = confirm("Choose Light Mode (OK) or Dark Mode (Cancel).");
         if (lightModeOption) {
