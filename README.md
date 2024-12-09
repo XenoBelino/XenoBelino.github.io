@@ -65,8 +65,8 @@
         /* Justera Change Background knappen till övre höger hörnet */
         #change-background-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 20px; /* Högt upp på sidan */
+            right: 20px; /* Högerställt */
             z-index: 10;
         }
 
@@ -76,8 +76,8 @@
             flex-direction: column;
             align-items: flex-start;
             position: absolute;
-            top: 60px;
-            right: 10px;
+            top: 60px; /* Under Change Background knappen */
+            right: 20px;
             z-index: 10;
         }
 
