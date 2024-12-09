@@ -62,20 +62,23 @@
             color: white;
         }
 
-        /* Flytta Change Background knappen till högre upp till vänster */
+        /* Justera Change Background knappen till övre höger hörnet */
         #change-background-btn {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 10px;
+            right: 10px;
             z-index: 10;
         }
 
-        /* Visa knappar för Light Mode och Dark Mode under varandra */
+        /* Visa knappar för Dark Mode och Light Mode vertikalt under Change Background knappen */
         #mode-buttons {
             display: none;
             flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
+            align-items: flex-start;
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            z-index: 10;
         }
 
         /* Styling för Go to Page knappen */
