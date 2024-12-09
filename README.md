@@ -125,16 +125,6 @@
         .button:hover {
             background-color: #5c0b8a;
         }
-
-        /* Filväljare och info */
-        #fileInput {
-            display: none;
-        }
-
-        #fileInfo {
-            margin-top: 20px;
-            color: white;
-        }
     </style>
 </head>
 <body>
@@ -151,7 +141,6 @@
         <div class="homepage">
             <h1>Welcome to My Website</h1>
             <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
-
             <!-- Länk till annan sida -->
             <a href="page.html" class="button">Go to Page</a>
         </div>
