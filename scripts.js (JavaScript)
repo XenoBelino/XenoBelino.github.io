@@ -50,4 +50,5 @@ document.getElementById("change-background-btn").addEventListener("click", () =>
         modeButtons.style.display = "none"; // Dölj knapparna efter val
     });
 
-   
+    // När användaren klickar på "Dark Mode"
+    document.getElementById("dark
