@@ -6,7 +6,6 @@
     <title>Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Grundläggande styling */
         body {
             font-family: 'Lato', sans-serif;
             margin: 0;
@@ -32,7 +31,6 @@
             transition: background 1s ease;
         }
 
-        /* Styling för knappar och layout */
         .button {
             padding: 10px 20px;
             margin: 20px;
@@ -48,7 +46,6 @@
             background-color: #5c0b8a;
         }
 
-        /* Filväljare och info */
         #fileInput {
             display: none;
         }
@@ -61,31 +58,23 @@
 </head>
 <body>
 
-<!-- Bakgrund -->
-<div class="background" id="background">
-    <!-- Innehåll på sidan -->
+<div class="background">
     <div class="content">
-        <button id="change-background-btn">Change Background</button>
-
-        <!-- Browse Files Knapp -->
+        <button id="change-background-btn" class="button">Change Background</button>
         <button id="browseFilesButton" class="button">Browse my files</button>
 
-        <!-- Filväljare -->
         <input type="file" id="fileInput" />
-        <!-- Filinformation -->
         <div id="fileInfo"></div>
     </div>
 </div>
 
 <script>
-    // Klickhändelse för knappen "Browse my files"
     document.getElementById('browseFilesButton').addEventListener('click', function() {
-        document.getElementById('fileInput').click(); // Simulerar ett klick på filväljaren
+        document.getElementById('fileInput').click();
     });
 
-    // Hantera val av fil
     document.getElementById('fileInput').addEventListener('change', function(event) {
-        const file = event.target.files[0]; // Hämta den valda filen
+        const file = event.target.files[0];
         if (file) {
             const fileInfo = document.getElementById('fileInfo');
             fileInfo.innerHTML = `Selected File: ${file.name}<br>File Type: ${file.type}<br>File Size: ${file.size} bytes`;
