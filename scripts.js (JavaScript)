@@ -1,9 +1,7 @@
-let mediaElement = null; // Will hold audio or video element
-let wavesurfer = null; // Will hold Wavesurfer instance
+// För att hålla reda på bakgrundsläget
+let isDarkMode = false;
 
-// Bakgrundshantering
-let isDarkMode = false; // Flagga för att hålla reda på bakgrundsläget
-
+// Funktion för att växla bakgrundsläge
 function toggleBackground() {
     const background = document.getElementById("background");
     if (isDarkMode) {
@@ -14,70 +12,43 @@ function toggleBackground() {
     isDarkMode = !isDarkMode;
 }
 
-// Klickhändelse för bakgrundsändring
+// Funktion för att skapa stjärnorna
+function createStars() {
+    const starContainer = document.getElementById("stars");
+
+    // Skapa en mängd stjärnor
+    for (let i = 0; i < 100; i++) {
+        let star = document.createElement("div");
+        star.classList.add("star");
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDuration = `${Math.random() * 1.5 + 1}s`;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        starContainer.appendChild(star);
+    }
+
+    // Stjärnfallseffekt
+    for (let i = 0; i < 5; i++) {
+        let fallingStar = document.createElement("div");
+        fallingStar.classList.add("falling-star");
+        fallingStar.style.top = `${Math.random() * 100}%`;
+        fallingStar.style.left = `${Math.random() * 100}%`;
+        starContainer.appendChild(fallingStar);
+    }
+}
+
+// Växla mellan Light Mode och Dark Mode
 document.getElementById("change-background-btn").addEventListener("click", () => {
-    // Här frågar vi om användaren vill byta till Dark Mode eller Light Mode.
-    const lightModeOption = confirm("Choose Light Mode (OK) or Dark Mode (Cancel).");
+    const modeButtons = document.getElementById("mode-buttons");
+    modeButtons.style.display = "flex"; // Visa knapparna vertikalt
 
-    // Endast om användaren klickar på OK (confirm returnerar true)
-    if (lightModeOption) {
-        toggleBackground(); // Växla bakgrund (Dark Mode / Light Mode)
-    } else {
-        // Om användaren klickar på Avbryt, gör ingenting
-        console.log("Bakgrunden förblev oförändrad.");
-    }
-});
-
-// Hanterar filval och visar media (audio/video)
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    const mediaContainer = document.getElementById('media-container');
-
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        let extension = file.name.split('.').pop().toLowerCase();
-        
-        // Clear previous media
-        mediaContainer.innerHTML = '';
-
-        // Hantera ljudfiler
-        if (['mp3', 'wav', 'ogg'].includes(extension)) {
-            // Skapa ett ljudelement
-            mediaElement = document.createElement('audio');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-
-            // Initiera Wavesurfer
-            wavesurfer = WaveSurfer.create({
-                container: '#wavesurfer',
-                waveColor: '#ff6347',
-                progressColor: '#f00',
-                backend: 'MediaElement',
-                mediaElement: mediaElement
-            });
-
-            wavesurfer.load(mediaElement.src); // Ladda den valda ljudfilen
-
-        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-            // Hantera videofiler
-            mediaElement = document.createElement('video');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-        } else {
-            fileInfoDiv.textContent = "Unsupported file type!";
+    // När användaren klickar på "Light Mode"
+    document.getElementById("light-mode-btn").addEventListener("click", () => {
+        if (isDarkMode) {
+            toggleBackground(); // Byt till Light Mode
         }
-    }
-}
+        modeButtons.style.display = "none"; // Dölj knapparna efter val
+    });
 
-// Justera volymen för medieelementet
-function adjustVolume() {
-    let volumeControl = document.getElementById('volume');
-    if (mediaElement) {
-        mediaElement.volume = volumeControl.value;
-    }
-}
-
-
+    // När användaren klickar på "Dark Mode"
+    document
