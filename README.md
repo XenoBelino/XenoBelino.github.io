@@ -154,14 +154,6 @@
 
             <!-- Länk till annan sida -->
             <a href="page.html" class="button">Go to Page</a>
-
-            <!-- Browse Files knappen -->
-            <button id="browseFilesButton" class="button">Browse my files</button>
-
-            <!-- Filväljare -->
-            <input type="file" id="fileInput" />
-            <!-- Filinformation -->
-            <div id="fileInfo"></div>
         </div>
     </div>
 </div>
@@ -213,24 +205,9 @@
         }
     });
 
-    // Klickhändelse för knappen "Browse my files"
-    document.getElementById('browseFilesButton').addEventListener('click', function() {
-        document.getElementById('fileInput').click(); // Simulerar ett klick på filväljaren
-    });
-
-    // Hantera val av fil
-    document.getElementById('fileInput').addEventListener('change', function(event) {
-        const file = event.target.files[0]; // Hämta den valda filen
-        if (file) {
-            const fileInfo = document.getElementById('fileInfo');
-            fileInfo.innerHTML = `Selected File: ${file.name}<br>File Type: ${file.type}<br>File Size: ${file.size} bytes`;
-        }
-    });
-
     // Skapa stjärnorna när sidan laddas
     createStars();
 </script>
 
 </body>
 </html>
-
