@@ -1,110 +1,149 @@
-styles.css (Stilmall)
 /* Allmänna inställningar */
 body {
     font-family: 'Lato', sans-serif;
-    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
-    color: #383351;
-    line-height: 1.6;
-}
-
-/* Container för centrering och padding */
-.container-lg {
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    max-width: 100%;
-}
-
-/* Stil för knappar */
-button {
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: 2px solid #4F4A85;
-    background-color: #383351;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-button:hover {
-    background-color: #4F4A85;
-    transform: scale(1.05); /* Ger en lätt zoom-effekt på hover */
-}
-
-button:active {
-    transform: scale(0.98); /* Gör knappen lite mindre när den är klickad */
-}
-
-/* Länk under rubriken */
-h1 a {
+    justify-content: flex-start;
+    overflow: hidden;
+    background-color: #f0f0f0;
     color: #383351;
-    text-decoration: none;
-    font-weight: 700;
 }
 
-/* Stil för information om filen */
-#file-info {
-    margin-top: 10px;
-    color: #383351;
-    font-size: 14px;
-    font-weight: 300;
-}
-
-/* Volymreglage */
-#volume-slider {
-    margin-top: 20px;
-    width: 80%; /* Lite smalare för att ge utrymme */
-    max-width: 400px; /* Begränsa bredden */
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Media container för video och ljud */
-#media-container {
-    margin-top: 20px;
+/* Bakgrund för sidan */
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    text-align: center;
+    height: 100%;
+    background: linear-gradient(135deg, #a85ec7, #f0a8d8);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    overflow: hidden;
+    transition: background 1s ease;
 }
 
-/* Save button längst ner */
-#save-button {
-    margin-top: 20px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    background-color: #4F4A85;
+.dark-background {
+    background: linear-gradient(135deg, #000000, #6a0dad);
+}
+
+/* Styling för knappar */
+#change-background-btn, .mode-btn, #go-to-page-btn {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #6a0dad;
     color: white;
     font-size: 16px;
     cursor: pointer;
     border: none;
-    transition: background-color 0.3s, transform 0.2s;
+    border-radius: 5px;
 }
 
-#save-button:hover {
-    background-color: #383351;
-    transform: scale(1.05);
+#change-background-btn:hover, .mode-btn:hover, #go-to-page-btn:hover {
+    background-color: #5c0b8a;
 }
 
-#save-button:active {
-    transform: scale(0.98);
+/* Huvudinnehåll */
+.content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
 }
 
-/* Stil för video */
-video {
+/* Justera Change Background knappen till övre höger hörnet */
+#change-background-btn {
+    position: absolute;
+    top: 20px; /* Högt upp på sidan */
+    right: 20px; /* Högerställt */
+    z-index: 10;
+}
+
+/* Visa knappar för Dark Mode och Light Mode vertikalt under Change Background knappen */
+#mode-buttons {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    top: 60px; /* Under Change Background knappen */
+    right: 20px;
+    z-index: 10;
+}
+
+/* Styling för Go to Page knappen */
+#go-to-page-btn {
     margin-top: 20px;
-    border-radius: 12px;
-    width: 100%;
-    max-width: 800px; /* Begränsar videons max-bredd */
+    background-color: #383351;
 }
 
-/* För att förbättra layouten på små skärmar */
+/* Stjärnor och gnistor */
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.star {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
+    animation: sparkle 1.5s infinite alternate;
+}
+
+@keyframes sparkle {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.falling-star {
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: white;
+    opacity: 0.8;
+    transform: rotate(45deg);
+    animation: fall 2s infinite;
+}
+
+/* Animation för stjärnfall */
+@keyframes fall {
+    0% {
+        transform: translate(0, 0) rotate(45deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(300px, 400px) rotate(45deg);
+        opacity: 0;
+    }
+}
+
+/* För att säkerställa att Go to Page-knappen visas överst */
+#go-to-page-btn {
+    position: relative;
+    z-index: 2;
+}
+
+/* För responsivitet */
 @media (max-width: 768px) {
     .container-lg {
         padding: 15px;
@@ -124,7 +163,6 @@ video {
     }
 }
 
-/* För ännu mindre skärmar som telefoner */
 @media (max-width: 480px) {
     #volume-slider {
         width: 100%;
@@ -133,10 +171,4 @@ video {
     video {
         max-width: 100%;
     }
-}
-
-/* För att ge knapparna ett "fokus" när de är i fokus (för tillgänglighet) */
-button:focus, #save-button:focus {
-    outline: 3px solid #4F4A85;
-    outline-offset: 2px;
 }
