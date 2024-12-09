@@ -1,58 +1,6 @@
 let mediaElement = null; // Will hold audio or video element
 let wavesurfer = null; // Will hold Wavesurfer instance
 
-// Handles file selection and displays the media
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const fileInfoDiv = document.getElementById('file-info');
-    const mediaContainer = document.getElementById('media-container');
-
-    if (file) {
-        fileInfoDiv.textContent = `Selected file: ${file.name}`;
-        let extension = file.name.split('.').pop().toLowerCase();
-        
-        // Clear previous media
-        mediaContainer.innerHTML = '';
-
-        // Handle audio files
-        if (['mp3', 'wav', 'ogg'].includes(extension)) {
-            // Create an audio element
-            mediaElement = document.createElement('audio');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-
-            // Initialize Wavesurfer
-            wavesurfer = WaveSurfer.create({
-                container: '#wavesurfer',
-                waveColor: '#ff6347',
-                progressColor: '#f00',
-                backend: 'MediaElement',
-                mediaElement: mediaElement
-            });
-
-            wavesurfer.load(mediaElement.src); // Load the selected audio file
-
-        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-            // Handle video files
-            mediaElement = document.createElement('video');
-            mediaElement.controls = true;
-            mediaElement.src = URL.createObjectURL(file);
-            mediaContainer.appendChild(mediaElement);
-        } else {
-            fileInfoDiv.textContent = "Unsupported file type!";
-        }
-    }
-}
-
-// Adjust the volume for the media element
-function adjustVolume() {
-    let volumeControl = document.getElementById('volume');
-    if (mediaElement) {
-        mediaElement.volume = volumeControl.value;
-    }
-}
-
 // Bakgrundshantering
 let isDarkMode = false; // Flagga för att hålla reda på bakgrundsläget
 
@@ -68,11 +16,66 @@ function toggleBackground() {
 
 // Klickhändelse för bakgrundsändring
 document.getElementById("change-background-btn").addEventListener("click", () => {
+    // Här frågar vi om användaren vill byta till Dark Mode eller Light Mode.
     const lightModeOption = confirm("Choose Light Mode (OK) or Dark Mode (Cancel).");
 
+    // Endast om användaren klickar på OK (confirm returnerar true)
     if (lightModeOption) {
-        toggleBackground(); // Byt bakgrund till Dark Mode eller Light Mode
+        toggleBackground(); // Växla bakgrund (Dark Mode / Light Mode)
     } else {
+        // Om användaren klickar på Avbryt, gör ingenting
         console.log("Bakgrunden förblev oförändrad.");
     }
 });
+
+// Hanterar filval och visar media (audio/video)
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const fileInfoDiv = document.getElementById('file-info');
+    const mediaContainer = document.getElementById('media-container');
+
+    if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        let extension = file.name.split('.').pop().toLowerCase();
+        
+        // Clear previous media
+        mediaContainer.innerHTML = '';
+
+        // Hantera ljudfiler
+        if (['mp3', 'wav', 'ogg'].includes(extension)) {
+            // Skapa ett ljudelement
+            mediaElement = document.createElement('audio');
+            mediaElement.controls = true;
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
+
+            // Initiera Wavesurfer
+            wavesurfer = WaveSurfer.create({
+                container: '#wavesurfer',
+                waveColor: '#ff6347',
+                progressColor: '#f00',
+                backend: 'MediaElement',
+                mediaElement: mediaElement
+            });
+
+            wavesurfer.load(mediaElement.src); // Ladda den valda ljudfilen
+
+        } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+            // Hantera videofiler
+            mediaElement = document.createElement('video');
+            mediaElement.controls = true;
+            mediaElement.src = URL.createObjectURL(file);
+            mediaContainer.appendChild(mediaElement);
+        } else {
+            fileInfoDiv.textContent = "Unsupported file type!";
+        }
+    }
+}
+
+// Justera volymen för medieelementet
+function adjustVolume() {
+    let volumeControl = document.getElementById('volume');
+    if (mediaElement) {
+        mediaElement.volume = volumeControl.value;
+    }
+}
