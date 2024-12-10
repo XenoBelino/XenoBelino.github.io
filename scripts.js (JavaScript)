@@ -24,6 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
             star.style.left = `${Math.random() * 100}%`;
             starsContainer.appendChild(star);
         }
+
+        // Stjärnfall (fallande stjärnor)
+        for (let i = 0; i < 5; i++) {
+            const fallingStar = document.createElement('div');
+            fallingStar.classList.add('falling-star');
+            fallingStar.style.top = `${Math.random() * 100}%`;
+            fallingStar.style.left = `${Math.random() * 100}%`;
+            starsContainer.appendChild(fallingStar);
+        }
     }
 
     // Initiera standardläge
