@@ -1,42 +1,27 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>XenoBelino</title>
-    <meta name="generator" content="Jekyll v3.10.0" />
-    <meta property="og:title" content="XenoBelino" />
-    <meta property="og:locale" content="en_US" />
-    <link rel="canonical" href="https://xenobelino.github.io/" />
-    <meta property="og:url" content="https://xenobelino.github.io/" />
-    <meta property="og:site_name" content="XenoBelino" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
-    <meta property="twitter:title" content="XenoBelino" />
-    <script type="application/ld+json">
-        {"@context":"https://schema.org","@type":"WebSite","headline":"XenoBelino","name":"XenoBelino","url":"https://xenobelino.github.io/"}
-    </script>
-
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Din Webbplats</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- Kontrollera att sökvägen är korrekt -->
 </head>
 <body>
-    <div class="container-lg px-3 my-5 markdown-body">
-        <h1><a href="https://xenobelino.github.io/">XenoBelino</a></h1>
-
-        <!-- Här kommer ditt egentliga innehåll -->
-        <div class="background" id="background">
-            <div class="stars" id="stars"></div>
-            <div class="content">
-                <h1>Welcome to My Website</h1>
-                <p>This website allows you to edit files, save them, and interact with media content like audio and video.</p>
-                <a href="page.html" id="go-to-page-btn" class="mode-btn">Go to Page</a>
-            </div>
-            <button id="change-background-btn">Change Background</button>
+    <!-- Din webbsidans innehåll -->
+    <div class="container-lg">
+        <h1>Välkommen till min webbplats!</h1>
+        <button id="change-background-btn">Byt bakgrund</button>
+        
+        <div id="mode-buttons" style="display:none;">
+            <button id="light-mode-btn">Ljusläge</button>
+            <button id="dark-mode-btn">Mörkläge</button>
         </div>
+
+        <button id="go-to-page-btn">Gå till sida</button>
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <div id="stars"></div> <!-- För stjärnorna på skärmen -->
+
+    <script src="js/script.js"></script> <!-- Kontrollera att sökvägen är korrekt -->
 </body>
 </html>
