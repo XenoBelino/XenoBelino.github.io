@@ -219,25 +219,33 @@
     }
 
     // Växla mellan Light Mode och Dark Mode
+    let modeButtonsVisible = false; // Flagga för att kontrollera synligheten
     document.getElementById("change-background-btn").addEventListener("click", () => {
         const modeButtons = document.getElementById("mode-buttons");
-        modeButtons.style.display = "flex"; // Visa knapparna vertikalt
+        if (modeButtonsVisible) {
+            modeButtons.style.display = "none"; // Dölj knapparna om de är synliga
+        } else {
+            modeButtons.style.display = "flex"; // Visa knapparna
+        }
+        modeButtonsVisible = !modeButtonsVisible; // Växla synligheten
+    });
 
-        // När användaren klickar på "Light Mode"
-        document.getElementById("light-mode-btn").addEventListener("click", () => {
-            if (isDarkMode) {
-                toggleBackground(); // Byt till Light Mode
-            }
-            modeButtons.style.display = "none"; // Dölj knapparna efter val
-        });
+    // När användaren klickar på "Light Mode"
+    document.getElementById("light-mode-btn").addEventListener("click", () => {
+        if (isDarkMode) {
+            toggleBackground(); // Byt till Light Mode
+        }
+        document.getElementById("mode-buttons").style.display = "none"; // Dölj knapparna efter val
+        modeButtonsVisible = false; // Återställ flaggan
+    });
 
-        // När användaren klickar på "Dark Mode"
-        document.getElementById("dark-mode-btn").addEventListener("click", () => {
-            if (!isDarkMode) {
-                toggleBackground(); // Byt till Dark Mode
-            }
-            modeButtons.style.display = "none"; // Dölj knapparna efter val
-        });
+    // När användaren klickar på "Dark Mode"
+    document.getElementById("dark-mode-btn").addEventListener("click", () => {
+        if (!isDarkMode) {
+            toggleBackground(); // Byt till Dark Mode
+        }
+        document.getElementById("mode-buttons").style.display = "none"; // Dölj knapparna efter val
+        modeButtonsVisible = false; // Återställ flaggan
     });
 
     // Skapa stjärnorna när sidan laddas
