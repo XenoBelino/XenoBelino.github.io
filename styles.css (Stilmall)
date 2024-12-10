@@ -28,7 +28,7 @@ body.dark-mode {
 /* Knappar */
 button, #go-to-page-btn {
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 16px;  /* Gör hörnen rundare */
     border: 2px solid #4F4A85;
     background-color: #6A0DAD; /* Lila bakgrund */
     color: white;
@@ -41,12 +41,13 @@ button, #go-to-page-btn {
     text-align: center;
 }
 
-/* Länken (Go to Page) ser ut som en knapp */
-#go-to-page-btn:hover, button:hover {
+/* Hover-effekter för knappar */
+button:hover, #go-to-page-btn:hover {
     background-color: #4F4A85; /* Ljusare lila */
     transform: scale(1.05);
 }
 
+/* Active-state för knappar */
 button:active, #go-to-page-btn:active {
     transform: scale(0.98);
 }
@@ -57,9 +58,23 @@ button:active, #go-to-page-btn:active {
     top: 20px;
     right: 20px;
     z-index: 10;
+    padding: 12px 24px;
+    background-color: #6A0DAD;  /* Lila bakgrund */
+    color: white;
+    border: 2px solid #4F4A85;
+    border-radius: 16px;  /* Gör hörnen rundare */
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-/* Stjärnorna */
+/* Hover-effekter för Change Background-knappen */
+#change-background-btn:hover {
+    background-color: #4F4A85;  /* Ljusare lila */
+    transform: scale(1.05);
+}
+
+/* För att göra stjärnorna */
 #stars {
     position: absolute;
     top: 0;
