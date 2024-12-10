@@ -1,87 +1,68 @@
-/* Allmänna inställningar */
+/* Grundläggande styling */
 body {
     font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
-    color: #ffffff; /* Vit textfärg för bättre synlighet */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Centrera text */
     overflow: hidden;
-    transition: background 1s ease; /* För smidig övergång mellan ljus och mörk mode */
+    background-color: lightblue;
 }
 
-/* Grundläggande container */
-.container-lg {
-    text-align: center;
-    position: relative;
-    z-index: 2;
-    padding: 20px;
-}
-
-/* Ljus och mörk bakgrund */
-body.light-mode {
-    background: linear-gradient(to bottom, #d4a4d7, #f9d1e7); /* Lila till rosa */
-}
-
-body.dark-mode {
-    background: linear-gradient(to bottom, #333333, #6e4c7c); /* Mörk till lila */
-}
-
-/* Knappar */
-button {
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: 2px solid #4F4A85;
-    background-color: #383351;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
-    margin: 10px;
-}
-
-button:hover {
-    background-color: #4F4A85;
-    transform: scale(1.05);
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-/* För "Change Background"-knappen */
-#change-background-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 10;
-}
-
-/* Stjärnorna */
-#stars {
+/* Bakgrundsfärg och stjärnor */
+.background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background: linear-gradient(135deg, #a85ec7, #f0a8d8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background 1s ease;
+}
+
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     pointer-events: none;
-    z-index: 1;
+    z-index: -1;
 }
 
 .star {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #fff;
+    width: 15px;
+    height: 15px;
+    background-color: white;
     border-radius: 50%;
-    animation: star-fall 2s infinite ease-in-out;
+    box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
+    animation: sparkle 1.5s infinite alternate;
 }
 
-@keyframes star-fall {
-    0% {
-        opacity: 1;
-        transform: translateY(0) rotate(0deg);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(300px) rotate(360deg);
-    }
+/* Styling för knappar */
+#change-background-btn, #go-to-page-btn {
+    padding: 10px 20px;
+    margin: 20px;
+    background-color: #6a0dad;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+#change-background-btn:hover, #go-to-page-btn:hover {
+    background-color: #5c0b8a;
 }
