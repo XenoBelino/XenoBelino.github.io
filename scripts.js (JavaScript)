@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const changeBackgroundBtn = document.getElementById('change-background-btn');
-    const modeButtons = document.getElementById('mode-buttons');
-    let isDark = false;
+    let isDark = false;  // För att hålla reda på om bakgrunden är mörk eller ljus
 
-    // Växla bakgrundsläge
-    function toggleBackground() {
+    changeBackgroundBtn.addEventListener('click', function() {
         if (isDark) {
             document.body.classList.remove('dark-mode');
             document.body.classList.add('light-mode');
@@ -13,23 +11,5 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.add('dark-mode');
         }
         isDark = !isDark;
-    }
-
-    changeBackgroundBtn.addEventListener('click', function() {
-        modeButtons.style.display = 'flex'; 
-    });
-
-    document.getElementById("dark-mode-btn").addEventListener("click", function() {
-        if (!isDark) {
-            toggleBackground();
-        }
-        modeButtons.style.display = 'none'; 
-    });
-
-    document.getElementById("light-mode-btn").addEventListener("click", function() {
-        if (isDark) {
-            toggleBackground();
-        }
-        modeButtons.style.display = 'none'; 
     });
 });
