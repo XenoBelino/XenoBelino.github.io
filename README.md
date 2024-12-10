@@ -17,7 +17,7 @@
             <p>This website allows you to edit files, save them, and interact with media content like audio and video.</p>
 
             <!-- Knapp för att gå till annan sida -->
-            <a href="page.html" id="go-to-page-btn">Go to Page</a>
+            <button id="go-to-page-btn" onclick="window.location.href='page.html'">Go to Page</button>
         </div>
 
         <!-- Bakgrundsändringsknapp -->
