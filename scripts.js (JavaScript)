@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const changeBackgroundBtn = document.getElementById('change-background-btn');
     const modeButtons = document.getElementById('mode-buttons');
-    let isDark = false;  // För att hålla reda på om bakgrunden är mörk eller ljus
+    let isDark = false;
 
-    // Funktion för att växla bakgrundsläge
+    // Växla bakgrundsläge
     function toggleBackground() {
         if (isDark) {
             document.body.classList.remove('dark-mode');
@@ -15,25 +15,21 @@ document.addEventListener('DOMContentLoaded', function() {
         isDark = !isDark;
     }
 
-    // När användaren klickar på Change Background-knappen
     changeBackgroundBtn.addEventListener('click', function() {
-        // Visa de dolda knapparna för att välja Dark/Light Mode
         modeButtons.style.display = 'flex'; 
     });
 
-    // Funktionalitet för när användaren klickar på Dark Mode
     document.getElementById("dark-mode-btn").addEventListener("click", function() {
         if (!isDark) {
-            toggleBackground(); // Växla till Dark Mode
+            toggleBackground();
         }
-        modeButtons.style.display = 'none'; // Dölj knapparna efter att valet gjorts
+        modeButtons.style.display = 'none'; 
     });
 
-    // Funktionalitet för när användaren klickar på Light Mode
     document.getElementById("light-mode-btn").addEventListener("click", function() {
         if (isDark) {
-            toggleBackground(); // Växla till Light Mode
+            toggleBackground();
         }
-        modeButtons.style.display = 'none'; // Dölj knapparna efter att valet gjorts
+        modeButtons.style.display = 'none'; 
     });
 });
