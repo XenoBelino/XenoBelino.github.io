@@ -1,21 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const body = document.querySelector('body');
-    const lightDarkToggle = document.getElementById('light-dark-toggle');
-    const changeBackgroundButton = document.getElementById('change-background-btn');
+    const lightDarkToggle = document.getElementById('change-background-btn'); // knappen för att byta bakgrund
     const starsContainer = document.getElementById('stars');
 
-    // Byt mellan ljus och mörk mode
-    lightDarkToggle.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
-        body.classList.toggle('dark-mode');
-        lightDarkToggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-        generateStars(); // Regenerate stars when mode changes
-    });
-
-    // Generera stjärnor på bakgrunden
+    // Funktion för att generera stjärnor
     function generateStars() {
-        // Clear previous stars
-        starsContainer.innerHTML = '';
+        starsContainer.innerHTML = ''; // Ta bort gamla stjärnor
 
         for (let i = 0; i < 100; i++) {
             const star = document.createElement('div');
@@ -26,10 +16,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initiera standardläge (Dark mode initially)
+    // Funktion för att byta mellan mörkt och ljust läge
+    lightDarkToggle.addEventListener('click', () => {
+        body.classList.toggle('light-mode');
+        body.classList.toggle('dark-mode');
+
+        // Byt knappens text beroende på läget
+        lightDarkToggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
+        generateStars(); // Återgenerera stjärnor när läget ändras
+    });
+
+    // Initialisera standardläge (Dark mode initially)
     if (body.classList.contains('dark-mode')) {
         lightDarkToggle.textContent = 'Light Mode';
     }
 
-    generateStars(); // Call initially to populate stars
+    generateStars(); // Anropa generera stjärnor när sidan laddas
 });
