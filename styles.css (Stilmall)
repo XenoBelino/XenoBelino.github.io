@@ -1,23 +1,31 @@
 /* Allmänna inställningar */
 body {
     font-family: 'Lato', sans-serif;
-    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
-    color: #383351;
-    line-height: 1.6;
+    color: #ffffff; /* Vit textfärg för bättre synlighet */
+    overflow: hidden;
+    transition: background 1s ease; /* För smidig övergång mellan ljus och mörk mode */
 }
 
-/* Container för centrering och padding */
+/* Grundläggande container */
 .container-lg {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 2;
     padding: 20px;
-    max-width: 100%;
 }
 
-/* Stil för knappar */
+/* Ljus och mörk bakgrund */
+body.light-mode {
+    background: linear-gradient(to bottom, #d4a4d7, #f9d1e7); /* Lila till rosa */
+}
+
+body.dark-mode {
+    background: linear-gradient(to bottom, #333333, #6e4c7c); /* Mörk till lila */
+}
+
+/* Knappar */
 button {
     padding: 12px 24px;
     border-radius: 8px;
@@ -27,54 +35,71 @@ button {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s, transform 0.2s;
+    margin: 10px;
 }
 
 button:hover {
     background-color: #4F4A85;
-    transform: scale(1.05); /* Ger en lätt zoom-effekt på hover */
+    transform: scale(1.05);
 }
 
 button:active {
-    transform: scale(0.98); /* Gör knappen lite mindre när den är klickad */
+    transform: scale(0.98);
 }
 
-/* Länk under rubriken */
-h1 a {
-    color: #383351;
-    text-decoration: none;
-    font-weight: 700;
-}
-
-/* För att förbättra layouten på små skärmar */
-@media (max-width: 768px) {
-    .container-lg {
-        padding: 15px;
-    }
-
-    button {
-        font-size: 14px;
-        padding: 10px 20px;
-    }
-}
-
-/* För ännu mindre skärmar som telefoner */
-@media (max-width: 480px) {
-    button {
-        font-size: 12px;
-        padding: 8px 16px;
-    }
-}
-
-/* För att ge knapparna ett "fokus" när de är i fokus (för tillgänglighet) */
-button:focus {
-    outline: 3px solid #4F4A85;
-    outline-offset: 2px;
-}
-
-/* Justering av "Change Background"-knappen */
+/* För "Change Background"-knappen */
 #change-background-btn {
     position: absolute;
-    top: 20px; /* Högt upp på sidan */
-    right: 20px; /* Högerställt */
+    top: 20px;
+    right: 20px;
     z-index: 10;
+}
+
+/* Stjärnorna */
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.star {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    animation: star-fall 2s infinite ease-in-out;
+}
+
+.star:before {
+    content: '';
+    position: absolute;
+    background-color: #fff;
+    width: 2px;
+    height: 15px;
+    top: -5px;
+    left: 4px;
+    transform: rotate(-45deg);
+}
+
+@keyframes star-fall {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(300px) rotate(360deg);
+    }
+}
+
+/* Animation för stjärnorna */
+.star {
+    top: calc(100vh * random);
+    left: calc(100vw * random);
+    animation-duration: calc(2s + random * 3);
 }
