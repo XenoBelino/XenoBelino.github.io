@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> <!-- Länka till CSS-filen -->
+    <title>Welcome to My Website</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+    <div class="background" id="background">
+        <!-- Stjärnor -->
+        <div class="stars" id="stars"></div>
 
-    <div class="container-lg">
+        <div class="content">
+            <!-- Huvudtext -->
+            <h1>Welcome to My Website</h1>
+            <p>This website allows you to edit files, save them, and interact with media content like audio and video.</p>
+
+            <!-- Knapp för att gå till annan sida -->
+            <a href="page.html" id="go-to-page-btn">Go to Page</a>
+        </div>
+
+        <!-- Bakgrundsändringsknapp -->
         <button id="change-background-btn">Change Background</button>
-        <h1>Welcome to My Website</h1>
-        <p>This website allows you to edit files, save them, and interact with media content like audio and video. You can change the appearance by toggling between Light and Dark modes.</p>
-        
-        <!-- Light/Dark Mode toggle -->
-        <button id="light-dark-toggle">Dark Mode</button>
-
-        <!-- Placeholder för stjärnor -->
-        <div id="stars"></div> <!-- Behållare för stjärnorna -->
-
-        <button id="go-to-page">Go to Page</button>
     </div>
 
-    <script src="script.js"></script> <!-- Länka till JavaScript -->
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
