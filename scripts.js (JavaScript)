@@ -1,35 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const body = document.querySelector('body');
-    const lightDarkToggle = document.getElementById('change-background-btn'); // knappen för att byta bakgrund
-    const starsContainer = document.getElementById('stars');
+document.addEventListener('DOMContentLoaded', function() {
+    const changeBackgroundBtn = document.getElementById('change-background-btn');
+    let isDark = false;  // För att hålla reda på om bakgrunden är mörk eller ljus
 
-    // Funktion för att generera stjärnor
-    function generateStars() {
-        starsContainer.innerHTML = ''; // Ta bort gamla stjärnor
-
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.classList.add('star');
-            star.style.top = `${Math.random() * 100}%`;
-            star.style.left = `${Math.random() * 100}%`;
-            starsContainer.appendChild(star);
+    changeBackgroundBtn.addEventListener('click', function() {
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        } else {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
         }
-    }
-
-    // Funktion för att byta mellan mörkt och ljust läge
-    lightDarkToggle.addEventListener('click', () => {
-        body.classList.toggle('light-mode');
-        body.classList.toggle('dark-mode');
-
-        // Byt knappens text beroende på läget
-        lightDarkToggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-        generateStars(); // Återgenerera stjärnor när läget ändras
+        isDark = !isDark;
     });
-
-    // Initialisera standardläge (Dark mode initially)
-    if (body.classList.contains('dark-mode')) {
-        lightDarkToggle.textContent = 'Light Mode';
-    }
-
-    generateStars(); // Anropa generera stjärnor när sidan laddas
 });
