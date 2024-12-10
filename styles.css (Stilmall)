@@ -86,6 +86,7 @@ button:active {
     transform: rotate(-45deg);
 }
 
+/* Animation för stjärnorna */
 @keyframes star-fall {
     0% {
         opacity: 1;
@@ -97,9 +98,22 @@ button:active {
     }
 }
 
-/* Animation för stjärnorna */
-.star {
-    top: calc(100vh * random);
-    left: calc(100vw * random);
-    animation-duration: calc(2s + random * 3);
+.falling-star {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: #6ec1f5; /* Ljus blå färg för stjärnfall */
+    border-radius: 50%;
+    animation: fall 2s infinite ease-in-out;
+}
+
+@keyframes fall {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(45deg);
+    }
 }
