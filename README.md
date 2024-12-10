@@ -149,6 +149,12 @@
             z-index: 2;
         }
 
+        /* För att återställa textens bakgrund och färg när texten kopieras */
+        ::selection {
+            background-color: transparent; /* Ta bort bakgrundsfärgen */
+            color: inherit; /* Bevara textens ursprungliga färg */
+        }
+
     </style>
 </head>
 <body>
