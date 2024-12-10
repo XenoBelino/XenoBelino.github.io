@@ -28,24 +28,26 @@ body.dark-mode {
 /* Knappar */
 button, #go-to-page-btn {
     padding: 12px 24px;
-    border-radius: 16px;
+    border-radius: 16px;  /* Gör hörnen rundare */
     border: 2px solid #4F4A85;
-    background-color: #6A0DAD;
+    background-color: #6A0DAD; /* Lila bakgrund */
     color: white;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s, transform 0.2s;
     margin: 10px;
-    text-decoration: none;
-    display: inline-block;
+    text-decoration: none; /* Ta bort understrykning för länkar */
+    display: inline-block; /* Gör länken till en block-level element */
     text-align: center;
 }
 
+/* Hover-effekter för knappar */
 button:hover, #go-to-page-btn:hover {
-    background-color: #4F4A85;
+    background-color: #4F4A85; /* Ljusare lila */
     transform: scale(1.05);
 }
 
+/* Active-state för knappar */
 button:active, #go-to-page-btn:active {
     transform: scale(0.98);
 }
@@ -57,21 +59,22 @@ button:active, #go-to-page-btn:active {
     right: 20px;
     z-index: 10;
     padding: 12px 24px;
-    background-color: #6A0DAD;
+    background-color: #6A0DAD;  /* Lila bakgrund */
     color: white;
     border: 2px solid #4F4A85;
-    border-radius: 16px;
+    border-radius: 16px;  /* Gör hörnen rundare */
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s, transform 0.2s;
 }
 
+/* Hover-effekter för Change Background-knappen */
 #change-background-btn:hover {
-    background-color: #4F4A85;
+    background-color: #4F4A85;  /* Ljusare lila */
     transform: scale(1.05);
 }
 
-/* Stjärnor och animationer */
+/* För att göra stjärnorna */
 #stars {
     position: absolute;
     top: 0;
@@ -100,4 +103,32 @@ button:active, #go-to-page-btn:active {
         opacity: 0;
         transform: translateY(300px) rotate(360deg);
     }
+}
+
+/* För att skapa falling stars */
+.falling-star {
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: white;
+    opacity: 0.8;
+    transform: rotate(45deg);
+    animation: fall 2s infinite;
+}
+
+@keyframes fall {
+    0% {
+        transform: translate(0, 0) rotate(45deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(300px, 400px) rotate(45deg);
+        opacity: 0;
+    }
+}
+
+/* För att visa "Go to Page" knappen överst */
+#go-to-page-btn {
+    position: relative;
+    z-index: 2;
 }
