@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to My Website</title>
-    <!-- Se till att sökvägen är korrekt för din CSS-fil -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <!-- Om dina filer finns i samma mapp som HTML-filen -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="background" id="background">
@@ -25,7 +25,7 @@
         <button id="change-background-btn">Change Background</button>
     </div>
 
-    <!-- Se till att sökvägen är korrekt för din JavaScript-fil -->
-    <script src="assets/js/script.js"></script>
+    <!-- Om din JavaScript-fil är i samma mapp som HTML-filen -->
+    <script src="script.js"></script>
 </body>
 </html>
