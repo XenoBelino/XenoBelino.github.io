@@ -1,4 +1,4 @@
-// Funktion för att växla mellan Light Mode och Dark Mode
+// Växla bakgrund från ljus till mörk
 function toggleBackground() {
     if (document.body.classList.contains('light-mode')) {
         document.body.classList.remove('light-mode');
@@ -29,6 +29,24 @@ function updateVolumePercentage(type) {
         volumeIcon.textContent = '🔊';
     }
 }
+
+// Funktion för att spara volyminställningar till en fil
+document.getElementById("save-btn").addEventListener("click", function() {
+    const settings = {
+        originalVolume: document.getElementById("original-volume").value,
+        corruptedVolume: document.getElementById("corrupted-volume").value,
+        musicVolume: document.getElementById("music-volume").value,
+        finalVolume: document.getElementById("final-volume").value
+    };
+
+    const fileContent = JSON.stringify(settings, null, 2);
+    const blob = new Blob([fileContent], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "audio_settings.json";
+    a.click();
+});
 
 // Funktion för att hantera filval
 function handleFileSelect(event) {
