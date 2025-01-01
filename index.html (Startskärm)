@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Huvudcontainer -->
     <div class="container">
         <button class="change-background-btn">Change Background</button>
     </div>
     
+    <!-- Lägg till JavaScript -->
     <script src="scripts.js"></script>
 </body>
 </html>
