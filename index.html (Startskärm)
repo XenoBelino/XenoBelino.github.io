@@ -1,18 +1,40 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemsida</title>
+    <title>File Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <!-- Huvudcontainer -->
-    <div class="container">
-        <button class="change-background-btn">Change Background</button>
+<body class="light-mode">
+
+    <button class="back-button" onclick="window.location.href = 'index.html'">Back to Homepage</button>
+
+    <button class="change-background-btn" onclick="toggleBackground()">Change Background</button>
+
+    <div class="editor-content">
+        <div class="video-container">
+            <video controls id="video-player">
+                <source id="video-source" src="videos/video.mp4" type="video/mp4">
+                Your browser does not support the video player.
+            </video>
+        </div>
+
+        <div class="file-info" id="file-info">No file selected</div>
+
+        <div class="section-container">
+            <!-- Content for volume sliders goes here -->
+        </div>
     </div>
-    
-    <!-- Lägg till JavaScript -->
+
+    <div class="buttons-container">
+        <button class="button" id="save-btn">Save</button>
+        <button class="button" id="browse-btn">Browse my files</button>
+    </div>
+
+    <input type="file" id="file-input" style="display: none;" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
+
     <script src="scripts.js"></script>
 </body>
 </html>
