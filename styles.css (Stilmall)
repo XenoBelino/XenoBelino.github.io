@@ -1,134 +1,106 @@
-/* Allmänna inställningar */
+/* Grundläggande stil */
 body {
-    font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
-    color: #ffffff; /* Vit textfärg för bättre synlighet */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
     overflow: hidden;
-    transition: background 1s ease; /* För smidig övergång mellan ljus och mörk mode */
 }
 
-/* Grundläggande container */
-.container-lg {
-    text-align: center;
-    position: relative;
-    z-index: 2;
-    padding: 20px;
-}
-
-/* Ljus och mörk bakgrund */
-body.light-mode {
-    background: linear-gradient(to bottom, #d4a4d7, #f9d1e7); /* Lila till rosa */
-}
-
-body.dark-mode {
-    background: linear-gradient(to bottom, #333333, #6e4c7c); /* Mörk till lila */
-}
-
-/* Knappar */
-button, #go-to-page-btn {
-    padding: 12px 24px;
-    border-radius: 16px;  /* Gör hörnen rundare */
-    border: 2px solid #4F4A85;
-    background-color: #6A0DAD; /* Lila bakgrund */
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
-    margin: 10px;
-    text-decoration: none; /* Ta bort understrykning för länkar */
-    display: inline-block; /* Gör länken till en block-level element */
+.container {
     text-align: center;
 }
 
-/* Hover-effekter för knappar */
-button:hover, #go-to-page-btn:hover {
-    background-color: #4F4A85; /* Ljusare lila */
-    transform: scale(1.05);
-}
-
-/* Active-state för knappar */
-button:active, #go-to-page-btn:active {
-    transform: scale(0.98);
-}
-
-/* För "Change Background"-knappen */
-#change-background-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 10;
-    padding: 12px 24px;
-    background-color: #6A0DAD;  /* Lila bakgrund */
-    color: white;
-    border: 2px solid #4F4A85;
-    border-radius: 16px;  /* Gör hörnen rundare */
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-/* Hover-effekter för Change Background-knappen */
-#change-background-btn:hover {
-    background-color: #4F4A85;  /* Ljusare lila */
-    transform: scale(1.05);
-}
-
-/* För att göra stjärnorna */
-#stars {
+/* Bakgrund för Light Mode */
+.light-mode {
+    background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
+    background-size: 100% 100%;
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
     height: 100%;
-    pointer-events: none;
-    z-index: 1;
+    width: 100%;
+    animation: backgroundAnimation 10s infinite;
+}
+
+.light-mode .stars {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
 }
 
 .star {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #fff;
+    background-color: white;
     border-radius: 50%;
-    animation: star-fall 2s infinite ease-in-out;
+    animation: starAnimation 3s infinite;
 }
 
-@keyframes star-fall {
+@keyframes backgroundAnimation {
     0% {
-        opacity: 1;
-        transform: translateY(0) rotate(0deg);
+        background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
+    }
+    50% {
+        background: linear-gradient(to bottom, #ffffff, #ffccff);
     }
     100% {
-        opacity: 0;
-        transform: translateY(300px) rotate(360deg);
+        background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
     }
 }
 
-/* För att skapa falling stars */
-.falling-star {
+/* Bakgrund för Dark Mode */
+.dark-mode {
+    background: linear-gradient(to bottom, #000000, #5a2a8a);
     position: absolute;
-    width: 20px;
-    height: 2px;
-    background: white;
-    opacity: 0.8;
-    transform: rotate(45deg);
-    animation: fall 2s infinite;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    animation: backgroundAnimationDark 10s infinite;
 }
 
-@keyframes fall {
+@keyframes backgroundAnimationDark {
     0% {
-        transform: translate(0, 0) rotate(45deg);
-        opacity: 1;
+        background: linear-gradient(to bottom, #000000, #5a2a8a);
+    }
+    50% {
+        background: linear-gradient(to bottom, #1a1a2e, #3e3b8f);
     }
     100% {
-        transform: translate(300px, 400px) rotate(45deg);
-        opacity: 0;
+        background: linear-gradient(to bottom, #000000, #5a2a8a);
     }
 }
 
-/* För att visa "Go to Page" knappen överst */
-#go-to-page-btn {
-    position: relative;
-    z-index: 2;
+/* Stil för knappen */
+.change-background-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+}
+
+/* Stjärnfall och andra animationer */
+@keyframes starAnimation {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(10px, 10px);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
 }
