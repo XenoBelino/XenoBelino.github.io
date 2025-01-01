@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="light-mode">
+<body>
 
     <button class="back-button" onclick="window.location.href = 'index.html'">Back to Homepage</button>
 
@@ -24,7 +24,7 @@
         <div class="file-info" id="file-info">No file selected</div>
 
         <div class="section-container">
-            <!-- Content for volume sliders goes here -->
+            <!-- Volume control sections for original, corrupted, music, and final result go here -->
         </div>
     </div>
 
