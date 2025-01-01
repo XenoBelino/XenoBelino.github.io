@@ -1,15 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const changeBackgroundBtn = document.getElementById('change-background-btn');
-    let isDark = false;  // För att hålla reda på om bakgrunden är mörk eller ljus
-
-    changeBackgroundBtn.addEventListener('click', function() {
-        if (isDark) {
-            document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
-        } else {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
-        }
-        isDark = !isDark;
-    });
+document.querySelector('.change-background-btn').addEventListener('click', function() {
+    const currentMode = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+    if (currentMode === 'light') {
+        document.body.classList.remove('light-mode');
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+        document.body.classList.add('light-mode');
+    }
 });
