@@ -8,8 +8,10 @@ body {
     align-items: center;
     font-family: Arial, sans-serif;
     overflow: hidden;
+    transition: background 0.5s ease; /* Smooth transition for background change */
 }
 
+/* Container för knappen */
 .container {
     text-align: center;
 }
@@ -17,13 +19,11 @@ body {
 /* Bakgrund för Light Mode */
 .light-mode {
     background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
-    background-size: 100% 100%;
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
-    animation: backgroundAnimation 10s infinite;
 }
 
 .light-mode .stars {
@@ -39,19 +39,8 @@ body {
     position: absolute;
     background-color: white;
     border-radius: 50%;
+    opacity: 0.8;
     animation: starAnimation 3s infinite;
-}
-
-@keyframes backgroundAnimation {
-    0% {
-        background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
-    }
-    50% {
-        background: linear-gradient(to bottom, #ffffff, #ffccff);
-    }
-    100% {
-        background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
-    }
 }
 
 /* Bakgrund för Dark Mode */
@@ -62,34 +51,17 @@ body {
     left: 0;
     height: 100%;
     width: 100%;
-    animation: backgroundAnimationDark 10s infinite;
 }
 
-@keyframes backgroundAnimationDark {
-    0% {
-        background: linear-gradient(to bottom, #000000, #5a2a8a);
-    }
-    50% {
-        background: linear-gradient(to bottom, #1a1a2e, #3e3b8f);
-    }
-    100% {
-        background: linear-gradient(to bottom, #000000, #5a2a8a);
-    }
-}
-
-/* Stil för knappen */
-.change-background-btn {
+.dark-mode .stars {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 10px 20px;
-    background-color: #fff;
-    border: none;
-    cursor: pointer;
-    z-index: 1;
+    top: 10%;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
 }
 
-/* Stjärnfall och andra animationer */
 @keyframes starAnimation {
     0% {
         transform: translate(0, 0);
@@ -103,4 +75,24 @@ body {
         transform: translate(0, 0);
         opacity: 1;
     }
+}
+
+/* Stil för knappen */
+.change-background-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.change-background-btn:hover {
+    background-color: #f0f0f0;
 }
