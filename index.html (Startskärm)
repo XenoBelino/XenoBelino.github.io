@@ -3,25 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Din Webbplats</title>
-    <link rel="stylesheet" href="css/styles.css"> <!-- Kontrollera att sökvägen är korrekt -->
+    <title>Hemsida</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Din webbsidans innehåll -->
-    <div class="container-lg">
-        <h1>Välkommen till min webbplats!</h1>
-        <button id="change-background-btn">Byt bakgrund</button>
-        
-        <div id="mode-buttons" style="display:none;">
-            <button id="light-mode-btn">Ljusläge</button>
-            <button id="dark-mode-btn">Mörkläge</button>
-        </div>
-
-        <button id="go-to-page-btn">Gå till sida</button>
+    <div class="container">
+        <button class="change-background-btn">Change Background</button>
     </div>
-
-    <div id="stars"></div> <!-- För stjärnorna på skärmen -->
-
-    <script src="js/script.js"></script> <!-- Kontrollera att sökvägen är korrekt -->
+    
+    <script src="scripts.js"></script>
 </body>
 </html>
