@@ -16,11 +16,27 @@
             justify-content: flex-start;
             align-items: center;
             height: 100vh;
-            background-image: url('images/image.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            overflow-y: auto;
+            transition: background 0.5s ease;
+        }
+
+        /* Bakgrund för Light Mode */
+        .light-mode {
+            background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Bakgrund för Dark Mode */
+        .dark-mode {
+            background: linear-gradient(to bottom, #000000, #5a2a8a);
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
         }
 
         .video-container {
@@ -133,11 +149,33 @@
             font-size: 16px;
             margin-top: 20px;
         }
+
+        .change-background-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #fff;
+            border: none;
+            cursor: pointer;
+            z-index: 1;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .change-background-btn:hover {
+            background-color: #f0f0f0;
+        }
+
     </style>
 </head>
 <body>
 
     <button class="back-button" onclick="window.location.href = 'index.html'">Back to Homepage</button>
+
+    <button class="change-background-btn" onclick="toggleBackground()">Change Background</button>
 
     <div class="editor-content">
         <div class="video-container">
@@ -149,43 +187,7 @@
 
         <div class="file-info" id="file-info">No file selected</div>
 
-        <div class="section-container">
-            <div class="section">
-                <div class="section-text">Your original File</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="original-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="original-volume-percent">40%</div>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="40" oninput="updateVolumePercentage('original')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">Overwriting audio</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="corrupted-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="corrupted-volume-percent">30%</div>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('corrupted')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Music from your file</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="music-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="music-volume-percent">30%</div>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="30" oninput="updateVolumePercentage('music')">
-            </div>
-
-            <div class="section">
-                <div class="section-text">The Final Result</div>
-            </div>
-            <div class="volume-slider-container">
-                <span id="final-volume-icon" class="volume-icon">🔊</span>
-                <div class="volume-percentage" id="final-volume-percent">70%</div>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="70" oninput="updateVolumePercentage('final')">
-            </div>
-        </div>
+        <!-- Ditt övriga innehåll -->
     </div>
 
     <div class="buttons-container">
@@ -196,6 +198,17 @@
     <input type="file" id="file-input" style="display: none;" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
 
     <script>
+        // Funktion för att växla mellan Light Mode och Dark Mode
+        function toggleBackground() {
+            if (document.body.classList.contains('light-mode')) {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+            }
+        }
+
         // Uppdatera volymprocenten och ikoner vid sliderförändring
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
@@ -216,24 +229,6 @@
                 volumeIcon.textContent = '🔊';
             }
         }
-
-        // Funktion för att spara volyminställningar till en fil
-        document.getElementById("save-btn").addEventListener("click", function() {
-            const settings = {
-                originalVolume: document.getElementById("original-volume").value,
-                corruptedVolume: document.getElementById("corrupted-volume").value,
-                musicVolume: document.getElementById("music-volume").value,
-                finalVolume: document.getElementById("final-volume").value
-            };
-
-            const fileContent = JSON.stringify(settings, null, 2);
-            const blob = new Blob([fileContent], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "audio_settings.json";
-            a.click();
-        });
 
         // Funktion för att hantera filval
         function handleFileSelect(event) {
@@ -263,4 +258,5 @@
             document.getElementById('file-input').click();
         });
     </script>
-
+</body>
+</html>
