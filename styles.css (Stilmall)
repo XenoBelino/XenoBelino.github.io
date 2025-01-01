@@ -11,6 +11,10 @@ body {
     height: 100vh;
     overflow: hidden;
     transition: background 0.5s ease;
+    background-image: url('images/image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .light-mode {
