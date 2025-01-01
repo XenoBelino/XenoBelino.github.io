@@ -17,26 +17,15 @@
             align-items: center;
             height: 100vh;
             transition: background 0.5s ease;
+            overflow: hidden;
         }
 
-        /* Bakgrund för Light Mode */
         .light-mode {
             background: linear-gradient(to bottom, #a0a0f2, #ffb6c1);
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
         }
 
-        /* Bakgrund för Dark Mode */
         .dark-mode {
             background: linear-gradient(to bottom, #000000, #5a2a8a);
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
         }
 
         .video-container {
@@ -171,7 +160,7 @@
 
     </style>
 </head>
-<body>
+<body class="light-mode">
 
     <button class="back-button" onclick="window.location.href = 'index.html'">Back to Homepage</button>
 
@@ -187,7 +176,9 @@
 
         <div class="file-info" id="file-info">No file selected</div>
 
-        <!-- Ditt övriga innehåll -->
+        <div class="section-container">
+            <!-- Din övriga innehåll här -->
+        </div>
     </div>
 
     <div class="buttons-container">
@@ -246,6 +237,7 @@
 
                     // Uppdatera filnamnet
                     fileInfo.textContent = `Selected file: ${file.name}`;
+                    fileInfo.style.visibility = 'visible';
                 } else {
                     // Om filen inte är kompatibel
                     fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
