@@ -3,38 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Editor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>Welcome to My Website</title>
+    <!-- Om dina filer finns i samma mapp som HTML-filen -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="background" id="background">
+        <!-- Stjärnor -->
+        <div class="stars" id="stars"></div>
 
-    <button class="back-button" onclick="window.location.href = 'index.html'">Back to Homepage</button>
+        <div class="content">
+            <!-- Huvudtext -->
+            <h1>Welcome to My Website</h1>
+            <p>This website allows you to edit files, save them, and interact with media content like audio and video.</p>
 
-    <button class="change-background-btn" onclick="toggleBackground()">Change Background</button>
-
-    <div class="editor-content">
-        <div class="video-container">
-            <video controls id="video-player">
-                <source id="video-source" src="videos/video.mp4" type="video/mp4">
-                Your browser does not support the video player.
-            </video>
+            <!-- Knapp för att gå till annan sida -->
+            <a href="page.html" id="go-to-page-btn">Go to Page</a>
         </div>
 
-        <div class="file-info" id="file-info">No file selected</div>
-
-        <div class="section-container">
-            <!-- Volume control sections for original, corrupted, music, and final result go here -->
-        </div>
+        <!-- Bakgrundsändringsknapp -->
+        <button id="change-background-btn">Change Background</button>
     </div>
 
-    <div class="buttons-container">
-        <button class="button" id="save-btn">Save</button>
-        <button class="button" id="browse-btn">Browse my files</button>
-    </div>
-
-    <input type="file" id="file-input" style="display: none;" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
-
-    <script src="scripts.js"></script>
+    <!-- Om din JavaScript-fil är i samma mapp som HTML-filen -->
+    <script src="script.js"></script>
 </body>
 </html>
+
