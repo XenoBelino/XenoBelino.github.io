@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Bakgrundsdelen -->
     <div class="background" id="background">
-        <!-- Stjärnor -->
-        <div class="stars" id="stars"></div>
+        <!-- Moln och stjärnor -->
+        <div class="clouds"></div>
+        <div class="stars"></div>
 
-        <!-- Innehåll -->
         <div class="content">
             <h1>Welcome to My Website</h1>
             <p>This website allows you to edit files, save them, and interact with media content like audio and video.</p>
