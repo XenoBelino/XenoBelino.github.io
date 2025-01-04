@@ -1,8 +1,15 @@
-document.getElementById('change-background-btn').addEventListener('click', function() {
-    // Byt mellan Light Mode och Dark Mode
-    document.body.classList.toggle('dark-mode');
-    
-    // Skapa en meny för att välja mellan Light Mode och Dark Mode
-    const mode = document.body.classList.contains('dark-mode') ? 'Dark Mode' : 'Light Mode';
-    alert('Switched to ' + mode);
+document.getElementById("change-background-btn").addEventListener("click", function() {
+    let body = document.body;
+    let background = document.getElementById("background");
+
+    // Byt till mörk- eller ljusläge när knappen klickas
+    if (body.classList.contains("dark-mode")) {
+        body.classList.remove("dark-mode");
+        // Ljus bakgrund
+        background.style.background = "linear-gradient(to bottom, #e0a1e0, #f5c0c0)";
+    } else {
+        body.classList.add("dark-mode");
+        // Mörk bakgrund
+        background.style.background = "linear-gradient(to bottom, #2a2a2a, #4b1e6b)";
+    }
 });
