@@ -80,8 +80,8 @@
         /* Förstorade stjärnor */
         .star-fall {
             position: absolute;
-            width: 40px;
-            height: 40px;
+            width: 20px;
+            height: 20px;
             opacity: 0.8;
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
             z-index: -1;
@@ -90,11 +90,11 @@
         /* Förstorade stjärnfall - snedstreck som representerar stjärnfall */
         .falling-star {
             position: absolute;
-            width: 5px;
-            height: 50px;
+            width: 4px;
+            height: 40px;
             opacity: 0.8;
             transform: rotate(-45deg);
-            animation: fall 1.5s ease-in-out infinite;
+            animation: fall 2s ease-in-out infinite;
             z-index: -1;
         }
 
@@ -202,7 +202,7 @@
 
         // Generera stjärnor på skärmen
         function generateStars(starColor, bgColor) {
-            let starCount = 100;
+            let starCount = 50; // Minska antalet stjärnor för att inte blockera stjärnfallen
             let container = document.querySelector('.stars');
             container.innerHTML = '';  // Rensa tidigare stjärnor
             let positions = [];  // För att hålla koll på stjärnornas positioner
@@ -228,7 +228,7 @@
             }
 
             // Generera stjärnfall
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 10; i++) { // Minska antalet stjärnfall
                 let fallingStar = document.createElement('div');
                 fallingStar.classList.add('falling-star');
                 fallingStar.style.top = `${Math.random() * 20}%`;
