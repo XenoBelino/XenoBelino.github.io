@@ -82,7 +82,6 @@
             position: absolute;
             width: 40px;
             height: 40px;
-            background-color: lightblue; /* Ljusblå färg för stjärnor */
             opacity: 0.8;
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
             z-index: -1;
@@ -93,7 +92,6 @@
             position: absolute;
             width: 5px;
             height: 50px;
-            background-color: white;
             opacity: 0.8;
             transform: rotate(-45deg);
             animation: fall 1.5s ease-in-out infinite;
@@ -103,7 +101,7 @@
         /* Animering för stjärnfall */
         @keyframes fall {
             0% {
-                transform: translateY(0) rotate(-45deg);
+                transform: translateY(-100px) rotate(-45deg);
             }
             100% {
                 transform: translateY(100vh) rotate(-45deg);
@@ -159,14 +157,14 @@
         // Light Mode bakgrund
         function setLightMode() {
             document.body.className = 'light-mode';
-            generateStars('#e0b3e6', '#f1c6e7');
+            generateStars('#ADD8E6', '#f1c6e7'); // Ljusblå stjärnor
             hideBackgroundOptions();
         }
 
         // Dark Mode bakgrund
         function setDarkMode() {
             document.body.className = 'dark-mode';
-            generateStars('#333', '#6a4c9c');
+            generateStars('#FF1493', '#6a4c9c'); // Rosa stjärnor
             hideBackgroundOptions();
         }
 
@@ -180,13 +178,25 @@
             let starCount = 100;
             let container = document.querySelector('.stars');
             container.innerHTML = '';  // Rensa tidigare stjärnor
+            let positions = [];  // För att hålla koll på stjärnornas positioner
 
             for (let i = 0; i < starCount; i++) {
                 let star = document.createElement('div');
                 star.classList.add('star-fall');
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.left = `${Math.random() * 100}%`;
+                let top, left;
+
+                // Kontrollera så att stjärnorna inte krockar med varandra
+                do {
+                    top = Math.random() * 100;
+                    left = Math.random() * 100;
+                } while (positions.some(pos => Math.abs(pos.top - top) < 5 && Math.abs(pos.left - left) < 5));
+
+                positions.push({ top, left });
+
+                star.style.top = `${top}%`;
+                star.style.left = `${left}%`;
                 star.style.backgroundColor = starColor;
+
                 container.appendChild(star);
             }
 
