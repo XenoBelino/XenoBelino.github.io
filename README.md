@@ -30,15 +30,11 @@
             position: relative;
         }
 
-        /* För att placera knapparna i samma rad */
-        .button-container {
-            display: flex;
-            justify-content: flex-end;
-            margin: 10px;
-        }
-
-        /* Knappen för att ändra bakgrund */
+        /* För att placera knappen i originalpositionen */
         #change-background-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
             background-color: #800080; /* Lila bakgrundsfärg */
             padding: 10px 20px;
             border: none;
@@ -46,8 +42,6 @@
             border-radius: 5px;
             font-size: 16px;
             z-index: 2;
-            width: 160px; /* Justera bredd för att ge tillräcklig hitbox */
-            height: 40px; /* Justera höjd för bättre klickbarhet */
         }
 
         /* Drop-down meny för att välja bakgrund */
@@ -77,30 +71,6 @@
             background-color: #f1f1f1;
         }
 
-        /* Style för bakgrundens moln */
-        .clouds {
-            position: absolute;
-            width: 100%;
-            height: 150px;
-            background: white;
-            opacity: 0.6;
-            top: 0;
-            left: 0;
-            border-radius: 50%;
-        }
-
-        /* Style för stjärnorna */
-        .stars {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: -1;
-        }
-
         /* Standard bakgrund (Light Mode) */
         .light-mode {
             background: linear-gradient(to bottom, #e0b3e6, #f1c6e7);
@@ -114,31 +84,21 @@
         /* Förstorade stjärnor */
         .star-fall {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 20px;
+            height: 20px;
             background-color: lightblue; /* Ljusblå färg för stjärnor */
             opacity: 0.8;
-            animation: fall 3s linear infinite;
+            animation: none; /* Stjärnorna ska inte röra sig */
         }
 
         /* Förstorade stjärnfall */
         .falling-star {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 6px;
+            height: 6px;
             background-color: white; /* Vit färg för snedstreck */
             opacity: 0.8;
-            animation: fall 4s linear infinite;
-        }
-
-        /* Animation för stjärnfall */
-        @keyframes fall {
-            0% {
-                transform: translate(0, 0) rotate(45deg);
-            }
-            100% {
-                transform: translate(200px, 500px) rotate(45deg);
-            }
+            animation: none; /* Snedstrecken ska inte röra sig */
         }
     </style>
 </head>
@@ -169,10 +129,8 @@
     </div>
 
     <!-- Knappen för att ändra bakgrund -->
-    <div class="button-container">
-        <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
-    </div>
-
+    <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
+    
     <!-- Options för bakgrundsval -->
     <div id="background-options">
         <button onclick="setLightMode()">Light Mode</button>
@@ -193,12 +151,19 @@
         function setLightMode() {
             document.body.className = 'light-mode';
             generateStars('#e0b3e6', '#f1c6e7');
+            hideBackgroundOptions();
         }
 
         // Dark Mode bakgrund
         function setDarkMode() {
             document.body.className = 'dark-mode';
             generateStars('#333', '#6a4c9c');
+            hideBackgroundOptions();
+        }
+
+        // Döljer dropdown-menyn efter val av bakgrund
+        function hideBackgroundOptions() {
+            document.getElementById('background-options').style.display = 'none';
         }
 
         // Generera stjärnor på skärmen
