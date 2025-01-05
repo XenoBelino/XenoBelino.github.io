@@ -26,18 +26,6 @@ body, html {
     background: linear-gradient(to bottom, #2a2a2a, #4b1e6b); /* Mörk bakgrund */
 }
 
-/* Moln */
-.clouds {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 200px;
-    background: url('https://www.example.com/clouds.png') no-repeat center;
-    background-size: cover;
-    opacity: 0.3;
-}
-
 /* Stjärnor */
 .stars {
     position: absolute;
@@ -45,35 +33,60 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)); /* Fjädrande stjärnor */
-    animation: starsTwinkle 3s infinite;
+    background: url('https://i.imgur.com/23g3aOY.png') repeat; /* Använd stjärnbild */
     pointer-events: none;
+    animation: twinkle 2s infinite;
 }
 
-/* Stjärnfall (enkel design för att ge illusionen av rörelse) */
+/* Stjärnfall */
 .stars::after {
     content: '';
     position: absolute;
-    top: 40%;
+    top: 10%;
     left: 50%;
-    width: 100px;
-    height: 2px;
-    background: #fff;
-    transform: rotate(45deg);
-    animation: meteorShower 2s infinite ease-in-out;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://i.imgur.com/vJvJ1Z2.png'); /* Stjärnfall bild */
+    animation: shooting-star 1.5s infinite linear;
 }
 
-/* Animation för stjärnor */
-@keyframes starsTwinkle {
+/* Animation för att få stjärnorna att twinkle */
+@keyframes twinkle {
     0% { opacity: 0.3; }
     50% { opacity: 1; }
     100% { opacity: 0.3; }
 }
 
 /* Animation för stjärnfall */
-@keyframes meteorShower {
-    0% { top: 20%; left: 40%; opacity: 0.6; }
-    100% { top: 80%; left: 60%; opacity: 0; }
+@keyframes shooting-star {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(-100%, 100%);
+    }
+}
+
+/* Moln */
+.clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: url('https://i.imgur.com/RdyTiZp.png') repeat-x;
+    background-size: 100% 50%;
+    animation: cloud-move 20s linear infinite;
+}
+
+/* Moln animation */
+@keyframes cloud-move {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
 }
 
 /* Innehåll */
@@ -96,7 +109,7 @@ body, html {
     color: white;
     border: none;
     cursor: pointer;
-    z-index: 10;
+    z-index: 100;
 }
 
 /* Förändring av knappar */
@@ -111,23 +124,4 @@ button:hover {
 
 .dark-mode button:hover {
     background-color: #a15a99;
-}
-
-/* Justering av knappar hitbox */
-button {
-    padding: 12px 25px;
-    text-align: center;
-    width: auto;
-    height: auto;
-}
-
-/* För att undvika att knappen är för liten */
-button:focus {
-    outline: none;
-}
-
-/* För att knappen ska få större interaktionsområde */
-#change-background-btn {
-    width: 200px;
-    height: 50px;
 }
