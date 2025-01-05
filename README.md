@@ -107,6 +107,16 @@
                 transform: translateY(100vh) rotate(-45deg);
             }
         }
+
+        /* Bakgrund för knapp när man är i Light Mode */
+        .light-mode-btn {
+            background-color: #f1c6e7; /* Ljusrosa */
+        }
+
+        /* Bakgrund för knapp när man är i Dark Mode */
+        .dark-mode-btn {
+            background-color: #6a4c9c; /* Mörk lila */
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -140,8 +150,8 @@
     
     <!-- Options för bakgrundsval -->
     <div id="background-options">
-        <button onclick="setLightMode()">Light Mode</button>
-        <button onclick="setDarkMode()">Dark Mode</button>
+        <button class="light-mode-btn" onclick="setLightMode()">Light Mode</button>
+        <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
     </div>
 
     <!-- Stjärnor och stjärnfall -->
@@ -159,6 +169,7 @@
             document.body.className = 'light-mode';
             generateStars('#ADD8E6', '#f1c6e7'); // Ljusblå stjärnor
             hideBackgroundOptions();
+            updateButtonColors('light-mode');
         }
 
         // Dark Mode bakgrund
@@ -166,6 +177,21 @@
             document.body.className = 'dark-mode';
             generateStars('#FF1493', '#6a4c9c'); // Rosa stjärnor
             hideBackgroundOptions();
+            updateButtonColors('dark-mode');
+        }
+
+        // Uppdatera knapparnas bakgrundsfärg beroende på läge
+        function updateButtonColors(mode) {
+            const lightModeBtn = document.querySelector('.light-mode-btn');
+            const darkModeBtn = document.querySelector('.dark-mode-btn');
+
+            if (mode === 'light-mode') {
+                lightModeBtn.style.backgroundColor = '#f1c6e7'; // Ljusrosa
+                darkModeBtn.style.backgroundColor = '#6a4c9c'; // Mörk lila
+            } else {
+                lightModeBtn.style.backgroundColor = '#6a4c9c'; // Mörk lila
+                darkModeBtn.style.backgroundColor = '#FF1493'; // Rosa
+            }
         }
 
         // Döljer dropdown-menyn efter val av bakgrund
