@@ -5,36 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     
-    <!-- Google Fonts - Lato (används direkt utan preload för att undvika varning) -->
+    <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- Ladda Wavesurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
+        /* Grundläggande stilar */
         body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
             background-color: lightblue;
-            font-family: 'Lato', sans-serif; /* Se till att fonten används direkt */
+            transition: background-color 0.5s, color 0.5s;
         }
-        
+
         .editor-content {
             text-align: center;
             margin: 20px;
+            z-index: 1;
+            position: relative;
         }
 
-        #waveform {
+        /* Knappen för att ändra bakgrund */
+        #change-background-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 2;
+        }
+
+        /* Drop-down meny för att välja bakgrund */
+        #background-options {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style för bakgrundens moln */
+        .clouds {
+            position: absolute;
             width: 100%;
             height: 150px;
-            background-color: #f0f0f0;
-            margin-top: 20px;
+            background: white;
+            opacity: 0.6;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
         }
 
-        video {
-            margin-top: 20px;
+        /* Style för stjärnorna */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent url('star.png') repeat;
+            top: 0;
+            left: 0;
+            pointer-events: none;
         }
+
+        /* Standard bakgrund (Light Mode) */
+        .light-mode {
+            background: linear-gradient(to bottom, #e0b3e6, #f1c6e7);
+        }
+
+        /* Dark Mode bakgrund */
+        .dark-mode {
+            background: linear-gradient(to bottom, #333, #6a4c9c);
+        }
+        
+        /* Animation för stjärnfall */
+        .star-fall {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            opacity: 0.8;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translate(0, 0) rotate(45deg);
+            }
+            100% {
+                transform: translate(200px, 500px) rotate(45deg);
+            }
+        }
+
     </style>
 </head>
-<body class="home">
+<body class="light-mode">
     <div class="editor-content">
         <h1>Edit Your Files</h1>
 
@@ -60,7 +137,53 @@
         </video>
     </div>
 
+    <!-- Button for changing background -->
+    <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
+    
+    <!-- Options for background modes -->
+    <div id="background-options">
+        <button onclick="setLightMode()">Light Mode</button>
+        <button onclick="setDarkMode()">Dark Mode</button>
+    </div>
+
+    <div class="clouds"></div>
+    <div class="stars"></div>
+
     <script>
+        // Toggle for background options
+        function toggleBackgroundOptions() {
+            var options = document.getElementById('background-options');
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Light Mode background
+        function setLightMode() {
+            document.body.className = 'light-mode';
+            generateStars('#e0b3e6', '#f1c6e7');
+        }
+
+        // Dark Mode background
+        function setDarkMode() {
+            document.body.className = 'dark-mode';
+            generateStars('#333', '#6a4c9c');
+        }
+
+        // Generate stars on the screen
+        function generateStars(starColor, bgColor) {
+            let starCount = 100;
+            let container = document.querySelector('.stars');
+            container.innerHTML = '';  // Clear previous stars
+
+            for (let i = 0; i < starCount; i++) {
+                let star = document.createElement('div');
+                star.classList.add('star-fall');
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.backgroundColor = starColor;
+                container.appendChild(star);
+            }
+        }
+
         // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
