@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
 
-    <!-- Google Fonts - Lato -->
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-
-    <!-- Ladda Wavesurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
@@ -81,27 +77,26 @@
             background: linear-gradient(to bottom, #333, #6a4c9c);
         }
 
-        /* Förstorade stjärnor som primo gems form */
+        /* Förstorade stjärnor */
         .star-fall {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             background-color: lightblue; /* Ljusblå färg för stjärnor */
             opacity: 0.8;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); /* Form av primo gems */
-            animation: none; /* Stjärnorna ska inte röra sig */
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
             z-index: -1;
         }
 
         /* Förstorade stjärnfall - snedstreck som representerar stjärnfall */
         .falling-star {
             position: absolute;
-            width: 4px;
-            height: 40px;
-            background-color: white; /* Vit färg för snedstreck */
+            width: 5px;
+            height: 50px;
+            background-color: white;
             opacity: 0.8;
-            transform: rotate(-45deg); /* Skapa snedstreck */
-            animation: fall 1s ease-in-out infinite;
+            transform: rotate(-45deg);
+            animation: fall 1.5s ease-in-out infinite;
             z-index: -1;
         }
 
@@ -111,7 +106,7 @@
                 transform: translateY(0) rotate(-45deg);
             }
             100% {
-                transform: translateY(100vh) rotate(-45deg); /* Rör sig från toppen till botten */
+                transform: translateY(100vh) rotate(-45deg);
             }
         }
     </style>
@@ -151,8 +146,7 @@
         <button onclick="setDarkMode()">Dark Mode</button>
     </div>
 
-    <!-- Moln och stjärnor -->
-    <div class="clouds"></div>
+    <!-- Stjärnor och stjärnfall -->
     <div class="stars"></div>
 
     <script>
@@ -217,11 +211,30 @@
 
                 const fileURL = URL.createObjectURL(file);
 
-                // Om filen är en ljudfil
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Hantera ljudfil med Wavesurfer
                     wavesurfer.load(fileURL);
                 } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    // Om det är en videofil, sätt den som källa för videoelementet
-                    videoPlayer.src
+                    videoPlayer.src = fileURL;
+                    videoPlayer.load(); // Ladda om videon
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        // Spara fil (exempel)
+        function saveFile() {
+            alert("Your changes have been saved!");
+        }
+
+        // Ljudkontroller
+        var slider = document.getElementById("volume-slider");
+        var wavesurfer = WaveSurfer.create({ container: '#waveform' });
+
+        slider.oninput = function() {
+            wavesurfer.setVolume(slider.value / 100);
+        };
+    </script>
+</body>
+</html>
