@@ -8,10 +8,11 @@
 </head>
 <body>
     <div class="background" id="background">
-        <!-- Moln och stjärnor -->
+        <!-- Bakgrundsändringar och stjärnor -->
         <div class="clouds"></div>
         <div class="stars"></div>
 
+        <!-- Huvudinnehåll -->
         <div class="content">
             <h1>Welcome to My Website</h1>
             <p>This website allows you to edit files, save them, and interact with media content like audio and video.</p>
