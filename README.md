@@ -3,26 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to My Website</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>File Editor</title>
+    
+    <!-- Google Fonts - Lato (används direkt utan preload för att undvika varning) -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Ladda Wavesurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+
+    <style>
+        body {
+            background-color: lightblue;
+            font-family: 'Lato', sans-serif; /* Se till att fonten används direkt */
+        }
+        
+        .editor-content {
+            text-align: center;
+            margin: 20px;
+        }
+
+        #waveform {
+            width: 100%;
+            height: 150px;
+            background-color: #f0f0f0;
+            margin-top: 20px;
+        }
+
+        video {
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<body>
-    <div class="background" id="background">
-        <!-- Bakgrundsändringar och stjärnor -->
-        <div class="clouds"></div>
-        <div class="stars"></div>
+<body class="home">
+    <div class="editor-content">
+        <h1>Edit Your Files</h1>
 
-        <!-- Huvudinnehåll -->
-        <div class="content">
-            <h1>Welcome to My Website</h1>
-            <p>This website allows you to edit files, save them, and interact with media content like audio and video.</p>
-            <a href="page.html" id="go-to-page-btn">Go to Page</a>
-        </div>
+        <!-- Browse Button -->
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+        
+        <div id="file-info"></div>
+        
+        <!-- Save Button -->
+        <button id="save-button" onclick="saveFile()">Save</button>
 
-        <!-- Bakgrundsändringsknapp -->
-        <button id="change-background-btn">Change Background</button>
+        <!-- Volume Slider -->
+        <input type="range" min="0" max="100" value="50" id="volume-slider" />
+
+        <!-- Waveform container -->
+        <div id="waveform"></div>
+
+        <!-- Video player -->
+        <video id="video-player" width="320" height="240" controls>
+            <source src="path_to_video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Hantera filval
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            const videoPlayer = document.getElementById('video-player');
+
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+
+                const fileURL = URL.createObjectURL(file);
+
+                // Om filen är en ljudfil
+                let extension = file.name.split('.').pop().toLowerCase();
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // Hantera ljudfil med Wavesurfer
+                    wavesurfer.load(fileURL);
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // Om det är en videofil, sätt den som källa för videoelementet
+                    videoPlayer.src = fileURL;
+                    videoPlayer.load(); // Ladda om videon
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        // Spara fil (exempel)
+        function saveFile() {
+            alert("Your changes have been saved!");
+        }
+
+        // Hantera ljudvolym
+        var slider = document.getElementById("volume-slider");
+        var wavesurfer = WaveSurfer.create({ container: '#waveform' });
+
+        slider.oninput = function() {
+            wavesurfer.setVolume(slider.value / 100);
+        };
+    </script>
 </body>
 </html>
