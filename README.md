@@ -42,6 +42,8 @@
             border-radius: 5px;
             font-size: 16px;
             z-index: 2;
+            width: 160px; /* Justera bredd för att ge tillräcklig hitbox */
+            height: 40px; /* Justera höjd för bättre klickbarhet */
         }
 
         /* Drop-down meny för att välja bakgrund */
@@ -55,6 +57,20 @@
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            width: 160px;
+        }
+
+        #background-options button {
+            width: 100%;
+            padding: 8px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+
+        #background-options button:hover {
+            background-color: #f1f1f1;
         }
 
         /* Style för bakgrundens moln */
@@ -74,10 +90,11 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: transparent url('star.png') repeat;
+            background: transparent;
             top: 0;
             left: 0;
             pointer-events: none;
+            z-index: -1;
         }
 
         /* Standard bakgrund (Light Mode) */
@@ -225,3 +242,4 @@
     </script>
 </body>
 </html>
+
