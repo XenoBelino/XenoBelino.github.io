@@ -185,6 +185,7 @@
             const lightModeBtn = document.querySelector('.light-mode-btn');
             const darkModeBtn = document.querySelector('.dark-mode-btn');
 
+            // Sätt färger när man ändrar bakgrund
             if (mode === 'light-mode') {
                 lightModeBtn.style.backgroundColor = '#f1c6e7'; // Ljusrosa
                 darkModeBtn.style.backgroundColor = '#6a4c9c'; // Mörk lila
@@ -250,27 +251,4 @@
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
                     wavesurfer.load(fileURL);
-                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    videoPlayer.src = fileURL;
-                    videoPlayer.load(); // Ladda om videon
-                } else {
-                    fileInfoDiv.textContent = "Unsupported file type!";
-                }
-            }
-        }
-
-        // Spara fil (exempel)
-        function saveFile() {
-            alert("Your changes have been saved!");
-        }
-
-        // Ljudkontroller
-        var slider = document.getElementById("volume-slider");
-        var wavesurfer = WaveSurfer.create({ container: '#waveform' });
-
-        slider.oninput = function() {
-            wavesurfer.setVolume(slider.value / 100);
-        };
-    </script>
-</body>
-</html>
+                } else if (['mp4', 'webm',
