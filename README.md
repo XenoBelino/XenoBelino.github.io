@@ -30,11 +30,15 @@
             position: relative;
         }
 
+        /* För att placera knapparna i samma rad */
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            margin: 10px;
+        }
+
         /* Knappen för att ändra bakgrund */
         #change-background-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             background-color: #800080; /* Lila bakgrundsfärg */
             padding: 10px 20px;
             border: none;
@@ -107,14 +111,24 @@
             background: linear-gradient(to bottom, #333, #6a4c9c);
         }
 
-        /* Animation för stjärnfall */
+        /* Förstorade stjärnor */
         .star-fall {
             position: absolute;
-            width: 5px;
-            height: 5px;
+            width: 12px;
+            height: 12px;
             background-color: lightblue; /* Ljusblå färg för stjärnor */
             opacity: 0.8;
             animation: fall 3s linear infinite;
+        }
+
+        /* Förstorade stjärnfall */
+        .falling-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: white; /* Vit färg för snedstreck */
+            opacity: 0.8;
+            animation: fall 4s linear infinite;
         }
 
         /* Animation för stjärnfall */
@@ -125,16 +139,6 @@
             100% {
                 transform: translate(200px, 500px) rotate(45deg);
             }
-        }
-
-        /* Stjärnfallens vita snedstreck */
-        .falling-star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background-color: white; /* Vit färg för snedstreck */
-            opacity: 0.8;
-            animation: fall 4s linear infinite;
         }
     </style>
 </head>
@@ -164,10 +168,12 @@
         </video>
     </div>
 
-    <!-- Button for changing background -->
-    <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
-    
-    <!-- Options for background modes -->
+    <!-- Knappen för att ändra bakgrund -->
+    <div class="button-container">
+        <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
+    </div>
+
+    <!-- Options för bakgrundsval -->
     <div id="background-options">
         <button onclick="setLightMode()">Light Mode</button>
         <button onclick="setDarkMode()">Dark Mode</button>
@@ -177,29 +183,29 @@
     <div class="stars"></div>
 
     <script>
-        // Toggle for background options
+        // Toggle för bakgrundsinställningar
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
             options.style.display = options.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Light Mode background
+        // Light Mode bakgrund
         function setLightMode() {
             document.body.className = 'light-mode';
             generateStars('#e0b3e6', '#f1c6e7');
         }
 
-        // Dark Mode background
+        // Dark Mode bakgrund
         function setDarkMode() {
             document.body.className = 'dark-mode';
             generateStars('#333', '#6a4c9c');
         }
 
-        // Generate stars on the screen
+        // Generera stjärnor på skärmen
         function generateStars(starColor, bgColor) {
             let starCount = 100;
             let container = document.querySelector('.stars');
-            container.innerHTML = '';  // Clear previous stars
+            container.innerHTML = '';  // Rensa tidigare stjärnor
 
             for (let i = 0; i < starCount; i++) {
                 let star = document.createElement('div');
