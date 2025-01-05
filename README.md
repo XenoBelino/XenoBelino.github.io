@@ -81,24 +81,38 @@
             background: linear-gradient(to bottom, #333, #6a4c9c);
         }
 
-        /* Förstorade stjärnor */
+        /* Förstorade stjärnor som primo gems form */
         .star-fall {
             position: absolute;
             width: 20px;
             height: 20px;
             background-color: lightblue; /* Ljusblå färg för stjärnor */
             opacity: 0.8;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); /* Form av primo gems */
             animation: none; /* Stjärnorna ska inte röra sig */
+            z-index: -1;
         }
 
-        /* Förstorade stjärnfall */
+        /* Förstorade stjärnfall - snedstreck som representerar stjärnfall */
         .falling-star {
             position: absolute;
-            width: 6px;
-            height: 6px;
+            width: 3px;
+            height: 25px;
             background-color: white; /* Vit färg för snedstreck */
             opacity: 0.8;
-            animation: none; /* Snedstrecken ska inte röra sig */
+            transform: rotate(-45deg); /* Skapa snedstreck */
+            animation: fall 1s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        /* Animering för stjärnfall */
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(-45deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(-45deg); /* Rör sig från toppen till botten */
+            }
         }
     </style>
 </head>
@@ -137,6 +151,7 @@
         <button onclick="setDarkMode()">Dark Mode</button>
     </div>
 
+    <!-- Moln och stjärnor -->
     <div class="clouds"></div>
     <div class="stars"></div>
 
@@ -226,9 +241,4 @@
         var slider = document.getElementById("volume-slider");
         var wavesurfer = WaveSurfer.create({ container: '#waveform' });
 
-        slider.oninput = function() {
-            wavesurfer.setVolume(slider.value / 100);
-        };
-    </script>
-</body>
-</html>
+        slider.oninput = function
