@@ -35,7 +35,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: #fff;
+            background-color: #800080; /* Lila bakgrundsfärg */
             padding: 10px 20px;
             border: none;
             cursor: pointer;
@@ -106,17 +106,18 @@
         .dark-mode {
             background: linear-gradient(to bottom, #333, #6a4c9c);
         }
-        
+
         /* Animation för stjärnfall */
         .star-fall {
             position: absolute;
             width: 5px;
             height: 5px;
-            background-color: white;
+            background-color: lightblue; /* Ljusblå färg för stjärnor */
             opacity: 0.8;
             animation: fall 3s linear infinite;
         }
 
+        /* Animation för stjärnfall */
         @keyframes fall {
             0% {
                 transform: translate(0, 0) rotate(45deg);
@@ -126,6 +127,15 @@
             }
         }
 
+        /* Stjärnfallens vita snedstreck */
+        .falling-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: white; /* Vit färg för snedstreck */
+            opacity: 0.8;
+            animation: fall 4s linear infinite;
+        }
     </style>
 </head>
 <body class="light-mode">
@@ -199,6 +209,15 @@
                 star.style.backgroundColor = starColor;
                 container.appendChild(star);
             }
+
+            // Generera stjärnfall
+            for (let i = 0; i < 20; i++) {
+                let fallingStar = document.createElement('div');
+                fallingStar.classList.add('falling-star');
+                fallingStar.style.top = `${Math.random() * 20}%`;
+                fallingStar.style.left = `${Math.random() * 100}%`;
+                container.appendChild(fallingStar);
+            }
         }
 
         // Hantera filval
@@ -242,4 +261,3 @@
     </script>
 </body>
 </html>
-
