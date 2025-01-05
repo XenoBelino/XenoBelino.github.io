@@ -94,17 +94,17 @@
             height: 40px;
             opacity: 0.8;
             transform: rotate(-45deg);
-            animation: fall 2s ease-in-out infinite;
+            animation: fall 3s ease-in-out infinite;
             z-index: -1;
         }
 
-        /* Animering för stjärnfall */
+        /* Animering för stjärnfall diagonalt */
         @keyframes fall {
             0% {
                 transform: translateY(-100px) rotate(-45deg);
             }
             100% {
-                transform: translateY(100vh) rotate(-45deg);
+                transform: translateY(100vh) translateX(100px) rotate(-45deg);
             }
         }
 
@@ -167,7 +167,7 @@
         // Light Mode bakgrund
         function setLightMode() {
             document.body.className = 'light-mode';
-            generateStars('#ADD8E6', '#f1c6e7'); // Ljusblå stjärnor
+            generateStars('#0000FF', '#f1c6e7'); // Blå stjärnor för Light Mode
             hideBackgroundOptions();
             updateButtonColors('light-mode');
         }
@@ -175,7 +175,7 @@
         // Dark Mode bakgrund
         function setDarkMode() {
             document.body.className = 'dark-mode';
-            generateStars('#FF1493', '#6a4c9c'); // Rosa stjärnor
+            generateStars('#FF1493', '#6a4c9c'); // Rosa stjärnor för Dark Mode
             hideBackgroundOptions();
             updateButtonColors('dark-mode');
         }
