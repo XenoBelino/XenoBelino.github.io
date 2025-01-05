@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    
+
     <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    
+
     <!-- Ladda Wavesurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
@@ -84,8 +84,8 @@
         /* Förstorade stjärnor som primo gems form */
         .star-fall {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
             background-color: lightblue; /* Ljusblå färg för stjärnor */
             opacity: 0.8;
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); /* Form av primo gems */
@@ -96,8 +96,8 @@
         /* Förstorade stjärnfall - snedstreck som representerar stjärnfall */
         .falling-star {
             position: absolute;
-            width: 3px;
-            height: 25px;
+            width: 4px;
+            height: 40px;
             background-color: white; /* Vit färg för snedstreck */
             opacity: 0.8;
             transform: rotate(-45deg); /* Skapa snedstreck */
@@ -224,21 +224,4 @@
                     wavesurfer.load(fileURL);
                 } else if (['mp4', 'webm', 'avi'].includes(extension)) {
                     // Om det är en videofil, sätt den som källa för videoelementet
-                    videoPlayer.src = fileURL;
-                    videoPlayer.load(); // Ladda om videon
-                } else {
-                    fileInfoDiv.textContent = "Unsupported file type!";
-                }
-            }
-        }
-
-        // Spara fil (exempel)
-        function saveFile() {
-            alert("Your changes have been saved!");
-        }
-
-        // Hantera ljudvolym
-        var slider = document.getElementById("volume-slider");
-        var wavesurfer = WaveSurfer.create({ container: '#waveform' });
-
-        slider.oninput = function
+                    videoPlayer.src
