@@ -251,4 +251,17 @@
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
                     wavesurfer.load(fileURL);
-                } else if (['mp4', 'webm',
+                } else if (['mp4', 'webm', 'mov'].includes(extension)) {
+                    videoPlayer.src = fileURL;
+                    videoPlayer.style.display = 'block';
+                }
+            }
+        }
+
+        // Spara filen
+        function saveFile() {
+            // Denna funktion kan implementeras för att spara filen som användaren väljer
+        }
+    </script>
+</body>
+</html>
