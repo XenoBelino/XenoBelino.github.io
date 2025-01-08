@@ -121,19 +121,16 @@
 </head>
 <body class="light-mode">
     <div class="editor-content">
-        <h1>Edit Your Files</h1>
+        <h1>Welcome to my website</h1>
 
-        <!-- Browse Button -->
+        <!-- Browse Button (removed "Save" and volume sliders) -->
         <button onclick="document.getElementById('file-input').click()">Browse my files</button>
         <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
         
         <div id="file-info"></div>
-        
-        <!-- Save Button -->
-        <button id="save-button" onclick="saveFile()">Save</button>
 
-        <!-- Volume Slider -->
-        <input type="range" min="0" max="100" value="50" id="volume-slider" />
+        <!-- Go to Page Button -->
+        <button id="go-to-page-btn" onclick="window.location.href='page.html'">Go to Page</button>
 
         <!-- Waveform container -->
         <div id="waveform"></div>
@@ -256,11 +253,6 @@
                     videoPlayer.style.display = 'block';
                 }
             }
-        }
-
-        // Spara filen
-        function saveFile() {
-            // Denna funktion kan implementeras för att spara filen som användaren väljer
         }
     </script>
 </body>
