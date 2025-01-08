@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -145,7 +144,7 @@
 
     <div class="editor-content">
         <div class="video-container">
-            <video controls id="video-player">
+            <video controls id="video-player" style="display: none;">
                 <source id="video-source" src="videos/video.mp4" type="video/mp4">
                 Din webbläsare stödjer inte videospelaren.
             </video>
@@ -248,16 +247,13 @@
             const videoSource = document.getElementById('video-source');
 
             if (file) {
-                // Kontrollera om filen är en kompatibel videotyp
                 if (file.type === 'video/mp4' || file.type === 'video/webm') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
-
-                    // Uppdatera filnamnet
+                    videoPlayer.style.display = 'block';
                     fileInfo.textContent = `Selected file: ${file.name}`;
                 } else {
-                    // Om filen inte är kompatibel
                     fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
                 }
             }
