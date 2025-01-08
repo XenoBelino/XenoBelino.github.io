@@ -116,13 +116,22 @@
         .dark-mode-btn {
             background-color: #6a4c9c; /* Mörk lila */
         }
+
+        /* Styling för videospelaren */
+        #video-player {
+            border-radius: 15px; /* Runda hörn för videospelaren */
+            display: block;
+            margin: 20px auto;
+            width: 320px;
+            height: 240px;
+        }
     </style>
 </head>
 <body class="light-mode">
     <div class="editor-content">
         <h1>Welcome to my website</h1>
 
-        <!-- Browse Button (removed "Save" and volume sliders) -->
+        <!-- Browse Button -->
         <button onclick="document.getElementById('file-input').click()">Browse my files</button>
         <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
         
@@ -150,90 +159,40 @@
         <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
     </div>
 
-    <!-- Stjärnor och stjärnfall -->
-    <div class="stars"></div>
-
     <script>
-        // Toggle för bakgrundsinställningar
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
             options.style.display = options.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Light Mode bakgrund
         function setLightMode() {
             document.body.className = 'light-mode';
-            generateStars('#0000FF', '#f1c6e7'); // Blå stjärnor för Light Mode
             hideBackgroundOptions();
             updateButtonColors('light-mode');
         }
 
-        // Dark Mode bakgrund
         function setDarkMode() {
             document.body.className = 'dark-mode';
-            generateStars('#FF1493', '#6a4c9c'); // Rosa stjärnor för Dark Mode
             hideBackgroundOptions();
             updateButtonColors('dark-mode');
         }
 
-        // Uppdatera knapparnas bakgrundsfärg beroende på läge
         function updateButtonColors(mode) {
             const lightModeBtn = document.querySelector('.light-mode-btn');
             const darkModeBtn = document.querySelector('.dark-mode-btn');
-
-            // Sätt färger när man ändrar bakgrund
             if (mode === 'light-mode') {
-                lightModeBtn.style.backgroundColor = '#f1c6e7'; // Ljusrosa
-                darkModeBtn.style.backgroundColor = '#6a4c9c'; // Mörk lila
+                lightModeBtn.style.backgroundColor = '#f1c6e7'; 
+                darkModeBtn.style.backgroundColor = '#6a4c9c'; 
             } else {
-                lightModeBtn.style.backgroundColor = '#6a4c9c'; // Mörk lila
-                darkModeBtn.style.backgroundColor = '#FF1493'; // Rosa
+                lightModeBtn.style.backgroundColor = '#6a4c9c'; 
+                darkModeBtn.style.backgroundColor = '#FF1493'; 
             }
         }
 
-        // Döljer dropdown-menyn efter val av bakgrund
         function hideBackgroundOptions() {
             document.getElementById('background-options').style.display = 'none';
         }
 
-        // Generera stjärnor på skärmen
-        function generateStars(starColor, bgColor) {
-            let starCount = 50; // Minska antalet stjärnor för att inte blockera stjärnfallen
-            let container = document.querySelector('.stars');
-            container.innerHTML = '';  // Rensa tidigare stjärnor
-            let positions = [];  // För att hålla koll på stjärnornas positioner
-
-            for (let i = 0; i < starCount; i++) {
-                let star = document.createElement('div');
-                star.classList.add('star-fall');
-                let top, left;
-
-                // Kontrollera så att stjärnorna inte krockar med varandra
-                do {
-                    top = Math.random() * 100;
-                    left = Math.random() * 100;
-                } while (positions.some(pos => Math.abs(pos.top - top) < 5 && Math.abs(pos.left - left) < 5));
-
-                positions.push({ top, left });
-
-                star.style.top = `${top}%`;
-                star.style.left = `${left}%`;
-                star.style.backgroundColor = starColor;
-
-                container.appendChild(star);
-            }
-
-            // Generera stjärnfall
-            for (let i = 0; i < 10; i++) { // Minska antalet stjärnfall
-                let fallingStar = document.createElement('div');
-                fallingStar.classList.add('falling-star');
-                fallingStar.style.top = `${Math.random() * 20}%`;
-                fallingStar.style.left = `${Math.random() * 100}%`;
-                container.appendChild(fallingStar);
-            }
-        }
-
-        // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -246,7 +205,7 @@
 
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    wavesurfer.load(fileURL);
+                    // Add audio player functionality here
                 } else if (['mp4', 'webm', 'mov'].includes(extension)) {
                     videoPlayer.src = fileURL;
                     videoPlayer.style.display = 'block';
