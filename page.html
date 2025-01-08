@@ -263,3 +263,32 @@
             document.getElementById('file-input').click();
         });
     </script>
+    
+ // Hantera filval
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            const videoPlayer = document.getElementById('video-player');
+
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+
+                const fileURL = URL.createObjectURL(file);
+
+                let extension = file.name.split('.').pop().toLowerCase();
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    wavesurfer.load(fileURL);
+                } else if (['mp4', 'webm', 'mov'].includes(extension)) {
+                    videoPlayer.src = fileURL;
+                    videoPlayer.style.display = 'block';
+                }
+            }
+        }
+
+        // Spara filen
+        function saveFile() {
+            // Denna funktion kan implementeras för att spara filen som användaren väljer
+        }
+    </script>
+</body>
+</html>
