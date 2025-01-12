@@ -31,7 +31,7 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 50px;
+            top: 80px;
             right: 10px;
             background-color: white;
             border: 1px solid #ddd;
@@ -39,7 +39,7 @@
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
-            z-index: 2;
+            z-index: 10;
         }
 
         /* Knapp färg för alla knappar */
@@ -52,6 +52,8 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s;
+            margin: 10px;
+            z-index: 2;
         }
 
         button:hover {
@@ -83,7 +85,7 @@
             height: 20px;
             opacity: 0.8;
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            z-index: -1;
+            z-index: 5; /* Se till att stjärnorna syns ovanpå bakgrunden */
         }
 
         /* Förstorade stjärnfall - snedstreck som representerar stjärnfall */
@@ -94,7 +96,7 @@
             opacity: 0.8;
             transform: rotate(-45deg);
             animation: fall 3s ease-in-out infinite;
-            z-index: -1;
+            z-index: 5; /* Se till att stjärnfallen syns */
         }
 
         /* Animering för stjärnfall diagonalt */
@@ -108,54 +110,44 @@
         }
 
         /* För texten på knappar */
-        button {
-            font-size: 16px;
-            padding: 10px 20px;
-        }
-
-        /* Justera hitboxen för texten på knapparna */
         button span {
             display: inline-block;
             padding: 5px;
+        }
+
+        /* För att ge varje knapp rätt placering */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
     </style>
 </head>
 <body class="light-mode">
     <!-- Stjärnfall animation -->
-    <div class="star-fall" style="top: 20px; left: 20px;"></div>
-    <div class="star-fall" style="top: 100px; left: 50px;"></div>
-    <div class="star-fall" style="top: 300px; left: 200px;"></div>
-    
+    <div class="falling-star" style="top: 20px; left: 20px;"></div>
+    <div class="falling-star" style="top: 100px; left: 50px;"></div>
+    <div class="falling-star" style="top: 300px; left: 200px;"></div>
+
     <div class="editor-content">
         <h1>Welcome to my website</h1>
 
-        <!-- Browse Button -->
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
-        
-        <div id="file-info"></div>
+        <!-- Knappar i en container för att undvika överlappning -->
+        <div class="button-container">
+            <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+            <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+            
+            <button id="go-to-page-btn" onclick="window.location.href='page.html'">Go to Page</button>
 
-        <!-- Go to Page Button -->
-        <button id="go-to-page-btn" onclick="window.location.href='page.html'">Go to Page</button>
+            <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
+        </div>
 
-        <!-- Waveform container -->
-        <div id="waveform"></div>
-
-        <!-- Video player -->
-        <video id="video-player" width="320" height="240" controls>
-            <source src="path_to_video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-
-    <!-- Knappen för att ändra bakgrund -->
-    <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
-    
-    <!-- Options för bakgrundsval -->
-    <div id="background-options">
-        <button class="light-mode-btn" onclick="setLightMode()">Light Mode</button>
-        <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
+        <!-- Options för bakgrundsval -->
+        <div id="background-options">
+            <button class="light-mode-btn" onclick="setLightMode()">Light Mode</button>
+            <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
+        </div>
     </div>
 
     <script>
