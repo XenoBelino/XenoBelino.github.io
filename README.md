@@ -1,18 +1,61 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
+
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
     <style>
+        /* Grundläggande stilar */
         body {
             font-family: 'Lato', sans-serif;
             margin: 0;
             padding: 0;
             overflow: hidden;
             height: 100vh;
+            background-color: lightblue;
             transition: background-color 0.5s, color 0.5s;
+            position: relative;
+        }
+
+        .editor-content {
+            text-align: center;
+            margin: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Bakgrundsval meny */
+        #background-options {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            width: 160px;
+            z-index: 2;
+        }
+
+        /* Knapp färg för alla knappar */
+        button {
+            background-color: #6a0dad; /* Lila bakgrund */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #5c0b8a;
         }
 
         /* För att placera knappen i originalpositionen */
@@ -20,35 +63,17 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: #800080; /* Lila bakgrundsfärg */
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
             z-index: 2;
-        }
-
-        /* Bakgrund för knapp när man är i Light Mode */
-        .light-mode-btn {
-            background-color: #f1c6e7; /* Ljusrosa */
-        }
-
-        /* Bakgrund för knapp när man är i Dark Mode */
-        .dark-mode-btn {
-            background-color: #6a4c9c; /* Mörk lila */
         }
 
         /* Standard bakgrund (Light Mode) */
         .light-mode {
             background: linear-gradient(to bottom, #e0b3e6, #f1c6e7);
-            position: relative;
         }
 
         /* Dark Mode bakgrund */
         .dark-mode {
             background: linear-gradient(to bottom, #333, #6a4c9c);
-            position: relative;
         }
 
         /* Förstorade stjärnor */
@@ -82,85 +107,75 @@
             }
         }
 
-        /* Styling för videospelaren */
-        #video-player {
-            border-radius: 15px;
-            display: block;
-            margin: 20px auto;
-            width: 320px;
-            height: 240px;
+        /* För texten på knappar */
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
         }
+
+        /* Justera hitboxen för texten på knapparna */
+        button span {
+            display: inline-block;
+            padding: 5px;
+        }
+
     </style>
 </head>
 <body class="light-mode">
+    <!-- Stjärnfall animation -->
+    <div class="star-fall" style="top: 20px; left: 20px;"></div>
+    <div class="star-fall" style="top: 100px; left: 50px;"></div>
+    <div class="star-fall" style="top: 300px; left: 200px;"></div>
+    
     <div class="editor-content">
         <h1>Welcome to my website</h1>
+
+        <!-- Browse Button -->
         <button onclick="document.getElementById('file-input').click()">Browse my files</button>
         <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+        
         <div id="file-info"></div>
+
+        <!-- Go to Page Button -->
         <button id="go-to-page-btn" onclick="window.location.href='page.html'">Go to Page</button>
+
+        <!-- Waveform container -->
         <div id="waveform"></div>
+
+        <!-- Video player -->
         <video id="video-player" width="320" height="240" controls>
             <source src="path_to_video.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
+    <!-- Knappen för att ändra bakgrund -->
     <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
     
+    <!-- Options för bakgrundsval -->
     <div id="background-options">
         <button class="light-mode-btn" onclick="setLightMode()">Light Mode</button>
         <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
     </div>
 
     <script>
-        let starContainer = null;
-        
-        // Skapa stjärnorna när sidan laddas
-        function createStars() {
-            starContainer = document.createElement('div');
-            document.body.appendChild(starContainer);
-            for (let i = 0; i < 50; i++) {
-                let star = document.createElement('div');
-                star.classList.add('star-fall');
-                star.style.left = `${Math.random() * 100}vw`;
-                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                starContainer.appendChild(star);
-            }
-        }
-
-        // Ta bort stjärnorna
-        function clearStars() {
-            if (starContainer) {
-                starContainer.innerHTML = '';
-            }
-        }
-
-        // Växla bakgrundsoptioner
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
             options.style.display = options.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Aktivera Light Mode
         function setLightMode() {
             document.body.className = 'light-mode';
-            clearStars(); // Rensa stjärnorna
-            createStars(); // Skapa stjärnor för Light Mode
             hideBackgroundOptions();
             updateButtonColors('light-mode');
         }
 
-        // Aktivera Dark Mode
         function setDarkMode() {
             document.body.className = 'dark-mode';
-            clearStars(); // Rensa stjärnorna
-            createStars(); // Skapa stjärnor för Dark Mode
             hideBackgroundOptions();
             updateButtonColors('dark-mode');
         }
 
-        // Uppdatera knappfärger
         function updateButtonColors(mode) {
             const lightModeBtn = document.querySelector('.light-mode-btn');
             const darkModeBtn = document.querySelector('.dark-mode-btn');
@@ -173,12 +188,10 @@
             }
         }
 
-        // Stäng bakgrundsoptionsmeny
         function hideBackgroundOptions() {
             document.getElementById('background-options').style.display = 'none';
         }
 
-        // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -186,21 +199,18 @@
 
             if (file) {
                 fileInfoDiv.textContent = `Selected file: ${file.name}`;
+
                 const fileURL = URL.createObjectURL(file);
+
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Lägg till ljudspelarfunktionalitet här
+                    // Add audio player functionality here
                 } else if (['mp4', 'webm', 'mov'].includes(extension)) {
                     videoPlayer.src = fileURL;
                     videoPlayer.style.display = 'block';
                 }
             }
         }
-
-        // Skapa stjärnor när sidan laddas
-        window.onload = function() {
-            createStars();
-        };
     </script>
 </body>
 </html>
