@@ -26,7 +26,6 @@
             position: relative;
         }
 
-        /* För att ta bort det vita strecket under rubriker */
         h1 {
             margin-bottom: 0;
         }
@@ -35,15 +34,15 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 45px; /* Justera så att den hamnar direkt under knappen */
-            right: 10px;
+            top: 50px; /* Sätt detta så att menyn visas direkt under knappen */
+            right: 10px; /* Högerposition från kanten */
             background-color: white;
             border: 1px solid #ddd;
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
-            z-index: 1000; /* Säkerställ att den ligger över alla andra element */
+            z-index: 1000; /* Högsta lager så att den syns över alla andra element */
             box-sizing: border-box;
         }
 
@@ -72,7 +71,7 @@
             right: 10px; /* Placera den 10px från höger */
             z-index: 1000; /* Gör så att knappen är över alla andra element */
             padding: 10px 20px;
-            margin: 0; /* Se till att knappen inte påverkas av andra element */
+            margin: 0;
         }
 
         /* Dynamiska bakgrunder */
@@ -84,45 +83,10 @@
             background: linear-gradient(to bottom, #333, #6a4c9c);
         }
 
-        /* För att skapa stjärnor */
-        .star {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: white;
-            border-radius: 50%;
-            opacity: 0.8;
-        }
-
-        .falling-star {
-            position: absolute;
-            width: 3px;
-            height: 20px;
-            background-color: white;
-            transform: rotate(-45deg);
-            animation: fall 3s ease-in-out infinite;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-100px) rotate(-45deg);
-            }
-            100% {
-                transform: translateY(100vh) translateX(100px) rotate(-45deg);
-            }
-        }
-
         /* Text på knappar */
         button span {
             display: inline-block;
             padding: 5px;
-        }
-
-        /* För att ge varje knapp rätt placering */
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
         }
 
         /* Anpassad bakgrundsfärg för Light Mode och Dark Mode knappar */
@@ -134,16 +98,16 @@
             background-color: #6a4c9c; /* Ljuslila */
         }
 
+        /* För att ge varje knapp rätt placering */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
     </style>
 </head>
 <body class="light-mode">
-    <!-- Dynamiska stjärnor och stjärnfall -->
-    <div class="falling-star" style="top: 20px; left: 20px;"></div>
-    <div class="falling-star" style="top: 100px; left: 50px;"></div>
-    <div class="falling-star" style="top: 300px; left: 200px;"></div>
-    <div class="star" style="top: 50px; left: 100px;"></div>
-    <div class="star" style="top: 200px; left: 300px;"></div>
-
     <div class="editor-content">
         <h1>Welcome to my website</h1>
 
@@ -202,24 +166,6 @@
                     videoPlayer.style.display = 'block';
                 }
             }
-        }
-
-        // Dynamiska stjärnor
-        for (let i = 0; i < 50; i++) {
-            let star = document.createElement('div');
-            star.classList.add('star');
-            star.style.top = `${Math.random() * 100}vh`;
-            star.style.left = `${Math.random() * 100}vw`;
-            document.body.appendChild(star);
-        }
-
-        // Dynamiska stjärnfall
-        for (let i = 0; i < 5; i++) {
-            let fallingStar = document.createElement('div');
-            fallingStar.classList.add('falling-star');
-            fallingStar.style.top = `${Math.random() * 100}vh`;
-            fallingStar.style.left = `${Math.random() * 100}vw`;
-            document.body.appendChild(fallingStar);
         }
     </script>
 </body>
