@@ -35,7 +35,7 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 45px; /* Placera den direkt under knappen */
+            top: 50px; /* Justera så att den hamnar under knappen */
             right: 10px;
             background-color: white;
             border: 1px solid #ddd;
@@ -43,7 +43,7 @@
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
-            z-index: 10;
+            z-index: 1000; /* Säkerställ att den ligger över andra element */
         }
 
         /* Knapp färg för alla knappar */
