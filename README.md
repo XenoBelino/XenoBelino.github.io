@@ -26,6 +26,11 @@
             position: relative;
         }
 
+        /* För att ta bort det vita strecket under rubriker */
+        h1 {
+            margin-bottom: 0; /* Ta bort eventuell marginal */
+        }
+
         /* Bakgrundsval meny */
         #background-options {
             display: none;
@@ -53,18 +58,22 @@
             transition: background-color 0.3s;
             margin: 10px;
             z-index: 2;
+            position: relative;
         }
 
+        /* För att förhindra att text filtreras när du hovrar på knappen */
         button:hover {
             background-color: #5c0b8a;
+            z-index: 100; /* Höjer knappen för att den ska vara längst fram vid hover */
         }
 
-        /* För att placera knappen i originalpositionen */
+        /* Placering av knappen */
         #change-background-btn {
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 2;
+            z-index: 10; /* Gör att knappen är längst fram */
+            padding: 10px 20px;
         }
 
         /* Dynamiska bakgrunder */
