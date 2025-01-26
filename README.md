@@ -35,7 +35,7 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 80px;
+            top: 45px; /* Placera den direkt under knappen */
             right: 10px;
             background-color: white;
             border: 1px solid #ddd;
@@ -125,6 +125,15 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+        }
+
+        /* Anpassad bakgrundsfärg för Light Mode och Dark Mode knappar */
+        .light-mode-btn {
+            background-color: #f1c6e7; /* Rosa */
+        }
+
+        .dark-mode-btn {
+            background-color: #6a4c9c; /* Ljuslila */
         }
 
     </style>
