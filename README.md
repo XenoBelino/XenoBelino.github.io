@@ -35,7 +35,7 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 50px; /* Justera så att den hamnar under knappen */
+            top: 45px; /* Justera så att den hamnar direkt under knappen */
             right: 10px;
             background-color: white;
             border: 1px solid #ddd;
@@ -43,7 +43,8 @@
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
-            z-index: 1000; /* Säkerställ att den ligger över andra element */
+            z-index: 1000; /* Säkerställ att den ligger över alla andra element */
+            box-sizing: border-box;
         }
 
         /* Knapp färg för alla knappar */
@@ -57,14 +58,11 @@
             font-size: 16px;
             transition: background-color 0.3s;
             margin: 10px;
-            z-index: 2;
-            position: relative;
+            z-index: 1000;
         }
 
-        /* För att förhindra att text filtreras när du hovrar på knappen */
         button:hover {
             background-color: #5c0b8a;
-            z-index: 100; /* Höjer knappen för att den ska vara längst fram vid hover */
         }
 
         /* Placering av knappen */
