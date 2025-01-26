@@ -28,7 +28,7 @@
 
         /* För att ta bort det vita strecket under rubriker */
         h1 {
-            margin-bottom: 0; /* Ta bort eventuell marginal */
+            margin-bottom: 0;
         }
 
         /* Bakgrundsval meny */
@@ -69,11 +69,12 @@
 
         /* Placering av knappen */
         #change-background-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 10; /* Gör att knappen är längst fram */
+            position: fixed;
+            top: 10px; /* Placera den 10px från toppen */
+            right: 10px; /* Placera den 10px från höger */
+            z-index: 1000; /* Gör så att knappen är över alla andra element */
             padding: 10px 20px;
+            margin: 0; /* Se till att knappen inte påverkas av andra element */
         }
 
         /* Dynamiska bakgrunder */
