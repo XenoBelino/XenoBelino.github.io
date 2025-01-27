@@ -85,9 +85,44 @@
             background-color: #6a4c9c; /* Ljuslila */
         }
 
+        /* För att skapa stjärnor */
+        .star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .falling-star {
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            background-color: white;
+            transform: rotate(-45deg);
+            animation: fall 3s ease-in-out infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(-45deg);
+            }
+            100% {
+                transform: translateY(100vh) translateX(100px) rotate(-45deg);
+            }
+        }
+
     </style>
 </head>
 <body class="light-mode">
+    <!-- Dynamiska stjärnor och stjärnfall -->
+    <div class="falling-star" style="top: 20px; left: 20px;"></div>
+    <div class="falling-star" style="top: 100px; left: 50px;"></div>
+    <div class="falling-star" style="top: 300px; left: 200px;"></div>
+    <div class="star" style="top: 50px; left: 100px;"></div>
+    <div class="star" style="top: 200px; left: 300px;"></div>
+
     <div class="editor-content">
         <h1>Welcome to my website</h1>
 
@@ -109,45 +144,46 @@
     </div>
 
     <script>
-        // Toggle the background options visibility
+        // Funktion som hanterar knappens funktionalitet
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
             if (options.style.display === 'block') {
                 options.style.display = 'none';
             } else {
                 options.style.display = 'block';
-                updateBackgroundOptionsPosition(); // Update the position of the slider
+                updateBackgroundOptionsPosition(); // Uppdatera positionen för slidern
             }
         }
 
-        // Set light mode
+        // Sätt Light Mode
         function setLightMode() {
             document.body.className = 'light-mode';
             hideBackgroundOptions();
         }
 
-        // Set dark mode
+        // Sätt Dark Mode
         function setDarkMode() {
             document.body.className = 'dark-mode';
             hideBackgroundOptions();
         }
 
-        // Hide the background options
+        // Döljer bakgrundsoptionerna när ett val görs
         function hideBackgroundOptions() {
             document.getElementById('background-options').style.display = 'none';
         }
 
-        // Update the position of the background options based on the button position
+        // Uppdatera positionen för bakgrundsoptionssliden baserat på knappen
         function updateBackgroundOptionsPosition() {
             var btn = document.getElementById('change-background-btn');
             var options = document.getElementById('background-options');
-            var btnRect = btn.getBoundingClientRect(); // Get button's position
+            var btnRect = btn.getBoundingClientRect(); // Hämta knappens position
 
-            // Place slider directly under the button
-            options.style.top = (btnRect.bottom + window.scrollY) + 'px';  // Correct vertical position relative to window scroll
-            options.style.left = btnRect.left + 'px';  // Align with button on the left
+            // Placera slidern exakt under knappen
+            options.style.top = (btnRect.bottom + window.scrollY) + 'px';  // Korrigera vertikal position för scroll
+            options.style.left = btnRect.left + 'px';  // Placera exakt under knappen
         }
 
+        // Funktion som hanterar filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -160,12 +196,30 @@
 
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Add audio player functionality here
+                    // Lägg till ljudspelare här
                 } else if (['mp4', 'webm', 'mov'].includes(extension)) {
                     videoPlayer.src = fileURL;
                     videoPlayer.style.display = 'block';
                 }
             }
+        }
+
+        // Dynamiska stjärnor
+        for (let i = 0; i < 50; i++) {
+            let star = document.createElement('div');
+            star.classList.add('star');
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.left = `${Math.random() * 100}vw`;
+            document.body.appendChild(star);
+        }
+
+        // Dynamiska stjärnfall
+        for (let i = 0; i < 5; i++) {
+            let fallingStar = document.createElement('div');
+            fallingStar.classList.add('falling-star');
+            fallingStar.style.top = `${Math.random() * 100}vh`;
+            fallingStar.style.left = `${Math.random() * 100}vw`;
+            document.body.appendChild(fallingStar);
         }
     </script>
 </body>
