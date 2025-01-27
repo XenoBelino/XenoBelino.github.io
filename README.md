@@ -27,18 +27,21 @@
             margin-bottom: 0;
         }
 
-        /* Bakgrundsval meny (ny slider) */
-        #background-options {
+        /* Knapp för Change Background */
+        #change-background-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            padding: 10px 20px;
+        }
+
+        /* Knapparna för bakgrundsval, initialt dolda */
+        .background-options {
             display: none;
             position: absolute;
-            top: 50px; /* Startposition */
+            top: 50px; /* Justera vertikalt för att placera dem under knappen */
             right: 10px;
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            width: 160px;
             z-index: 1000;
         }
 
@@ -58,27 +61,7 @@
             background-color: #5c0b8a;
         }
 
-        #change-background-btn {
-            position: fixed;
-            top: 10px; /* Placera den 10px från toppen */
-            right: 10px; /* Placera den 10px från höger */
-            z-index: 1000;
-            padding: 10px 20px;
-        }
-
-        .light-mode {
-            background: linear-gradient(to bottom, #e0b3e6, #f1c6e7);
-        }
-
-        .dark-mode {
-            background: linear-gradient(to bottom, #333, #6a4c9c);
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-        }
-
+        /* Anpassad bakgrundsfärg för Light Mode och Dark Mode knappar */
         .light-mode-btn {
             background-color: #f1c6e7; /* Rosa */
         }
@@ -87,7 +70,7 @@
             background-color: #6a4c9c; /* Ljuslila */
         }
 
-        /* Stjärnor */
+        /* För att skapa stjärnor */
         .star {
             position: absolute;
             width: 5px;
@@ -95,40 +78,28 @@
             background-color: white;
             border-radius: 50%;
             opacity: 0.8;
+            animation: none;
         }
 
-        /* Stjärnfall */
-        .falling-star {
-            position: absolute;
-            width: 3px;
-            height: 20px;
-            background-color: white;
-            transform: rotate(-45deg);
-            animation: staggeredFall 3s ease-in-out infinite;
-        }
-
-        /* Stjärnfall med variation */
+        /* Stjärnfall animation som rör sig diagonalt */
         @keyframes staggeredFall {
             0% {
-                transform: translateY(-100px) rotate(-45deg);
-            }
-            50% {
-                transform: translateY(50vh) translateX(50px) rotate(-45deg);
+                transform: translateY(-100px) translateX(-50px);
             }
             100% {
-                transform: translateY(100vh) translateX(100px) rotate(-45deg);
+                transform: translateY(100vh) translateX(50px);
             }
         }
 
     </style>
 </head>
 <body class="light-mode">
-    <!-- Dynamiska stjärnor och stjärnfall -->
-    <div class="falling-star" style="top: 20px; left: 20px; animation-delay: 0s;"></div>
-    <div class="falling-star" style="top: 100px; left: 50px; animation-delay: 1s;"></div>
-    <div class="falling-star" style="top: 300px; left: 200px; animation-delay: 2s;"></div>
-    <div class="falling-star" style="top: 400px; left: 300px; animation-delay: 3s;"></div>
-    <div class="falling-star" style="top: 500px; left: 400px; animation-delay: 4s;"></div>
+    <!-- Dynamiska stjärnor -->
+    <div class="star" style="top: 20px; left: 20px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 100px; left: 50px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 200px; left: 150px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 300px; left: 200px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 400px; left: 250px; animation: staggeredFall 3s linear infinite;"></div>
 
     <div class="editor-content">
         <h1>Welcome to my website</h1>
@@ -143,43 +114,28 @@
             <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
         </div>
 
-        <!-- Ny Options för bakgrundsval (slider) -->
-        <div id="background-options">
+        <!-- Knappar för bakgrundsval (Light Mode, Dark Mode) -->
+        <div id="background-options" class="background-options">
             <button class="light-mode-btn" onclick="setLightMode()">Light Mode</button>
             <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
         </div>
     </div>
 
     <script>
-        // Funktion som hanterar att visa och dölja bakgrundsoptionssliden
+        // Toggle visibility of the background options (Light and Dark Mode buttons)
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
-            if (options.style.display === 'block') {
-                options.style.display = 'none';
-            } else {
-                options.style.display = 'block';
-                positionBackgroundOptions(); // Sätt positionen för slidern
-            }
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
+            positionBackgroundOptions(); // Justera positionen om nödvändigt
         }
 
-        // Placera slidern exakt under knappen
-        function positionBackgroundOptions() {
-            var btn = document.getElementById('change-background-btn');
-            var options = document.getElementById('background-options');
-            var btnRect = btn.getBoundingClientRect(); // Hämta knappens position
-
-            // Placera slidern exakt under knappen
-            options.style.top = (btnRect.bottom + window.scrollY) + 'px';  // Korrigera vertikal position för scroll
-            options.style.left = btnRect.left + 'px';  // Placera exakt under knappen
-        }
-
-        // Funktion som ställer in Light Mode
+        // Ställer in Light Mode
         function setLightMode() {
             document.body.className = 'light-mode';
             hideBackgroundOptions();
         }
 
-        // Funktion som ställer in Dark Mode
+        // Ställer in Dark Mode
         function setDarkMode() {
             document.body.className = 'dark-mode';
             hideBackgroundOptions();
@@ -190,7 +146,18 @@
             document.getElementById('background-options').style.display = 'none';
         }
 
-        // Funktion som hanterar filval
+        // Placera bakgrundsoptions precis under knappen
+        function positionBackgroundOptions() {
+            var btn = document.getElementById('change-background-btn');
+            var options = document.getElementById('background-options');
+            var btnRect = btn.getBoundingClientRect();
+
+            // Placera knapparna precis under Change Background-knappen
+            options.style.top = (btnRect.bottom + window.scrollY) + 'px'; // Använd scrollY för att beakta eventuella sidrullning
+            options.style.left = btnRect.left + 'px';
+        }
+
+        // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -211,12 +178,17 @@
             }
         }
 
-        // Dynamiska stjärnor
+        // Skapa dynamiska stjärnor på skärmen
         for (let i = 0; i < 50; i++) {
             let star = document.createElement('div');
             star.classList.add('star');
             star.style.top = `${Math.random() * 100}vh`;
             star.style.left = `${Math.random() * 100}vw`;
+
+            // Fördela animationstider slumpmässigt för att skapa en spridningseffekt
+            const delay = Math.random() * 5;  // Fördröjning på 0-5 sekunder
+            star.style.animation = `staggeredFall ${3 + Math.random() * 3}s linear infinite`;
+            star.style.animationDelay = `-${delay}s`; // Fördröj animationen för varje stjärna
             document.body.appendChild(star);
         }
     </script>
