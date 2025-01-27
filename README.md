@@ -27,17 +27,19 @@
             margin-bottom: 0;
         }
 
-        /* Bakgrundsval meny */
+        /* Bakgrundsval meny (ny slider) */
         #background-options {
             display: none;
             position: absolute;
+            top: 50px; /* Startposition */
+            right: 10px;
             background-color: white;
             border: 1px solid #ddd;
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
-            z-index: 9999; /* Högt z-index för att säkerställa att den ligger ovanpå andra element */
+            z-index: 1000;
         }
 
         button {
@@ -58,8 +60,8 @@
 
         #change-background-btn {
             position: fixed;
-            top: 10px; /* Fixerad position uppe till höger */
-            right: 10px;
+            top: 10px; /* Placera den 10px från toppen */
+            right: 10px; /* Placera den 10px från höger */
             z-index: 1000;
             padding: 10px 20px;
         }
@@ -85,34 +87,6 @@
             background-color: #6a4c9c; /* Ljuslila */
         }
 
-        /* För att skapa stjärnor */
-        .star {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: white;
-            border-radius: 50%;
-            opacity: 0.8;
-        }
-
-        .falling-star {
-            position: absolute;
-            width: 3px;
-            height: 20px;
-            background-color: white;
-            transform: rotate(-45deg);
-            animation: fall 3s ease-in-out infinite;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-100px) rotate(-45deg);
-            }
-            100% {
-                transform: translateY(100vh) translateX(100px) rotate(-45deg);
-            }
-        }
-
     </style>
 </head>
 <body class="light-mode">
@@ -136,7 +110,7 @@
             <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
         </div>
 
-        <!-- Options för bakgrundsval -->
+        <!-- Ny Options för bakgrundsval (slider) -->
         <div id="background-options">
             <button class="light-mode-btn" onclick="setLightMode()">Light Mode</button>
             <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
@@ -144,36 +118,19 @@
     </div>
 
     <script>
-        // Funktion som hanterar knappens funktionalitet
+        // Funktion som hanterar att visa och dölja bakgrundsoptionssliden
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
             if (options.style.display === 'block') {
                 options.style.display = 'none';
             } else {
                 options.style.display = 'block';
-                updateBackgroundOptionsPosition(); // Uppdatera positionen för slidern
+                positionBackgroundOptions(); // Sätt positionen för slidern
             }
         }
 
-        // Sätt Light Mode
-        function setLightMode() {
-            document.body.className = 'light-mode';
-            hideBackgroundOptions();
-        }
-
-        // Sätt Dark Mode
-        function setDarkMode() {
-            document.body.className = 'dark-mode';
-            hideBackgroundOptions();
-        }
-
-        // Döljer bakgrundsoptionerna när ett val görs
-        function hideBackgroundOptions() {
-            document.getElementById('background-options').style.display = 'none';
-        }
-
-        // Uppdatera positionen för bakgrundsoptionssliden baserat på knappen
-        function updateBackgroundOptionsPosition() {
+        // Placera slidern exakt under knappen
+        function positionBackgroundOptions() {
             var btn = document.getElementById('change-background-btn');
             var options = document.getElementById('background-options');
             var btnRect = btn.getBoundingClientRect(); // Hämta knappens position
@@ -181,6 +138,23 @@
             // Placera slidern exakt under knappen
             options.style.top = (btnRect.bottom + window.scrollY) + 'px';  // Korrigera vertikal position för scroll
             options.style.left = btnRect.left + 'px';  // Placera exakt under knappen
+        }
+
+        // Funktion som ställer in Light Mode
+        function setLightMode() {
+            document.body.className = 'light-mode';
+            hideBackgroundOptions();
+        }
+
+        // Funktion som ställer in Dark Mode
+        function setDarkMode() {
+            document.body.className = 'dark-mode';
+            hideBackgroundOptions();
+        }
+
+        // Döljer bakgrundsoptions när ett val görs
+        function hideBackgroundOptions() {
+            document.getElementById('background-options').style.display = 'none';
         }
 
         // Funktion som hanterar filval
