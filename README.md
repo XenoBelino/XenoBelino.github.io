@@ -23,7 +23,7 @@
             text-align: center;
             margin: 20px;
             z-index: 1;
-            position: relative; /* Lägg till position relative här */
+            position: relative;
         }
 
         /* För att ta bort det vita strecket under rubriker */
@@ -35,8 +35,6 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 50px; /* Placera den direkt under Change Background knappen */
-            right: 10px;
             background-color: white;
             border: 1px solid #ddd;
             padding: 10px;
@@ -168,6 +166,9 @@
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
             options.style.display = options.style.display === 'block' ? 'none' : 'block';
+
+            // Uppdatera bakgrundsoptionernas position för att hålla den direkt under knappen
+            updateBackgroundOptionsPosition();
         }
 
         function setLightMode() {
@@ -182,6 +183,16 @@
 
         function hideBackgroundOptions() {
             document.getElementById('background-options').style.display = 'none';
+        }
+
+        function updateBackgroundOptionsPosition() {
+            var btn = document.getElementById('change-background-btn');
+            var options = document.getElementById('background-options');
+
+            // Hämta knappen och beräkna positionen för att placera slidern rätt
+            var rect = btn.getBoundingClientRect();
+            options.style.top = rect.bottom + window.scrollY + 10 + 'px';  // Lägg till ett litet avstånd från knappen
+            options.style.left = rect.left + 'px';  // Placera det direkt under knappen
         }
 
         function handleFileSelect(event) {
