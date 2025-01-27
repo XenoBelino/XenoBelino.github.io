@@ -31,8 +31,6 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 10px;
-            left: 0;
             background-color: white;
             border: 1px solid #ddd;
             padding: 10px;
@@ -59,9 +57,9 @@
         }
 
         #change-background-btn {
-            position: relative;
-            top: 10px;
-            left: 10px;
+            position: fixed;
+            top: 10px; /* Fixerad position uppe till höger */
+            right: 10px;
             z-index: 1000;
             padding: 10px 20px;
         }
@@ -143,9 +141,10 @@
         function updateBackgroundOptionsPosition() {
             var btn = document.getElementById('change-background-btn');
             var options = document.getElementById('background-options');
-            var btnRect = btn.getBoundingClientRect();
+            var btnRect = btn.getBoundingClientRect(); // Get button's position
 
-            options.style.top = (btnRect.bottom + 5) + 'px';  // Place slider directly below the button
+            // Place slider directly under the button
+            options.style.top = (btnRect.bottom + window.scrollY) + 'px';  // Correct vertical position relative to window scroll
             options.style.left = btnRect.left + 'px';  // Align with button on the left
         }
 
