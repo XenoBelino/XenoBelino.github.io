@@ -165,10 +165,13 @@
     <script>
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
-            options.style.display = options.style.display === 'block' ? 'none' : 'block';
-
-            // Uppdatera bakgrundsoptionernas position för att hålla den direkt under knappen
-            updateBackgroundOptionsPosition();
+            // Växla display för att visa eller gömma bakgrundsoptionerna
+            if (options.style.display === 'block') {
+                options.style.display = 'none';
+            } else {
+                options.style.display = 'block';
+                updateBackgroundOptionsPosition(); // Se till att positionera slidern under knappen
+            }
         }
 
         function setLightMode() {
@@ -189,10 +192,10 @@
             var btn = document.getElementById('change-background-btn');
             var options = document.getElementById('background-options');
 
-            // Hämta knappen och beräkna positionen för att placera slidern rätt
+            // Beräkna positionen för knappen och uppdatera positionen för slidern
             var rect = btn.getBoundingClientRect();
-            options.style.top = rect.bottom + window.scrollY + 10 + 'px';  // Lägg till ett litet avstånd från knappen
-            options.style.left = rect.left + 'px';  // Placera det direkt under knappen
+            options.style.top = rect.bottom + 10 + 'px';  // Lägg till lite avstånd under knappen
+            options.style.left = rect.left + 'px';  // Placera den i linje med knappen
         }
 
         function handleFileSelect(event) {
