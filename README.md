@@ -104,18 +104,10 @@
             height: 20px;
             background-color: white;
             transform: rotate(-45deg);
-            animation: fall 3s ease-in-out infinite;
+            animation: staggeredFall 3s ease-in-out infinite;
         }
 
-        @keyframes fall {
-            0% {
-                transform: translateY(-100px) rotate(-45deg);
-            }
-            100% {
-                transform: translateY(100vh) translateX(100px) rotate(-45deg);
-            }
-        }
-
+        /* Stjärnfall med variation */
         @keyframes staggeredFall {
             0% {
                 transform: translateY(-100px) rotate(-45deg);
