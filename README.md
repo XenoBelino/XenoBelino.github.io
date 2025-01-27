@@ -37,7 +37,7 @@
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
-            z-index: 1000;
+            z-index: 9999; /* Högt z-index för att säkerställa att den ligger ovanpå andra element */
         }
 
         button {
