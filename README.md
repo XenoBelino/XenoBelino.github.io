@@ -35,7 +35,7 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 45px; /* Justera så att den hamnar direkt under knappen */
+            top: 50px; /* Placera den direkt under knappen */
             right: 10px;
             background-color: white;
             border: 1px solid #ddd;
