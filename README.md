@@ -23,7 +23,7 @@
             text-align: center;
             margin: 20px;
             z-index: 1;
-            position: relative;
+            position: relative; /* Lägg till position relative här */
         }
 
         /* För att ta bort det vita strecket under rubriker */
@@ -35,7 +35,7 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 50px; /* Placera den direkt under knappen */
+            top: 50px; /* Placera den direkt under Change Background knappen */
             right: 10px;
             background-color: white;
             border: 1px solid #ddd;
@@ -70,9 +70,9 @@
             position: fixed;
             top: 10px; /* Placera den 10px från toppen */
             right: 10px; /* Placera den 10px från höger */
-            z-index: 1000; /* Gör så att knappen är över alla andra element */
+            z-index: 2000; /* Ge knappen ett högre z-index för att säkerställa att den är ovanpå andra element */
             padding: 10px 20px;
-            margin: 0; /* Se till att knappen inte påverkas av andra element */
+            margin: 0;
         }
 
         /* Dynamiska bakgrunder */
