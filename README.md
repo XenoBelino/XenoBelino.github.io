@@ -1,49 +1,8 @@
 <!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>XenoBelino</title>
-<meta name="generator" content="Jekyll v3.10.0" />
-<meta property="og:title" content="XenoBelino" />
-<meta property="og:locale" content="en_US" />
-<link rel="canonical" href="https://xenobelino.github.io/" />
-<meta property="og:url" content="https://xenobelino.github.io/" />
-<meta property="og:site_name" content="XenoBelino" />
-<meta property="og:type" content="website" />
-<meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="XenoBelino" />
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","headline":"XenoBelino","name":"XenoBelino","url":"https://xenobelino.github.io/"}</script>
-<!-- End Jekyll SEO tag -->
-
-    <link rel="stylesheet" href="/assets/css/style.css?v=f951dc6a58c788d73cdb687a7457bd3adc057032">
-    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
-
-<!-- Setup Google Analytics -->
-
-
-
-<!-- You can set your favicon here -->
-<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
-
-<!-- end custom head snippets -->
-
-  </head>
-  <body>
-    <div class="container-lg px-3 my-5 markdown-body">
-      
-      <h1><a href="https://xenobelino.github.io/">XenoBelino</a></h1>
-      
-
-      <p>&lt;!DOCTYPE html&gt;</p>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     <script src="https://unpkg.com/wavesurfer.js"></script>
     <style>
@@ -68,16 +27,21 @@
             margin-bottom: 0;
         }
 
-        /* Bakgrundsval meny */
-        #background-options {
+        /* Knapp för Change Background */
+        #change-background-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            padding: 10px 20px;
+        }
+
+        /* Knapparna för bakgrundsval, initialt dolda */
+        .background-options {
             display: none;
             position: absolute;
-            background-color: white;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            width: 160px;
+            top: 50px; /* Justera vertikalt för att placera dem under knappen */
+            right: 10px;
             z-index: 1000;
         }
 
@@ -97,27 +61,7 @@
             background-color: #5c0b8a;
         }
 
-        #change-background-btn {
-            position: fixed;
-            top: 10px; /* Fixerad position uppe till höger */
-            right: 10px;
-            z-index: 1000;
-            padding: 10px 20px;
-        }
-
-        .light-mode {
-            background: linear-gradient(to bottom, #e0b3e6, #f1c6e7);
-        }
-
-        .dark-mode {
-            background: linear-gradient(to bottom, #333, #6a4c9c);
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-        }
-
+        /* Anpassad bakgrundsfärg för Light Mode och Dark Mode knappar */
         .light-mode-btn {
             background-color: #f1c6e7; /* Rosa */
         }
@@ -134,35 +78,28 @@
             background-color: white;
             border-radius: 50%;
             opacity: 0.8;
+            animation: none;
         }
 
-        .falling-star {
-            position: absolute;
-            width: 3px;
-            height: 20px;
-            background-color: white;
-            transform: rotate(-45deg);
-            animation: fall 3s ease-in-out infinite;
-        }
-
-        @keyframes fall {
+        /* Stjärnfall animation som rör sig diagonalt */
+        @keyframes staggeredFall {
             0% {
-                transform: translateY(-100px) rotate(-45deg);
+                transform: translateY(-100px) translateX(-50px);
             }
             100% {
-                transform: translateY(100vh) translateX(100px) rotate(-45deg);
+                transform: translateY(100vh) translateX(50px);
             }
         }
 
     </style>
 </head>
 <body class="light-mode">
-    <!-- Dynamiska stjärnor och stjärnfall -->
-    <div class="falling-star" style="top: 20px; left: 20px;"></div>
-    <div class="falling-star" style="top: 100px; left: 50px;"></div>
-    <div class="falling-star" style="top: 300px; left: 200px;"></div>
-    <div class="star" style="top: 50px; left: 100px;"></div>
-    <div class="star" style="top: 200px; left: 300px;"></div>
+    <!-- Dynamiska stjärnor -->
+    <div class="star" style="top: 20px; left: 20px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 100px; left: 50px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 200px; left: 150px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 300px; left: 200px; animation: staggeredFall 3s linear infinite;"></div>
+    <div class="star" style="top: 400px; left: 250px; animation: staggeredFall 3s linear infinite;"></div>
 
     <div class="editor-content">
         <h1>Welcome to my website</h1>
@@ -177,54 +114,50 @@
             <button id="change-background-btn" onclick="toggleBackgroundOptions()">Change Background</button>
         </div>
 
-        <!-- Options för bakgrundsval -->
-        <div id="background-options">
+        <!-- Knappar för bakgrundsval (Light Mode, Dark Mode) -->
+        <div id="background-options" class="background-options">
             <button class="light-mode-btn" onclick="setLightMode()">Light Mode</button>
             <button class="dark-mode-btn" onclick="setDarkMode()">Dark Mode</button>
         </div>
     </div>
 
     <script>
-        // Funktion som hanterar knappens funktionalitet
+        // Toggle visibility of the background options (Light and Dark Mode buttons)
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
-            if (options.style.display === 'block') {
-                options.style.display = 'none';
-            } else {
-                options.style.display = 'block';
-                updateBackgroundOptionsPosition(); // Uppdatera positionen för slidern
-            }
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
+            positionBackgroundOptions(); // Justera positionen om nödvändigt
         }
 
-        // Sätt Light Mode
+        // Ställer in Light Mode
         function setLightMode() {
             document.body.className = 'light-mode';
             hideBackgroundOptions();
         }
 
-        // Sätt Dark Mode
+        // Ställer in Dark Mode
         function setDarkMode() {
             document.body.className = 'dark-mode';
             hideBackgroundOptions();
         }
 
-        // Döljer bakgrundsoptionerna när ett val görs
+        // Döljer bakgrundsoptions när ett val görs
         function hideBackgroundOptions() {
             document.getElementById('background-options').style.display = 'none';
         }
 
-        // Uppdatera positionen för bakgrundsoptionssliden baserat på knappen
-        function updateBackgroundOptionsPosition() {
+        // Placera bakgrundsoptions precis under knappen
+        function positionBackgroundOptions() {
             var btn = document.getElementById('change-background-btn');
             var options = document.getElementById('background-options');
-            var btnRect = btn.getBoundingClientRect(); // Hämta knappens position
+            var btnRect = btn.getBoundingClientRect();
 
-            // Placera slidern exakt under knappen
-            options.style.top = (btnRect.bottom + window.scrollY) + 'px';  // Korrigera vertikal position för scroll
-            options.style.left = btnRect.left + 'px';  // Placera exakt under knappen
+            // Placera knapparna precis under Change Background-knappen
+            options.style.top = (btnRect.bottom + window.scrollY) + 'px'; // Använd scrollY för att beakta eventuella sidrullning
+            options.style.left = btnRect.left + 'px';
         }
 
-        // Funktion som hanterar filval
+        // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -245,31 +178,19 @@
             }
         }
 
-        // Dynamiska stjärnor
+        // Skapa dynamiska stjärnor på skärmen
         for (let i = 0; i < 50; i++) {
             let star = document.createElement('div');
             star.classList.add('star');
             star.style.top = `${Math.random() * 100}vh`;
             star.style.left = `${Math.random() * 100}vw`;
-            document.body.appendChild(star);
-        }
 
-        // Dynamiska stjärnfall
-        for (let i = 0; i < 5; i++) {
-            let fallingStar = document.createElement('div');
-            fallingStar.classList.add('falling-star');
-            fallingStar.style.top = `${Math.random() * 100}vh`;
-            fallingStar.style.left = `${Math.random() * 100}vw`;
-            document.body.appendChild(fallingStar);
+            // Fördela animationstider slumpmässigt för att skapa en spridningseffekt
+            const delay = Math.random() * 5;  // Fördröjning på 0-5 sekunder
+            star.style.animation = `staggeredFall ${3 + Math.random() * 3}s linear infinite`;
+            star.style.animationDelay = `-${delay}s`; // Fördröj animationen för varje stjärna
+            document.body.appendChild(star);
         }
     </script>
 </body>
-</html>
-
-
-      
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
-    <script>anchors.add();</script>
-  </body>
 </html>
