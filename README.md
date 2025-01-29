@@ -37,7 +37,7 @@
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
             z-index: 1000;
-            margin-top: 5px; /* För att skapa ett litet mellanrum mellan knappen och bakgrundsmenyn */
+            margin-top: 10px;
         }
 
         button {
@@ -90,7 +90,7 @@
             position: absolute;
             width: 5px;
             height: 5px;
-            background-color: #1E90FF;
+            background-color: white;
             border-radius: 50%;
             opacity: 0.8;
         }
@@ -179,7 +179,7 @@
             var btnRect = btn.getBoundingClientRect(); // Hämta knappens position
 
             // Placera slidern exakt under knappen
-            options.style.top = (btnRect.bottom + window.scrollY) + 'px';  // Korrigera vertikal position för scroll
+            options.style.top = (btnRect.bottom + 10) + 'px';  // Placera knappen precis under
             options.style.left = btnRect.left + 'px';  // Placera exakt under knappen
         }
 
