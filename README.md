@@ -90,7 +90,7 @@
             position: absolute;
             width: 5px;
             height: 5px;
-            background-color: white;
+            background-color: #1E90FF;
             border-radius: 50%;
             opacity: 0.8;
         }
