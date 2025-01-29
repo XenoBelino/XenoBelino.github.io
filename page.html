@@ -245,6 +245,7 @@
 
             if (file) {
                 // Kontrollera om filen är en kompatibel videotyp
+                console.log("File selected:", file); // Här läggs till en konsolutskrift
                 if (file.type === 'video/mp4' || file.type === 'video/webm') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
@@ -256,6 +257,8 @@
                     // Om filen inte är kompatibel
                     fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
                 }
+            } else {
+                console.log("No file selected"); // Om ingen fil valdes
             }
         }
 
