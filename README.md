@@ -204,7 +204,7 @@
     </div>
 
     <!-- File input (hidden but functional) -->
-    <input type="file" id="file-input" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
+    <input type="file" id="file-input" accept="*/*" onchange="handleFileSelect(event)" />
 
     <script>
         // Uppdatera volymprocenten och ikoner vid sliderförändring
@@ -249,11 +249,13 @@
         // Funktion för att hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
+            console.log("File selected:", file);
             const fileInfo = document.getElementById('file-info');
             const videoPlayer = document.getElementById('video-player');
             const videoSource = document.getElementById('video-source');
 
             if (file) {
+                console.log("Selected file:", file.name, file.type);
                 // Kontrollera om filen är en kompatibel videotyp
                 if (file.type === 'video/mp4' || file.type === 'video/webm') {
                     const fileURL = URL.createObjectURL(file);
@@ -271,6 +273,9 @@
 
         // Trigger för att öppna filväljaren
         document.getElementById('browse-btn').addEventListener('click', function() {
+            console.log("Browse button clicked.");
+            // Rensa filväljaren innan vi öppnar den igen
+            document.getElementById('file-input').value = '';
             document.getElementById('file-input').click();
         });
     </script>
