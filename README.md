@@ -139,6 +139,8 @@
         /* Gör input[type="file"] osynlig men fortfarande interaktiv */
         #file-input {
             display: none;
+            position: absolute; /* Flytta filväljaren till ett högre lager */
+            z-index: 9999; /* Säkerställ att den är högst */
         }
     </style>
 </head>
@@ -204,7 +206,7 @@
     </div>
 
     <!-- File input (hidden but functional) -->
-    <input type="file" id="file-input" accept="*/*" onchange="handleFileSelect(event)" />
+    <input type="file" id="file-input" accept="video/*,audio/*" onchange="handleFileSelect(event)" />
 
     <script>
         // Uppdatera volymprocenten och ikoner vid sliderförändring
@@ -228,56 +230,26 @@
             }
         }
 
-        // Funktion för att spara volyminställningar till en fil
-        document.getElementById("save-btn").addEventListener("click", function() {
-            const settings = {
-                originalVolume: document.getElementById("original-volume").value,
-                corruptedVolume: document.getElementById("corrupted-volume").value,
-                musicVolume: document.getElementById("music-volume").value,
-                finalVolume: document.getElementById("final-volume").value
-            };
-
-            const fileContent = JSON.stringify(settings, null, 2);
-            const blob = new Blob([fileContent], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "audio_settings.json";
-            a.click();
-        });
-
         // Funktion för att hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
-            console.log("File selected:", file);
             const fileInfo = document.getElementById('file-info');
             const videoPlayer = document.getElementById('video-player');
             const videoSource = document.getElementById('video-source');
 
             if (file) {
-                console.log("Selected file:", file.name, file.type);
-                // Kontrollera om filen är en kompatibel videotyp
-                if (file.type === 'video/mp4' || file.type === 'video/webm') {
-                    const fileURL = URL.createObjectURL(file);
-                    videoSource.src = fileURL;
-                    videoPlayer.load();
-
-                    // Uppdatera filnamnet
-                    fileInfo.textContent = `Selected file: ${file.name}`;
-                } else {
-                    // Om filen inte är kompatibel
-                    fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
-                }
+                const fileURL = URL.createObjectURL(file);
+                videoSource.src = fileURL;
+                videoPlayer.load();
+                fileInfo.textContent = `Selected file: ${file.name}`;
             }
         }
 
         // Trigger för att öppna filväljaren
         document.getElementById('browse-btn').addEventListener('click', function() {
-            console.log("Browse button clicked.");
-            // Rensa filväljaren innan vi öppnar den igen
-            document.getElementById('file-input').value = '';
             document.getElementById('file-input').click();
         });
     </script>
 </body>
 </html>
+
