@@ -1,1 +1,78 @@
-<!DOCTYPE html> <html lang="en-US"> <head> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Jekyll SEO tag --> <title>XenoBelino</title> <!-- Link to external stylesheet --> <link rel="stylesheet" href="/assets/css/style.css?v=12731462b1fb5b065e679ab19d135eb070f4df8f"> <!-- Google Fonts --> <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet"> <style> /* Grundläggande stilar */ body { font-family: 'Lato', sans-serif; margin: 0; padding: 0; overflow: hidden; height: 100vh; background-color: lightblue; transition: background-color 0.5s, color 0.5s; } .video-container { width: 60%; height: auto; margin: 40px auto; } video { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; /* Runda kanter för videospelaren */ } .editor-content { text-align: center; margin: 20px; z-index: 1; position: relative; } /* För att placera knappar i rätt position */ .button { padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 10px; /* Runda kanter på knappar */ border: none; background-color: #6a0dad; /* Lila bakgrundsfärg */ color: white; transition: background-color 0.3s; } .button:hover { background-color: #5c0b8a; } #change-background-btn, #go-to-page-btn { background-color: #6a0dad; /* Lila bakgrundsfärg */ } /* Bakgrundsändringsknappen och Drop-down meny */ #background-options { display: none; position: absolute; top: 50px; right: 10px; background-color: white; border: 1px solid #ddd; padding: 10px; border-radius: 5px; box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); width: 160px; } #background-options button { width: 100%; padding: 8px; background-color: #fff; border: 1px solid #ddd; margin: 5px 0; cursor: pointer; } #background-options button:hover { background-color: #f1f1f1; } /* Bakgrundsinställningar */ .light-mode { background: linear-gradient(to bottom, #e0b3e6, #f1c6e7); } .dark-mode { background: linear-gradient(to bottom, #333, #6a4c9c); } </style> </head> <body> <!-- Editor content --> <div class="editor-content"> <h1>Welcome to my website</h1> <!-- File selector --> <button onclick="document.getElementById('file-input').click()" class="button">Browse my files</button> <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" /> <div id="file-info"></div> <!-- Go to page button --> <button id="go-to-page-btn" onclick="window.location.href='page.html'" class="button">Go to Page</button> <!-- Video player --> <div class="video-container"> <video id="video-player" width="320" height="240" controls> <source src="path_to_video.mp4" type="video/mp4" /> Your browser does not support the video tag. </video> </div> <!-- Background change button --> <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button> <!-- Background options dropdown --> <div id="background-options"> <button class="button" onclick="setLightMode()">Light Mode</button> <button class="button" onclick="setDarkMode()">Dark Mode</button> </div> </div> <script> // Toggle for background settings function toggleBackgroundOptions() { var options = document.getElementById('background-options'); options.style.display = options.style.display === 'block' ? 'none' : 'block'; } // Set Light Mode function setLightMode() { document.body.className = 'light-mode'; hideBackgroundOptions(); } // Set Dark Mode function setDarkMode() { document.body.className = 'dark-mode'; hideBackgroundOptions(); } // Hide background options function hideBackgroundOptions() { document.getElementById('background-options').style.display = 'none'; } // Handle file selection function handleFileSelect(event) { const file = event.target.files[0]; const fileInfoDiv = document.getElementById('file-info'); const videoPlayer = document.getElementById('video-player'); if (file) { fileInfoDiv.textContent = `Selected file: ${file.name}`; const fileURL = URL.createObjectURL(file); let extension = file.name.split('.').pop().toLowerCase(); if (['mp3', 'wav', 'ogg'].includes(extension)) { videoPlayer.style.display = 'none'; // Hide video if it's an audio file } else if (['mp4', 'webm', 'mov'].includes(extension)) { videoPlayer.src = fileURL; videoPlayer.style.display = 'block'; // Show video if it's a video file } } } </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XenoBelino</title>
+  <link rel="stylesheet" href="/assets/css/style.css?v=12731462b1fb5b065e679ab19d135eb070f4df8f">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Grundläggande stilar */
+    body {
+      font-family: 'Lato', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100vh;
+      background-color: lightblue;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    .editor-content {
+      text-align: center;
+      margin: 20px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 10px;
+      border: none;
+      background-color: #6a0dad;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #5c0b8a;
+    }
+
+    #file-info {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="editor-content">
+    <h1>Welcome to my website</h1>
+    <!-- File selector -->
+    <button onclick="document.getElementById('file-input').click()" class="button">Browse my files</button>
+    <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+    <div id="file-info"></div>
+  </div>
+
+  <script>
+    // Handle file selection
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      const fileInfoDiv = document.getElementById('file-info');
+      const videoPlayer = document.getElementById('video-player');
+      if (file) {
+        fileInfoDiv.textContent = `Selected file: ${file.name}`;
+        const fileURL = URL.createObjectURL(file);
+        let extension = file.name.split('.').pop().toLowerCase();
+        if (['mp3', 'wav', 'ogg'].includes(extension)) {
+          videoPlayer.style.display = 'none'; // Hide video if it's an audio file
+        } else if (['mp4', 'webm', 'mov'].includes(extension)) {
+          videoPlayer.src = fileURL;
+          videoPlayer.style.display = 'block'; // Show video if it's a video file
+        }
+      }
+    }
+  </script>
+</body>
+</html>
