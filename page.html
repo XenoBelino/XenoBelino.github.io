@@ -6,7 +6,6 @@
     <title>File Editor</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Här kommer din stilkod (den du redan hade) */
         body {
             font-family: 'Lato', sans-serif;
             color: white;
@@ -23,6 +22,29 @@
             background-attachment: fixed;
             overflow-y: auto;
         }
+
+        .video-container {
+            width: 60%;
+            height: auto;
+            margin: 40px auto;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .editor-content {
+            text-align: left;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+            background-color: transparent;
+            border-radius: 10px;
+        }
+
+        /* Buttons container */
         .buttons-container {
             position: fixed;
             bottom: 20px;
@@ -30,6 +52,7 @@
             display: flex;
             gap: 10px;
         }
+
         .button {
             padding: 10px 20px;
             font-size: 16px;
@@ -40,31 +63,60 @@
             color: white;
             transition: background-color 0.3s;
         }
+
         .button:hover {
             background-color: #5c0b8a;
         }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Information about the file selected */
+        #file-info {
+            color: white;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
 
-    <button class="button" id="browse-btn">Browse my files</button>
-    
-    <!-- Denna filväljare kommer att triggas via knappen -->
-    <input type="file" id="file-input" style="display: none;" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
+    <!-- Video container to play the selected file -->
+    <div class="video-container">
+        <video controls id="video-player">
+            <source id="video-source" src="videos/video.mp4" type="video/mp4">
+            Din webbläsare stödjer inte videospelaren.
+        </video>
+    </div>
 
+    <!-- Information about the selected file -->
     <div id="file-info">No file selected</div>
 
+    <!-- Buttons container -->
+    <div class="buttons-container">
+        <button class="button" id="browse-btn">Browse my files</button>
+    </div>
+
+    <!-- Hidden file input element -->
+    <input type="file" id="file-input" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
+
     <script>
-        // Filer som väljs via filväljaren hanteras här
+        // Handle file selection and display information about the selected file
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfo = document.getElementById('file-info');
-            
+            const videoPlayer = document.getElementById('video-player');
+            const videoSource = document.getElementById('video-source');
+
             if (file) {
-                // Kontrollera filtyp
+                // If it's a valid video file
                 if (file.type === 'video/mp4' || file.type === 'video/webm') {
+                    const fileURL = URL.createObjectURL(file);
+                    videoSource.src = fileURL;
+                    videoPlayer.load();
                     fileInfo.textContent = `Selected file: ${file.name}`;
-                    // Vid behov kan du här lägga till logik för att ladda eller visa videon
                 } else {
                     fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
                 }
@@ -73,7 +125,7 @@
             }
         }
 
-        // Öppnar filväljaren när knappen trycks
+        // Trigger file input when the button is clicked
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
         });
