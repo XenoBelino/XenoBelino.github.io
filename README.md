@@ -1,10 +1,14 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
+
     <script src="https://unpkg.com/wavesurfer.js"></script>
+
     <style>
+        /* Grundläggande stilar */
         body {
             font-family: 'Lato', sans-serif;
             margin: 0;
@@ -22,24 +26,27 @@
             position: relative;
         }
 
+        /* För att ta bort det vita strecket under rubriker */
         h1 {
-            margin-bottom: 0;
+            margin-bottom: 0; /* Ta bort eventuell marginal */
         }
 
         /* Bakgrundsval meny */
         #background-options {
             display: none;
             position: absolute;
+            top: 80px;
+            right: 10px;
             background-color: white;
             border: 1px solid #ddd;
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 160px;
-            z-index: 1000;
-            margin-top: 10px;
+            z-index: 10;
         }
 
+        /* Knapp färg för alla knappar */
         button {
             background-color: #6a0dad; /* Lila bakgrund */
             color: white;
@@ -50,39 +57,32 @@
             font-size: 16px;
             transition: background-color 0.3s;
             margin: 10px;
+            z-index: 2;
+            position: relative;
         }
 
+        /* För att förhindra att text filtreras när du hovrar på knappen */
         button:hover {
             background-color: #5c0b8a;
+            z-index: 100; /* Höjer knappen för att den ska vara längst fram vid hover */
         }
 
+        /* Placering av knappen */
         #change-background-btn {
-            position: fixed;
-            top: 10px; /* Fixerad position uppe till höger */
+            position: absolute;
+            top: 10px;
             right: 10px;
-            z-index: 1000;
+            z-index: 10; /* Gör att knappen är längst fram */
             padding: 10px 20px;
         }
 
+        /* Dynamiska bakgrunder */
         .light-mode {
             background: linear-gradient(to bottom, #e0b3e6, #f1c6e7);
         }
 
         .dark-mode {
             background: linear-gradient(to bottom, #333, #6a4c9c);
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .light-mode-btn {
-            background-color: #f1c6e7; /* Rosa */
-        }
-
-        .dark-mode-btn {
-            background-color: #6a4c9c; /* Ljuslila */
         }
 
         /* För att skapa stjärnor */
@@ -111,6 +111,19 @@
             100% {
                 transform: translateY(100vh) translateX(100px) rotate(-45deg);
             }
+        }
+
+        /* Text på knappar */
+        button span {
+            display: inline-block;
+            padding: 5px;
+        }
+
+        /* För att ge varje knapp rätt placering */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
     </style>
@@ -144,46 +157,25 @@
     </div>
 
     <script>
-        // Funktion som hanterar knappens funktionalitet
         function toggleBackgroundOptions() {
             var options = document.getElementById('background-options');
-            if (options.style.display === 'block') {
-                options.style.display = 'none';
-            } else {
-                options.style.display = 'block';
-                updateBackgroundOptionsPosition(); // Uppdatera positionen för slidern
-            }
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Sätt Light Mode
         function setLightMode() {
             document.body.className = 'light-mode';
             hideBackgroundOptions();
         }
 
-        // Sätt Dark Mode
         function setDarkMode() {
             document.body.className = 'dark-mode';
             hideBackgroundOptions();
         }
 
-        // Döljer bakgrundsoptionerna när ett val görs
         function hideBackgroundOptions() {
             document.getElementById('background-options').style.display = 'none';
         }
 
-        // Uppdatera positionen för bakgrundsoptionssliden baserat på knappen
-        function updateBackgroundOptionsPosition() {
-            var btn = document.getElementById('change-background-btn');
-            var options = document.getElementById('background-options');
-            var btnRect = btn.getBoundingClientRect(); // Hämta knappens position
-
-            // Placera slidern exakt under knappen
-            options.style.top = (btnRect.bottom + 10) + 'px';  // Placera knappen precis under
-            options.style.left = btnRect.left + 'px';  // Placera exakt under knappen
-        }
-
-        // Funktion som hanterar filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -196,7 +188,7 @@
 
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Lägg till ljudspelare här
+                    // Add audio player functionality here
                 } else if (['mp4', 'webm', 'mov'].includes(extension)) {
                     videoPlayer.src = fileURL;
                     videoPlayer.style.display = 'block';
