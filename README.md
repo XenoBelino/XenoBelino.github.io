@@ -15,8 +15,9 @@
             padding: 0;
             overflow: hidden;
             height: 100vh;
-            position: relative;
+            background-color: lightblue;
             transition: background-color 0.5s, color 0.5s;
+            position: relative;
         }
 
         .editor-content {
@@ -24,11 +25,6 @@
             margin: 20px;
             z-index: 1;
             position: relative;
-        }
-
-        /* För att ta bort det vita strecket under rubriker */
-        h1 {
-            margin-bottom: 0; /* Ta bort eventuell marginal */
         }
 
         /* Bakgrundsval meny */
@@ -58,52 +54,52 @@
             transition: background-color 0.3s;
             margin: 10px;
             z-index: 2;
-            position: relative;
         }
 
-        /* För att förhindra att text filtreras när du hovrar på knappen */
         button:hover {
             background-color: #5c0b8a;
-            z-index: 100; /* Höjer knappen för att den ska vara längst fram vid hover */
         }
 
-        /* Placering av knappen */
+        /* För att placera knappen i originalpositionen */
         #change-background-btn {
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 10; /* Gör att knappen är längst fram */
-            padding: 10px 20px;
+            z-index: 2;
         }
 
-        /* Dynamiska bakgrunder */
+        /* Standard bakgrund (Light Mode) */
         .light-mode {
             background: linear-gradient(to bottom, #e0b3e6, #f1c6e7);
         }
 
+        /* Dark Mode bakgrund */
         .dark-mode {
             background: linear-gradient(to bottom, #333, #6a4c9c);
         }
 
-        /* För att skapa stjärnor */
-        .star {
+        /* Förstorade stjärnor */
+        .star-fall {
             position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: white;
-            border-radius: 50%;
+            width: 20px;
+            height: 20px;
             opacity: 0.8;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            z-index: 5; /* Se till att stjärnorna syns ovanpå bakgrunden */
         }
 
+        /* Förstorade stjärnfall - snedstreck som representerar stjärnfall */
         .falling-star {
             position: absolute;
-            width: 3px;
-            height: 20px;
-            background-color: white;
+            width: 4px;
+            height: 40px;
+            opacity: 0.8;
             transform: rotate(-45deg);
             animation: fall 3s ease-in-out infinite;
+            z-index: 5; /* Se till att stjärnfallen syns */
         }
 
+        /* Animering för stjärnfall diagonalt */
         @keyframes fall {
             0% {
                 transform: translateY(-100px) rotate(-45deg);
@@ -113,7 +109,7 @@
             }
         }
 
-        /* Text på knappar */
+        /* För texten på knappar */
         button span {
             display: inline-block;
             padding: 5px;
@@ -129,12 +125,10 @@
     </style>
 </head>
 <body class="light-mode">
-    <!-- Dynamiska stjärnor och stjärnfall -->
+    <!-- Stjärnfall animation -->
     <div class="falling-star" style="top: 20px; left: 20px;"></div>
     <div class="falling-star" style="top: 100px; left: 50px;"></div>
     <div class="falling-star" style="top: 300px; left: 200px;"></div>
-    <div class="star" style="top: 50px; left: 100px;"></div>
-    <div class="star" style="top: 200px; left: 300px;"></div>
 
     <div class="editor-content">
         <h1>Welcome to my website</h1>
@@ -165,11 +159,25 @@
         function setLightMode() {
             document.body.className = 'light-mode';
             hideBackgroundOptions();
+            updateButtonColors('light-mode');
         }
 
         function setDarkMode() {
             document.body.className = 'dark-mode';
             hideBackgroundOptions();
+            updateButtonColors('dark-mode');
+        }
+
+        function updateButtonColors(mode) {
+            const lightModeBtn = document.querySelector('.light-mode-btn');
+            const darkModeBtn = document.querySelector('.dark-mode-btn');
+            if (mode === 'light-mode') {
+                lightModeBtn.style.backgroundColor = '#f1c6e7'; 
+                darkModeBtn.style.backgroundColor = '#6a4c9c'; 
+            } else {
+                lightModeBtn.style.backgroundColor = '#6a4c9c'; 
+                darkModeBtn.style.backgroundColor = '#FF1493'; 
+            }
         }
 
         function hideBackgroundOptions() {
@@ -194,24 +202,6 @@
                     videoPlayer.style.display = 'block';
                 }
             }
-        }
-
-        // Dynamiska stjärnor
-        for (let i = 0; i < 50; i++) {
-            let star = document.createElement('div');
-            star.classList.add('star');
-            star.style.top = `${Math.random() * 100}vh`;
-            star.style.left = `${Math.random() * 100}vw`;
-            document.body.appendChild(star);
-        }
-
-        // Dynamiska stjärnfall
-        for (let i = 0; i < 5; i++) {
-            let fallingStar = document.createElement('div');
-            fallingStar.classList.add('falling-star');
-            fallingStar.style.top = `${Math.random() * 100}vh`;
-            fallingStar.style.left = `${Math.random() * 100}vw`;
-            document.body.appendChild(fallingStar);
         }
     </script>
 </body>
