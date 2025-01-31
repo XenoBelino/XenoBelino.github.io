@@ -35,14 +35,14 @@
         .video-container {
             width: 80%;
             margin: 40px auto;
-            border-radius: 10px; /* Rundade kanter för videospelaren */
+            border-radius: 10px;
             overflow: hidden;
         }
 
         video {
             width: 100%;
-            height: 100%;
-            border-radius: 10px; /* Rundade kanter */
+            height: auto;
+            border-radius: 10px;
         }
 
         .section-container {
@@ -135,7 +135,6 @@
             margin-top: 20px;
         }
 
-        /* Gör input[type="file"] osynlig men fortfarande interaktiv */
         #file-input {
             display: none;
             position: absolute;
