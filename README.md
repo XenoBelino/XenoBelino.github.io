@@ -151,6 +151,8 @@
         <div class="video-container">
             <video controls id="video-player">
                 <source id="video-source" src="videos/video.mp4" type="video/mp4">
+                <source id="video-source-ogg" src="videos/video.ogg" type="video/ogg">
+                <source id="video-source-webm" src="videos/video.webm" type="video/webm">
                 Din webbläsare stödjer inte videospelaren.
             </video>
         </div>
@@ -234,10 +236,14 @@
             const fileInfo = document.getElementById('file-info');
             const videoPlayer = document.getElementById('video-player');
             const videoSource = document.getElementById('video-source');
+            const videoSourceOgg = document.getElementById('video-source-ogg');
+            const videoSourceWebm = document.getElementById('video-source-webm');
 
             if (file) {
                 const fileURL = URL.createObjectURL(file);
                 videoSource.src = fileURL;
+                videoSourceOgg.src = fileURL;
+                videoSourceWebm.src = fileURL;
                 videoPlayer.load();
                 fileInfo.textContent = `Selected file: ${file.name}`;
             }
@@ -246,6 +252,17 @@
         // Trigger för att öppna filväljaren
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
+        });
+
+        // Funktion för att spara filen
+        document.getElementById('save-btn').addEventListener('click', function() {
+            const videoPlayer = document.getElementById('video-player');
+            const videoSource = document.getElementById('video-source');
+            
+            const a = document.createElement('a');
+            a.href = videoSource.src;
+            a.download = 'edited-video.mp4';
+            a.click();
         });
     </script>
 </body>
