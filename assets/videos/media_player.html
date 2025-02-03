@@ -10,18 +10,34 @@
         body {
             font-family: 'Lato', sans-serif;
         }
-        /* Styles for audio/video controls and layout */
+        /* Add styles for the page layout */
+        .editor-content {
+            text-align: center;
+            margin: 20px;
+        }
+        #media-container {
+            margin-top: 20px;
+        }
+        #wavesurfer {
+            width: 100%;
+            height: 128px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="editor-content">
-        <h1>Edit Your Audio and Video Files</h1>
-
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+        <h1>Enjoy Your Media Files</h1>
 
         <div id="file-info"></div>
-        <div id="media-container"></div>
+        <div id="media-container">
+            <!-- Embed the video directly into the page -->
+            <video id="video-player" controls>
+                <source src="assets/videos/my_video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
         <div id="wavesurfer" style="width: 100%; height: 128px;"></div>
 
         <div id="volume-controls">
@@ -33,48 +49,21 @@
     </div>
 
     <script>
-        let mediaElement = null;
+        let mediaElement = document.getElementById('video-player');
         let wavesurfer = null;
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfoDiv = document.getElementById('file-info');
-            const mediaContainer = document.getElementById('media-container');
-            
-            if (file) {
-                fileInfoDiv.textContent = `Selected file: ${file.name}`;
-                const extension = file.name.split('.').pop().toLowerCase();
-                mediaContainer.innerHTML = '';
+        // Initialize wavesurfer when the video is loaded
+        mediaElement.onloadedmetadata = function() {
+            wavesurfer = WaveSurfer.create({
+                container: '#wavesurfer',
+                waveColor: '#ff6347',
+                progressColor: '#f00',
+                backend: 'MediaElement',
+                mediaElement: mediaElement
+            });
 
-                // Kontrollera filtypen och hantera ljud- eller videofiler
-                if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    console.log('Audio file selected:', file.name);
-                    mediaElement = document.createElement('audio');
-                    mediaElement.controls = true;
-                    mediaElement.src = URL.createObjectURL(file);
-                    mediaContainer.appendChild(mediaElement);
-
-                    // Skapa ljudvågor med Wavesurfer.js för ljudfiler
-                    wavesurfer = WaveSurfer.create({
-                        container: '#wavesurfer',
-                        waveColor: '#ff6347',
-                        progressColor: '#f00',
-                        backend: 'MediaElement',
-                        mediaElement: mediaElement
-                    });
-
-                    wavesurfer.load(mediaElement.src);
-                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    console.log('Video file selected:', file.name);
-                    mediaElement = document.createElement('video');
-                    mediaElement.controls = true;
-                    mediaElement.src = URL.createObjectURL(file);
-                    mediaContainer.appendChild(mediaElement);
-                } else {
-                    fileInfoDiv.textContent = "Unsupported file type!";
-                }
-            }
-        }
+            wavesurfer.load(mediaElement.src);
+        };
 
         function adjustVolume() {
             let volumeControl = document.getElementById('volume');
