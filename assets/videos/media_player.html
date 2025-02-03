@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Editor with Audio and Video</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+        }
+        /* Styles for audio/video controls and layout */
+    </style>
+</head>
+<body>
+    <div class="editor-content">
+        <h1>Edit Your Audio and Video Files</h1>
+
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)">
+
+        <div id="file-info"></div>
+        <div id="media-container"></div>
+        <div id="wavesurfer" style="width: 100%; height: 128px;"></div>
+
+        <div id="volume-controls">
+            <div>
+                <label for="volume">Volume</label>
+                <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume()">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mediaElement = null;
+        let wavesurfer = null;
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfoDiv = document.getElementById('file-info');
+            const mediaContainer = document.getElementById('media-container');
+            
+            if (file) {
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+                const extension = file.name.split('.').pop().toLowerCase();
+                mediaContainer.innerHTML = '';
+
+                // Kontrollera filtypen och hantera ljud- eller videofiler
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    console.log('Audio file selected:', file.name);
+                    mediaElement = document.createElement('audio');
+                    mediaElement.controls = true;
+                    mediaElement.src = URL.createObjectURL(file);
+                    mediaContainer.appendChild(mediaElement);
+
+                    // Skapa ljudvågor med Wavesurfer.js för ljudfiler
+                    wavesurfer = WaveSurfer.create({
+                        container: '#wavesurfer',
+                        waveColor: '#ff6347',
+                        progressColor: '#f00',
+                        backend: 'MediaElement',
+                        mediaElement: mediaElement
+                    });
+
+                    wavesurfer.load(mediaElement.src);
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    console.log('Video file selected:', file.name);
+                    mediaElement = document.createElement('video');
+                    mediaElement.controls = true;
+                    mediaElement.src = URL.createObjectURL(file);
+                    mediaContainer.appendChild(mediaElement);
+                } else {
+                    fileInfoDiv.textContent = "Unsupported file type!";
+                }
+            }
+        }
+
+        function adjustVolume() {
+            let volumeControl = document.getElementById('volume');
+            if (mediaElement) {
+                mediaElement.volume = volumeControl.value;
+            }
+        }
+    </script>
+</body>
+</html>
