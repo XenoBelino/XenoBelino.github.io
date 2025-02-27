@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
     
-    <!-- Google Fonts - Lato -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Ladda Wavesurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js"></script>
-
-    <!-- Länka till den externa CSS-filen -->
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body class="home">
@@ -35,7 +30,7 @@
 
         <!-- Video player -->
         <video id="video-player" width="320" height="240" controls>
-            <source src="path_to_video.mp4" type="video/mp4">
+            <source src="assets/videos/video.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -49,16 +44,14 @@
 
             if (file) {
                 fileInfoDiv.textContent = `Selected file: ${file.name}`;
-
                 const fileURL = URL.createObjectURL(file);
 
-                // Om filen är en ljudfil
+                // Hantera ljudfil med Wavesurfer.js
                 let extension = file.name.split('.').pop().toLowerCase();
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Hantera ljudfil med Wavesurfer
+                    let wavesurfer = WaveSurfer.create({ container: '#waveform' });
                     wavesurfer.load(fileURL);
                 } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    // Om det är en videofil, sätt den som källa för videoelementet
                     videoPlayer.src = fileURL;
                     videoPlayer.load(); // Ladda om videon
                 } else {
@@ -74,10 +67,10 @@
 
         // Hantera ljudvolym
         var slider = document.getElementById("volume-slider");
-        var wavesurfer = WaveSurfer.create({ container: '#waveform' });
+        var videoPlayer = document.getElementById('video-player');
 
         slider.oninput = function() {
-            wavesurfer.setVolume(slider.value / 100);
+            videoPlayer.volume = slider.value / 100;
         };
     </script>
 </body>
