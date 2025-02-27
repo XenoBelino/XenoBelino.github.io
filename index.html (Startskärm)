@@ -4,74 +4,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Editor</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            background-image: url('images/image.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow-y: auto;
+        }
+
+        .video-container {
+            width: 60%;
+            height: auto;
+            margin: 40px auto;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .editor-content {
+            text-align: left;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+            background-color: transparent;
+            border-radius: 10px;
+        }
+
+        /* Buttons container */
+        .buttons-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #5c0b8a;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Information about the file selected */
+        #file-info {
+            color: white;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+    </style>
 </head>
-<body class="home">
-    <div class="editor-content">
-        <h1>Edit Your Files</h1>
+<body>
 
-        <!-- Browse Button -->
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
-        
-        <div id="file-info"></div>
-        
-        <!-- Save Button -->
-        <button id="save-button" onclick="saveFile()">Save</button>
-
-        <!-- Volume Slider -->
-        <input type="range" min="0" max="100" value="50" id="volume-slider" />
-
-        <!-- Waveform container -->
-        <div id="waveform"></div>
-
-        <!-- Video player -->
-        <video id="video-player" width="320" height="240" controls>
-            <source src="assets/videos/video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
+    <!-- Video container to play the selected file -->
+    <div class="video-container">
+        <video controls id="video-player">
+            <source id="video-source" src="videos/video.mp4" type="video/mp4">
+            Din webbläsare stödjer inte videospelaren.
         </video>
     </div>
 
+    <!-- Information about the selected file -->
+    <div id="file-info">No file selected</div>
+
+    <!-- Buttons container -->
+    <div class="buttons-container">
+        <button class="button" id="browse-btn">Browse my files</button>
+        <button class="button" id="navigate-btn">Go to my page</button>
+    </div>
+
+    <!-- Hidden file input element -->
+    <input type="file" id="file-input" accept="video/mp4,video/webm,video/ogg,video/avi,video/mkv" onchange="handleFileSelect(event)" />
+
     <script>
-        // Hantera filval
+        // Handle file selection and display information about the selected file
         function handleFileSelect(event) {
             const file = event.target.files[0];
-            const fileInfoDiv = document.getElementById('file-info');
+            const fileInfo = document.getElementById('file-info');
             const videoPlayer = document.getElementById('video-player');
+            const videoSource = document.getElementById('video-source');
 
             if (file) {
-                fileInfoDiv.textContent = `Selected file: ${file.name}`;
-                const fileURL = URL.createObjectURL(file);
-
-                // Hantera ljudfil med Wavesurfer.js
-                let extension = file.name.split('.').pop().toLowerCase();
-                if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    let wavesurfer = WaveSurfer.create({ container: '#waveform' });
-                    wavesurfer.load(fileURL);
-                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    videoPlayer.src = fileURL;
-                    videoPlayer.load(); // Ladda om videon
+                // If it's a valid video file
+                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/avi' || file.type === 'video/mkv') {
+                    const fileURL = URL.createObjectURL(file);
+                    videoSource.src = fileURL;
+                    videoPlayer.load();
+                    fileInfo.textContent = `Selected file: ${file.name}`;
                 } else {
-                    fileInfoDiv.textContent = "Unsupported file type!";
+                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, OGG, AVI, MKV).';
                 }
+            } else {
+                fileInfo.textContent = 'No file selected';
             }
         }
 
-        // Spara fil (exempel)
-        function saveFile() {
-            alert("Your changes have been saved!");
-        }
+        // Trigger file input when the button is clicked
+        document.getElementById('browse-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
 
-        // Hantera ljudvolym
-        var slider = document.getElementById("volume-slider");
-        var videoPlayer = document.getElementById('video-player');
+        // Add event listeners for full screen and mute functionality
+        const videoPlayer = document.getElementById('video-player');
 
-        slider.oninput = function() {
-            videoPlayer.volume = slider.value / 100;
-        };
+        // Fullscreen functionality (F key)
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'f') {
+                if (videoPlayer.requestFullscreen) {
+                    videoPlayer.requestFullscreen();
+                } else if (videoPlayer.mozRequestFullScreen) { // Firefox
+                    videoPlayer.mozRequestFullScreen();
+                } else if (videoPlayer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    videoPlayer.webkitRequestFullscreen();
+                } else if (videoPlayer.msRequestFullscreen) { // IE/Edge
+                    videoPlayer.msRequestFullscreen();
+                }
+            }
+        });
+
+        // Mute functionality (M key)
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'm') {
+                videoPlayer.muted = !videoPlayer.muted;
+            }
+        });
+
+        // Navigation button to go to a specific page
+        document.getElementById('navigate-btn').addEventListener('click', function() {
+            window.location.href = 'http://www.dinsida.com'; // Sätt din URL här
+        });
     </script>
+
 </body>
 </html>
