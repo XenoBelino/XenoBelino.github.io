@@ -51,6 +51,7 @@
             right: 20px;
             display: flex;
             gap: 10px;
+            z-index: 10; /* Ensure buttons are above other content */
         }
 
         .button {
@@ -135,6 +136,46 @@
         document.getElementById('go-to-page-btn').addEventListener('click', function() {
             window.location.href = 'page.html';  // Navigate to page.html
         });
+
+        // Fullscreen toggle when 'f' is pressed
+        let isFullscreen = false;
+        document.addEventListener('keydown', function(event) {
+            const videoPlayer = document.getElementById('video-player');
+
+            if (event.key === 'f') {
+                if (!isFullscreen) {
+                    // Enter fullscreen mode
+                    if (videoPlayer.requestFullscreen) {
+                        videoPlayer.requestFullscreen();
+                    } else if (videoPlayer.mozRequestFullScreen) { // Firefox
+                        videoPlayer.mozRequestFullScreen();
+                    } else if (videoPlayer.webkitRequestFullscreen) { // Chrome, Safari
+                        videoPlayer.webkitRequestFullscreen();
+                    } else if (videoPlayer.msRequestFullscreen) { // IE/Edge
+                        videoPlayer.msRequestFullscreen();
+                    }
+                    isFullscreen = true;
+                } else {
+                    // Exit fullscreen mode
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.mozCancelFullScreen) { // Firefox
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) { // Chrome, Safari
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) { // IE/Edge
+                        document.msExitFullscreen();
+                    }
+                    isFullscreen = false;
+                }
+            }
+
+            // Mute/unmute when 'm' is pressed
+            if (event.key === 'm') {
+                videoPlayer.muted = !videoPlayer.muted;  // Toggle mute
+            }
+        });
+
     </script>
 
 </body>
