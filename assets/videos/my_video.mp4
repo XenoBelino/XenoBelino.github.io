@@ -10,7 +10,23 @@
         body {
             font-family: 'Lato', sans-serif;
         }
-        /* Styles for audio/video controls and layout */
+        .editor-content {
+            text-align: center;
+            margin: 20px;
+        }
+        #wavesurfer {
+            width: 100%;
+            height: 128px;
+            background-color: #f0f0f0;
+            margin-top: 20px;
+        }
+        video, audio {
+            margin-top: 20px;
+            max-width: 100%;
+        }
+        #volume-controls {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -25,10 +41,8 @@
         <div id="wavesurfer" style="width: 100%; height: 128px;"></div>
 
         <div id="volume-controls">
-            <div>
-                <label for="volume">Volume</label>
-                <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume()">
-            </div>
+            <label for="volume">Volume</label>
+            <input type="range" id="volume" min="0" max="1" step="0.01" value="1" onchange="adjustVolume()">
         </div>
     </div>
 
@@ -36,6 +50,7 @@
         let mediaElement = null;
         let wavesurfer = null;
 
+        // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfoDiv = document.getElementById('file-info');
@@ -44,9 +59,10 @@
             if (file) {
                 fileInfoDiv.textContent = `Selected file: ${file.name}`;
                 const extension = file.name.split('.').pop().toLowerCase();
-                mediaContainer.innerHTML = '';
+                mediaContainer.innerHTML = ''; // Rensa tidigare innehåll
 
                 if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // Hantera ljudfil med Wavesurfer.js
                     mediaElement = document.createElement('audio');
                     mediaElement.controls = true;
                     mediaElement.src = URL.createObjectURL(file);
@@ -62,6 +78,7 @@
 
                     wavesurfer.load(mediaElement.src);
                 } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // Hantera videofil
                     mediaElement = document.createElement('video');
                     mediaElement.controls = true;
                     mediaElement.src = URL.createObjectURL(file);
@@ -72,6 +89,7 @@
             }
         }
 
+        // Justera volymen
         function adjustVolume() {
             let volumeControl = document.getElementById('volume');
             if (mediaElement) {
