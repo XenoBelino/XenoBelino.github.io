@@ -7,185 +7,145 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
+            background-color: lightblue;
             font-family: 'Lato', sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            height: 100vh;
-            background-image: url('images/image.jpg'); /* Kontrollera om filen finns */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            overflow-y: auto;
-        }
-
-        .video-container {
-            width: 60%;
-            height: auto;
-            margin: 40px auto;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .editor-content {
-            text-align: left;
-            padding: 20px;
+            text-align: center;
+            margin: 20px;
+        }
+
+        #waveform {
             width: 100%;
-            flex: 1;
-            background-color: transparent;
-            border-radius: 10px;
-        }
-
-        /* Buttons container */
-        .buttons-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column; /* Ändra till kolumnlayout */
-            gap: 10px;
-            z-index: 10; /* Säkerställ att knapparna är synliga ovanpå innehåll */
-        }
-
-        .button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background-color: #6a0dad;
-            color: white;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #5c0b8a;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        /* Information about the file selected */
-        #file-info {
-            color: white;
-            font-size: 16px;
+            height: 150px;
+            background-color: #f0f0f0;
             margin-top: 20px;
         }
 
+        video {
+            margin-top: 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background-color: #6a0dad;
+            color: white;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #5c0b8a;
+        }
     </style>
 </head>
-<body>
+<body class="home">
+    <div class="editor-content">
+        <h1>Edit Your Files</h1>
+        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
+        <div id="file-info"></div>
 
-    <!-- Video container to play the selected file -->
-    <div class="video-container">
-        <video controls id="video-player">
-            <source id="video-source" src="videos/video.mp4" type="video/mp4">
-            Din webbläsare stödjer inte videospelaren.
+        <!-- Video player -->
+        <video id="video-player" width="320" height="240" controls>
+            <source src="videos/video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
         </video>
     </div>
 
-    <!-- Information about the selected file -->
-    <div id="file-info">No file selected</div>
-
-    <!-- Buttons container -->
+    <!-- Buttons container for "Go to Page" and "Back to Homepage" -->
     <div class="buttons-container">
-        <button class="button" id="browse-btn">Browse my files</button>
-        <button class="button" id="go-to-page-btn">Go to page</button>
-        <button class="button" id="back-homepage-btn">Back to Homepage</button>
+        <button id="go-to-page-btn">Go to page</button>
+        <button id="back-homepage-btn">Back to Homepage</button>
     </div>
 
-    <!-- Hidden file input element -->
-    <input type="file" id="file-input" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
-
     <script>
-        // Handle file selection and display information about the selected file
+        // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
-            const fileInfo = document.getElementById('file-info');
+            const fileInfoDiv = document.getElementById('file-info');
             const videoPlayer = document.getElementById('video-player');
-            const videoSource = document.getElementById('video-source');
 
             if (file) {
-                // If it's a valid video file
-                if (file.type === 'video/mp4' || file.type === 'video/webm') {
-                    const fileURL = URL.createObjectURL(file);
-                    videoSource.src = fileURL;
-                    videoPlayer.load();
-                    fileInfo.textContent = `Selected file: ${file.name}`;
+                fileInfoDiv.textContent = `Selected file: ${file.name}`;
+
+                const fileURL = URL.createObjectURL(file);
+
+                // Om filen är en ljudfil
+                let extension = file.name.split('.').pop().toLowerCase();
+                if (['mp3', 'wav', 'ogg'].includes(extension)) {
+                    // Hantera ljudfil med Wavesurfer
+                    wavesurfer.load(fileURL);
+                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
+                    // Om det är en videofil, sätt den som källa för videoelementet
+                    videoPlayer.src = fileURL;
+                    videoPlayer.load(); // Ladda om videon
                 } else {
-                    fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
+                    fileInfoDiv.textContent = "Unsupported file type!";
                 }
-            } else {
-                fileInfo.textContent = 'No file selected';
             }
         }
 
-        // Trigger file input when the button is clicked
-        document.getElementById('browse-btn').addEventListener('click', function() {
-            document.getElementById('file-input').click();
-        });
-
-        // Navigate to page.html when the "Go to page" button is clicked
+        // Navigera till page.html när man klickar på knappen "Go to page"
         document.getElementById('go-to-page-btn').addEventListener('click', function() {
-            window.location.href = 'page.html';  // Navigera till page.html
+            window.location.href = 'page.html'; // Navigera till page.html
         });
 
-        // Navigate to the homepage when the "Back to Homepage" button is clicked
+        // Navigera till index.html när man klickar på knappen "Back to Homepage"
         document.getElementById('back-homepage-btn').addEventListener('click', function() {
-            window.location.href = 'index.html';  // Navigera tillbaka till index.html
+            window.location.href = 'index.html'; // Navigera tillbaka till index.html
         });
 
-        // Fullscreen toggle when 'f' is pressed
+        // Fullskärmsläge (F) och ljud (M) funktioner
         let isFullscreen = false;
-        document.addEventListener('keydown', function(event) {
-            const videoPlayer = document.getElementById('video-player');
+        let isMuted = false;
+        const videoPlayer = document.getElementById('video-player');
 
+        document.addEventListener('keydown', function(event) {
             if (event.key === 'f') {
-                console.log("Full-screen toggle activated"); // Debug log för full-screen toggle
                 if (!isFullscreen) {
-                    // Enter fullscreen mode
                     if (videoPlayer.requestFullscreen) {
                         videoPlayer.requestFullscreen();
-                    } else if (videoPlayer.mozRequestFullScreen) { // Firefox
+                    } else if (videoPlayer.mozRequestFullScreen) {
                         videoPlayer.mozRequestFullScreen();
-                    } else if (videoPlayer.webkitRequestFullscreen) { // Chrome, Safari
+                    } else if (videoPlayer.webkitRequestFullscreen) {
                         videoPlayer.webkitRequestFullscreen();
-                    } else if (videoPlayer.msRequestFullscreen) { // IE/Edge
+                    } else if (videoPlayer.msRequestFullscreen) {
                         videoPlayer.msRequestFullscreen();
                     }
                     isFullscreen = true;
                 } else {
-                    // Exit fullscreen mode
                     if (document.exitFullscreen) {
                         document.exitFullscreen();
-                    } else if (document.mozCancelFullScreen) { // Firefox
+                    } else if (document.mozCancelFullScreen) {
                         document.mozCancelFullScreen();
-                    } else if (document.webkitExitFullscreen) { // Chrome, Safari
+                    } else if (document.webkitExitFullscreen) {
                         document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) { // IE/Edge
+                    } else if (document.msExitFullscreen) {
                         document.msExitFullscreen();
                     }
                     isFullscreen = false;
                 }
             }
 
-            // Mute/unmute when 'm' is pressed
             if (event.key === 'm') {
-                console.log("Mute/unmute toggled"); // Debug log för mute toggle
-                videoPlayer.muted = !videoPlayer.muted;
+                isMuted = !isMuted;
+                videoPlayer.muted = isMuted;
             }
         });
-
     </script>
-
 </body>
 </html>
