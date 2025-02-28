@@ -3,149 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Editor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: lightblue;
-            font-family: 'Lato', sans-serif;
-        }
-
-        .editor-content {
-            text-align: center;
-            margin: 20px;
-        }
-
-        #waveform {
-            width: 100%;
-            height: 150px;
-            background-color: #f0f0f0;
-            margin-top: 20px;
-        }
-
-        video {
-            margin-top: 20px;
-        }
-
-        .buttons-container {
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            z-index: 10;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            background-color: #6a0dad;
-            color: white;
-            border-radius: 5px;
-            border: none;
-        }
-
-        button:hover {
-            background-color: #5c0b8a;
-        }
-    </style>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Video Player with Settings</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Länka till styles.css -->
 </head>
-<body class="home">
+<body>
     <div class="editor-content">
-        <h1>Edit Your Files</h1>
-        <button onclick="document.getElementById('file-input').click()">Browse my files</button>
-        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)" />
-        <div id="file-info"></div>
+        <!-- Video Player Container -->
+        <div class="video-container">
+            <video id="video-player" controls>
+                <source src="assets/videos/sample.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
 
-        <!-- Video player -->
-        <video id="video-player" width="320" height="240" controls>
-            <source src="videos/video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <!-- File Selection and File Info -->
+        <button id="browse-btn" class="browse-button">Browse Files</button>
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
+        <div id="file-name">No file selected</div>
+
+        <!-- Buttons for Background Change and Volumes -->
+        <button id="change-background-btn" class="button">Change Background</button>
+        <button id="save-btn" class="button">Save Settings</button>
+
+        <!-- Volume Controls -->
+        <div class="volume-slider-container">
+            <div>
+                <label for="original-volume">Original Volume:</label>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('original')">
+                <span id="original-volume-percent" class="volume-percentage">50%</span>
+                <span id="original-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="corrupted-volume">Corrupted Volume:</label>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('corrupted')">
+                <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+                <span id="corrupted-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="music-volume">Music Volume:</label>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('music')">
+                <span id="music-volume-percent" class="volume-percentage">50%</span>
+                <span id="music-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="final-volume">Final Volume:</label>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('final')">
+                <span id="final-volume-percent" class="volume-percentage">50%</span>
+                <span id="final-volume-icon">🔉</span>
+            </div>
+        </div>
+
+        <!-- Buttons for Navigation -->
+        <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
+        <button id="go-to-page-btn" class="button back-button">Go to Page</button>
     </div>
 
-    <!-- Buttons container for "Go to Page" and "Back to Homepage" -->
-    <div class="buttons-container">
-        <button id="go-to-page-btn">Go to page</button>
-        <button id="back-homepage-btn">Back to Homepage</button>
-    </div>
-
-    <script>
-        // Hantera filval
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfoDiv = document.getElementById('file-info');
-            const videoPlayer = document.getElementById('video-player');
-
-            if (file) {
-                fileInfoDiv.textContent = `Selected file: ${file.name}`;
-
-                const fileURL = URL.createObjectURL(file);
-
-                // Om filen är en ljudfil
-                let extension = file.name.split('.').pop().toLowerCase();
-                if (['mp3', 'wav', 'ogg'].includes(extension)) {
-                    // Hantera ljudfil med Wavesurfer
-                    wavesurfer.load(fileURL);
-                } else if (['mp4', 'webm', 'avi'].includes(extension)) {
-                    // Om det är en videofil, sätt den som källa för videoelementet
-                    videoPlayer.src = fileURL;
-                    videoPlayer.load(); // Ladda om videon
-                } else {
-                    fileInfoDiv.textContent = "Unsupported file type!";
-                }
-            }
-        }
-
-        // Navigera till page.html när man klickar på knappen "Go to page"
-        document.getElementById('go-to-page-btn').addEventListener('click', function() {
-            window.location.href = 'page.html'; // Navigera till page.html
-        });
-
-        // Navigera till index.html när man klickar på knappen "Back to Homepage"
-        document.getElementById('back-homepage-btn').addEventListener('click', function() {
-            window.location.href = 'index.html'; // Navigera tillbaka till index.html
-        });
-
-        // Fullskärmsläge (F) och ljud (M) funktioner
-        let isFullscreen = false;
-        let isMuted = false;
-        const videoPlayer = document.getElementById('video-player');
-
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'f') {
-                if (!isFullscreen) {
-                    if (videoPlayer.requestFullscreen) {
-                        videoPlayer.requestFullscreen();
-                    } else if (videoPlayer.mozRequestFullScreen) {
-                        videoPlayer.mozRequestFullScreen();
-                    } else if (videoPlayer.webkitRequestFullscreen) {
-                        videoPlayer.webkitRequestFullscreen();
-                    } else if (videoPlayer.msRequestFullscreen) {
-                        videoPlayer.msRequestFullscreen();
-                    }
-                    isFullscreen = true;
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.mozCancelFullScreen) {
-                        document.mozCancelFullScreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                    isFullscreen = false;
-                }
-            }
-
-            if (event.key === 'm') {
-                isMuted = !isMuted;
-                videoPlayer.muted = isMuted;
-            }
-        });
-    </script>
+    <script src="scripts.js" defer></script> <!-- Länka till scripts.js -->
 </body>
 </html>
