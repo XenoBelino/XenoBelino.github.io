@@ -1,3 +1,11 @@
+/* Grundläggande stil för hela sidan */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Ljusgrå bakgrund för bättre kontrast */
+    margin: 0;
+    padding: 0;
+}
+
 /* Stil för knapparna */
 .button, .browse-button {
     padding: 10px 20px;
@@ -14,7 +22,7 @@
     background-color: #5c0b8a;
 }
 
-/* Knapp för att återgå till startsidan */
+/* Stil för "Back to Home Page" knappen */
 .back-button {
     position: fixed;
     top: 10px;
@@ -39,4 +47,27 @@
     position: absolute;
     top: 140px; /* Positionerar knappen under "Back to Home Page" */
     left: 20px;
+}
+
+/* Stilar för filinläsning och info om vald fil */
+#file-name {
+    color: black; /* Ändrar textfärgen för att synas bättre */
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Stil för volymreglage */
+.volume-slider-container {
+    margin-top: 20px;
+}
+
+/* Grundläggande stil för text */
+h1, p {
+    color: #333; /* Mörk textfärg för bättre synlighet */
+}
+
+/* Stil för texten "No file selected" som är under videospelaren */
+#file-name {
+    color: black; /* Ändrar färgen på texten till svart för bättre synlighet */
+    font-size: 18px; /* Lite större textstorlek */
 }
