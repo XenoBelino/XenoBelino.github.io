@@ -9,10 +9,11 @@
     <style>
         body {
             font-family: 'Lato', sans-serif;
+            text-align: center;
+            margin: 20px;
         }
         .editor-content {
             text-align: center;
-            margin: 20px;
         }
         #wavesurfer {
             width: 100%;
@@ -27,6 +28,16 @@
         #volume-controls {
             margin-top: 20px;
         }
+        .section-container {
+            margin-top: 30px;
+        }
+        .section {
+            margin: 10px 0;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #6a0dad;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +49,27 @@
 
         <div id="file-info"></div>
         <div id="media-container"></div>
+
+        <!-- Audio Waves for Different Sections -->
+        <div class="section-container">
+            <div class="section">
+                <div class="section-title">Your original File</div>
+                <div id="original-wavesurfer"></div>
+            </div>
+            <div class="section">
+                <div class="section-title">Overwriting Audio</div>
+                <div id="corrupted-wavesurfer"></div>
+            </div>
+            <div class="section">
+                <div class="section-title">The Music from Your File</div>
+                <div id="music-wavesurfer"></div>
+            </div>
+            <div class="section">
+                <div class="section-title">The Final Result</div>
+                <div id="final-wavesurfer"></div>
+            </div>
+        </div>
+
         <div id="wavesurfer" style="width: 100%; height: 128px;"></div>
 
         <div id="volume-controls">
@@ -48,7 +80,10 @@
 
     <script>
         let mediaElement = null;
-        let wavesurfer = null;
+        let wavesurferOriginal = null;
+        let wavesurferCorrupted = null;
+        let wavesurferMusic = null;
+        let wavesurferFinal = null;
 
         // Hantera filval
         function handleFileSelect(event) {
@@ -86,7 +121,33 @@
                 } else {
                     fileInfoDiv.textContent = "Unsupported file type!";
                 }
+
+                // Ladda och visa ljudvågor för de fyra sektionerna
+                loadWaveSurfer('#original-wavesurfer', 'original');
+                loadWaveSurfer('#corrupted-wavesurfer', 'corrupted');
+                loadWaveSurfer('#music-wavesurfer', 'music');
+                loadWaveSurfer('#final-wavesurfer', 'final');
             }
+        }
+
+        // Funktion för att ladda Wavesurfer.js för varje sektion
+        function loadWaveSurfer(containerId, type) {
+            const wavesurferContainer = document.querySelector(containerId);
+            const wavesurferInstance = WaveSurfer.create({
+                container: wavesurferContainer,
+                waveColor: '#ff6347',
+                progressColor: '#f00',
+                backend: 'MediaElement',
+                mediaElement: mediaElement
+            });
+            // Ladda ljudet baserat på den typ du vill
+            wavesurferInstance.load(mediaElement.src);
+            
+            // Spara instansen i den globala variabeln
+            if (type === 'original') wavesurferOriginal = wavesurferInstance;
+            else if (type === 'corrupted') wavesurferCorrupted = wavesurferInstance;
+            else if (type === 'music') wavesurferMusic = wavesurferInstance;
+            else if (type === 'final') wavesurferFinal = wavesurferInstance;
         }
 
         // Justera volymen
