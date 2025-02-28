@@ -143,6 +143,7 @@
             const videoPlayer = document.getElementById('video-player');
 
             if (event.key === 'f') {
+                console.log("Full-screen toggle activated"); // Debug log for fullscreen toggle
                 if (!isFullscreen) {
                     // Enter fullscreen mode
                     if (videoPlayer.requestFullscreen) {
@@ -172,7 +173,8 @@
 
             // Mute/unmute when 'm' is pressed
             if (event.key === 'm') {
-                videoPlayer.muted = !videoPlayer.muted;  // Toggle mute
+                console.log("Mute/unmute toggled"); // Debug log for mute toggle
+                videoPlayer.muted = !videoPlayer.muted;
             }
         });
 
