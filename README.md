@@ -98,6 +98,21 @@
             window.location.href = "index.html";
         });
 
+        // Eventlistener för "Change Background"-knappen
+        document.getElementById("change-background-btn").addEventListener("click", function() {
+            const mode = confirm("Choose background mode:\n\nClick 'OK' for Dark Mode\nClick 'Cancel' for Light Mode");
+
+            if (mode) {
+                // Dark Mode
+                document.body.style.backgroundColor = "black";
+                document.body.style.color = "white";
+            } else {
+                // Light Mode (standard)
+                document.body.style.backgroundColor = "#f4f4f4";
+                document.body.style.color = "black";
+            }
+        });
+
         // Volymuppdatering
         function updateVolumePercentage(type) {
             const volumeElement = document.getElementById(`${type}-volume`);
@@ -110,7 +125,7 @@
         /* Grundläggande stil för hela sidan */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f4f4f4; /* Standard Light Mode bakgrundsfärg */
             margin: 0;
             padding: 0;
         }
@@ -181,6 +196,24 @@
             max-height: 50vh; /* Maxhöjd för videospelaren */
             object-fit: contain; /* Förhindrar att videon blir förvrängd */
             border-radius: 15px; /* Rundar kanterna på videospelaren */
+        }
+
+        /* Stil för Change Background-knappen */
+        #change-background-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #change-background-btn:hover {
+            background-color: #5c0b8a;
         }
     </style>
 </body>
