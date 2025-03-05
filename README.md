@@ -62,7 +62,6 @@
 
         <!-- Navigeringsknappar -->
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
-        <button id="go-to-page-btn" class="button back-button">Go to Page</button>
     </div>
 
     <script src="scripts.js" defer></script> <!-- Länka till extern JavaScript-fil -->
@@ -94,13 +93,9 @@
             document.getElementById('file-input').click();
         });
 
-        // Eventlistener för knapparna "Back to Home Page" och "Go to Page"
+        // Eventlistener för knappen "Back to Home Page"
         document.getElementById("back-to-home-btn").addEventListener("click", function() {
             window.location.href = "index.html";
-        });
-
-        document.getElementById("go-to-page-btn").addEventListener("click", function() {
-            window.location.href = "another-page.html";
         });
 
         // Volymuppdatering
@@ -185,6 +180,7 @@
             width: 100%;
             max-height: 50vh; /* Maxhöjd för videospelaren */
             object-fit: contain; /* Förhindrar att videon blir förvrängd */
+            border-radius: 15px; /* Rundar kanterna på videospelaren */
         }
     </style>
 </body>
