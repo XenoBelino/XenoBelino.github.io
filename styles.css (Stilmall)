@@ -2,6 +2,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4; /* Ljusgrå bakgrund för bättre kontrast */
+    color: black; /* Standard textfärg */
     margin: 0;
     padding: 0;
 }
@@ -70,4 +71,42 @@ h1, p {
 #file-name {
     color: black; /* Ändrar färgen på texten till svart för bättre synlighet */
     font-size: 18px; /* Lite större textstorlek */
+}
+
+/* Stil för Change Background-knappen */
+#change-background-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    padding: 10px 20px;
+    background-color: #6a0dad;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+#change-background-btn:hover {
+    background-color: #5c0b8a;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
+body.dark-mode h1, body.dark-mode p, body.dark-mode #file-name {
+    color: white;
+}
+
+body.dark-mode .button, body.dark-mode .browse-button, body.dark-mode .back-button {
+    background-color: #333;
+    color: white;
+}
+
+body.dark-mode .button:hover, body.dark-mode .browse-button:hover, body.dark-mode .back-button:hover {
+    background-color: #555;
 }
