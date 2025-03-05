@@ -6,3 +6,15 @@ document.getElementById("back-to-home-btn").addEventListener("click", function()
 document.getElementById("go-to-page-btn").addEventListener("click", function() {
     window.location.href = "another-page.html"; // Gå till en annan sida (ändra URL till den sidan du vill länka till)
 });
+
+// Funktion för att växla mellan Light Mode och Dark Mode
+document.getElementById("change-background-btn").addEventListener("click", function() {
+    // Kontrollera om body har dark-mode klassen
+    if (document.body.classList.contains("dark-mode")) {
+        // Om det finns, ta bort dark-mode och återgå till Light Mode
+        document.body.classList.remove("dark-mode");
+    } else {
+        // Annars, lägg till dark-mode för att aktivera Dark Mode
+        document.body.classList.add("dark-mode");
+    }
+});
