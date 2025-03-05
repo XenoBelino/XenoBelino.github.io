@@ -205,3 +205,76 @@ document.getElementById("back-to-home-btn").addEventListener("click", function()
 document.getElementById("go-to-page-btn").addEventListener("click", function() {
     window.location.href = "another-page.html"; // Gå till en annan sida (ändra URL till den sidan du vill länka till)
 });
+/* Grundläggande stil för hela sidan */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Ljusgrå bakgrund för bättre kontrast */
+    margin: 0;
+    padding: 0;
+}
+
+/* Stil för knapparna */
+.button, .browse-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background-color: #6a0dad;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.button:hover, .browse-button:hover {
+    background-color: #5c0b8a;
+}
+
+/* Stil för "Back to Home Page" knappen */
+.back-button {
+    position: fixed;
+    top: 10px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #6a0dad;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    margin-top: 60px; /* Lägger till avstånd mellan knapparna */
+}
+
+.back-button:hover {
+    background-color: #5c0b8a;
+}
+
+/* Positionering för "Go to Page"-knappen */
+#go-to-page-btn {
+    position: absolute;
+    top: 140px; /* Positionerar knappen under "Back to Home Page" */
+    left: 20px;
+}
+
+/* Stilar för filinläsning och info om vald fil */
+#file-name {
+    color: black; /* Ändrar textfärgen för att synas bättre */
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Stil för volymreglage */
+.volume-slider-container {
+    margin-top: 20px;
+}
+
+/* Grundläggande stil för text */
+h1, p {
+    color: #333; /* Mörk textfärg för bättre synlighet */
+}
+
+/* Stil för texten "No file selected" som är under videospelaren */
+#file-name {
+    color: black; /* Ändrar färgen på texten till svart för bättre synlighet */
+    font-size: 18px; /* Lite större textstorlek */
+}
