@@ -66,7 +66,7 @@
     </div>
 
     <script src="scripts.js" defer></script> <!-- Länka till extern JavaScript-fil -->
-    
+
     <script>
         // Hantera filval och visa information om vald fil
         function handleFileSelect(event) {
@@ -172,7 +172,20 @@
         .back-button:hover {
             background-color: #5c0b8a;
         }
-    </style>
 
+        /* Stil för videospelaren */
+        .video-container {
+            width: 60%; /* Justera bredden efter behov */
+            max-width: 900px; /* Maxbredd för att förhindra att videospelaren blir för stor */
+            height: auto;
+            margin: 40px auto;
+        }
+
+        video {
+            width: 100%;
+            max-height: 50vh; /* Maxhöjd för videospelaren */
+            object-fit: contain; /* Förhindrar att videon blir förvrängd */
+        }
+    </style>
 </body>
 </html>
