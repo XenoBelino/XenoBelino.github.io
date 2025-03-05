@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Länka till styles.css -->
+    <link rel="stylesheet" href="styles.css"> <!-- Länka till extern CSS-fil -->
 </head>
 <body>
     <div class="editor-content">
+        <!-- Introduktion till sidan -->
+        <div class="intro-section">
+            <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+            <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
+        </div>
+
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
@@ -17,16 +23,16 @@
             </video>
         </div>
 
-        <!-- File Selection and File Info -->
+        <!-- Filval och info -->
         <button id="browse-btn" class="browse-button">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
         <div id="file-name">No file selected</div>
 
-        <!-- Buttons for Background Change and Volumes -->
+        <!-- Knappar för bakgrundsändring och spara inställningar -->
         <button id="change-background-btn" class="button">Change Background</button>
         <button id="save-btn" class="button">Save Settings</button>
 
-        <!-- Volume Controls -->
+        <!-- Volymreglage -->
         <div class="volume-slider-container">
             <div>
                 <label for="original-volume">Original Volume:</label>
@@ -54,128 +60,22 @@
             </div>
         </div>
 
-        <!-- Buttons for Navigation -->
+        <!-- Navigeringsknappar -->
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
         <button id="go-to-page-btn" class="button back-button">Go to Page</button>
     </div>
 
-    <script src="scripts.js" defer></script> <!-- Länka till scripts.js -->
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Editor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Lato', sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            height: 100vh;
-            background-image: url('images/image.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            overflow-y: auto;
-        }
-
-        .video-container {
-            width: 60%;
-            height: auto;
-            margin: 40px auto;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .editor-content {
-            text-align: left;
-            padding: 20px;
-            width: 100%;
-            flex: 1;
-            background-color: transparent;
-            border-radius: 10px;
-        }
-
-        /* Buttons container */
-        .buttons-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background-color: #6a0dad;
-            color: white;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #5c0b8a;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        /* Information about the file selected */
-        #file-info {
-            color: white;
-            font-size: 16px;
-            margin-top: 20px;
-        }
-
-    </style>
-</head>
-<body>
-
-    <!-- Video container to play the selected file -->
-    <div class="video-container">
-        <video controls id="video-player">
-            <source id="video-source" src="videos/video.mp4" type="video/mp4">
-            Din webbläsare stödjer inte videospelaren.
-        </video>
-    </div>
-
-    <!-- Information about the selected file -->
-    <div id="file-info">No file selected</div>
-
-    <!-- Buttons container -->
-    <div class="buttons-container">
-        <button class="button" id="browse-btn">Browse my files</button>
-    </div>
-
-    <!-- Hidden file input element -->
-    <input type="file" id="file-input" accept="video/mp4,video/webm" onchange="handleFileSelect(event)" />
-
+    <script src="scripts.js" defer></script> <!-- Länka till extern JavaScript-fil -->
+    
     <script>
-        // Handle file selection and display information about the selected file
+        // Hantera filval och visa information om vald fil
         function handleFileSelect(event) {
             const file = event.target.files[0];
-            const fileInfo = document.getElementById('file-info');
+            const fileInfo = document.getElementById('file-name');
             const videoPlayer = document.getElementById('video-player');
-            const videoSource = document.getElementById('video-source');
+            const videoSource = videoPlayer.querySelector('source');
 
             if (file) {
-                // If it's a valid video file
                 if (file.type === 'video/mp4' || file.type === 'video/webm') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
@@ -189,92 +89,90 @@
             }
         }
 
-        // Trigger file input when the button is clicked
+        // Triggera filinputen när knappen klickas
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
         });
+
+        // Eventlistener för knapparna "Back to Home Page" och "Go to Page"
+        document.getElementById("back-to-home-btn").addEventListener("click", function() {
+            window.location.href = "index.html";
+        });
+
+        document.getElementById("go-to-page-btn").addEventListener("click", function() {
+            window.location.href = "another-page.html";
+        });
+
+        // Volymuppdatering
+        function updateVolumePercentage(type) {
+            const volumeElement = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            volumePercent.textContent = `${volumeElement.value}%`;
+        }
     </script>
+
+    <style>
+        /* Grundläggande stil för hela sidan */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .editor-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Stil för knappar */
+        .button, .browse-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover, .browse-button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Volymreglage */
+        .volume-slider-container {
+            margin-top: 20px;
+        }
+
+        /* Stil för texten "No file selected" */
+        #file-name {
+            color: black;
+            font-size: 18px;
+        }
+
+        /* Stil för bakgrunds- och navigeringsknappar */
+        .back-button {
+            position: fixed;
+            top: 10px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background-color: #5c0b8a;
+        }
+    </style>
 
 </body>
 </html>
-// Tilldela eventlisteners för knapparna
-document.getElementById("back-to-home-btn").addEventListener("click", function() {
-    window.location.href = "index.html"; // Gå tillbaka till hemsidan (eller anpassa till din riktiga hemsida)
-});
-
-document.getElementById("go-to-page-btn").addEventListener("click", function() {
-    window.location.href = "another-page.html"; // Gå till en annan sida (ändra URL till den sidan du vill länka till)
-});
-/* Grundläggande stil för hela sidan */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4; /* Ljusgrå bakgrund för bättre kontrast */
-    margin: 0;
-    padding: 0;
-}
-
-/* Stil för knapparna */
-.button, .browse-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    border: none;
-    background-color: #6a0dad;
-    color: white;
-    transition: background-color 0.3s;
-}
-
-.button:hover, .browse-button:hover {
-    background-color: #5c0b8a;
-}
-
-/* Stil för "Back to Home Page" knappen */
-.back-button {
-    position: fixed;
-    top: 10px;
-    left: 20px;
-    padding: 10px 20px;
-    background-color: #6a0dad;
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 1000;
-    margin-top: 60px; /* Lägger till avstånd mellan knapparna */
-}
-
-.back-button:hover {
-    background-color: #5c0b8a;
-}
-
-/* Positionering för "Go to Page"-knappen */
-#go-to-page-btn {
-    position: absolute;
-    top: 140px; /* Positionerar knappen under "Back to Home Page" */
-    left: 20px;
-}
-
-/* Stilar för filinläsning och info om vald fil */
-#file-name {
-    color: black; /* Ändrar textfärgen för att synas bättre */
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-/* Stil för volymreglage */
-.volume-slider-container {
-    margin-top: 20px;
-}
-
-/* Grundläggande stil för text */
-h1, p {
-    color: #333; /* Mörk textfärg för bättre synlighet */
-}
-
-/* Stil för texten "No file selected" som är under videospelaren */
-#file-name {
-    color: black; /* Ändrar färgen på texten till svart för bättre synlighet */
-    font-size: 18px; /* Lite större textstorlek */
-}
