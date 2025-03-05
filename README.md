@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Länka till extern CSS-fil -->
+    <link rel="stylesheet" href="styles.css"> <!-- Kontrollera att denna fil finns -->
 </head>
 <body>
     <div class="editor-content">
@@ -18,7 +18,7 @@
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
-                <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source src="assets/videos/sample.mp4" type="video/mp4"> <!-- Kontrollera att filen finns -->
                 Your browser does not support the video tag.
             </video>
         </div>
@@ -29,7 +29,7 @@
         <div id="file-name">No file selected</div>
 
         <!-- Knappar för bakgrundsändring och spara inställningar -->
-        <button id="change-background-btn" class="button">Change Background</button>
+        <button id="change-background-btn" class="button">Change Background</button> <!-- Knappen -->
         <button id="save-btn" class="button">Save Settings</button>
 
         <!-- Volymreglage -->
@@ -64,7 +64,7 @@
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
     </div>
 
-    <script src="scripts.js" defer></script> <!-- Länka till extern JavaScript-fil -->
+    <script src="scripts.js" defer></script> <!-- Kontrollera att denna fil finns -->
 
     <script>
         // Hantera filval och visa information om vald fil
@@ -91,11 +91,6 @@
         // Triggera filinputen när knappen klickas
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
-        });
-
-        // Eventlistener för knappen "Back to Home Page"
-        document.getElementById("back-to-home-btn").addEventListener("click", function() {
-            window.location.href = "index.html";
         });
 
         // Eventlistener för "Change Background"-knappen
