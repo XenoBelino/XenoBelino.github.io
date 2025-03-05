@@ -197,3 +197,11 @@
 
 </body>
 </html>
+// Tilldela eventlisteners för knapparna
+document.getElementById("back-to-home-btn").addEventListener("click", function() {
+    window.location.href = "index.html"; // Gå tillbaka till hemsidan (eller anpassa till din riktiga hemsida)
+});
+
+document.getElementById("go-to-page-btn").addEventListener("click", function() {
+    window.location.href = "another-page.html"; // Gå till en annan sida (ändra URL till den sidan du vill länka till)
+});
