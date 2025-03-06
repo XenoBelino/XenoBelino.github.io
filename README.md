@@ -30,7 +30,7 @@
 
         <!-- Knappar för bakgrundsändring och spara inställningar -->
         <button id="change-background-btn" class="button">Change Background</button> <!-- Knappen -->
-        <button id="save-btn" class="button">Save Settings</button>
+        <button id="save-btn" class="button">Save Changes</button>
 
         <!-- Volymreglage -->
         <div class="volume-slider-container">
