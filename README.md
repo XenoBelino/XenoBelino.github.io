@@ -108,6 +108,11 @@
             }
         });
 
+        // "Save Changes"-knappens funktion
+        document.getElementById('save-btn').addEventListener('click', function() {
+            alert('Changes have been saved!');
+        });
+
         // Volymuppdatering
         function updateVolumePercentage(type) {
             const volumeElement = document.getElementById(`${type}-volume`);
@@ -197,7 +202,7 @@
         #change-background-btn {
             position: fixed;
             top: 10px;
-            left: 10px;
+            right: 10px; /* Flyttar knappen till övre högra hörnet */
             padding: 10px 20px;
             background-color: #6a0dad;
             color: white;
@@ -205,6 +210,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            z-index: 1001; /* Säkerställer att den är över andra element */
         }
 
         #change-background-btn:hover {
