@@ -110,7 +110,38 @@
 
         // "Save Changes"-knappens funktion
         document.getElementById('save-btn').addEventListener('click', function() {
+            // Spara volyminställningarna i localStorage
+            const originalVolume = document.getElementById('original-volume').value;
+            const corruptedVolume = document.getElementById('corrupted-volume').value;
+            const musicVolume = document.getElementById('music-volume').value;
+            const finalVolume = document.getElementById('final-volume').value;
+
+            localStorage.setItem('originalVolume', originalVolume);
+            localStorage.setItem('corruptedVolume', corruptedVolume);
+            localStorage.setItem('musicVolume', musicVolume);
+            localStorage.setItem('finalVolume', finalVolume);
+
             alert('Changes have been saved!');
+        });
+
+        // Återställ volyminställningar från localStorage när sidan laddas
+        window.addEventListener('load', function() {
+            const originalVolume = localStorage.getItem('originalVolume') || 50;
+            const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
+            const musicVolume = localStorage.getItem('musicVolume') || 50;
+            const finalVolume = localStorage.getItem('finalVolume') || 50;
+
+            // Uppdatera sliderna och procenttexterna
+            document.getElementById('original-volume').value = originalVolume;
+            document.getElementById('corrupted-volume').value = corruptedVolume;
+            document.getElementById('music-volume').value = musicVolume;
+            document.getElementById('final-volume').value = finalVolume;
+
+            // Uppdatera procenttexterna
+            updateVolumePercentage('original');
+            updateVolumePercentage('corrupted');
+            updateVolumePercentage('music');
+            updateVolumePercentage('final');
         });
 
         // Volymuppdatering
@@ -118,6 +149,9 @@
             const volumeElement = document.getElementById(`${type}-volume`);
             const volumePercent = document.getElementById(`${type}-volume-percent`);
             volumePercent.textContent = `${volumeElement.value}%`;
+
+            // Om du vill kunna påverka video- eller ljudvolymen direkt kan du här lägga till
+            // kod för att justera det aktuella ljudspåret.
         }
     </script>
 
