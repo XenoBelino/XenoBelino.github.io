@@ -80,6 +80,8 @@
                     videoSource.src = fileURL;
                     videoPlayer.load();
                     fileInfo.textContent = `Selected file: ${file.name}`;
+                    // Spara filen i localStorage
+                    localStorage.setItem('videoFile', fileURL);
                 } else {
                     fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
                 }
@@ -124,14 +126,15 @@
             alert('Changes have been saved!');
         });
 
-        // Återställ volyminställningar från localStorage när sidan laddas
+        // Återställ volyminställningar och filreferens från localStorage när sidan laddas
         window.addEventListener('load', function() {
             const originalVolume = localStorage.getItem('originalVolume') || 50;
             const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
             const musicVolume = localStorage.getItem('musicVolume') || 50;
             const finalVolume = localStorage.getItem('finalVolume') || 50;
+            const videoFile = localStorage.getItem('videoFile');
 
-            // Uppdatera sliderna och procenttexterna
+            // Återställ volymen
             document.getElementById('original-volume').value = originalVolume;
             document.getElementById('corrupted-volume').value = corruptedVolume;
             document.getElementById('music-volume').value = musicVolume;
@@ -142,6 +145,14 @@
             updateVolumePercentage('corrupted');
             updateVolumePercentage('music');
             updateVolumePercentage('final');
+
+            // Återställ videofilen om den finns
+            if (videoFile) {
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = videoPlayer.querySelector('source');
+                videoSource.src = videoFile;
+                videoPlayer.load();
+            }
         });
 
         // Volymuppdatering
@@ -250,6 +261,8 @@
         #change-background-btn:hover {
             background-color: #5c0b8a;
         }
-    </style>
-</body>
-</html>
+
+        /* Stil för Save Changes-knappen längst ner till höger */
+        #save-btn {
+            position: fixed;
+            bottom: 10px
