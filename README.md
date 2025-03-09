@@ -36,25 +36,25 @@
         <div class="volume-slider-container">
             <div>
                 <label for="original-volume">Original Volume:</label>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('original')">
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
                 <span id="original-volume-percent" class="volume-percentage">50%</span>
                 <span id="original-volume-icon">🔉</span>
             </div>
             <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('corrupted')">
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
                 <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
                 <span id="corrupted-volume-icon">🔉</span>
             </div>
             <div>
                 <label for="music-volume">Music Volume:</label>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('music')">
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
                 <span id="music-volume-percent" class="volume-percentage">50%</span>
                 <span id="music-volume-icon">🔉</span>
             </div>
             <div>
                 <label for="final-volume">Final Volume:</label>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('final')">
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
                 <span id="final-volume-percent" class="volume-percentage">50%</span>
                 <span id="final-volume-icon">🔉</span>
             </div>
@@ -159,11 +159,30 @@
         function updateVolumePercentage(type) {
             const volumeElement = document.getElementById(`${type}-volume`);
             const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
             volumePercent.textContent = `${volumeElement.value}%`;
 
-            // Om du vill kunna påverka video- eller ljudvolymen direkt kan du här lägga till
-            // kod för att justera det aktuella ljudspåret.
+            const volume = volumeElement.value;
+
+            // Uppdatera ljudsymbolen baserat på volymen
+            if (volume == 0) {
+                volumeIcon.textContent = "🔇"; // Mute-symbol
+            } else if (volume > 0 && volume <= 33) {
+                volumeIcon.textContent = "🔈"; // Låg volym (en båge)
+            } else if (volume > 33 && volume <= 66) {
+                volumeIcon.textContent = "🔉"; // Medium volym (två bågar)
+            } else if (volume > 66) {
+                volumeIcon.textContent = "🔊"; // Hög volym (tre bågar)
+            }
         }
+
+        // Lägg till en eventlistener för att uppdatera volymen direkt vid användarinteraktion
+        document.querySelectorAll('.volume-slider').forEach(slider => {
+            slider.addEventListener('input', function () {
+                const type = this.id.split('-')[0]; // Hämta typen (original, corrupted, music, final)
+                updateVolumePercentage(type);
+            });
+        });
     </script>
 
     <style>
@@ -173,6 +192,7 @@
             background-color: #f4f4f4; /* Standard Light Mode bakgrundsfärg */
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease; /* Gör bakgrundsändringen smidig */
         }
 
         .editor-content {
@@ -209,60 +229,4 @@
             font-size: 18px;
         }
 
-        /* Stil för bakgrunds- och navigeringsknappar */
-        .back-button {
-            position: fixed;
-            top: 10px;
-            left: 20px;
-            padding: 10px 20px;
-            background-color: #6a0dad;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        .back-button:hover {
-            background-color: #5c0b8a;
-        }
-
-        /* Stil för videospelaren */
-        .video-container {
-            width: 60%; /* Justera bredden efter behov */
-            max-width: 900px; /* Maxbredd för att förhindra att videospelaren blir för stor */
-            height: auto;
-            margin: 40px auto;
-        }
-
-        video {
-            width: 100%;
-            max-height: 50vh; /* Maxhöjd för videospelaren */
-            object-fit: contain; /* Förhindrar att videon blir förvrängd */
-            border-radius: 15px; /* Rundar kanterna på videospelaren */
-        }
-
-        /* Stil för Change Background-knappen */
-        #change-background-btn {
-            position: fixed;
-            top: 10px;
-            right: 10px; /* Flyttar knappen till övre högra hörnet */
-            padding: 10px 20px;
-            background-color: #6a0dad;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1001; /* Säkerställer att den är över andra element */
-        }
-
-        #change-background-btn:hover {
-            background-color: #5c0b8a;
-        }
-
-        /* Stil för Save Changes-knappen längst ner till höger */
-        #save-btn {
-            position: fixed;
-            bottom: 10px
+        /* Stil för bakgrunds- och navigeringskn
