@@ -53,9 +53,10 @@
         }
 
         #save-btn {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
+            position: fixed;  /* Gör att knappen är fast i det nedre högra hörnet */
+            bottom: 20px;     /* Längst ner på sidan med ett litet avstånd från botten */
+            right: 20px;      /* Längst till höger med ett litet avstånd från högerkant */
+            z-index: 1000;    /* Ser till att knappen inte hamnar bakom andra element */
         }
 
         #browse-btn {
@@ -262,12 +263,4 @@
 
         // Lägg till en eventlistener för att uppdatera volymen direkt vid användarinteraktion
         document.querySelectorAll('.volume-slider').forEach(slider => {
-            slider.addEventListener('input', function () {
-                const type = this.id.split('-')[0]; // Hämta typen (original, corrupted, music, final)
-                updateVolumePercentage(type);
-            });
-        });
-    </script>
-
-</body>
-</html>
+            slider.addEventListener
