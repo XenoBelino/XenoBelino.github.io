@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Kontrollera att denna fil finns -->
     <style>
         /* Grundläggande stil för hela sidan */
         body {
@@ -13,7 +13,7 @@
             background-color: #f4f4f4; /* Standard Light Mode bakgrundsfärg */
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease; /* Gör bakgrundsändringen smidig */
         }
 
         .editor-content {
@@ -41,7 +41,9 @@
 
         /* Placering av knappar */
         #change-background-btn {
-            margin-bottom: 20px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
 
         #back-to-home-btn {
@@ -69,8 +71,8 @@
 
         #video-player {
             border-radius: 15px;
-            width: 80%; 
-            max-width: 800px; 
+            width: 80%;  /* Justera till den storlek du vill */
+            max-width: 800px; /* Maximal bredd för videospelaren */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
@@ -87,26 +89,6 @@
             font-size: 18px;
         }
 
-        /* Bakgrundsval-ruta */
-        #background-options-container {
-            display: none;
-            margin-top: 10px;
-        }
-
-        .background-option {
-            margin-top: 10px;
-            padding: 10px;
-            cursor: pointer;
-            background-color: #6a0dad;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        .background-option:hover {
-            background-color: #5c0b8a;
-        }
     </style>
 </head>
 <body>
@@ -120,7 +102,7 @@
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
-                <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source src="assets/videos/sample.mp4" type="video/mp4"> <!-- Kontrollera att filen finns -->
                 Your browser does not support the video tag.
             </video>
         </div>
@@ -131,14 +113,8 @@
         <div id="file-name">No file selected</div>
 
         <!-- Knappar för bakgrundsändring och spara inställningar -->
-        <button id="change-background-btn" class="button">Change Background</button>
+        <button id="change-background-btn" class="button">Change Background</button> <!-- Knappen -->
         <button id="save-btn" class="button">Save Changes</button>
-
-        <!-- Bakgrundsval-ruta -->
-        <div id="background-options-container">
-            <button class="background-option" id="light-mode-btn">Light Mode</button>
-            <button class="background-option" id="dark-mode-btn">Dark Mode</button>
-        </div>
 
         <!-- Volymreglage -->
         <div class="volume-slider-container">
@@ -172,7 +148,7 @@
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
     </div>
 
-    <script src="scripts.js" defer></script>
+    <script src="scripts.js" defer></script> <!-- Kontrollera att denna fil finns -->
 
     <script>
         // Hantera filval och visa information om vald fil
@@ -205,19 +181,93 @@
 
         // Eventlistener för "Change Background"-knappen
         document.getElementById("change-background-btn").addEventListener("click", function() {
-            const optionsContainer = document.getElementById("background-options-container");
-            optionsContainer.style.display = optionsContainer.style.display === "block" ? "none" : "block";
+            const mode = confirm("Choose background mode:\n\nClick 'OK' for Dark Mode\nClick 'Cancel' for Light Mode");
+
+            if (mode) {
+                // Dark Mode
+                document.body.style.backgroundColor = "black";
+                document.body.style.color = "white";
+            } else {
+                // Light Mode (standard)
+                document.body.style.backgroundColor = "#f4f4f4";
+                document.body.style.color = "black";
+            }
         });
 
-        // Light Mode
-        document.getElementById('light-mode-btn').addEventListener('click', function () {
-            document.body.style.backgroundColor = "#f4f4f4"; // Light Mode
-            document.body.style.color = "black";
-            document.getElementById("background-options-container").style.display = "none"; // Döljer bakgrundsval-rutan
+        // "Save Changes"-knappens funktion
+        document.getElementById('save-btn').addEventListener('click', function() {
+            // Spara volyminställningarna i localStorage
+            const originalVolume = document.getElementById('original-volume').value;
+            const corruptedVolume = document.getElementById('corrupted-volume').value;
+            const musicVolume = document.getElementById('music-volume').value;
+            const finalVolume = document.getElementById('final-volume').value;
+
+            localStorage.setItem('originalVolume', originalVolume);
+            localStorage.setItem('corruptedVolume', corruptedVolume);
+            localStorage.setItem('musicVolume', musicVolume);
+            localStorage.setItem('finalVolume', finalVolume);
+
+            alert('Changes have been saved!');
         });
 
-        // Dark Mode
-        document.getElementById('dark-mode-btn').addEventListener('click', function () {
-            document.body.style.backgroundColor = "black"; // Dark Mode
-            document.body.style.color = "white";
-            document.getElementById("background-options-container").style.display = "none"; // Döljer bakgrundsval-rutan
+        // Återställ volyminställningar och filreferens från localStorage när sidan laddas
+        window.addEventListener('load', function() {
+            const originalVolume = localStorage.getItem('originalVolume') || 50;
+            const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
+            const musicVolume = localStorage.getItem('musicVolume') || 50;
+            const finalVolume = localStorage.getItem('finalVolume') || 50;
+            const videoFile = localStorage.getItem('videoFile');
+
+            // Återställ volymen
+            document.getElementById('original-volume').value = originalVolume;
+            document.getElementById('corrupted-volume').value = corruptedVolume;
+            document.getElementById('music-volume').value = musicVolume;
+            document.getElementById('final-volume').value = finalVolume;
+
+            // Uppdatera procenttexterna
+            updateVolumePercentage('original');
+            updateVolumePercentage('corrupted');
+            updateVolumePercentage('music');
+            updateVolumePercentage('final');
+
+            // Återställ videofilen om den finns
+            if (videoFile) {
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = videoPlayer.querySelector('source');
+                videoSource.src = videoFile;
+                videoPlayer.load();
+            }
+        });
+
+        // Volymuppdatering
+        function updateVolumePercentage(type) {
+            const volumeElement = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            volumePercent.textContent = `${volumeElement.value}%`;
+
+            const volume = volumeElement.value;
+
+            // Uppdatera ljudsymbolen baserat på volymen
+            if (volume == 0) {
+                volumeIcon.textContent = "🔇"; // Mute-symbol
+            } else if (volume > 0 && volume <= 33) {
+                volumeIcon.textContent = "🔈"; // Låg volym (en båge)
+            } else if (volume > 33 && volume <= 66) {
+                volumeIcon.textContent = "🔉"; // Medium volym (två bågar)
+            } else if (volume > 66) {
+                volumeIcon.textContent = "🔊"; // Hög volym (tre bågar)
+            }
+        }
+
+        // Lägg till en eventlistener för att uppdatera volymen direkt vid användarinteraktion
+        document.querySelectorAll('.volume-slider').forEach(slider => {
+            slider.addEventListener('input', function () {
+                const type = this.id.split('-')[0]; // Hämta typen (original, corrupted, music, final)
+                updateVolumePercentage(type);
+            });
+        });
+    </script>
+
+</body>
+</html>
