@@ -89,20 +89,25 @@
             font-size: 18px;
         }
 
-        /* Bakgrundsslider */
-        #background-slider-container {
-            margin-top: 10px;
+        /* Bakgrundsval-ruta */
+        #background-options-container {
             display: none;
-            width: 80%;
-            margin: auto;
+            margin-top: 10px;
         }
 
-        #background-slider {
-            width: 100%;
+        .background-option {
+            margin-top: 10px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #6a0dad;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
 
-        .slider-label {
-            font-size: 18px;
+        .background-option:hover {
+            background-color: #5c0b8a;
         }
     </style>
 </head>
@@ -131,10 +136,10 @@
         <button id="change-background-btn" class="button">Change Background</button>
         <button id="save-btn" class="button">Save Changes</button>
 
-        <!-- Bakgrundsslider -->
-        <div id="background-slider-container">
-            <div class="slider-label">Choose Background Mode:</div>
-            <input type="range" id="background-slider" min="0" max="1" value="0" step="1">
+        <!-- Bakgrundsval-ruta -->
+        <div id="background-options-container">
+            <button class="background-option" id="light-mode-btn">Light Mode</button>
+            <button class="background-option" id="dark-mode-btn">Dark Mode</button>
         </div>
 
         <!-- Volymreglage -->
@@ -202,23 +207,20 @@
 
         // Eventlistener för "Change Background"-knappen
         document.getElementById("change-background-btn").addEventListener("click", function() {
-            const sliderContainer = document.getElementById("background-slider-container");
-            // Toggle visibiliteten av bakgrundsslider
-            sliderContainer.style.display = sliderContainer.style.display === "block" ? "none" : "block";
+            const optionsContainer = document.getElementById("background-options-container");
+            optionsContainer.style.display = optionsContainer.style.display === "block" ? "none" : "block";
         });
 
-        // Hantera bakgrundsändring beroende på slider-värdet (0 = Light Mode, 1 = Dark Mode)
-        document.getElementById('background-slider').addEventListener('input', function () {
-            const sliderValue = this.value;
-            if (sliderValue == 1) {
-                // Dark Mode
-                document.body.style.backgroundColor = "black";
-                document.body.style.color = "white";
-            } else {
-                // Light Mode
-                document.body.style.backgroundColor = "#f4f4f4";
-                document.body.style.color = "black";
-            }
+        // Light Mode
+        document.getElementById('light-mode-btn').addEventListener('click', function () {
+            document.body.style.backgroundColor = "#f4f4f4"; // Light Mode
+            document.body.style.color = "black";
+        });
+
+        // Dark Mode
+        document.getElementById('dark-mode-btn').addEventListener('click', function () {
+            document.body.style.backgroundColor = "black"; // Dark Mode
+            document.body.style.color = "white";
         });
 
         // "Save Changes"-knappens funktion
@@ -254,3 +256,42 @@
             // Uppdatera procenttexterna
             updateVolumePercentage('original');
             updateVolumePercentage('corrupted');
+            updateVolumePercentage('music');
+            updateVolumePercentage('final');
+
+            // Återställ videofilen om den finns
+            if (videoFile) {
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = videoPlayer.querySelector('source');
+                videoSource.src = videoFile;
+                videoPlayer.load();
+            }
+        });
+
+        // Volymuppdatering
+        function updateVolumePercentage(type) {
+            const volumeElement = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            volumePercent.textContent = `${volumeElement.value}%`;
+
+            const volume = volumeElement.value;
+
+            // Uppdatera ljudsymbolen baserat på volymen
+            if (volume == 0) {
+                volumeIcon.textContent = "🔇"; // Mute-symbol
+            } else if (volume > 0 && volume <= 33) {
+                volumeIcon.textContent = "🔈"; // Låg volym (en båge)
+            } else if (volume > 33 && volume <= 66) {
+                volumeIcon.textContent = "🔉"; // Medium volym (två bågar)
+            } else if (volume > 66) {
+                volumeIcon.textContent = "🔊"; // Hög volym (tre bågar)
+            }
+        }
+
+        // Lägg till en eventlistener för att uppdatera volymen direkt vid användarinteraktion
+        document.querySelectorAll('.volume-slider').forEach(slider => {
+            slider.addEventListener('input', function () {
+                const type = this.id.split('-')[0]; // Hämta typen (original, corrupted, music, final)
+                updateVolumePercentage(type);
+           
