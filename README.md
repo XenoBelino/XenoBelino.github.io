@@ -6,6 +6,90 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
     <link rel="stylesheet" href="styles.css"> <!-- Kontrollera att denna fil finns -->
+    <style>
+        /* Grundläggande stil för hela sidan */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Standard Light Mode bakgrundsfärg */
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease; /* Gör bakgrundsändringen smidig */
+        }
+
+        .editor-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Stil för knappar */
+        .button, .browse-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover, .browse-button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Placering av knappar */
+        #change-background-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #back-to-home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        #save-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        #browse-btn {
+            margin-top: 20px;
+        }
+
+        /* Stil för videospelaren */
+        .video-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #video-player {
+            border-radius: 15px;
+            width: 80%;  /* Justera till den storlek du vill */
+            max-width: 800px; /* Maximal bredd för videospelaren */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Volymreglage */
+        .volume-slider-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #file-name {
+            color: black;
+            font-size: 18px;
+        }
+
+    </style>
 </head>
 <body>
     <div class="editor-content">
@@ -185,48 +269,5 @@
         });
     </script>
 
-    <style>
-        /* Grundläggande stil för hela sidan */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4; /* Standard Light Mode bakgrundsfärg */
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.3s ease; /* Gör bakgrundsändringen smidig */
-        }
-
-        .editor-content {
-            text-align: center;
-            padding: 20px;
-            max-width: 900px;
-            margin: auto;
-        }
-
-        /* Stil för knappar */
-        .button, .browse-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background-color: #6a0dad;
-            color: white;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover, .browse-button:hover {
-            background-color: #5c0b8a;
-        }
-
-        /* Volymreglage */
-        .volume-slider-container {
-            margin-top: 20px;
-        }
-
-        /* Stil för texten "No file selected" */
-        #file-name {
-            color: black;
-            font-size: 18px;
-        }
-
-        /* Stil för bakgrunds- och navigeringskn
+</body>
+</html>
