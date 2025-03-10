@@ -41,9 +41,7 @@
 
         /* Placering av knappar */
         #change-background-btn {
-            position: relative;
-            top: 20px;
-            right: 20px;
+            margin-bottom: 20px;
         }
 
         #back-to-home-btn {
@@ -215,83 +213,11 @@
         document.getElementById('light-mode-btn').addEventListener('click', function () {
             document.body.style.backgroundColor = "#f4f4f4"; // Light Mode
             document.body.style.color = "black";
+            document.getElementById("background-options-container").style.display = "none"; // Döljer bakgrundsval-rutan
         });
 
         // Dark Mode
         document.getElementById('dark-mode-btn').addEventListener('click', function () {
             document.body.style.backgroundColor = "black"; // Dark Mode
             document.body.style.color = "white";
-        });
-
-        // "Save Changes"-knappens funktion
-        document.getElementById('save-btn').addEventListener('click', function() {
-            // Spara volyminställningarna i localStorage
-            const originalVolume = document.getElementById('original-volume').value;
-            const corruptedVolume = document.getElementById('corrupted-volume').value;
-            const musicVolume = document.getElementById('music-volume').value;
-            const finalVolume = document.getElementById('final-volume').value;
-
-            localStorage.setItem('originalVolume', originalVolume);
-            localStorage.setItem('corruptedVolume', corruptedVolume);
-            localStorage.setItem('musicVolume', musicVolume);
-            localStorage.setItem('finalVolume', finalVolume);
-
-            alert('Changes have been saved!');
-        });
-
-        // Återställ volyminställningar och filreferens från localStorage när sidan laddas
-        window.addEventListener('load', function() {
-            const originalVolume = localStorage.getItem('originalVolume') || 50;
-            const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
-            const musicVolume = localStorage.getItem('musicVolume') || 50;
-            const finalVolume = localStorage.getItem('finalVolume') || 50;
-            const videoFile = localStorage.getItem('videoFile');
-
-            // Återställ volymen
-            document.getElementById('original-volume').value = originalVolume;
-            document.getElementById('corrupted-volume').value = corruptedVolume;
-            document.getElementById('music-volume').value = musicVolume;
-            document.getElementById('final-volume').value = finalVolume;
-
-            // Uppdatera procenttexterna
-            updateVolumePercentage('original');
-            updateVolumePercentage('corrupted');
-            updateVolumePercentage('music');
-            updateVolumePercentage('final');
-
-            // Återställ videofilen om den finns
-            if (videoFile) {
-                const videoPlayer = document.getElementById('video-player');
-                const videoSource = videoPlayer.querySelector('source');
-                videoSource.src = videoFile;
-                videoPlayer.load();
-            }
-        });
-
-        // Volymuppdatering
-        function updateVolumePercentage(type) {
-            const volumeElement = document.getElementById(`${type}-volume`);
-            const volumePercent = document.getElementById(`${type}-volume-percent`);
-            const volumeIcon = document.getElementById(`${type}-volume-icon`);
-            volumePercent.textContent = `${volumeElement.value}%`;
-
-            const volume = volumeElement.value;
-
-            // Uppdatera ljudsymbolen baserat på volymen
-            if (volume == 0) {
-                volumeIcon.textContent = "🔇"; // Mute-symbol
-            } else if (volume > 0 && volume <= 33) {
-                volumeIcon.textContent = "🔈"; // Låg volym (en båge)
-            } else if (volume > 33 && volume <= 66) {
-                volumeIcon.textContent = "🔉"; // Medium volym (två bågar)
-            } else if (volume > 66) {
-                volumeIcon.textContent = "🔊"; // Hög volym (tre bågar)
-            }
-        }
-
-        // Lägg till en eventlistener för att uppdatera volymen direkt vid användarinteraktion
-        document.querySelectorAll('.volume-slider').forEach(slider => {
-            slider.addEventListener('input', function () {
-                const type = this.id.split('-')[0]; // Hämta typen (original, corrupted, music, final)
-                updateVolumePercentage(type);
-           
+            document.getElementById("background-options-container").style.display = "none"; // Döljer bakgrundsval-rutan
