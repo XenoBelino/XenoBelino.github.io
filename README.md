@@ -156,9 +156,9 @@
             </video>
         </div>
 
-        <button id="browse-btn" class="browse-button">Browse Files</button>
-        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
+        <!-- Byt plats på knappen och texten -->
         <div id="file-name">No file selected</div>
+        <button id="browse-btn" class="browse-button">Browse Files</button>
 
         <button id="change-background-btn" class="button">Change Background</button>
         
