@@ -92,26 +92,18 @@
             font-size: 18px;
         }
 
-        /* Stil för modealternativet som ska visas vid klick på Change Background */
-        #mode-slider {
-            display: none;
-            margin-top: 10px;
-            background-color: #ddd;
-            padding: 20px;
-            border-radius: 5px;
-        }
-
         /* Bakgrundsoptionssliden */
         #background-options {
             display: none;
             position: absolute;
-            top: 70px; /* Placeras exakt under knappen */
+            top: 70px; /* Placeras direkt under knappen */
             left: 20px;
             background-color: #ddd;
             border-radius: 5px;
             padding: 10px;
             width: auto;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 100;
         }
 
         /* Specifik stil för Light Mode / Dark Mode knappar */
@@ -137,13 +129,13 @@
         }
 
         body.dark-mode {
-            background-color: #000000; /* Återställt bakgrundsfärg till tidigare */
+            background-color: #000000; /* Dark Mode bakgrundsfärg */
             color: white;
         }
 
         /* När Dark Mode är aktiv */
         body.dark-mode #file-name {
-            color: white; /* Gör texten vit för Dark Mode */
+            color: white;
         }
     </style>
 </head>
