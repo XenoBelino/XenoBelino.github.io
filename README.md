@@ -13,7 +13,7 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .editor-content {
@@ -100,6 +100,46 @@
             padding: 20px;
             border-radius: 5px;
         }
+
+        /* Bakgrundsoptionssliden */
+        #background-options {
+            display: none;
+            position: absolute;
+            top: 60px; /* Justerat för att placera den under knappen */
+            left: 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Specifik stil för Light Mode / Dark Mode knappar */
+        .mode-btn {
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Light Mode & Dark Mode Styles */
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: black;
+        }
+
+        body.dark-mode {
+            background-color: #333;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -123,10 +163,10 @@
 
         <button id="change-background-btn" class="button">Change Background</button>
         
-        <!-- Mode Selection Slider -->
-        <div id="mode-slider">
-            <button class="button" id="light-mode-btn">Light Mode</button>
-            <button class="button" id="dark-mode-btn">Dark Mode</button>
+        <!-- Bakgrundsoptions slider -->
+        <div id="background-options">
+            <button class="mode-btn" id="light-mode-btn">Light Mode</button>
+            <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
         </div>
 
         <button id="save-btn" class="button">Save Changes</button>
@@ -190,32 +230,25 @@
             document.getElementById('file-input').click();
         });
 
-        // Förändring av bakgrundsläge
-        let isBackgroundSliderVisible = false;
+        // Funktion för att visa/dölja bakgrundsoptionssliden
+        let backgroundOptionsVisible = false;
 
-        document.getElementById("change-background-btn").addEventListener("click", function() {
-            const modeSlider = document.getElementById('mode-slider');
-            isBackgroundSliderVisible = !isBackgroundSliderVisible;
-
-            if (isBackgroundSliderVisible) {
-                modeSlider.style.display = 'block';
-            } else {
-                modeSlider.style.display = 'none';
-            }
+        document.getElementById('change-background-btn').addEventListener('click', function() {
+            const options = document.getElementById('background-options');
+            backgroundOptionsVisible = !backgroundOptionsVisible;
+            options.style.display = backgroundOptionsVisible ? 'block' : 'none';
         });
 
-        // Växla till light mode
+        // Växla till Light Mode
         document.getElementById('light-mode-btn').addEventListener('click', function() {
-            document.body.style.backgroundColor = "#f4f4f4";
-            document.body.style.color = "black";
-            document.getElementById('mode-slider').style.display = 'none';
+            document.body.className = 'light-mode';
+            document.getElementById('background-options').style.display = 'none';
         });
 
-        // Växla till dark mode
+        // Växla till Dark Mode
         document.getElementById('dark-mode-btn').addEventListener('click', function() {
-            document.body.style.backgroundColor = "black";
-            document.body.style.color = "white";
-            document.getElementById('mode-slider').style.display = 'none';
+            document.body.className = 'dark-mode';
+            document.getElementById('background-options').style.display = 'none';
         });
 
         // Funktion för att uppdatera volymprocent
@@ -232,8 +265,8 @@
             } else if (volume > 0 && volume <= 33) {
                 volumeIcon.textContent = "🔉"; // Låg volym
             } else if (volume > 33 && volume <= 66) {
-                volumeIcon.textContent = "🔉🔊"; // Ny symbol med två ljudvågor
-            } else if (volume > 66) {
+                volumeIcon.textContent = "🔊"; // Hög volym
+            } else {
                 volumeIcon.textContent = "🔊"; // Hög volym
             }
         }
