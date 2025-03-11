@@ -41,21 +41,21 @@
 
         /* Placering av knappar */
         #change-background-btn {
-            position: fixed; /* Fixerad position för att hålla den på plats */
+            position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 1000; /* Säkerställ att knappen inte hamnar bakom andra element */
+            z-index: 1000;
         }
 
         #back-to-home-btn {
-            position: fixed; /* Fixerad position för att hålla den på plats */
+            position: fixed;
             top: 20px;
             left: 20px;
             z-index: 1000;
         }
 
         #save-btn {
-            position: fixed;  /* Fixerad position för att hålla den längst ned till höger */
+            position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 1000;
@@ -91,6 +91,15 @@
             color: black;
             font-size: 18px;
         }
+
+        /* Stil för modealternativet som ska visas vid klick på Change Background */
+        #mode-slider {
+            display: none;
+            margin-top: 10px;
+            background-color: #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -113,6 +122,13 @@
         <div id="file-name">No file selected</div>
 
         <button id="change-background-btn" class="button">Change Background</button>
+        
+        <!-- Mode Selection Slider -->
+        <div id="mode-slider">
+            <button class="button" id="light-mode-btn">Light Mode</button>
+            <button class="button" id="dark-mode-btn">Dark Mode</button>
+        </div>
+
         <button id="save-btn" class="button">Save Changes</button>
 
         <!-- Volymreglage -->
@@ -175,16 +191,31 @@
         });
 
         // Förändring av bakgrundsläge
-        document.getElementById("change-background-btn").addEventListener("click", function() {
-            const mode = confirm("Choose background mode:\n\nClick 'OK' for Dark Mode\nClick 'Cancel' for Light Mode");
+        let isBackgroundSliderVisible = false;
 
-            if (mode) {
-                document.body.style.backgroundColor = "black";
-                document.body.style.color = "white";
+        document.getElementById("change-background-btn").addEventListener("click", function() {
+            const modeSlider = document.getElementById('mode-slider');
+            isBackgroundSliderVisible = !isBackgroundSliderVisible;
+
+            if (isBackgroundSliderVisible) {
+                modeSlider.style.display = 'block';
             } else {
-                document.body.style.backgroundColor = "#f4f4f4";
-                document.body.style.color = "black";
+                modeSlider.style.display = 'none';
             }
+        });
+
+        // Växla till light mode
+        document.getElementById('light-mode-btn').addEventListener('click', function() {
+            document.body.style.backgroundColor = "#f4f4f4";
+            document.body.style.color = "black";
+            document.getElementById('mode-slider').style.display = 'none';
+        });
+
+        // Växla till dark mode
+        document.getElementById('dark-mode-btn').addEventListener('click', function() {
+            document.body.style.backgroundColor = "black";
+            document.body.style.color = "white";
+            document.getElementById('mode-slider').style.display = 'none';
         });
 
         // Funktion för att uppdatera volymprocent
@@ -197,13 +228,13 @@
             const volume = volumeElement.value;
 
             if (volume == 0) {
-                volumeIcon.textContent = "🔇"; // Mute
+                volumeIcon.textContent = "🔈"; // Mute
             } else if (volume > 0 && volume <= 33) {
-                volumeIcon.textContent = "🔈"; // Low volume
+                volumeIcon.textContent = "🔉"; // Låg volym
             } else if (volume > 33 && volume <= 66) {
-                volumeIcon.textContent = "🔉"; // Medium volume
+                volumeIcon.textContent = "🔉🔊"; // Ny symbol med två ljudvågor
             } else if (volume > 66) {
-                volumeIcon.textContent = "🔊"; // High volume
+                volumeIcon.textContent = "🔊"; // Hög volym
             }
         }
 
