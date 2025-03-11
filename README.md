@@ -97,7 +97,7 @@
             display: none;
             position: absolute;
             top: 70px; /* Placeras direkt under knappen */
-            left: 20px;
+            right: 20px;
             background-color: #ddd;
             border-radius: 5px;
             padding: 10px;
