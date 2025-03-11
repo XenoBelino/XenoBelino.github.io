@@ -287,4 +287,20 @@
             document.getElementById('original-volume').value = originalVolume;
             document.getElementById('corrupted-volume').value = corruptedVolume;
             document.getElementById('music-volume').value = musicVolume;
-            document.getElementById('
+            document.getElementById('final-volume').value = finalVolume;
+
+            updateVolumePercentage('original');
+            updateVolumePercentage('corrupted');
+            updateVolumePercentage('music');
+            updateVolumePercentage('final');
+
+            if (videoFile) {
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = videoPlayer.querySelector('source');
+                videoSource.src = videoFile;
+                videoPlayer.load();
+            }
+        });
+    </script>
+</body>
+</html>
