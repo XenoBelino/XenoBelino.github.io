@@ -61,8 +61,15 @@
             z-index: 1000;
         }
 
+        /* Placering av "Browse Files" och "No file selected" */
+        #file-name {
+            color: black;
+            font-size: 18px;
+            margin-top: 10px; /* Nytt utrymme mellan text och Browse Files-knappen */
+        }
+
         #browse-btn {
-            margin-top: 20px;
+            margin-top: 10px; /* Lägg till lite avstånd ovanför Browse Files-knappen */
         }
 
         /* Stil för videospelaren */
@@ -87,15 +94,10 @@
             gap: 10px;
         }
 
-        #file-name {
-            color: black;
-            font-size: 18px;
-        }
-
         /* Bakgrundsoptionssliden */
         #background-options {
             display: none;
-            position: absolute;
+            position: fixed;
             top: 70px; /* Placeras direkt under knappen */
             right: 20px;
             background-color: #ddd;
