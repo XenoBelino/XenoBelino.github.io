@@ -105,7 +105,7 @@
         #background-options {
             display: none;
             position: absolute;
-            top: 60px; /* Justerat för att placera den under knappen */
+            top: 70px; /* Placeras exakt under knappen */
             left: 20px;
             background-color: #ddd;
             border-radius: 5px;
@@ -137,8 +137,13 @@
         }
 
         body.dark-mode {
-            background-color: #333;
+            background-color: #222; /* Återställt bakgrundsfärg till tidigare */
             color: white;
+        }
+
+        /* När Dark Mode är aktiv */
+        body.dark-mode #file-name {
+            color: white; /* Gör texten vit för Dark Mode */
         }
     </style>
 </head>
@@ -282,35 +287,4 @@
             document.getElementById('original-volume').value = originalVolume;
             document.getElementById('corrupted-volume').value = corruptedVolume;
             document.getElementById('music-volume').value = musicVolume;
-            document.getElementById('final-volume').value = finalVolume;
-
-            updateVolumePercentage('original');
-            updateVolumePercentage('corrupted');
-            updateVolumePercentage('music');
-            updateVolumePercentage('final');
-
-            if (videoFile) {
-                const videoPlayer = document.getElementById('video-player');
-                const videoSource = videoPlayer.querySelector('source');
-                videoSource.src = videoFile;
-                videoPlayer.load();
-            }
-        });
-
-        // "Save Changes"-knappens funktion
-        document.getElementById('save-btn').addEventListener('click', function() {
-            const originalVolume = document.getElementById('original-volume').value;
-            const corruptedVolume = document.getElementById('corrupted-volume').value;
-            const musicVolume = document.getElementById('music-volume').value;
-            const finalVolume = document.getElementById('final-volume').value;
-
-            localStorage.setItem('originalVolume', originalVolume);
-            localStorage.setItem('corruptedVolume', corruptedVolume);
-            localStorage.setItem('musicVolume', musicVolume);
-            localStorage.setItem('finalVolume', finalVolume);
-
-            alert('Changes have been saved!');
-        });
-    </script>
-</body>
-</html>
+            document.getElementById('
