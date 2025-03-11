@@ -95,7 +95,7 @@
         /* Bakgrundsoptionssliden */
         #background-options {
             display: none;
-            position: absolute;
+            position: fixed; /* Gör den fast */
             top: 70px; /* Placeras direkt under knappen */
             right: 20px;
             background-color: #ddd;
