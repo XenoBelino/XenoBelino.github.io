@@ -137,7 +137,7 @@
         }
 
         body.dark-mode {
-            background-color: #222; /* Återställt bakgrundsfärg till tidigare */
+            background-color: #000000; /* Återställt bakgrundsfärg till tidigare */
             color: white;
         }
 
