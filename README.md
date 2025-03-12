@@ -65,11 +65,11 @@
         #file-name {
             color: black;
             font-size: 18px;
-            margin-top: 10px; /* Nytt utrymme mellan text och Browse Files-knappen */
+            margin-top: 10px;
         }
 
         #browse-btn {
-            margin-top: 10px; /* Lägg till lite avstånd ovanför Browse Files-knappen */
+            margin-top: 10px;
         }
 
         /* Stil för videospelaren */
@@ -157,8 +157,8 @@
         </div>
 
         <!-- Byt plats på knappen och texten -->
-        <button id="browse-btn" class="browse-button">Browse Files</button>
         <div id="file-name">No file selected</div>
+        <button id="browse-btn" class="browse-button">Browse Files</button>
 
         <button id="change-background-btn" class="button">Change Background</button>
         
