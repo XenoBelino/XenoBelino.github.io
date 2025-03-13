@@ -65,11 +65,11 @@
         #file-name {
             color: black;
             font-size: 18px;
-            margin-top: 10px;
+            margin-top: 10px; /* Nytt utrymme mellan text och Browse Files-knappen */
         }
 
         #browse-btn {
-            margin-top: 10px;
+            margin-top: 10px; /* Lägg till lite avstånd ovanför Browse Files-knappen */
         }
 
         /* Stil för videospelaren */
@@ -156,9 +156,9 @@
             </video>
         </div>
 
-        <!-- Byt plats på knappen och texten -->
-        <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
+        <div id="file-name">No file selected</div>
 
         <button id="change-background-btn" class="button">Change Background</button>
         
@@ -199,9 +199,6 @@
         </div>
 
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
-
-        <!-- Dold filinmatningsfält -->
-        <input type="file" id="file-input" style="display:none" accept="video/mp4, video/webm" onchange="handleFileSelect(event)">
     </div>
 
     <script>
@@ -327,3 +324,4 @@
     </script>
 </body>
 </html>
+
