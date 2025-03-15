@@ -214,7 +214,8 @@
             const videoSource = videoPlayer.querySelector('source');
 
             if (file) {
-                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/mkv') {
+                // Kontrollera att filen är ett accepterat videoformat (MP4, WebM, OGG, MKV)
+                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/x-matroska') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
