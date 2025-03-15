@@ -65,11 +65,11 @@
         #file-name {
             color: black;
             font-size: 18px;
-            margin-top: 10px; /* Nytt utrymme mellan text och Browse Files-knappen */
+            margin-bottom: 10px; /* Flytta ner texten för No file selected */
         }
 
         #browse-btn {
-            margin-top: 10px; /* Lägg till lite avstånd ovanför Browse Files-knappen */
+            margin-top: 10px;
         }
 
         /* Stil för videospelaren */
@@ -98,7 +98,7 @@
         #background-options {
             display: none;
             position: fixed;
-            top: 70px; /* Placeras direkt under knappen */
+            top: 70px;
             right: 20px;
             background-color: #ddd;
             border-radius: 5px;
@@ -152,13 +152,17 @@
         <div class="video-container">
             <video id="video-player" controls>
                 <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source src="assets/videos/sample.webm" type="video/webm">
+                <source src="assets/videos/sample.ogv" type="video/ogg">
+                <source src="assets/videos/sample.mkv" type="video/mkv">
                 Your browser does not support the video tag.
             </video>
         </div>
 
+        <!-- Flytta texten för No file selected ovanför knappen -->
+        <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
-        <div id="file-name">No file selected</div>
 
         <button id="change-background-btn" class="button">Change Background</button>
         
@@ -210,19 +214,91 @@
             const videoSource = videoPlayer.querySelector('source');
 
             if (file) {
-                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/mkv') {
+                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/mkv') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
                     fileInfo.textContent = `Selected file: ${file.name}`;
                     localStorage.setItem('videoFile', fileURL);
                 } else {
-                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, or MKV).';
+                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, OGG, MKV).';
                 }
             } else {
                 fileInfo.textContent = 'No file selected';
             }
         }
+
+        // Kalla på när användaren väljer en fil
+        document.getElementById('browse-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
+        // Funktion för att visa/dölja bakgrundsoptionssliden
+        let backgroundOptionsVisible = false;
+
+        document.getElementById('change-background-btn').addEventListener('click', function() {
+            const options = document.getElementById('background-options');
+            backgroundOptionsVisible = !backgroundOptionsVisible;
+            options.style.display = backgroundOptionsVisible ? 'block' : 'none';
+        });
+
+        // Växla till Light Mode
+        document.getElementById('light-mode-btn').addEventListener('click', function() {
+            document.body.className = 'light-mode';
+            document.getElementById('background-options').style.display = 'none';
+        });
+
+        // Växla till Dark Mode
+        document.getElementById('dark-mode-btn').addEventListener('click', function() {
+            document.body.className = 'dark-mode';
+            document.getElementById('background-options').style.display = 'none';
+        });
+
+        // Funktion för att uppdatera volymprocent
+        function updateVolumePercentage(type) {
+            const volumeElement = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            volumePercent.textContent = `${volumeElement.value}%`;
+
+            const volume = volumeElement.value;
+
+            if (volume == 0) {
+                volumeIcon.textContent = "🔈"; // Mute
+            } else if (volume > 0 && volume <= 33) {
+                volumeIcon.textContent = "🔉"; // Låg volym
+            } else if (volume > 33 && volume <= 66) {
+                volumeIcon.textContent = "🔊"; // Hög volym
+            } else {
+                volumeIcon.textContent = "🔊"; // Hög volym
+            }
+        }
+
+        // Återställ volyminställningar och filreferens från localStorage när sidan laddas
+        window.addEventListener('load', function() {
+            const originalVolume = localStorage.getItem('originalVolume') || 50;
+            const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
+            const musicVolume = localStorage.getItem('musicVolume') || 50;
+            const finalVolume = localStorage.getItem('finalVolume') || 50;
+            const videoFile = localStorage.getItem('videoFile');
+
+            document.getElementById('original-volume').value = originalVolume;
+            document.getElementById('corrupted-volume').value = corruptedVolume;
+            document.getElementById('music-volume').value = musicVolume;
+            document.getElementById('final-volume').value = finalVolume;
+
+            updateVolumePercentage('original');
+            updateVolumePercentage('corrupted');
+            updateVolumePercentage('music');
+            updateVolumePercentage('final');
+
+            if (videoFile) {
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = videoPlayer.querySelector('source');
+                videoSource.src = videoFile;
+                videoPlayer.load();
+            }
+        });
 
         // Funktion för att spara ändringar
         function saveChanges() {
@@ -238,30 +314,12 @@
             localStorage.setItem('musicVolume', musicVolume);
             localStorage.setItem('finalVolume', finalVolume);
 
-            // Skapa JSON-fil för volyminställningar
-            const volumeSettings = {
-                originalVolume,
-                corruptedVolume,
-                musicVolume,
-                finalVolume
-            };
-            const volumeBlob = new Blob([JSON.stringify(volumeSettings)], { type: 'application/json' });
-            const volumeURL = URL.createObjectURL(volumeBlob);
-            const volumeLink = document.createElement('a');
-            volumeLink.href = volumeURL;
-            volumeLink.download = 'volume_settings.json';
-            volumeLink.click();
-
-            // Om video är uppladdad, skapa en nedladdningslänk för videofilen
+            // Om video är uppladdad, spara video-filen också
             if (videoFile) {
-                const videoBlob = new Blob([videoFile], { type: 'video/mp4' });
-                const videoURL = URL.createObjectURL(videoBlob);
-                const videoLink = document.createElement('a');
-                videoLink.href = videoURL;
-                videoLink.download = 'edited_video.mp4';
-                videoLink.click();
+                localStorage.setItem('videoFile', videoFile);
             }
 
+            // Bekräftelsemeddelande (kan vara tillfälligt)
             alert('Changes saved successfully!');
         }
 
