@@ -65,11 +65,11 @@
         #file-name {
             color: black;
             font-size: 18px;
-            margin-top: 10px; /* Nytt utrymme mellan text och Browse Files-knappen */
+            margin-bottom: 10px; /* Flytta ner texten för No file selected */
         }
 
         #browse-btn {
-            margin-top: 10px; /* Lägg till lite avstånd ovanför Browse Files-knappen */
+            margin-top: 10px;
         }
 
         /* Stil för videospelaren */
@@ -98,7 +98,7 @@
         #background-options {
             display: none;
             position: fixed;
-            top: 70px; /* Placeras direkt under knappen */
+            top: 70px;
             right: 20px;
             background-color: #ddd;
             border-radius: 5px;
@@ -152,13 +152,17 @@
         <div class="video-container">
             <video id="video-player" controls>
                 <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source src="assets/videos/sample.webm" type="video/webm">
+                <source src="assets/videos/sample.ogv" type="video/ogg">
+                <source src="assets/videos/sample.mkv" type="video/mkv">
                 Your browser does not support the video tag.
             </video>
         </div>
 
+        <!-- Flytta texten för No file selected ovanför knappen -->
+        <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
-        <div id="file-name">No file selected</div>
 
         <button id="change-background-btn" class="button">Change Background</button>
         
@@ -210,14 +214,14 @@
             const videoSource = videoPlayer.querySelector('source');
 
             if (file) {
-                if (file.type === 'video/mp4' || file.type === 'video/webm') {
+                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/mkv') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
                     fileInfo.textContent = `Selected file: ${file.name}`;
                     localStorage.setItem('videoFile', fileURL);
                 } else {
-                    fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
+                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, OGG, MKV).';
                 }
             } else {
                 fileInfo.textContent = 'No file selected';
