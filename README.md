@@ -288,6 +288,34 @@
             updateVolumePercentage('original');
             updateVolumePercentage('corrupted');
         });
+
+        // Spara ändringar till fil
+        document.getElementById('save-btn').addEventListener('click', function() {
+            const originalVolume = document.getElementById('original-volume').value;
+            const corruptedVolume = document.getElementById('corrupted-volume').value;
+            const musicVolume = document.getElementById('music-volume').value;
+            const finalVolume = document.getElementById('final-volume').value;
+            const backgroundMode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+
+            // Skapa objekt med inställningar
+            const settings = {
+                originalVolume: originalVolume,
+                corruptedVolume: corruptedVolume,
+                musicVolume: musicVolume,
+                finalVolume: finalVolume,
+                backgroundMode: backgroundMode,
+            };
+
+            // Konvertera objektet till en JSON-sträng
+            const settingsJSON = JSON.stringify(settings);
+
+            // Skapa en Blob och ladda ner filen
+            const blob = new Blob([settingsJSON], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'video-settings.json'; // Spara som en JSON-fil
+            link.click();
+        });
     </script>
 </body>
 </html>
