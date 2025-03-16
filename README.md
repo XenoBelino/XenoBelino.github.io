@@ -162,7 +162,7 @@
         <!-- Flytta texten för No file selected ovanför knappen -->
         <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
-        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" accept=".mp4,.webm,.ogv,.mkv">
 
         <button id="change-background-btn" class="button">Change Background</button>
         
@@ -215,7 +215,11 @@
 
             if (file) {
                 // Kontrollera att filen är ett accepterat videoformat (MP4, WebM, OGG, MKV)
-                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/mkv') {
+                const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/mkv'];
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                // Kontrollera filtypen via både MIME-typ och filändelse
+                if (validTypes.includes(file.type) || fileExtension === 'mkv') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
@@ -279,53 +283,4 @@
         window.addEventListener('load', function() {
             const originalVolume = localStorage.getItem('originalVolume') || 50;
             const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
-            const musicVolume = localStorage.getItem('musicVolume') || 50;
-            const finalVolume = localStorage.getItem('finalVolume') || 50;
-            const videoFile = localStorage.getItem('videoFile');
-
-            document.getElementById('original-volume').value = originalVolume;
-            document.getElementById('corrupted-volume').value = corruptedVolume;
-            document.getElementById('music-volume').value = musicVolume;
-            document.getElementById('final-volume').value = finalVolume;
-
-            updateVolumePercentage('original');
-            updateVolumePercentage('corrupted');
-            updateVolumePercentage('music');
-            updateVolumePercentage('final');
-
-            if (videoFile) {
-                const videoPlayer = document.getElementById('video-player');
-                const videoSource = videoPlayer.querySelector('source');
-                videoSource.src = videoFile;
-                videoPlayer.load();
-            }
-        });
-
-        // Funktion för att spara ändringar
-        function saveChanges() {
-            const originalVolume = document.getElementById('original-volume').value;
-            const corruptedVolume = document.getElementById('corrupted-volume').value;
-            const musicVolume = document.getElementById('music-volume').value;
-            const finalVolume = document.getElementById('final-volume').value;
-            const videoFile = localStorage.getItem('videoFile'); // Om video har laddats upp
-
-            // Spara volyminställningar i localStorage
-            localStorage.setItem('originalVolume', originalVolume);
-            localStorage.setItem('corruptedVolume', corruptedVolume);
-            localStorage.setItem('musicVolume', musicVolume);
-            localStorage.setItem('finalVolume', finalVolume);
-
-            // Om video är uppladdad, spara video-filen också
-            if (videoFile) {
-                localStorage.setItem('videoFile', videoFile);
-            }
-
-            // Bekräftelsemeddelande (kan vara tillfälligt)
-            alert('Changes saved successfully!');
-        }
-
-        // Lägg till eventlyssnare på Save Changes-knappen
-        document.getElementById('save-btn').addEventListener('click', saveChanges);
-    </script>
-</body>
-</html>
+           
