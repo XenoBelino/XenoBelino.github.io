@@ -215,7 +215,7 @@
 
             if (file) {
                 // Kontrollera att filen är ett accepterat videoformat (MP4, WebM, OGG, MKV)
-                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/x-matroska') {
+                if (file.type === 'video/mp4' || file.type === 'video/webm' || file.type === 'video/ogg' || file.type === 'video/mkv') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
