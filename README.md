@@ -283,4 +283,11 @@
         window.addEventListener('load', function() {
             const originalVolume = localStorage.getItem('originalVolume') || 50;
             const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
-           
+            document.getElementById('original-volume').value = originalVolume;
+            document.getElementById('corrupted-volume').value = corruptedVolume;
+            updateVolumePercentage('original');
+            updateVolumePercentage('corrupted');
+        });
+    </script>
+</body>
+</html>
