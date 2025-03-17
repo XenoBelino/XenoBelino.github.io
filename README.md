@@ -279,6 +279,13 @@
                 await ffmpeg.load();
                 const fileBuffer = await videoFile.arrayBuffer();
                 ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(fileBuffer));
+
+                // Uppdatera progressbar här
+                let progressContainer = document.getElementById("progress-container");
+                progressContainer.style.display = 'block';
+                let progressBar = document.getElementById("progress-bar");
+
+                // Starta konvertering till MP4
                 await ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4");
 
                 const data = ffmpeg.FS("readFile", "output.mp4");
@@ -288,11 +295,6 @@
                 const videoUrl = URL.createObjectURL(videoBlob);
                 document.getElementById("video-player").src = videoUrl;
                 
-                // Visa progress
-                let progressContainer = document.getElementById("progress-container");
-                progressContainer.style.display = 'block';
-                let progressBar = document.getElementById("progress-bar");
-
                 let progress = 0;
                 let interval = setInterval(() => {
                     progress += 5;
