@@ -162,7 +162,7 @@
         <!-- Flytta texten för No file selected ovanför knappen -->
         <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
-        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" accept=".mp4,.webm,.ogv,.mkv">
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
 
         <!-- Lägg till konverteringsknappen -->
         <button id="convert-btn" class="button">Convert to MP4</button>
