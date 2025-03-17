@@ -238,85 +238,69 @@
             }
         }
 
-        // Funktion för att hantera filval
         function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfo = document.getElementById('file-name');
-            const videoPlayer = document.getElementById('video-player');
-            const videoSource = videoPlayer.querySelector('source');
-
-            if (file) {
-                const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/mkv', 'video/flv'];
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-
-                if (validTypes.includes(file.type) || fileExtension === 'flv' || fileExtension === 'mkv') {
-                    const fileURL = URL.createObjectURL(file);
-                    videoSource.src = fileURL;
-                    videoPlayer.load();
-                    fileInfo.textContent = `Selected file: ${file.name}`;
-                    localStorage.setItem('videoFile', fileURL);
-                } else {
-                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, OGG, MKV, FLV).';
-                }
-            } else {
-                fileInfo.textContent = 'No file selected';
-            }
+            const fileName = event.target.files[0]?.name || "No file selected";
+            document.getElementById("file-name").textContent = fileName;
         }
 
-        document.getElementById('browse-btn').addEventListener('click', function () {
-            document.getElementById('file-input').click();
+        // Hantera bakgrundsfärgbyte (Light/Dark Mode)
+        let isDarkMode = false;
+
+        document.getElementById("change-background-btn").addEventListener("click", function() {
+            document.getElementById("background-options").style.display = isDarkMode ? 'none' : 'block';
+            isDarkMode = !isDarkMode;
         });
 
-        // Funktion för att hantera konvertering
-        async function convertToMP4() {
-            const videoFile = document.getElementById('video-player').querySelector('source').src;
-            const extension = videoFile.split('.').pop().toLowerCase();
-            const validMP4 = extension === 'mp4';
+        document.getElementById("light-mode-btn").addEventListener("click", function() {
+            document.body.classList.remove("dark-mode");
+            document.body.classList.add("light-mode");
+            document.getElementById("background-options").style.display = 'none';
+        });
 
-            if (validMP4) {
-                alert("This video is already in MP4 format. No conversion needed.");
-                return;
-            }
+        document.getElementById("dark-mode-btn").addEventListener("click", function() {
+            document.body.classList.remove("light-mode");
+            document.body.classList.add("dark-mode");
+            document.getElementById("background-options").style.display = 'none';
+        });
 
-            if (videoFile && videoFile.startsWith('blob:')) {
-                document.getElementById('progress-container').style.display = 'block';
-                let progressBar = document.getElementById('progress-bar');
-                let progressPercent = document.getElementById('progress-percent');
-                
-                const result = await ffmpeg({ 
-                    arguments: ['-i', videoFile, '-vcodec', 'libx264', 'output.mp4'],
-                    onProgress: function (progress) {
-                        let percentage = Math.floor(progress.percent);
-                        progressBar.value = percentage;
-                        progressPercent.textContent = `${percentage}%`;
-                    }
+        // Hantera konvertering till MP4 med ffmpeg.js
+        document.getElementById("convert-btn").addEventListener("click", function() {
+            const videoFile = document.getElementById("file-input").files[0];
+            if (videoFile) {
+                // Skapa en FFmpeg instans
+                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+                ffmpeg.load().then(() => {
+                    // Lägg till filen till FFmpeg och starta konverteringen
+                    ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(await videoFile.arrayBuffer()));
+
+                    ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4").then(() => {
+                        const data = ffmpeg.FS("readFile", "output.mp4");
+
+                        // Skapa en blob och ladda upp filen
+                        const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
+                        const videoUrl = URL.createObjectURL(videoBlob);
+                        
+                        const videoElement = document.getElementById("video-player");
+                        videoElement.src = videoUrl;
+
+                        // Visa konverteringsprogress
+                        let progressContainer = document.getElementById("progress-container");
+                        progressContainer.style.display = 'block';
+                        let progressBar = document.getElementById("progress-bar");
+
+                        // Uppdatera progress bar (Simulerad för nu)
+                        let progress = 0;
+                        let interval = setInterval(() => {
+                            progress += 5;
+                            progressBar.value = progress;
+                            document.getElementById("progress-percent").textContent = `${progress}%`;
+                            if (progress >= 100) {
+                                clearInterval(interval);
+                            }
+                        }, 100);
+                    });
                 });
-
-                const outputVideo = result.MEMFS[0];
-                const blob = new Blob([outputVideo.data], { type: 'video/mp4' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'converted-video.mp4';
-                link.click();
-
-                document.getElementById('progress-container').style.display = 'none';
             }
-        }
-
-        document.getElementById('convert-btn').addEventListener('click', convertToMP4);
-
-        // Hantera bakgrundsändringar för light/dark mode
-        document.getElementById('light-mode-btn').addEventListener('click', function () {
-            document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        document.getElementById('dark-mode-btn').addEventListener('click', function () {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
-            document.getElementById('background-options').style.display = 'none';
         });
     </script>
 </body>
