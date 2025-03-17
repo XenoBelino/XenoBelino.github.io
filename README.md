@@ -218,7 +218,9 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.1.0/ffmpeg.min.js"></script>
+    <!-- Lägg till rätt ffmpeg.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@4.4.0/ffmpeg.min.js"></script>
+    
     <script>
         // Volymfunktioner
         function updateVolumePercentage(type) {
@@ -243,11 +245,27 @@
         function handleFileSelect(event) {
             const fileName = event.target.files[0]?.name || "No file selected";
             document.getElementById("file-name").textContent = fileName;
-
-            // Uppdatera videospelaren
-            const videoUrl = URL.createObjectURL(event.target.files[0]);
-            document.getElementById("video-player").src = videoUrl;
         }
+
+        // Bakgrundsfärgbyte (Light/Dark Mode)
+        let isDarkMode = false;
+
+        document.getElementById("change-background-btn").addEventListener("click", function() {
+            document.getElementById("background-options").style.display = isDarkMode ? 'none' : 'block';
+            isDarkMode = !isDarkMode;
+        });
+
+        document.getElementById("light-mode-btn").addEventListener("click", function() {
+            document.body.classList.remove("dark-mode");
+            document.body.classList.add("light-mode");
+            document.getElementById("background-options").style.display = 'none';
+        });
+
+        document.getElementById("dark-mode-btn").addEventListener("click", function() {
+            document.body.classList.remove("light-mode");
+            document.body.classList.add("dark-mode");
+            document.getElementById("background-options").style.display = 'none';
+        });
 
         // Filväljare funktion
         document.getElementById("browse-btn").addEventListener("click", function() {
