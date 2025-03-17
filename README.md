@@ -220,6 +220,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.1.0/ffmpeg.min.js"></script>
     <script>
+        // Volymfunktioner
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volumePercent = document.getElementById(`${type}-volume-percent`);
@@ -238,12 +239,13 @@
             }
         }
 
+        // Filhantering
         function handleFileSelect(event) {
             const fileName = event.target.files[0]?.name || "No file selected";
             document.getElementById("file-name").textContent = fileName;
         }
 
-        // Hantera bakgrundsfärgbyte (Light/Dark Mode)
+        // Bakgrundsfärgbyte (Light/Dark Mode)
         let isDarkMode = false;
 
         document.getElementById("change-background-btn").addEventListener("click", function() {
