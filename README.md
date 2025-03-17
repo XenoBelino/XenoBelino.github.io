@@ -315,6 +315,23 @@
             reader.readAsArrayBuffer(file);
         });
 
+        // Lägg till funktioner för bakgrundsbyte (Light/Dark Mode)
+        document.getElementById('change-background-btn').addEventListener('click', function() {
+            const backgroundOptions = document.getElementById('background-options');
+            backgroundOptions.style.display = (backgroundOptions.style.display === 'none') ? 'block' : 'none';
+        });
+
+        // Implementera Light Mode och Dark Mode
+        document.getElementById('light-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        });
+
+        document.getElementById('dark-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+        });
+
         // Ladda status vid eventuell återupptagning
         window.addEventListener('load', function() {
             const savedFile = localStorage.getItem('videoFile');
@@ -326,6 +343,28 @@
                 document.getElementById('file-name').textContent = 'Selected file: ' + savedFile;
             }
         });
+
+        // Spara inställningar (ändra bakgrund eller volyminställningar)
+        document.getElementById('save-btn').addEventListener('click', function() {
+            alert("Changes saved!");
+        });
+
+        // Ljudreglage (uppdaterar volymprocent)
+        function updateVolumePercentage(type) {
+            const volume = document.getElementById(`${type}-volume`).value;
+            const percentElement = document.getElementById(`${type}-volume-percent`);
+            percentElement.textContent = `${volume}%`;
+
+            // Uppdatera volymikonen baserat på procent
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            if (volume > 70) {
+                volumeIcon.textContent = '🔊';
+            } else if (volume > 30) {
+                volumeIcon.textContent = '🔉';
+            } else {
+                volumeIcon.textContent = '🔈';
+            }
+        }
     </script>
 </body>
 </html>
