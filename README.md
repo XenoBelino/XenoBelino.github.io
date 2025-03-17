@@ -139,6 +139,16 @@
         body.dark-mode #file-name {
             color: white;
         }
+
+        /* Progress bar container */
+        #progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+        progress {
+            width: 100%;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -166,9 +176,9 @@
 
         <!-- Lägg till konverteringsknappen -->
         <button id="convert-btn" class="button">Convert to MP4</button>
-        
+
         <button id="change-background-btn" class="button">Change Background</button>
-        
+
         <!-- Bakgrundsoptions slider -->
         <div id="background-options">
             <button class="mode-btn" id="light-mode-btn">Light Mode</button>
@@ -206,6 +216,13 @@
         </div>
 
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
+
+        <!-- Progress bar container -->
+        <div id="progress-container">
+            <label for="progress-bar">Konvertering pågår:</label>
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <span id="progress-percent">0%</span>
+        </div>
     </div>
 
     <!-- Inkludera FFmpeg.js via CDN -->
@@ -256,12 +273,20 @@
             const fileInfo = document.getElementById('file-name');
             const reader = new FileReader();
 
+            // Visa progress baren när konvertering börjar
+            document.getElementById('progress-container').style.display = 'block';
+            document.getElementById('progress-bar').value = 0;
+            document.getElementById('progress-percent').textContent = '0%';
+
             reader.onload = function(event) {
                 const inputFileData = event.target.result;
                 const ffmpeg = FFmpeg.createFFmpeg({ log: true });
                 ffmpeg.load().then(() => {
                     ffmpeg.FS('writeFile', file.name, new Uint8Array(inputFileData));
+
+                    // Kör konverteringen och uppdatera progress baren
                     ffmpeg.run('-i', file.name, 'output.mp4').then(() => {
+                        // Ladda resultatet
                         const data = ffmpeg.FS('readFile', 'output.mp4');
                         const convertedBlob = new Blob([data.buffer], { type: 'video/mp4' });
                         const convertedUrl = URL.createObjectURL(convertedBlob);
@@ -270,94 +295,36 @@
                         videoSource.src = convertedUrl;
                         videoPlayer.load();
 
+                        // Uppdatera progress bar till 100%
+                        document.getElementById('progress-bar').value = 100;
+                        document.getElementById('progress-percent').textContent = '100%';
+
                         // Ladda ner den konverterade filen
                         const downloadLink = document.createElement('a');
                         downloadLink.href = convertedUrl;
                         downloadLink.download = 'converted_video.mp4';
                         downloadLink.click();
+
+                        // Dölj progress baren när konverteringen är klar
+                        setTimeout(() => {
+                            document.getElementById('progress-container').style.display = 'none';
+                        }, 500);
                     });
                 });
             };
             reader.readAsArrayBuffer(file);
         });
 
-        // Funktion för att visa/dölja bakgrundsoptionssliden
-        let backgroundOptionsVisible = false;
-
-        document.getElementById('change-background-btn').addEventListener('click', function() {
-            const options = document.getElementById('background-options');
-            backgroundOptionsVisible = !backgroundOptionsVisible;
-            options.style.display = backgroundOptionsVisible ? 'block' : 'none';
-        });
-
-        // Växla till Light Mode
-        document.getElementById('light-mode-btn').addEventListener('click', function() {
-            document.body.className = 'light-mode';
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        // Växla till Dark Mode
-        document.getElementById('dark-mode-btn').addEventListener('click', function() {
-            document.body.className = 'dark-mode';
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        // Funktion för att uppdatera volymprocent
-        function updateVolumePercentage(type) {
-            const volumeElement = document.getElementById(`${type}-volume`);
-            const volumePercent = document.getElementById(`${type}-volume-percent`);
-            const volumeIcon = document.getElementById(`${type}-volume-icon`);
-            volumePercent.textContent = `${volumeElement.value}%`;
-
-            const volume = volumeElement.value;
-
-            if (volume == 0) {
-                volumeIcon.textContent = "🔈"; // Mute
-            } else if (volume > 0 && volume <= 33) {
-                volumeIcon.textContent = "🔉"; // Låg volym
-            } else if (volume > 33 && volume <= 66) {
-                volumeIcon.textContent = "🔊"; // Hög volym
-            } else {
-                volumeIcon.textContent = "🔊"; // Hög volym
-            }
-        }
-
-        // Återställ volyminställningar och filreferens från localStorage när sidan laddas
+        // Ladda status vid eventuell återupptagning
         window.addEventListener('load', function() {
-            const originalVolume = localStorage.getItem('originalVolume') || 50;
-            const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
-            document.getElementById('original-volume').value = originalVolume;
-            document.getElementById('corrupted-volume').value = corruptedVolume;
-            updateVolumePercentage('original');
-            updateVolumePercentage('corrupted');
-        });
-
-        // Spara ändringar till fil
-        document.getElementById('save-btn').addEventListener('click', function() {
-            const originalVolume = document.getElementById('original-volume').value;
-            const corruptedVolume = document.getElementById('corrupted-volume').value;
-            const musicVolume = document.getElementById('music-volume').value;
-            const finalVolume = document.getElementById('final-volume').value;
-            const backgroundMode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-
-            // Skapa objekt med inställningar
-            const settings = {
-                originalVolume: originalVolume,
-                corruptedVolume: corruptedVolume,
-                musicVolume: musicVolume,
-                finalVolume: finalVolume,
-                backgroundMode: backgroundMode,
-            };
-
-            // Konvertera objektet till en JSON-sträng
-            const settingsJSON = JSON.stringify(settings);
-
-            // Skapa en Blob och ladda ner filen
-            const blob = new Blob([settingsJSON], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'video-settings.json'; // Spara som en JSON-fil
-            link.click();
+            const savedFile = localStorage.getItem('videoFile');
+            if (savedFile) {
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = videoPlayer.querySelector('source');
+                videoSource.src = savedFile;
+                videoPlayer.load();
+                document.getElementById('file-name').textContent = 'Selected file: ' + savedFile;
+            }
         });
     </script>
 </body>
