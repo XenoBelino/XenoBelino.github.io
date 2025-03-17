@@ -266,42 +266,42 @@
         });
 
         // Hantera konvertering till MP4 med ffmpeg.js
-        document.getElementById("convert-btn").addEventListener("click", function() {
+        document.getElementById("convert-btn").addEventListener("click", async function() {
             const videoFile = document.getElementById("file-input").files[0];
             if (videoFile) {
                 // Skapa en FFmpeg instans
                 const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-                ffmpeg.load().then(() => {
-                    // Lägg till filen till FFmpeg och starta konverteringen
-                    ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(await videoFile.arrayBuffer()));
+                await ffmpeg.load(); // Lägg till 'await' här för att vänta på att FFmpeg ska laddas
 
-                    ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4").then(() => {
-                        const data = ffmpeg.FS("readFile", "output.mp4");
+                // Lägg till filen till FFmpeg och starta konverteringen
+                ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(await videoFile.arrayBuffer()));
 
-                        // Skapa en blob och ladda upp filen
-                        const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
-                        const videoUrl = URL.createObjectURL(videoBlob);
-                        
-                        const videoElement = document.getElementById("video-player");
-                        videoElement.src = videoUrl;
+                await ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4");
 
-                        // Visa konverteringsprogress
-                        let progressContainer = document.getElementById("progress-container");
-                        progressContainer.style.display = 'block';
-                        let progressBar = document.getElementById("progress-bar");
+                const data = ffmpeg.FS("readFile", "output.mp4");
 
-                        // Uppdatera progress bar (Simulerad för nu)
-                        let progress = 0;
-                        let interval = setInterval(() => {
-                            progress += 5;
-                            progressBar.value = progress;
-                            document.getElementById("progress-percent").textContent = `${progress}%`;
-                            if (progress >= 100) {
-                                clearInterval(interval);
-                            }
-                        }, 100);
-                    });
-                });
+                // Skapa en blob och ladda upp filen
+                const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
+                const videoUrl = URL.createObjectURL(videoBlob);
+                
+                const videoElement = document.getElementById("video-player");
+                videoElement.src = videoUrl;
+
+                // Visa konverteringsprogress
+                let progressContainer = document.getElementById("progress-container");
+                progressContainer.style.display = 'block';
+                let progressBar = document.getElementById("progress-bar");
+
+                // Uppdatera progress bar (Simulerad för nu)
+                let progress = 0;
+                let interval = setInterval(() => {
+                    progress += 5;
+                    progressBar.value = progress;
+                    document.getElementById("progress-percent").textContent = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                    }
+                }, 100);
             }
         });
     </script>
