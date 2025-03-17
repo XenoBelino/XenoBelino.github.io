@@ -6,7 +6,7 @@
     <title>Video Editor</title>
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
     <style>
-        /* Lägg till lite grundläggande styling om det behövs */
+        /* Grundläggande styling */
         #video-container {
             max-width: 800px;
             margin: 0 auto;
@@ -26,7 +26,7 @@
         <input type="file" id="file-input" accept="video/*" style="display: none;">
     </div>
 
-    <!-- Ljudreglage (sliders) -->
+    <!-- Ljudreglage -->
     <div id="volume-controls">
         <label for="volume-slider">Volume:</label>
         <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
@@ -69,6 +69,13 @@
 
         document.getElementById('file-input').addEventListener('change', handleFileSelect);
 
+        // Volymhantering
+        const volumeSlider = document.getElementById('volume-slider');
+        volumeSlider.addEventListener('input', function() {
+            const videoPlayer = document.getElementById('video-player');
+            videoPlayer.volume = volumeSlider.value;
+        });
+
         // Funktion för att bearbeta videon och spara ändringar
         async function handleVideoEdit(file) {
             const { createFFmpeg, fetchFile } = FFmpeg;
@@ -79,8 +86,8 @@
             // Ladda videofilen till FFmpeg
             ffmpeg.FS('writeFile', file.name, await fetchFile(file));
 
-            // Här kan vi exempelvis ändra volymen på videon (justera värdet vid behov)
-            await ffmpeg.run('-i', file.name, '-filter:a', 'volume=0.5', 'output.mp4');  // Justera volymen till 50%
+            // Här kan vi exempelvis ändra volymen på videon (justera volymen till 50% här)
+            await ffmpeg.run('-i', file.name, '-filter:a', 'volume=0.5', 'output.mp4');  // Ändra volymen till 50%
 
             // Hämta den modifierade videofilen
             const data = ffmpeg.FS('readFile', 'output.mp4');
@@ -102,6 +109,7 @@
             const videoFileURL = videoSource.src;
 
             if (videoFileURL) {
+                // Skapa en File-objekt för den valda videofilen
                 const videoFile = new File([videoFileURL], 'video.mp4', { type: 'video/mp4' });
                 handleVideoEdit(videoFile);
             } else {
