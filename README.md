@@ -164,6 +164,9 @@
         <button id="browse-btn" class="browse-button">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" accept=".mp4,.webm,.ogv,.mkv">
 
+        <!-- Lägg till konverteringsknappen -->
+        <button id="convert-btn" class="button">Convert to MP4</button>
+        
         <button id="change-background-btn" class="button">Change Background</button>
         
         <!-- Bakgrundsoptions slider -->
@@ -205,6 +208,9 @@
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
     </div>
 
+    <!-- Inkludera FFmpeg.js via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.1.0/ffmpeg.min.js"></script>
+
     <script>
         // Funktion för att hantera filval
         function handleFileSelect(event) {
@@ -236,6 +242,43 @@
         // Kalla på när användaren väljer en fil
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
+        });
+
+        // Funktion för att konvertera video till MP4 med FFmpeg.js
+        document.getElementById('convert-btn').addEventListener('click', function() {
+            const fileInput = document.getElementById('file-input');
+            if (!fileInput.files.length) {
+                alert("Please select a file first!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const fileInfo = document.getElementById('file-name');
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const inputFileData = event.target.result;
+                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+                ffmpeg.load().then(() => {
+                    ffmpeg.FS('writeFile', file.name, new Uint8Array(inputFileData));
+                    ffmpeg.run('-i', file.name, 'output.mp4').then(() => {
+                        const data = ffmpeg.FS('readFile', 'output.mp4');
+                        const convertedBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                        const convertedUrl = URL.createObjectURL(convertedBlob);
+                        const videoPlayer = document.getElementById('video-player');
+                        const videoSource = videoPlayer.querySelector('source');
+                        videoSource.src = convertedUrl;
+                        videoPlayer.load();
+
+                        // Ladda ner den konverterade filen
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = convertedUrl;
+                        downloadLink.download = 'converted_video.mp4';
+                        downloadLink.click();
+                    });
+                });
+            };
+            reader.readAsArrayBuffer(file);
         });
 
         // Funktion för att visa/dölja bakgrundsoptionssliden
