@@ -6,11 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
     <style>
+        /* Grundläggande stil för hela sidan */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .editor-content {
@@ -20,6 +22,7 @@
             margin: auto;
         }
 
+        /* Stil för knappar */
         .button, .browse-button {
             padding: 10px 20px;
             font-size: 16px;
@@ -35,6 +38,21 @@
             background-color: #5c0b8a;
         }
 
+        /* Placering av knappar */
+        #change-background-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #back-to-home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
         #save-btn {
             position: fixed;
             bottom: 20px;
@@ -42,16 +60,18 @@
             z-index: 1000;
         }
 
-        #progress-container {
-            display: none;
-            margin-top: 20px;
+        /* Placering av "Browse Files" och "No file selected" */
+        #file-name {
+            color: black;
+            font-size: 18px;
+            margin-bottom: 10px;
         }
 
-        progress {
-            width: 100%;
-            height: 20px;
+        #browse-btn {
+            margin-top: 10px;
         }
 
+        /* Stil för videospelaren */
         .video-container {
             margin-top: 30px;
             display: flex;
@@ -63,6 +83,70 @@
             width: 80%;
             max-width: 800px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Volymreglage */
+        .volume-slider-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Bakgrundsoptionssliden */
+        #background-options {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        /* Specifik stil för Light Mode / Dark Mode knappar */
+        .mode-btn {
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Light Mode & Dark Mode Styles */
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: black;
+        }
+
+        body.dark-mode {
+            background-color: #000000; /* Dark Mode bakgrundsfärg */
+            color: white;
+        }
+
+        /* När Dark Mode är aktiv */
+        body.dark-mode #file-name {
+            color: white;
+        }
+
+        /* Progress bar container */
+        #progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+        progress {
+            width: 100%;
+            height: 20px;
         }
     </style>
 </head>
@@ -88,77 +172,128 @@
 
         <button id="convert-btn" class="button">Convert to MP4</button>
 
+        <button id="change-background-btn" class="button">Change Background</button>
+
+        <div id="background-options">
+            <button class="mode-btn" id="light-mode-btn">Light Mode</button>
+            <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
+        </div>
+
+        <button id="save-btn" class="button">Save Changes</button>
+
+        <!-- Volymreglage -->
+        <div class="volume-slider-container">
+            <div>
+                <label for="original-volume">Original Volume:</label>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+                <span id="original-volume-percent" class="volume-percentage">50%</span>
+                <span id="original-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="corrupted-volume">Corrupted Volume:</label>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
+                <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+                <span id="corrupted-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="music-volume">Music Volume:</label>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
+                <span id="music-volume-percent" class="volume-percentage">50%</span>
+                <span id="music-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="final-volume">Final Volume:</label>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
+                <span id="final-volume-percent" class="volume-percentage">50%</span>
+                <span id="final-volume-icon">🔉</span>
+            </div>
+        </div>
+
+        <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
+
         <div id="progress-container">
             <label for="progress-bar">Konvertering pågår:</label>
             <progress id="progress-bar" value="0" max="100"></progress>
             <span id="progress-percent">0%</span>
         </div>
-
-        <button id="save-btn" class="button">Save Changes</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.1.0/ffmpeg.min.js"></script>
     <script>
-        let videoFile = null;
+        // Volymfunktioner
+        function updateVolumePercentage(type) {
+            const volumeSlider = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            
+            const volumeValue = volumeSlider.value;
+            volumePercent.textContent = `${volumeValue}%`;
 
-        // Filhantering
-        function handleFileSelect(event) {
-            videoFile = event.target.files[0];
-            const fileName = videoFile ? videoFile.name : "No file selected";
-            document.getElementById("file-name").textContent = fileName;
-
-            // Lägg till källan för den uppladdade videon
-            if (videoFile) {
-                const videoUrl = URL.createObjectURL(videoFile);
-                document.getElementById("video-player").src = videoUrl;
+            // Ändra volym-ikonen beroende på volymen
+            if (volumeValue == "0") {
+                volumeIcon.textContent = "🔇";
+            } else if (volumeValue < 50) {
+                volumeIcon.textContent = "🔉";
+            } else {
+                volumeIcon.textContent = "🔊";
             }
         }
 
-        // Konvertera till MP4 med FFmpeg
-        document.getElementById("convert-btn").addEventListener("click", async function() {
-            if (!videoFile) {
-                alert("Please upload a video first!");
-                return;
-            }
+        // Filhantering
+        function handleFileSelect(event) {
+            const fileName = event.target.files[0]?.name || "No file selected";
+            document.getElementById("file-name").textContent = fileName;
 
-            // Visa progressbaren
-            const progressContainer = document.getElementById("progress-container");
-            progressContainer.style.display = 'block';
-
-            const progressBar = document.getElementById("progress-bar");
-            const progressPercent = document.getElementById("progress-percent");
-
-            // Skapa en FFmpeg instans
-            const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-            await ffmpeg.load();
-
-            // Läs in videofilen och skriv till FFmpeg-filsystemet
-            const fileBuffer = await videoFile.arrayBuffer();
-            ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(fileBuffer));
-
-            // Uppdatera progressbar under konverteringen
-            let progress = 0;
-            let interval = setInterval(() => {
-                progress += 5;
-                progressBar.value = progress;
-                progressPercent.textContent = `${progress}%`;
-                if (progress >= 100) {
-                    clearInterval(interval);
-                }
-            }, 100);
-
-            // Konvertera video till MP4
-            await ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4");
-
-            // Läs ut den konverterade filen
-            const data = ffmpeg.FS("readFile", "output.mp4");
-
-            // Skapa en Blob för den konverterade videon
-            const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
-            const videoUrl = URL.createObjectURL(videoBlob);
-
-            // Uppdatera videospelaren med den nya MP4-filen
+            // Uppdatera videospelaren
+            const videoUrl = URL.createObjectURL(event.target.files[0]);
             document.getElementById("video-player").src = videoUrl;
+        }
+
+        // Filväljare funktion
+        document.getElementById("browse-btn").addEventListener("click", function() {
+            document.getElementById("file-input").click();
+        });
+
+        // Hantera konvertering till MP4 med ffmpeg.js
+        document.getElementById("convert-btn").addEventListener("click", async function() {
+            const videoFile = document.getElementById("file-input").files[0];
+            if (videoFile) {
+                // Skapa en FFmpeg instans
+                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+                await ffmpeg.load();
+                const fileBuffer = await videoFile.arrayBuffer();
+                ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(fileBuffer));
+
+                // Uppdatera progressbar här
+                let progressContainer = document.getElementById("progress-container");
+                progressContainer.style.display = 'block';
+                let progressBar = document.getElementById("progress-bar");
+
+                // Starta konvertering till MP4
+                await ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4");
+
+                const data = ffmpeg.FS("readFile", "output.mp4");
+
+                // Skapa en blob och visa videon
+                const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
+                const videoUrl = URL.createObjectURL(videoBlob);
+                document.getElementById("video-player").src = videoUrl;
+                
+                let progress = 0;
+                let interval = setInterval(() => {
+                    progress += 5;
+                    progressBar.value = progress;
+                    document.getElementById("progress-percent").textContent = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                    }
+                }, 100);
+            }
+        });
+
+        // Hantera save changes (kan implementeras senare om behövs)
+        document.getElementById("save-btn").addEventListener("click", function() {
+            alert("Changes saved!"); // Just nu en enkel funktion för att bekräfta att knappen fungerar
         });
     </script>
 </body>
