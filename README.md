@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         /* Grundläggande stil för hela sidan */
         body {
@@ -65,7 +64,7 @@
         #file-name {
             color: black;
             font-size: 18px;
-            margin-bottom: 10px; /* Flytta ner texten för No file selected */
+            margin-bottom: 10px;
         }
 
         #browse-btn {
@@ -153,10 +152,8 @@
 </head>
 <body>
     <div class="editor-content">
-        <div class="intro-section">
-            <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-            <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
-        </div>
+        <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+        <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
 
         <!-- Video Player Container -->
         <div class="video-container">
@@ -169,17 +166,14 @@
             </video>
         </div>
 
-        <!-- Flytta texten för No file selected ovanför knappen -->
         <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
 
-        <!-- Lägg till konverteringsknappen -->
         <button id="convert-btn" class="button">Convert to MP4</button>
 
         <button id="change-background-btn" class="button">Change Background</button>
 
-        <!-- Bakgrundsoptions slider -->
         <div id="background-options">
             <button class="mode-btn" id="light-mode-btn">Light Mode</button>
             <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
@@ -217,7 +211,6 @@
 
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
 
-        <!-- Progress bar container -->
         <div id="progress-container">
             <label for="progress-bar">Konvertering pågår:</label>
             <progress id="progress-bar" value="0" max="100"></progress>
@@ -225,10 +218,26 @@
         </div>
     </div>
 
-    <!-- Inkludera FFmpeg.js via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.1.0/ffmpeg.min.js"></script>
-
     <script>
+        function updateVolumePercentage(type) {
+            const volumeSlider = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            
+            const volumeValue = volumeSlider.value;
+            volumePercent.textContent = `${volumeValue}%`;
+
+            // Ändra volym-ikonen beroende på volymen
+            if (volumeValue === "0") {
+                volumeIcon.textContent = "🔇";
+            } else if (volumeValue < 50) {
+                volumeIcon.textContent = "🔉";
+            } else {
+                volumeIcon.textContent = "🔊";
+            }
+        }
+
         // Funktion för att hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
@@ -254,7 +263,6 @@
             }
         }
 
-        // Kalla på när användaren väljer en fil
         document.getElementById('browse-btn').addEventListener('click', function () {
             document.getElementById('file-input').click();
         });
@@ -271,12 +279,10 @@
             }
 
             if (videoFile && videoFile.startsWith('blob:')) {
-                // Starta progressbar för konvertering
                 document.getElementById('progress-container').style.display = 'block';
                 let progressBar = document.getElementById('progress-bar');
                 let progressPercent = document.getElementById('progress-percent');
                 
-                // Skapa FFmpeg-kommando och process för konvertering
                 const result = await ffmpeg({ 
                     arguments: ['-i', videoFile, '-vcodec', 'libx264', 'output.mp4'],
                     onProgress: function (progress) {
@@ -286,7 +292,6 @@
                     }
                 });
 
-                // När konvertering är klar, spara den nya filen och visa den
                 const outputVideo = result.MEMFS[0];
                 const blob = new Blob([outputVideo.data], { type: 'video/mp4' });
                 const url = URL.createObjectURL(blob);
@@ -295,10 +300,11 @@
                 link.download = 'converted-video.mp4';
                 link.click();
 
-                // Dölj progressbaren
                 document.getElementById('progress-container').style.display = 'none';
             }
         }
+
+        document.getElementById('convert-btn').addEventListener('click', convertToMP4);
 
         // Hantera bakgrundsändringar för light/dark mode
         document.getElementById('light-mode-btn').addEventListener('click', function () {
@@ -312,9 +318,6 @@
             document.body.classList.add('dark-mode');
             document.getElementById('background-options').style.display = 'none';
         });
-
-        // Hantera konverteringsknappen
-        document.getElementById('convert-btn').addEventListener('click', convertToMP4);
     </script>
 </body>
 </html>
