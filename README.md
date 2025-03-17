@@ -3,37 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Editor</title>
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Video Player with Settings</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Grundläggande styling */
-        #video-container {
+        /* Grundläggande stil för hela sidan */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .editor-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Stil för knappar */
+        .button, .browse-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover, .browse-button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Placering av knappar */
+        #change-background-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #back-to-home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #save-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Placering av "Browse Files" och "No file selected" */
+        #file-name {
+            color: black;
+            font-size: 18px;
+            margin-bottom: 10px; /* Flytta ner texten för No file selected */
+        }
+
+        #browse-btn {
+            margin-top: 10px;
+        }
+
+        /* Stil för videospelaren */
+        .video-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #video-player {
+            border-radius: 15px;
+            width: 80%;
             max-width: 800px;
-            margin: 0 auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Volymreglage */
+        .volume-slider-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Bakgrundsoptionssliden */
+        #background-options {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        /* Specifik stil för Light Mode / Dark Mode knappar */
+        .mode-btn {
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Light Mode & Dark Mode Styles */
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: black;
+        }
+
+        body.dark-mode {
+            background-color: #000000; /* Dark Mode bakgrundsfärg */
+            color: white;
+        }
+
+        /* När Dark Mode är aktiv */
+        body.dark-mode #file-name {
+            color: white;
         }
     </style>
 </head>
 <body>
+    <div class="editor-content">
+        <div class="intro-section">
+            <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+            <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
+        </div>
 
-    <!-- Video Player -->
-    <div id="video-container">
-        <video id="video-player" controls>
-            <source id="video-source" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <!-- Video Player Container -->
+        <div class="video-container">
+            <video id="video-player" controls>
+                <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source src="assets/videos/sample.webm" type="video/webm">
+                <source src="assets/videos/sample.ogv" type="video/ogg">
+                <source src="assets/videos/sample.mkv" type="video/mkv">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Flytta texten för No file selected ovanför knappen -->
         <div id="file-name">No file selected</div>
-        <button id="browse-btn">Browse</button>
-        <input type="file" id="file-input" accept="video/*" style="display: none;">
-    </div>
+        <button id="browse-btn" class="browse-button">Browse Files</button>
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" accept=".mp4,.webm,.ogv,.mkv">
 
-    <!-- Ljudreglage -->
-    <div id="volume-controls">
-        <label for="volume-slider">Volume:</label>
-        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
-    </div>
+        <button id="change-background-btn" class="button">Change Background</button>
+        
+        <!-- Bakgrundsoptions slider -->
+        <div id="background-options">
+            <button class="mode-btn" id="light-mode-btn">Light Mode</button>
+            <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
+        </div>
 
-    <!-- Spara ändringar-knapp -->
-    <button id="save-btn">Save Changes</button>
+        <button id="save-btn" class="button">Save Changes</button>
+
+        <!-- Volymreglage -->
+        <div class="volume-slider-container">
+            <div>
+                <label for="original-volume">Original Volume:</label>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+                <span id="original-volume-percent" class="volume-percentage">50%</span>
+                <span id="original-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="corrupted-volume">Corrupted Volume:</label>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
+                <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+                <span id="corrupted-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="music-volume">Music Volume:</label>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
+                <span id="music-volume-percent" class="volume-percentage">50%</span>
+                <span id="music-volume-icon">🔉</span>
+            </div>
+            <div>
+                <label for="final-volume">Final Volume:</label>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
+                <span id="final-volume-percent" class="volume-percentage">50%</span>
+                <span id="final-volume-icon">🔉</span>
+            </div>
+        </div>
+
+        <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
+    </div>
 
     <script>
         // Funktion för att hantera filval
@@ -44,10 +214,11 @@
             const videoSource = videoPlayer.querySelector('source');
 
             if (file) {
-                // Kontrollera att filen är ett accepterat videoformat
+                // Kontrollera att filen är ett accepterat videoformat (MP4, WebM, OGG, MKV)
                 const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/mkv'];
                 const fileExtension = file.name.split('.').pop().toLowerCase();
 
+                // Kontrollera filtypen via både MIME-typ och filändelse
                 if (validTypes.includes(file.type) || fileExtension === 'mkv') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
@@ -67,54 +238,83 @@
             document.getElementById('file-input').click();
         });
 
-        document.getElementById('file-input').addEventListener('change', handleFileSelect);
+        // Funktion för att visa/dölja bakgrundsoptionssliden
+        let backgroundOptionsVisible = false;
 
-        // Volymhantering
-        const volumeSlider = document.getElementById('volume-slider');
-        volumeSlider.addEventListener('input', function() {
-            const videoPlayer = document.getElementById('video-player');
-            videoPlayer.volume = volumeSlider.value;
+        document.getElementById('change-background-btn').addEventListener('click', function() {
+            const options = document.getElementById('background-options');
+            backgroundOptionsVisible = !backgroundOptionsVisible;
+            options.style.display = backgroundOptionsVisible ? 'block' : 'none';
         });
 
-        // Funktion för att bearbeta videon och spara ändringar
-        async function handleVideoEdit(file) {
-            const { createFFmpeg, fetchFile } = FFmpeg;
-            const ffmpeg = createFFmpeg({ log: true });
+        // Växla till Light Mode
+        document.getElementById('light-mode-btn').addEventListener('click', function() {
+            document.body.className = 'light-mode';
+            document.getElementById('background-options').style.display = 'none';
+        });
 
-            await ffmpeg.load();
+        // Växla till Dark Mode
+        document.getElementById('dark-mode-btn').addEventListener('click', function() {
+            document.body.className = 'dark-mode';
+            document.getElementById('background-options').style.display = 'none';
+        });
 
-            // Ladda videofilen till FFmpeg
-            ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+        // Funktion för att uppdatera volymprocent
+        function updateVolumePercentage(type) {
+            const volumeElement = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            volumePercent.textContent = `${volumeElement.value}%`;
 
-            // Här kan vi exempelvis ändra volymen på videon (justera volymen till 50% här)
-            await ffmpeg.run('-i', file.name, '-filter:a', 'volume=0.5', 'output.mp4');  // Ändra volymen till 50%
+            const volume = volumeElement.value;
 
-            // Hämta den modifierade videofilen
-            const data = ffmpeg.FS('readFile', 'output.mp4');
-
-            // Skapa en Blob och en nedladdningslänk
-            const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-            const videoURL = URL.createObjectURL(videoBlob);
-
-            // Skapa en länk för nedladdning av den modifierade videon
-            const a = document.createElement('a');
-            a.href = videoURL;
-            a.download = 'edited-video.mp4';
-            a.click();
+            if (volume == 0) {
+                volumeIcon.textContent = "🔈"; // Mute
+            } else if (volume > 0 && volume <= 33) {
+                volumeIcon.textContent = "🔉"; // Låg volym
+            } else if (volume > 33 && volume <= 66) {
+                volumeIcon.textContent = "🔊"; // Hög volym
+            } else {
+                volumeIcon.textContent = "🔊"; // Hög volym
+            }
         }
 
-        // Spara ändringar när knappen trycks
-        document.getElementById('save-btn').addEventListener('click', function() {
-            const videoSource = document.getElementById('video-source');
-            const videoFileURL = videoSource.src;
+        // Återställ volyminställningar och filreferens från localStorage när sidan laddas
+        window.addEventListener('load', function() {
+            const originalVolume = localStorage.getItem('originalVolume') || 50;
+            const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
+            document.getElementById('original-volume').value = originalVolume;
+            document.getElementById('corrupted-volume').value = corruptedVolume;
+            updateVolumePercentage('original');
+            updateVolumePercentage('corrupted');
+        });
 
-            if (videoFileURL) {
-                // Skapa en File-objekt för den valda videofilen
-                const videoFile = new File([videoFileURL], 'video.mp4', { type: 'video/mp4' });
-                handleVideoEdit(videoFile);
-            } else {
-                alert("Please select a video file first.");
-            }
+        // Spara ändringar till fil
+        document.getElementById('save-btn').addEventListener('click', function() {
+            const originalVolume = document.getElementById('original-volume').value;
+            const corruptedVolume = document.getElementById('corrupted-volume').value;
+            const musicVolume = document.getElementById('music-volume').value;
+            const finalVolume = document.getElementById('final-volume').value;
+            const backgroundMode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+
+            // Skapa objekt med inställningar
+            const settings = {
+                originalVolume: originalVolume,
+                corruptedVolume: corruptedVolume,
+                musicVolume: musicVolume,
+                finalVolume: finalVolume,
+                backgroundMode: backgroundMode,
+            };
+
+            // Konvertera objektet till en JSON-sträng
+            const settingsJSON = JSON.stringify(settings);
+
+            // Skapa en Blob och ladda ner filen
+            const blob = new Blob([settingsJSON], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'video-settings.json'; // Spara som en JSON-fil
+            link.click();
         });
     </script>
 </body>
