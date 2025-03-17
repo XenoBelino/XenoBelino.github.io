@@ -237,19 +237,17 @@
             const videoSource = videoPlayer.querySelector('source');
 
             if (file) {
-                // Kontrollera att filen är ett accepterat videoformat (MP4, WebM, OGG, MKV)
-                const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/mkv'];
+                const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/mkv', 'video/flv'];
                 const fileExtension = file.name.split('.').pop().toLowerCase();
 
-                // Kontrollera filtypen via både MIME-typ och filändelse
-                if (validTypes.includes(file.type) || fileExtension === 'mkv') {
+                if (validTypes.includes(file.type) || fileExtension === 'flv' || fileExtension === 'mkv') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
                     videoPlayer.load();
                     fileInfo.textContent = `Selected file: ${file.name}`;
                     localStorage.setItem('videoFile', fileURL);
                 } else {
-                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, OGG, MKV).';
+                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, OGG, MKV, FLV).';
                 }
             } else {
                 fileInfo.textContent = 'No file selected';
@@ -264,6 +262,14 @@
         // Funktion för att hantera konvertering
         async function convertToMP4() {
             const videoFile = document.getElementById('video-player').querySelector('source').src;
+            const extension = videoFile.split('.').pop().toLowerCase();
+            const validMP4 = extension === 'mp4';
+
+            if (validMP4) {
+                alert("This video is already in MP4 format. No conversion needed.");
+                return;
+            }
+
             if (videoFile && videoFile.startsWith('blob:')) {
                 // Starta progressbar för konvertering
                 document.getElementById('progress-container').style.display = 'block';
