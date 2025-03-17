@@ -230,7 +230,7 @@
             volumePercent.textContent = `${volumeValue}%`;
 
             // Ändra volym-ikonen beroende på volymen
-            if (volumeValue === "0") {
+            if (volumeValue == "0") {
                 volumeIcon.textContent = "🔇";
             } else if (volumeValue < 50) {
                 volumeIcon.textContent = "🔉";
@@ -265,34 +265,34 @@
             document.getElementById("background-options").style.display = 'none';
         });
 
+        // Filväljare funktion
+        document.getElementById("browse-btn").addEventListener("click", function() {
+            document.getElementById("file-input").click();
+        });
+
         // Hantera konvertering till MP4 med ffmpeg.js
         document.getElementById("convert-btn").addEventListener("click", async function() {
             const videoFile = document.getElementById("file-input").files[0];
             if (videoFile) {
                 // Skapa en FFmpeg instans
                 const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-                await ffmpeg.load(); // Lägg till 'await' här för att vänta på att FFmpeg ska laddas
-
-                // Lägg till filen till FFmpeg och starta konverteringen
-                ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(await videoFile.arrayBuffer()));
-
+                await ffmpeg.load();
+                const fileBuffer = await videoFile.arrayBuffer();
+                ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(fileBuffer));
                 await ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4");
 
                 const data = ffmpeg.FS("readFile", "output.mp4");
 
-                // Skapa en blob och ladda upp filen
+                // Skapa en blob och visa videon
                 const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
                 const videoUrl = URL.createObjectURL(videoBlob);
+                document.getElementById("video-player").src = videoUrl;
                 
-                const videoElement = document.getElementById("video-player");
-                videoElement.src = videoUrl;
-
-                // Visa konverteringsprogress
+                // Visa progress
                 let progressContainer = document.getElementById("progress-container");
                 progressContainer.style.display = 'block';
                 let progressBar = document.getElementById("progress-bar");
 
-                // Uppdatera progress bar (Simulerad för nu)
                 let progress = 0;
                 let interval = setInterval(() => {
                     progress += 5;
@@ -303,6 +303,11 @@
                     }
                 }, 100);
             }
+        });
+
+        // Hantera save changes (kan implementeras senare om behövs)
+        document.getElementById("save-btn").addEventListener("click", function() {
+            alert("Changes saved!"); // Just nu en enkel funktion för att bekräfta att knappen fungerar
         });
     </script>
 </body>
