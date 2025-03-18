@@ -209,8 +209,8 @@
             </div>
         </div>
 
-        <!-- Knapp för att gå tillbaka till startsidan -->
-        <button id="go-to-homepage-btn" class="button">Go To Homepage</button>
+        <!-- Länk till "homepagen" -->
+        <a href="#top" id="back-to-home-btn" class="button">Back to Home Page</a>
 
         <div id="progress-container">
             <label for="progress-bar">Konvertering pågår:</label>
@@ -219,15 +219,7 @@
         </div>
     </div>
 
-    <!-- Lägg till rätt ffmpeg.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@4.4.0/ffmpeg.min.js"></script>
-    
     <script>
-        // Funktion för att gå till startsidan
-        document.getElementById("go-to-homepage-btn").addEventListener("click", function() {
-            window.location.href = 'index.html'; // Länka till startsidan
-        });
-
         // Volymfunktioner
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
