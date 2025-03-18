@@ -219,6 +219,9 @@
         </div>
     </div>
 
+    <!-- FFmpeg.js bibliotek -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.0.0/ffmpeg.min.js"></script>
+    
     <script>
         // Volymfunktioner
         function updateVolumePercentage(type) {
@@ -243,6 +246,12 @@
         function handleFileSelect(event) {
             const fileName = event.target.files[0]?.name || "No file selected";
             document.getElementById("file-name").textContent = fileName;
+
+            const videoPlayer = document.getElementById("video-player");
+            const file = event.target.files[0];
+            const fileURL = URL.createObjectURL(file);
+            videoPlayer.src = fileURL;
+            videoPlayer.load();
         }
 
         // Bakgrundsfärgbyte (Light/Dark Mode)
@@ -256,63 +265,45 @@
         document.getElementById("light-mode-btn").addEventListener("click", function() {
             document.body.classList.remove("dark-mode");
             document.body.classList.add("light-mode");
-            document.getElementById("background-options").style.display = 'none';
         });
 
         document.getElementById("dark-mode-btn").addEventListener("click", function() {
             document.body.classList.remove("light-mode");
             document.body.classList.add("dark-mode");
-            document.getElementById("background-options").style.display = 'none';
         });
 
-        // Filväljare funktion
-        document.getElementById("browse-btn").addEventListener("click", function() {
-            document.getElementById("file-input").click();
-        });
+        // FFmpeg-konvertering
+        const ffmpeg = FFmpeg.createFFmpeg({ log: true });
 
-        // Hantera konvertering till MP4 med ffmpeg.js
-        document.getElementById("convert-btn").addEventListener("click", async function() {
-            const videoFile = document.getElementById("file-input").files[0];
-            if (videoFile) {
-                // Skapa en FFmpeg instans
-                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-                await ffmpeg.load();
-                const fileBuffer = await videoFile.arrayBuffer();
-                ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(fileBuffer));
+        document.getElementById("convert-btn").addEventListener("click", async () => {
+            const progressContainer = document.getElementById("progress-container");
+            const progressBar = document.getElementById("progress-bar");
+            const progressPercent = document.getElementById("progress-percent");
 
-                // Uppdatera progressbar här
-                let progressContainer = document.getElementById("progress-container");
-                progressContainer.style.display = 'block';
-                let progressBar = document.getElementById("progress-bar");
+            progressContainer.style.display = "block";
 
-                // Starta konvertering till MP4
-                await ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4");
-
-                const data = ffmpeg.FS("readFile", "output.mp4");
-
-                // Skapa en blob och visa videon
-                const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
-                const videoUrl = URL.createObjectURL(videoBlob);
-                
-                // Uppdatera källan till videospelaren
-                const videoSource = document.getElementById("video-source-mp4");
-                videoSource.src = videoUrl;
-                document.getElementById("video-player").load(); // Ladda om videospelaren för att visa den nya källan
-
-                let progress = 0;
-                let interval = setInterval(() => {
-                    progress += 5;
-                    progressBar.value = progress;
-                    document.getElementById("progress-percent").textContent = `${progress}%`;
-                    if (progress >= 100) {
-                        clearInterval(interval);
+            await ffmpeg.load();
+            ffmpeg.setLogger(({ type, message }) => {
+                if (type === "stdout") {
+                    // Uppdatera progressen när FFmpeg skriver ut information
+                    const progressMatch = message.match(/time=(\d+:\d+:\d+\.\d+)/);
+                    if (progressMatch) {
+                        const timeString = progressMatch[1];
+                        const [hours, minutes, seconds] = timeString.split(":");
+                        const secondsTotal = parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseFloat(seconds);
+                        const totalDuration = 3600;  // Dummy total duration for now
+                        const progress = (secondsTotal / totalDuration) * 100;
+                        progressBar.value = progress;
+                        progressPercent.textContent = `${Math.round(progress)}%`;
                     }
-                }, 200);
-            }
-        });
-    </script>
+                }
+            });
 
-    <!-- FFmpeg.js bibliotek -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.0.0/ffmpeg.min.js"></script>
+            await ffmpeg.run('-i', 'input.webm', 'output.mp4');
+            progressContainer.style.display = "none";
+            alert("Konvertering klar!");
+        });
+
+    </script>
 </body>
 </html>
