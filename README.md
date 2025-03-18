@@ -158,7 +158,7 @@
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
-                <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4">
                 <source src="assets/videos/sample.webm" type="video/webm">
                 <source src="assets/videos/sample.ogv" type="video/ogg">
                 <source src="assets/videos/sample.mkv" type="video/mkv">
@@ -295,8 +295,12 @@
                 // Skapa en blob och visa videon
                 const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
                 const videoUrl = URL.createObjectURL(videoBlob);
-                document.getElementById("video-player").src = videoUrl;
                 
+                // Uppdatera källan till videospelaren
+                const videoSource = document.getElementById("video-source");
+                videoSource.src = videoUrl;
+                document.getElementById("video-player").load(); // Ladda om videospelaren för att visa den nya källan
+
                 let progress = 0;
                 let interval = setInterval(() => {
                     progress += 5;
@@ -306,6 +310,19 @@
                         clearInterval(interval);
                     }
                 }, 100);
+            }
+        });
+
+        // Save button: Ladda ner den konverterade videon
+        document.getElementById("save-btn").addEventListener("click", function() {
+            const videoBlob = document.getElementById("video-player").src;
+            if (videoBlob) {
+                const a = document.createElement("a");
+                a.href = videoBlob;
+                a.download = "converted_video.mp4";
+                a.click();
+            } else {
+                alert("Ingen video att spara.");
             }
         });
     </script>
