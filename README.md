@@ -11,29 +11,14 @@
 </head>
 <body>
     <div class="editor-content">
-        <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-        <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
-
+        <h1> This Page is undergoing construction!</h1>
+        
         <!-- Lägg till navigeringslänkar här -->
         <div>
             <!-- Gå till startsidan -->
-            <a href="index.html" class="button">Go to Homepage</a>
+            
             <!-- Gå till en annan sida (page.html) -->
             <a href="page.html" class="button">Go to Page</a>
         </div>
-
-        <!-- Video Player Container -->
-        <div class="video-container">
-            <video id="video-player" controls>
-                <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4">
-                <source src="assets/videos/sample.webm" type="video/webm">
-                <source src="assets/videos/sample.ogv" type="video/ogg">
-                <source src="assets/videos/sample.mkv" type="video/mkv">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-
-        <!-- Din övriga kod här -->
-    </div>
 </body>
 </html>
