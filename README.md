@@ -4,20 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Video Player with Settings</title>
+    <title>Website Under Construction</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
+            text-align: center;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
         }
 
-        .editor-content {
-            text-align: center;
-            padding: 20px;
-            max-width: 900px;
-            margin: auto;
+        h1 {
+            font-size: 36px;
+            color: #333;
         }
 
         .button {
@@ -34,39 +38,10 @@
         .button:hover {
             background-color: #5c0b8a;
         }
-
-        /* Stil för videospelaren */
-        .video-container {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-        }
-
-        #video-player {
-            border-radius: 15px;
-            width: 80%;
-            max-width: 800px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
     </style>
 </head>
 <body>
-    <div class="editor-content">
-        <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-        <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
-
-        <div class="video-container">
-            <video id="video-player" controls>
-                <source src="assets/videos/sample.mp4" type="video/mp4">
-                <source src="assets/videos/sample.webm" type="video/webm">
-                <source src="assets/videos/sample.ogv" type="video/ogg">
-                <source src="assets/videos/sample.mkv" type="video/mkv">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-
-        <!-- Button to go back to homepage -->
-        <button class="button" onclick="window.location.href='index.html'">Go To Homepage</button>
-    </div>
+    <h1>This website is still undergoing construction</h1>
+    <button class="button" onclick="window.location.href='videoplayer.html'">Go To Page</button>
 </body>
 </html>
