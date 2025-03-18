@@ -42,6 +42,7 @@
 </head>
 <body>
     <h1>This website is still undergoing construction</h1>
+    <!-- Knappen som leder till videospelaren -->
     <button class="button" onclick="window.location.href='videoplayer.html'">Go To Page</button>
 </body>
 </html>
