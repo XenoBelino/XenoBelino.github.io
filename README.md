@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,5 +19,3 @@
             <!-- Gå till en annan sida (page.html) -->
             <a href="page.html" class="button">Go to Page</a>
         </div>
-</body>
-</html>
