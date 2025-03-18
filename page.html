@@ -158,10 +158,10 @@
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
-                <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4">
-                <source src="assets/videos/sample.webm" type="video/webm">
-                <source src="assets/videos/sample.ogv" type="video/ogg">
-                <source src="assets/videos/sample.mkv" type="video/mkv">
+                <source id="video-source-mp4" src="assets/videos/sample.mp4" type="video/mp4">
+                <source id="video-source-webm" src="assets/videos/sample.webm" type="video/webm">
+                <source id="video-source-ogv" src="assets/videos/sample.ogv" type="video/ogg">
+                <source id="video-source-mkv" src="assets/videos/sample.mkv" type="video/mkv">
                 Your browser does not support the video tag.
             </video>
         </div>
@@ -210,7 +210,7 @@
         </div>
 
         <!-- Länk till "homepagen" -->
-        <a href="index.html" id="back-to-home-btn" class="button">Back to Home Page</a>
+        <a href="#top" id="back-to-home-btn" class="button">Back to Home Page</a>
 
         <div id="progress-container">
             <label for="progress-bar">Konvertering pågår:</label>
@@ -295,7 +295,7 @@
                 const videoUrl = URL.createObjectURL(videoBlob);
                 
                 // Uppdatera källan till videospelaren
-                const videoSource = document.getElementById("video-source");
+                const videoSource = document.getElementById("video-source-mp4");
                 videoSource.src = videoUrl;
                 document.getElementById("video-player").load(); // Ladda om videospelaren för att visa den nya källan
 
@@ -307,22 +307,12 @@
                     if (progress >= 100) {
                         clearInterval(interval);
                     }
-                }, 100);
-            }
-        });
-
-        // Save button: Ladda ner den konverterade videon
-        document.getElementById("save-btn").addEventListener("click", function() {
-            const videoBlob = document.getElementById("video-player").src;
-            if (videoBlob) {
-                const a = document.createElement("a");
-                a.href = videoBlob;
-                a.download = "converted_video.mp4";
-                a.click();
-            } else {
-                alert("Ingen video att spara.");
+                }, 200);
             }
         });
     </script>
+
+    <!-- FFmpeg.js bibliotek -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.0.0/ffmpeg.min.js"></script>
 </body>
 </html>
