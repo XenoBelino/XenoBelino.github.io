@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         /* Grundläggande stil för hela sidan */
         body {
@@ -65,11 +64,11 @@
         #file-name {
             color: black;
             font-size: 18px;
-            margin-top: 10px; /* Nytt utrymme mellan text och Browse Files-knappen */
+            margin-bottom: 10px;
         }
 
         #browse-btn {
-            margin-top: 10px; /* Lägg till lite avstånd ovanför Browse Files-knappen */
+            margin-top: 10px;
         }
 
         /* Stil för videospelaren */
@@ -98,7 +97,7 @@
         #background-options {
             display: none;
             position: fixed;
-            top: 70px; /* Placeras direkt under knappen */
+            top: 70px;
             right: 20px;
             background-color: #ddd;
             border-radius: 5px;
@@ -139,30 +138,42 @@
         body.dark-mode #file-name {
             color: white;
         }
+
+        /* Progress bar container */
+        #progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+        progress {
+            width: 100%;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="editor-content">
-        <div class="intro-section">
-            <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-            <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
-        </div>
+        <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+        <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
 
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
-                <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4">
+                <source src="assets/videos/sample.webm" type="video/webm">
+                <source src="assets/videos/sample.ogv" type="video/ogg">
+                <source src="assets/videos/sample.mkv" type="video/mkv">
                 Your browser does not support the video tag.
             </video>
         </div>
 
+        <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
-        <div id="file-name">No file selected</div>
+
+        <button id="convert-btn" class="button">Convert to MP4</button>
 
         <button id="change-background-btn" class="button">Change Background</button>
-        
-        <!-- Bakgrundsoptions slider -->
+
         <div id="background-options">
             <button class="mode-btn" id="light-mode-btn">Light Mode</button>
             <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
@@ -198,129 +209,121 @@
             </div>
         </div>
 
-        <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
+        <!-- Länk till "homepagen" -->
+        <a href="#top" id="back-to-home-btn" class="button">Back to Home Page</a>
+
+        <div id="progress-container">
+            <label for="progress-bar">Konvertering pågår:</label>
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <span id="progress-percent">0%</span>
+        </div>
     </div>
 
     <script>
-        // Funktion för att hantera filval
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfo = document.getElementById('file-name');
-            const videoPlayer = document.getElementById('video-player');
-            const videoSource = videoPlayer.querySelector('source');
-
-            if (file) {
-                if (file.type === 'video/mp4' || file.type === 'video/webm') {
-                    const fileURL = URL.createObjectURL(file);
-                    videoSource.src = fileURL;
-                    videoPlayer.load();
-                    fileInfo.textContent = `Selected file: ${file.name}`;
-                    localStorage.setItem('videoFile', fileURL);
-                } else {
-                    fileInfo.textContent = 'Please select a valid video file (MP4 or WebM).';
-                }
-            } else {
-                fileInfo.textContent = 'No file selected';
-            }
-        }
-
-        // Kalla på när användaren väljer en fil
-        document.getElementById('browse-btn').addEventListener('click', function() {
-            document.getElementById('file-input').click();
-        });
-
-        // Funktion för att visa/dölja bakgrundsoptionssliden
-        let backgroundOptionsVisible = false;
-
-        document.getElementById('change-background-btn').addEventListener('click', function() {
-            const options = document.getElementById('background-options');
-            backgroundOptionsVisible = !backgroundOptionsVisible;
-            options.style.display = backgroundOptionsVisible ? 'block' : 'none';
-        });
-
-        // Växla till Light Mode
-        document.getElementById('light-mode-btn').addEventListener('click', function() {
-            document.body.className = 'light-mode';
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        // Växla till Dark Mode
-        document.getElementById('dark-mode-btn').addEventListener('click', function() {
-            document.body.className = 'dark-mode';
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        // Funktion för att uppdatera volymprocent
+        // Volymfunktioner
         function updateVolumePercentage(type) {
-            const volumeElement = document.getElementById(`${type}-volume`);
+            const volumeSlider = document.getElementById(`${type}-volume`);
             const volumePercent = document.getElementById(`${type}-volume-percent`);
             const volumeIcon = document.getElementById(`${type}-volume-icon`);
-            volumePercent.textContent = `${volumeElement.value}%`;
+            
+            const volumeValue = volumeSlider.value;
+            volumePercent.textContent = `${volumeValue}%`;
 
-            const volume = volumeElement.value;
-
-            if (volume == 0) {
-                volumeIcon.textContent = "🔈"; // Mute
-            } else if (volume > 0 && volume <= 33) {
-                volumeIcon.textContent = "🔉"; // Låg volym
-            } else if (volume > 33 && volume <= 66) {
-                volumeIcon.textContent = "🔊"; // Hög volym
+            // Ändra volym-ikonen beroende på volymen
+            if (volumeValue == "0") {
+                volumeIcon.textContent = "🔇";
+            } else if (volumeValue < 50) {
+                volumeIcon.textContent = "🔉";
             } else {
-                volumeIcon.textContent = "🔊"; // Hög volym
+                volumeIcon.textContent = "🔊";
             }
         }
 
-        // Återställ volyminställningar och filreferens från localStorage när sidan laddas
-        window.addEventListener('load', function() {
-            const originalVolume = localStorage.getItem('originalVolume') || 50;
-            const corruptedVolume = localStorage.getItem('corruptedVolume') || 50;
-            const musicVolume = localStorage.getItem('musicVolume') || 50;
-            const finalVolume = localStorage.getItem('finalVolume') || 50;
-            const videoFile = localStorage.getItem('videoFile');
+        // Filhantering
+        function handleFileSelect(event) {
+            const fileName = event.target.files[0]?.name || "No file selected";
+            document.getElementById("file-name").textContent = fileName;
+        }
 
-            document.getElementById('original-volume').value = originalVolume;
-            document.getElementById('corrupted-volume').value = corruptedVolume;
-            document.getElementById('music-volume').value = musicVolume;
-            document.getElementById('final-volume').value = finalVolume;
+        // Bakgrundsfärgbyte (Light/Dark Mode)
+        let isDarkMode = false;
 
-            updateVolumePercentage('original');
-            updateVolumePercentage('corrupted');
-            updateVolumePercentage('music');
-            updateVolumePercentage('final');
+        document.getElementById("change-background-btn").addEventListener("click", function() {
+            document.getElementById("background-options").style.display = isDarkMode ? 'none' : 'block';
+            isDarkMode = !isDarkMode;
+        });
 
+        document.getElementById("light-mode-btn").addEventListener("click", function() {
+            document.body.classList.remove("dark-mode");
+            document.body.classList.add("light-mode");
+            document.getElementById("background-options").style.display = 'none';
+        });
+
+        document.getElementById("dark-mode-btn").addEventListener("click", function() {
+            document.body.classList.remove("light-mode");
+            document.body.classList.add("dark-mode");
+            document.getElementById("background-options").style.display = 'none';
+        });
+
+        // Filväljare funktion
+        document.getElementById("browse-btn").addEventListener("click", function() {
+            document.getElementById("file-input").click();
+        });
+
+        // Hantera konvertering till MP4 med ffmpeg.js
+        document.getElementById("convert-btn").addEventListener("click", async function() {
+            const videoFile = document.getElementById("file-input").files[0];
             if (videoFile) {
-                const videoPlayer = document.getElementById('video-player');
-                const videoSource = videoPlayer.querySelector('source');
-                videoSource.src = videoFile;
-                videoPlayer.load();
+                // Skapa en FFmpeg instans
+                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+                await ffmpeg.load();
+                const fileBuffer = await videoFile.arrayBuffer();
+                ffmpeg.FS("writeFile", videoFile.name, new Uint8Array(fileBuffer));
+
+                // Uppdatera progressbar här
+                let progressContainer = document.getElementById("progress-container");
+                progressContainer.style.display = 'block';
+                let progressBar = document.getElementById("progress-bar");
+
+                // Starta konvertering till MP4
+                await ffmpeg.run("-i", videoFile.name, "-c:v", "libx264", "-c:a", "aac", "output.mp4");
+
+                const data = ffmpeg.FS("readFile", "output.mp4");
+
+                // Skapa en blob och visa videon
+                const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
+                const videoUrl = URL.createObjectURL(videoBlob);
+                
+                // Uppdatera källan till videospelaren
+                const videoSource = document.getElementById("video-source");
+                videoSource.src = videoUrl;
+                document.getElementById("video-player").load(); // Ladda om videospelaren för att visa den nya källan
+
+                let progress = 0;
+                let interval = setInterval(() => {
+                    progress += 5;
+                    progressBar.value = progress;
+                    document.getElementById("progress-percent").textContent = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                    }
+                }, 100);
             }
         });
 
-        // Funktion för att spara ändringar
-        function saveChanges() {
-            const originalVolume = document.getElementById('original-volume').value;
-            const corruptedVolume = document.getElementById('corrupted-volume').value;
-            const musicVolume = document.getElementById('music-volume').value;
-            const finalVolume = document.getElementById('final-volume').value;
-            const videoFile = localStorage.getItem('videoFile'); // Om video har laddats upp
-
-            // Spara volyminställningar i localStorage
-            localStorage.setItem('originalVolume', originalVolume);
-            localStorage.setItem('corruptedVolume', corruptedVolume);
-            localStorage.setItem('musicVolume', musicVolume);
-            localStorage.setItem('finalVolume', finalVolume);
-
-            // Om video är uppladdad, spara video-filen också
-            if (videoFile) {
-                localStorage.setItem('videoFile', videoFile);
+        // Save button: Ladda ner den konverterade videon
+        document.getElementById("save-btn").addEventListener("click", function() {
+            const videoBlob = document.getElementById("video-player").src;
+            if (videoBlob) {
+                const a = document.createElement("a");
+                a.href = videoBlob;
+                a.download = "converted_video.mp4";
+                a.click();
+            } else {
+                alert("Ingen video att spara.");
             }
-
-            // Bekräftelsemeddelande (kan vara tillfälligt)
-            alert('Changes saved successfully!');
-        }
-
-        // Lägg till eventlyssnare på Save Changes-knappen
-        document.getElementById('save-btn').addEventListener('click', saveChanges);
+        });
     </script>
 </body>
 </html>
+
