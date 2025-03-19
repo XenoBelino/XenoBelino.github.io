@@ -237,11 +237,9 @@
             const videoSource = videoPlayer.querySelector('source');
 
             if (file) {
-                // Kontrollera att filen är ett accepterat videoformat (MP4, WebM, OGG, MKV)
                 const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/mkv'];
                 const fileExtension = file.name.split('.').pop().toLowerCase();
 
-                // Kontrollera filtypen via både MIME-typ och filändelse
                 if (validTypes.includes(file.type) || fileExtension === 'mkv') {
                     const fileURL = URL.createObjectURL(file);
                     videoSource.src = fileURL;
@@ -286,7 +284,6 @@
 
                     // Kör konverteringen och uppdatera progress baren
                     ffmpeg.run('-i', file.name, 'output.mp4').then(() => {
-                        // Ladda resultatet
                         const data = ffmpeg.FS('readFile', 'output.mp4');
                         const convertedBlob = new Blob([data.buffer], { type: 'video/mp4' });
                         const convertedUrl = URL.createObjectURL(convertedBlob);
@@ -315,16 +312,9 @@
             reader.readAsArrayBuffer(file);
         });
 
-        // Ladda status vid eventuell återupptagning
-        window.addEventListener('load', function() {
-            const savedFile = localStorage.getItem('videoFile');
-            if (savedFile) {
-                const videoPlayer = document.getElementById('video-player');
-                const videoSource = videoPlayer.querySelector('source');
-                videoSource.src = savedFile;
-                videoPlayer.load();
-                document.getElementById('file-name').textContent = 'Selected file: ' + savedFile;
-            }
+        // Event för att hantera "Back to Home" knapp
+        document.getElementById('back-to-home-btn').addEventListener('click', function() {
+            window.location.href = 'index.html'; // Ändra denna till rätt länk till hemsidan
         });
     </script>
 </body>
