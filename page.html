@@ -212,73 +212,71 @@
 
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
 
-        <div id="progress-container">
+        <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
+</head>
+<body>
+    <div>
+        <input type="file" id="file-input" accept="video/*" />
+        <button id="convert-btn">Konvertera till MP4</button>
+        <p id="file-name">Ingen fil vald</p>
+
+        <div id="progress-container" style="display:none;">
             <label for="progress-bar">Konvertering pågår:</label>
             <progress id="progress-bar" value="0" max="100"></progress>
             <span id="progress-percent">0%</span>
         </div>
+
+        <video id="video-player" controls>
+            <source src="" type="video/mp4">
+            Din webbläsare stödjer inte videouppspelning.
+        </video>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.1.0/ffmpeg.min.js"></script>
-
     <script>
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfo = document.getElementById('file-name');
-            const videoPlayer = document.getElementById('video-player');
-            const videoSource = videoPlayer.querySelector('source');
-
-            if (file) {
-                const validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/mkv'];
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-
-                if (validTypes.includes(file.type) || fileExtension === 'mkv') {
-                    const fileURL = URL.createObjectURL(file);
-                    videoSource.src = fileURL;
-                    videoPlayer.load();
-                    fileInfo.textContent = `Selected file: ${file.name}`;
-                    localStorage.setItem('videoFile', fileURL);
-                } else {
-                    fileInfo.textContent = 'Please select a valid video file (MP4, WebM, OGG, MKV).';
-                }
-            } else {
-                fileInfo.textContent = 'No file selected';
-            }
-        }
-
-        document.getElementById('browse-btn').addEventListener('click', function() {
-            document.getElementById('file-input').click();
-        });
+        document.getElementById('file-input').addEventListener('change', handleFileSelect);
 
         document.getElementById('convert-btn').addEventListener('click', function() {
             const fileInput = document.getElementById('file-input');
             if (!fileInput.files.length) {
-                alert("Please select a file first!");
+                alert("Vänligen välj en fil först!");
                 return;
             }
 
             const file = fileInput.files[0];
+            const fileInfo = document.getElementById('file-name');
+            const videoPlayer = document.getElementById('video-player');
+            const videoSource = videoPlayer.querySelector('source');
             const reader = new FileReader();
 
+            // Visa progress-bar och börja konvertering
             document.getElementById('progress-container').style.display = 'block';
             document.getElementById('progress-bar').value = 0;
             document.getElementById('progress-percent').textContent = '0%';
 
             reader.onload = function(event) {
                 const inputFileData = event.target.result;
-                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+                const ffmpeg = FFmpeg.createFFmpeg({ log: true, progress: (progress) => {
+                    if (progress && progress.percent !== undefined) {
+                        document.getElementById('progress-bar').value = progress.percent;
+                        document.getElementById('progress-percent').textContent = `${Math.round(progress.percent)}%`;
+                    }
+                } });
+
+                // Ladda FFmpeg
                 ffmpeg.load().then(() => {
                     ffmpeg.FS('writeFile', file.name, new Uint8Array(inputFileData));
 
+                    // Kör FFmpeg för att konvertera video
                     ffmpeg.run('-i', file.name, 'output.mp4').then(() => {
                         const data = ffmpeg.FS('readFile', 'output.mp4');
                         const convertedBlob = new Blob([data.buffer], { type: 'video/mp4' });
                         const convertedUrl = URL.createObjectURL(convertedBlob);
-                        const videoPlayer = document.getElementById('video-player');
-                        const videoSource = videoPlayer.querySelector('source');
+
+                        // Uppdatera videospelaren med den konverterade videon
                         videoSource.src = convertedUrl;
                         videoPlayer.load();
 
+                        // När konverteringen är klar, uppdatera progress och ladda ned filen
                         document.getElementById('progress-bar').value = 100;
                         document.getElementById('progress-percent').textContent = '100%';
 
@@ -287,14 +285,35 @@
                         downloadLink.download = 'converted_video.mp4';
                         downloadLink.click();
 
+                        // Dölj progress efter en kort stund
                         setTimeout(() => {
                             document.getElementById('progress-container').style.display = 'none';
                         }, 500);
                     });
                 });
             };
+
             reader.readAsArrayBuffer(file);
         });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfo = document.getElementById('file-name');
+            const videoPlayer = document.getElementById('video-player');
+            const videoSource = videoPlayer.querySelector('source');
+
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                videoSource.src = fileURL;
+                videoPlayer.load();
+                fileInfo.textContent = `Vald fil: ${file.name}`;
+            } else {
+                fileInfo.textContent = 'Ingen fil vald';
+            }
+        }
+    </script>
+</body>
+</html>
 
         // Funktion för att uppdatera volymprocent
         function updateVolumePercentage(type) {
