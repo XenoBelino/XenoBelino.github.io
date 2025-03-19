@@ -249,6 +249,10 @@
 
         // FFmpeg-konvertering
         const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+        import * as FFmpegWASM from '@ffmpeg/ffmpeg'
+import * as FFmpegUtil from '@ffmpeg/util';
+window.FFmpegUtil = FFmpegUtil
+window.FFmpegWASM = FFmpegWASM
 
         document.getElementById("convert-btn").addEventListener("click", async () => {
             if (!selectedFile) {
