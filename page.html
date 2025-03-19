@@ -212,26 +212,9 @@
 
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
 
-       <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
-</head>
-<body>
-    <div>
-        <!-- Uppdaterad accept för att tillåta FLV och andra videoformat -->
-        <input type="file" id="file-input" accept="video/*" />
-        <button id="convert-btn">Konvertera till MP4</button>
-        <p id="file-name">Ingen fil vald</p>
-
-        <div id="progress-container" style="display:none;">
-            <label for="progress-bar">Konvertering pågår:</label>
-            <progress id="progress-bar" value="0" max="100"></progress>
-            <span id="progress-percent">0%</span>
-        </div>
-
-        <video id="video-player" controls>
-            <source src="" type="video/mp4">
-            Din webbläsare stödjer inte videouppspelning.
-        </video>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
 
     <script>
         document.getElementById('file-input').addEventListener('change', handleFileSelect);
@@ -282,64 +265,3 @@
                         document.getElementById('progress-bar').value = 100;
                         document.getElementById('progress-percent').textContent = '100%';
 
-                        // Skapa en nedladdningslänk för den konverterade videon
-                        const downloadLink = document.createElement('a');
-                        downloadLink.href = convertedUrl;
-                        downloadLink.download = 'converted_video.mp4';
-                        downloadLink.click();
-
-                        // Dölj progress efter en kort stund
-                        setTimeout(() => {
-                            document.getElementById('progress-container').style.display = 'none';
-                        }, 500);
-                    });
-                });
-            };
-
-            reader.readAsArrayBuffer(file);
-        });
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const fileInfo = document.getElementById('file-name');
-            const videoPlayer = document.getElementById('video-player');
-            const videoSource = videoPlayer.querySelector('source');
-
-            if (file) {
-                const fileURL = URL.createObjectURL(file);
-                videoSource.src = fileURL;
-                videoPlayer.load();
-                fileInfo.textContent = `Vald fil: ${file.name}`;
-            } else {
-                fileInfo.textContent = 'Ingen fil vald';
-            }
-        }
-    </script>
-</body>
-</html>
-
-        // Funktion för att uppdatera volymprocent
-        function updateVolumePercentage(type) {
-            const volumeSlider = document.getElementById(type + '-volume');
-            const volumePercent = document.getElementById(type + '-volume-percent');
-            const volumeIcon = document.getElementById(type + '-volume-icon');
-            const volumeValue = volumeSlider.value;
-
-            volumePercent.textContent = `${volumeValue}%`;
-
-            if (volumeValue === "0") {
-                volumeIcon.textContent = "🔇";
-            } else if (volumeValue > "0" && volumeValue <= "50") {
-                volumeIcon.textContent = "🔉";
-            } else {
-                volumeIcon.textContent = "🔊";
-            }
-        }
-
-        document.querySelectorAll('.volume-slider').forEach(slider => {
-            slider.addEventListener('input', (e) => updateVolumePercentage(e.target.id.replace('-volume', '')));
-        });
-
-    </script>
-</body>
-</html>
