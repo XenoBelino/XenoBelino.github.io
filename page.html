@@ -222,69 +222,38 @@
             window.location.href = 'index.html'; // Omdirigera till index.html
         });
 
+        // Lägger till event-lyssnare för volymreglagen
+        function updateVolumePercentage(type) {
+            const volumeSlider = document.getElementById(`${type}-volume`);
+            const volumePercent = document.getElementById(`${type}-volume-percent`);
+            const volumeIcon = document.getElementById(`${type}-volume-icon`);
+            const volumeValue = volumeSlider.value;
+
+            volumePercent.textContent = `${volumeValue}%`;
+            volumeIcon.style.opacity = volumeValue === '0' ? '0.5' : '1';
+        }
+
+        // Lägg till funktionalitet för att byta bakgrund
+        document.getElementById('change-background-btn').addEventListener('click', function() {
+            const backgroundOptions = document.getElementById('background-options');
+            backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('light-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+        });
+
+        document.getElementById('dark-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+        });
+
+        // Lägg till funktionalitet för att browse files
         document.getElementById('file-input').addEventListener('change', handleFileSelect);
 
-        document.getElementById('convert-btn').addEventListener('click', function() {
-            const fileInput = document.getElementById('file-input');
-            if (!fileInput.files.length) {
-                alert("Vänligen välj en fil först!");
-                return;
-            }
-
-            const file = fileInput.files[0];
-            const fileInfo = document.getElementById('file-name');
-            const videoPlayer = document.getElementById('video-player');
-            const videoSource = videoPlayer.querySelector('source');
-            const reader = new FileReader();
-
-            // Visa progress-bar och börja konvertering
-            document.getElementById('progress-container').style.display = 'block';
-            document.getElementById('progress-bar').value = 0;
-            document.getElementById('progress-percent').textContent = '0%';
-
-            reader.onload = function(event) {
-                const inputFileData = event.target.result;
-                const ffmpeg = FFmpeg.createFFmpeg({ log: true, progress: (progress) => {
-                    if (progress && progress.percent !== undefined) {
-                        document.getElementById('progress-bar').value = progress.percent;
-                        document.getElementById('progress-percent').textContent = `${Math.round(progress.percent)}%`;
-                    }
-                } });
-
-                // Ladda FFmpeg
-                ffmpeg.load().then(() => {
-                    // Skriv filen till FFmpeg:s virtuella filsystem
-                    ffmpeg.FS('writeFile', file.name, new Uint8Array(inputFileData));
-
-                    // Kör FFmpeg för att konvertera video (FLV till MP4)
-                    ffmpeg.run('-i', file.name, 'output.mp4').then(() => {
-                        const data = ffmpeg.FS('readFile', 'output.mp4');
-                        const convertedBlob = new Blob([data.buffer], { type: 'video/mp4' });
-                        const convertedUrl = URL.createObjectURL(convertedBlob);
-
-                        // Uppdatera videospelaren med den konverterade videon
-                        videoSource.src = convertedUrl;
-                        videoPlayer.load();
-
-                        // När konverteringen är klar, uppdatera progress och ladda ned filen
-                        document.getElementById('progress-bar').value = 100;
-                        document.getElementById('progress-percent').textContent = '100%';
-
-                        // Skapa en nedladdningslänk för den konverterade videon
-                        const downloadLink = document.createElement('a');
-                        downloadLink.href = convertedUrl;
-                        downloadLink.download = 'converted_video.mp4';
-                        downloadLink.click();
-
-                        // Dölj progress efter en kort stund
-                        setTimeout(() => {
-                            document.getElementById('progress-container').style.display = 'none';
-                        }, 500);
-                    });
-                });
-            };
-
-            reader.readAsArrayBuffer(file);
+        document.getElementById('browse-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
         });
 
         function handleFileSelect(event) {
