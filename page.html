@@ -7,11 +7,13 @@
     <title>Video Player with Settings</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Grundläggande stil för hela sidan */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .editor-content {
@@ -21,7 +23,8 @@
             margin: auto;
         }
 
-        .button {
+        /* Stil för knappar */
+        .button, .browse-button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
@@ -29,93 +32,161 @@
             border: none;
             background-color: #6a0dad;
             color: white;
+            transition: background-color 0.3s;
         }
 
-        .button:hover {
+        .button:hover, .browse-button:hover {
             background-color: #5c0b8a;
         }
 
+        /* Placering av knappar */
         #change-background-btn {
             position: fixed;
             top: 20px;
             right: 20px;
+            z-index: 1000;
         }
 
         #back-to-home-btn {
             position: fixed;
             top: 20px;
             left: 20px;
+            z-index: 1000;
         }
 
         #save-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
+            z-index: 1000;
         }
 
-        /* Volymreglage */
-        .volume-slider-container {
+        /* Bakgrundsoptionssliden */
+        #background-options {
+            display: none;
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        /* Specifik stil för Light Mode / Dark Mode knappar */
+        .mode-btn {
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Light Mode & Dark Mode Styles */
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: black;
+        }
+
+        body.dark-mode {
+            background-color: #000000;
+            color: white;
+        }
+
+        /* Progress bar container */
+        #progress-container {
+            display: none;
             margin-top: 20px;
         }
-
-        .volume-slider {
-            margin-top: 10px;
+        progress {
+            width: 100%;
+            height: 20px;
         }
     </style>
 </head>
 <body>
     <div class="editor-content">
-        <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-        <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
+        <div class="intro-section">
+            <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+            <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
+        </div>
 
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
                 <source src="assets/videos/sample.mp4" type="video/mp4">
+                <source src="assets/videos/sample.webm" type="video/webm">
+                <source src="assets/videos/sample.ogv" type="video/ogg">
+                <source src="assets/videos/sample.mkv" type="video/mkv">
                 Your browser does not support the video tag.
             </video>
         </div>
 
         <!-- Filväljare -->
-        <button id="browse-btn" class="button">Browse Files</button>
-        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
         <div id="file-name">No file selected</div>
+        <button id="browse-btn" class="browse-button">Browse Files</button>
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
 
-        <!-- Convert to MP4-knapp -->
+        <!-- Konverteringsknapp -->
         <button id="convert-btn" class="button">Convert to MP4</button>
 
-        <!-- Save Changes-knapp -->
+        <button id="change-background-btn" class="button">Change Background</button>
+
+        <!-- Bakgrundsoptions slider -->
+        <div id="background-options">
+            <button class="mode-btn" id="light-mode-btn">Light Mode</button>
+            <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
+        </div>
+
         <button id="save-btn" class="button">Save Changes</button>
 
         <!-- Volymreglage -->
         <div class="volume-slider-container">
-            <label for="original-volume">Original Volume:</label>
-            <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
-            <span id="original-volume-percent">50%</span>
-
-            <label for="corrupted-volume">Corrupted Volume:</label>
-            <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
-            <span id="corrupted-volume-percent">50%</span>
-
-            <label for="music-volume">Music Volume:</label>
-            <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
-            <span id="music-volume-percent">50%</span>
-
-            <label for="final-volume">Final Volume:</label>
-            <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
-            <span id="final-volume-percent">50%</span>
+            <div>
+                <label for="original-volume">Original Volume:</label>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+                <span id="original-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="corrupted-volume">Corrupted Volume:</label>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
+                <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="music-volume">Music Volume:</label>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
+                <span id="music-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="final-volume">Final Volume:</label>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
+                <span id="final-volume-percent" class="volume-percentage">50%</span>
+            </div>
         </div>
 
-        <button id="back-to-home-btn" class="button">Back to Home Page</button>
+        <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
+
+        <!-- Progress bar container -->
+        <div id="progress-container">
+            <label for="progress-bar">Konvertering pågår:</label>
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <span id="progress-percent">0%</span>
+        </div>
     </div>
 
     <!-- Inkludera FFmpeg.js via CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg.js/4.1.0/ffmpeg.min.js"></script>
 
     <script>
-        // Kolla om FFmpeg.js är korrekt laddad
-        const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-
         // Hantera filval
         function handleFileSelect(event) {
             const file = event.target.files[0];
@@ -141,45 +212,48 @@
             }
         }
 
+        // Kalla på när användaren väljer en fil
+        document.getElementById('browse-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
         // Spara ändringar
         document.getElementById('save-btn').addEventListener('click', function() {
             alert("Changes have been saved!"); // Här kan du lägga till logik för att spara ändringar (t.ex. volym eller bakgrund)
             localStorage.setItem("savedChanges", JSON.stringify({ volume: "50" }));
         });
 
-        // Volymprocent uppdatering
+        // Byt bakgrundsfärg
+        document.getElementById('change-background-btn').addEventListener('click', function() {
+            const backgroundOptions = document.getElementById('background-options');
+            backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Växla till ljus-/mörkt läge
+        document.getElementById('light-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+            localStorage.setItem('mode', 'light');
+        });
+
+        document.getElementById('dark-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('mode', 'dark');
+        });
+
+        // Återställ till tidigare valt läge från localStorage
+        if (localStorage.getItem('mode') === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.add('light-mode');
+        }
+
+        // Uppdatera volymprocent
         function updateVolumePercentage(id) {
             const volume = document.getElementById(id + '-volume').value;
             document.getElementById(id + '-percent').textContent = volume + '%';
         }
-
-        // Omvandla till MP4
-        document.getElementById('convert-btn').addEventListener('click', function() {
-            const video = document.getElementById('video-player');
-            const inputFile = document.getElementById('file-input').files[0];
-            if (inputFile) {
-                const fileURL = URL.createObjectURL(inputFile);
-                const outputFileName = "output.mp4";
-
-                ffmpeg.load().then(() => {
-                    ffmpeg.FS('writeFile', inputFile.name, inputFile);
-                    ffmpeg.run('-i', inputFile.name, outputFileName).then(() => {
-                        const data = ffmpeg.FS('readFile', outputFileName);
-                        const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-                        const videoURL = URL.createObjectURL(videoBlob);
-                        video.src = videoURL;
-
-                        alert("Conversion completed!");
-                    }).catch(err => {
-                        console.error("Error during conversion:", err);
-                    });
-                }).catch(err => {
-                    console.error("FFmpeg failed to load:", err);
-                });
-            } else {
-                alert("Please select a file first!");
-            }
-        });
 
         // Back to Home Page
         document.getElementById('back-to-home-btn').addEventListener('click', function() {
