@@ -93,62 +93,6 @@
             flex-direction: column;
             gap: 10px;
         }
-
-        /* Bakgrundsoptionssliden */
-        #background-options {
-            display: none;
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            background-color: #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            width: auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            z-index: 100;
-        }
-
-        /* Specifik stil för Light Mode / Dark Mode knappar */
-        .mode-btn {
-            padding: 10px 20px;
-            background-color: #6a0dad;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .mode-btn:hover {
-            background-color: #5c0b8a;
-        }
-
-        /* Light Mode & Dark Mode Styles */
-        body.light-mode {
-            background-color: #f4f4f4;
-            color: black;
-        }
-
-        body.dark-mode {
-            background-color: #000000;
-            color: white;
-        }
-
-        /* När Dark Mode är aktiv */
-        body.dark-mode #file-name {
-            color: white;
-        }
-
-        /* Progress bar container */
-        #progress-container {
-            display: none;
-            margin-top: 20px;
-        }
-        progress {
-            width: 100%;
-            height: 20px;
-        }
     </style>
 </head>
 <body>
@@ -175,10 +119,6 @@
         <button id="convert-btn" class="button">Convert to MP4</button>
 
         <button id="change-background-btn" class="button">Change Background</button>
-        <div id="background-options">
-            <button class="mode-btn" id="light-mode-btn">Light Mode</button>
-            <button class="mode-btn" id="dark-mode-btn">Dark Mode</button>
-        </div>
 
         <button id="save-btn" class="button">Save Changes</button>
 
@@ -188,33 +128,26 @@
                 <label for="original-volume">Original Volume:</label>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
                 <span id="original-volume-percent" class="volume-percentage">50%</span>
-                <span id="original-volume-icon">🔉</span>
             </div>
             <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
                 <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
                 <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
-                <span id="corrupted-volume-icon">🔉</span>
             </div>
             <div>
                 <label for="music-volume">Music Volume:</label>
                 <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
                 <span id="music-volume-percent" class="volume-percentage">50%</span>
-                <span id="music-volume-icon">🔉</span>
             </div>
             <div>
                 <label for="final-volume">Final Volume:</label>
                 <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
                 <span id="final-volume-percent" class="volume-percentage">50%</span>
-                <span id="final-volume-icon">🔉</span>
             </div>
         </div>
 
-        <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
-
+        <button id="back-to-home-btn" class="button">Back to Home Page</button>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
 
     <script>
         // Lägg till en event listener för knappen "Back to Home Page"
@@ -222,40 +155,22 @@
             window.location.href = 'index.html'; // Omdirigera till index.html
         });
 
-        // Lägger till event-lyssnare för volymreglagen
+        // Volymreglering för olika ljud
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(`${type}-volume`);
             const volumePercent = document.getElementById(`${type}-volume-percent`);
-            const volumeIcon = document.getElementById(`${type}-volume-icon`);
             const volumeValue = volumeSlider.value;
 
             volumePercent.textContent = `${volumeValue}%`;
-            volumeIcon.style.opacity = volumeValue === '0' ? '0.5' : '1';
         }
 
-        // Lägg till funktionalitet för att byta bakgrund
+        // Lägger till funktionalitet för att byta bakgrund
         document.getElementById('change-background-btn').addEventListener('click', function() {
             const backgroundOptions = document.getElementById('background-options');
             backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
         });
 
-        document.getElementById('light-mode-btn').addEventListener('click', function() {
-            document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
-        });
-
-        document.getElementById('dark-mode-btn').addEventListener('click', function() {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
-        });
-
-        // Lägg till funktionalitet för att browse files
-        document.getElementById('file-input').addEventListener('change', handleFileSelect);
-
-        document.getElementById('browse-btn').addEventListener('click', function() {
-            document.getElementById('file-input').click();
-        });
-
+        // Hantera filval och visa meddelanden för konvertering
         function handleFileSelect(event) {
             const file = event.target.files[0];
             const fileInfo = document.getElementById('file-name');
@@ -267,10 +182,25 @@
                 videoSource.src = fileURL;
                 videoPlayer.load();
                 fileInfo.textContent = `Vald fil: ${file.name}`;
+
+                // Kontrollera om filen redan är MP4
+                if (file.name.endsWith('.mp4')) {
+                    alert("Det går inte att konvertera en MP4-fil!");
+                }
             } else {
                 fileInfo.textContent = 'Ingen fil vald';
             }
         }
+
+        document.getElementById('convert-btn').addEventListener('click', function() {
+            const file = document.getElementById('file-input').files[0];
+            if (file && !file.name.endsWith('.mp4')) {
+                alert('Filen konverteras till MP4');
+                // Här kan du implementera en funktion som konverterar videon till MP4
+            } else {
+                alert('Filen är redan i MP4-format');
+            }
+        });
     </script>
 </body>
 </html>
