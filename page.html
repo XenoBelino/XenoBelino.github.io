@@ -265,3 +265,38 @@
                         document.getElementById('progress-bar').value = 100;
                         document.getElementById('progress-percent').textContent = '100%';
 
+                        // Skapa en nedladdningslänk för den konverterade videon
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = convertedUrl;
+                        downloadLink.download = 'converted_video.mp4';
+                        downloadLink.click();
+
+                        // Dölj progress efter en kort stund
+                        setTimeout(() => {
+                            document.getElementById('progress-container').style.display = 'none';
+                        }, 500);
+                    });
+                });
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileInfo = document.getElementById('file-name');
+            const videoPlayer = document.getElementById('video-player');
+            const videoSource = videoPlayer.querySelector('source');
+
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                videoSource.src = fileURL;
+                videoPlayer.load();
+                fileInfo.textContent = `Vald fil: ${file.name}`;
+            } else {
+                fileInfo.textContent = 'Ingen fil vald';
+            }
+        }
+    </script>
+</body>
+</html>
