@@ -212,10 +212,11 @@
 
         <button id="back-to-home-btn" class="button back-button">Back to Home Page</button>
 
-        <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
+       <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
 </head>
 <body>
     <div>
+        <!-- Uppdaterad accept för att tillåta FLV och andra videoformat -->
         <input type="file" id="file-input" accept="video/*" />
         <button id="convert-btn">Konvertera till MP4</button>
         <p id="file-name">Ingen fil vald</p>
@@ -264,9 +265,10 @@
 
                 // Ladda FFmpeg
                 ffmpeg.load().then(() => {
+                    // Skriv filen till FFmpeg:s virtuella filsystem
                     ffmpeg.FS('writeFile', file.name, new Uint8Array(inputFileData));
 
-                    // Kör FFmpeg för att konvertera video
+                    // Kör FFmpeg för att konvertera video (FLV till MP4)
                     ffmpeg.run('-i', file.name, 'output.mp4').then(() => {
                         const data = ffmpeg.FS('readFile', 'output.mp4');
                         const convertedBlob = new Blob([data.buffer], { type: 'video/mp4' });
@@ -280,6 +282,7 @@
                         document.getElementById('progress-bar').value = 100;
                         document.getElementById('progress-percent').textContent = '100%';
 
+                        // Skapa en nedladdningslänk för den konverterade videon
                         const downloadLink = document.createElement('a');
                         downloadLink.href = convertedUrl;
                         downloadLink.download = 'converted_video.mp4';
