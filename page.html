@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Länka till styles.css -->
+    <link rel="stylesheet" href="styles.css"> <!-- Kontrollera att denna fil finns på rätt plats -->
     <style>
         /* Grundläggande stil för hela sidan */
         body {
@@ -14,6 +14,12 @@
             margin: 0;
             padding: 0;
             transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
         }
 
         .editor-content {
@@ -164,10 +170,9 @@
             volumePercent.textContent = `${volumeValue}%`;
         }
 
-        // Lägger till funktionalitet för att byta bakgrund
+        // Byt bakgrundsfärg (light/dark mode)
         document.getElementById('change-background-btn').addEventListener('click', function() {
-            const backgroundOptions = document.getElementById('background-options');
-            backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
+            document.body.classList.toggle('dark-mode');
         });
 
         // Hantera filval och visa meddelanden för konvertering
