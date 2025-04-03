@@ -288,6 +288,13 @@
                 return;
             }
 
+        if (typeof FFmpeg === 'undefined') {
+    console.error("FFmpeg is not loaded properly.");
+} else {
+    // Fortsätt med FFmpeg-anropen här
+}
+
+
             // Ladda ffmpeg.wasm
             const { createFFmpeg, fetchFile } = FFmpeg;
             const ffmpeg = createFFmpeg({ log: true });
