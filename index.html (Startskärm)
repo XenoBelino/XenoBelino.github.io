@@ -90,7 +90,9 @@
                 document.getElementById('visitor-ip').textContent = 'Unable to retrieve IP';
                 console.error('Error fetching IP:', error);
             });
-
     </script>
+
+    <!-- Lägg till FFmpeg här om det behövs -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.3"></script>
 </body>
 </html>
