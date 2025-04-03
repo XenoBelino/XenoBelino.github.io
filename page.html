@@ -126,6 +126,34 @@
         .option-button:hover {
             background-color: #5c0b8a;
         }
+
+        /* Stil för progress-bar */
+        .progress-bar-container {
+            display: none;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background-color: #6a0dad;
+            border-radius: 10px;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
     </style>
 </head>
 <body>
@@ -189,6 +217,14 @@
         <button class="option-button" id="dark-mode-btn">Dark Mode</button>
     </div>
 
+    <!-- Progress bar for conversion -->
+    <div class="progress-bar-container" id="progress-bar-container">
+        <div class="progress-bar">
+            <div class="progress-bar-inner" id="progress-bar-inner"></div>
+        </div>
+        <div class="status-message" id="status-message"></div>
+    </div>
+
     <script>
         // Lägg till en event listener för knappen "Back to Home Page"
         document.getElementById('back-to-home-btn').addEventListener('click', function() {
@@ -249,13 +285,24 @@
         });
 
         document.getElementById('convert-btn').addEventListener('click', function() {
-            const file = document.getElementById('file-input').files[0];
-            if (file && !file.name.endsWith('.mp4')) {
-                alert('Filen konverteras till MP4');
-                // Här kan du implementera en funktion som konverterar videon till MP4
-            } else {
-                alert('Filen är redan i MP4-format');
-            }
+            const progressBarContainer = document.getElementById('progress-bar-container');
+            const progressBarInner = document.getElementById('progress-bar-inner');
+            const statusMessage = document.getElementById('status-message');
+            let progress = 0;
+
+            progressBarContainer.style.display = 'block'; // Visa progressbaren
+
+            // Simulera konverteringsprocessen
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBarInner.style.width = `${progress}%`;
+                statusMessage.textContent = `Konverterar... ${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval); // Stäng av intervallet
+                    statusMessage.textContent = 'Konverteringen är klar!';
+                }
+            }, 500); // Uppdatera varje 500 ms
         });
     </script>
 </body>
