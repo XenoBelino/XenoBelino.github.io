@@ -225,109 +225,58 @@
         <div class="status-message" id="status-message"></div>
     </div>
 
+    <!-- Ladda FFmpeg -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.3"></script>
 
-
     <script>
-        // Lägg till en event listener för knappen "Back to Home Page"
-        document.getElementById('back-to-home-btn').addEventListener('click', function() {
-            window.location.href = 'index.html'; // Omdirigera till index.html
-        });
-
-        // Volymreglering för olika ljud
-        function updateVolumePercentage(type) {
-            const volumeSlider = document.getElementById(`${type}-volume`);
-            const volumePercent = document.getElementById(`${type}-volume-percent`);
-            const volumeValue = volumeSlider.value;
-
-            volumePercent.textContent = `${volumeValue}%`;
-        }
-
-        // Byt bakgrundsfärg (light/dark mode) genom en slider-popup
-        document.getElementById('change-background-btn').addEventListener('click', function() {
-            const backgroundOptions = document.getElementById('background-options');
-            backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
-        });
-
-        // Välj Light Mode
-        document.getElementById('light-mode-btn').addEventListener('click', function() {
-            document.body.classList.remove('dark-mode');
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        // Välj Dark Mode
-        document.getElementById('dark-mode-btn').addEventListener('click', function() {
-            document.body.classList.add('dark-mode');
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        // Hantera filval och visa meddelanden för konvertering
-        let selectedFile = null;
-        const videoPlayer = document.getElementById("video-player");
-        const fileInput = document.getElementById("file-input");
-        const fileNameDisplay = document.getElementById("file-name");
-
-        function handleFileSelect(event) {
-            selectedFile = event.target.files[0];
-            if (selectedFile) {
-                const fileURL = URL.createObjectURL(selectedFile);
-                videoPlayer.src = fileURL;
-                fileNameDisplay.textContent = `Vald fil: ${selectedFile.name}`;
+        window.onload = () => {
+            if (typeof FFmpeg === 'undefined') {
+                console.error("FFmpeg is not loaded properly.");
             } else {
-                fileNameDisplay.textContent = 'Ingen fil vald';
+                console.log("FFmpeg is loaded correctly.");
+                const { createFFmpeg, fetchFile } = FFmpeg;
+
+                const ffmpeg = createFFmpeg({ log: true });
+
+                // Lägg till event listener för "convert-btn"
+                document.getElementById("convert-btn").addEventListener("click", async function() {
+                    if (!selectedFile) {
+                        alert("Vänligen välj en fil att konvertera!");
+                        return;
+                    }
+
+                    if (!ffmpeg.isLoaded()) {
+                        await ffmpeg.load();
+                    }
+
+                    const progressBarContainer = document.getElementById("progress-bar-container");
+                    const progressBarInner = document.getElementById("progress-bar-inner");
+                    const statusMessage = document.getElementById("status-message");
+
+                    // Visa progressbar
+                    progressBarContainer.style.display = "block";
+
+                    await ffmpeg.FS('writeFile', selectedFile.name, await fetchFile(selectedFile));
+
+                    let progress = 0;
+                    ffmpeg.setProgress(({ ratio }) => {
+                        progress = Math.round(ratio * 100);
+                        progressBarInner.style.width = `${progress}%`;
+                        statusMessage.textContent = `Konverterar... ${progress}%`;
+                    });
+
+                    // Konvertera till MP4
+                    await ffmpeg.run('-i', selectedFile.name, 'output.mp4');
+
+                    const data = ffmpeg.FS('readFile', 'output.mp4');
+                    const videoURL = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+                    videoPlayer.src = videoURL;
+
+                    progressBarInner.style.width = '100%';
+                    statusMessage.textContent = 'Konverteringen är klar!';
+                });
             }
-        }
-
-        document.getElementById("browse-btn").addEventListener("click", function() {
-            fileInput.click();
-        });
-
-        document.getElementById("convert-btn").addEventListener("click", async function() {
-            if (!selectedFile) {
-                alert("Vänligen välj en fil att konvertera!");
-                return;
-            }
-
-        if (typeof FFmpeg === 'undefined') {
-    console.error("FFmpeg is not loaded properly.");
-} else {
-    // Fortsätt med FFmpeg-anropen här
-}
-
-
-            // Ladda ffmpeg.wasm
-            const { createFFmpeg, fetchFile } = FFmpeg;
-            const ffmpeg = createFFmpeg({ log: true });
-            if (!ffmpeg.isLoaded()) {
-                await ffmpeg.load();
-            }
-
-            const progressBarContainer = document.getElementById("progress-bar-container");
-            const progressBarInner = document.getElementById("progress-bar-inner");
-            const statusMessage = document.getElementById("status-message");
-
-            // Visa progressbar
-            progressBarContainer.style.display = "block";
-
-            await ffmpeg.FS('writeFile', selectedFile.name, await fetchFile(selectedFile));
-
-            let progress = 0;
-            ffmpeg.setProgress(({ ratio }) => {
-                progress = Math.round(ratio * 100);
-                progressBarInner.style.width = `${progress}%`;
-                statusMessage.textContent = `Konverterar... ${progress}%`;
-            });
-
-            // Konvertera till MP4
-            await ffmpeg.run('-i', selectedFile.name, 'output.mp4');
-
-            const data = ffmpeg.FS('readFile', 'output.mp4');
-            const videoURL = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-            videoPlayer.src = videoURL;
-
-            progressBarInner.style.width = '100%';
-            statusMessage.textContent = 'Konverteringen är klar!';
-        });
+        };
     </script>
 </body>
 </html>
