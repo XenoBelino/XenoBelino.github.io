@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Kontrollera att denna fil finns på rätt plats -->
+    <link rel="stylesheet" href="styles.css">
     <style>
         /* Grundläggande stil för hela sidan */
         body {
@@ -103,10 +103,9 @@
         /* Popup-container för bakgrundsändring */
         #background-options {
             display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: absolute;
+            top: 60px; /* Justera så att popupen är precis under Change Background-knappen */
+            right: 20px;
             padding: 20px;
             background-color: white;
             border-radius: 10px;
