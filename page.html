@@ -169,7 +169,6 @@
                 <source src="assets/videos/sample.mp4" type="video/mp4">
                 <source src="assets/videos/sample.webm" type="video/webm">
                 <source src="assets/videos/sample.ogv" type="video/ogg">
-                <source src="assets/videos/sample.mkv" type="video/mkv">
                 Your browser does not support the video tag.
             </video>
         </div>
@@ -240,6 +239,7 @@
 
                 // Lägg till event listener för "convert-btn"
                 document.getElementById("convert-btn").addEventListener("click", async function() {
+                    console.log("Convert button clicked");
                     if (!selectedFile) {
                         alert("Vänligen välj en fil att konvertera!");
                         return;
@@ -277,6 +277,13 @@
                 });
             }
         };
+
+        function updateVolumePercentage(type) {
+            const volumeSlider = document.getElementById(type + '-volume');
+            const volumePercent = document.getElementById(type + '-volume-percent');
+            const volumeValue = volumeSlider.value;
+            volumePercent.textContent = volumeValue + '%';
+        }
     </script>
 </body>
 </html>
