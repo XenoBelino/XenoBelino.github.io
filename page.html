@@ -104,7 +104,7 @@
         /* Popup-container för bakgrundsändring */
         #background-options {
             display: none;
-            position: absolute;
+            position: fixed; /* Fast position */
             top: 60px;
             right: 20px;
             padding: 20px;
@@ -112,20 +112,45 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
             z-index: 9999;
+            text-align: left;
+        }
+
+        #background-options button {
+            margin: 10px 0; /* Vertikal marginal */
         }
 
         .option-button {
-            margin: 10px;
             padding: 10px 20px;
             background-color: #6a0dad;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%; /* Gör knapparna lika breda */
         }
 
         .option-button:hover {
             background-color: #5c0b8a;
+        }
+
+        /* Laddningsbar */
+        #progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            display: none; /* Döljer laddningsbaren tills knappen klickas */
+            border-radius: 15px; /* Runda kanter */
+        }
+
+        #progress-bar-filled {
+            height: 20px;
+            background-color: #4caf50;
+            width: 0;
+            border-radius: 15px; /* Runda kanter på själva progress */
+        }
+
+        #progress-text {
+            font-size: 14px;
+            margin-top: 5px;
         }
 
         /* För att texten 'No file selected' alltid ska vara vit när mörkt läge är aktivt */
@@ -145,23 +170,6 @@
         /* För att fixa texten i 'Choose Background Mode' så att den inte blir vit i mörkt läge */
         body.dark-mode #background-options {
             background-color: #333; /* Ändrar bakgrunden så att texten syns bättre */
-        }
-
-        /* Laddningsbar */
-        #progress-bar {
-            width: 100%;
-            background-color: #ddd;
-        }
-
-        #progress-bar-filled {
-            height: 20px;
-            background-color: #4caf50;
-            width: 0;
-        }
-
-        #progress-text {
-            font-size: 14px;
-            margin-top: 5px;
         }
     </style>
 </head>
@@ -233,22 +241,17 @@
 
     <!-- Ladda FFmpeg.js -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/dist/ffmpeg.min.js"></script>
-
     <script>
         let isFFmpegLoaded = false;
-        let ffmpeg;
 
         async function initializeFFmpeg() {
             try {
-                if (typeof createFFmpeg === 'function') {
-                    ffmpeg = createFFmpeg({ log: true });
-                    await ffmpeg.load();
-                    console.log('FFmpeg is loaded and ready.');
-                    isFFmpegLoaded = true;
-                } else {
-                    console.error('createFFmpeg function is not available.');
-                    isFFmpegLoaded = false;
-                }
+                const { createFFmpeg, fetchFile } = FFmpeg;
+                const ffmpeg = createFFmpeg({ log: true });
+                await ffmpeg.load();
+                isFFmpegLoaded = true;
+                console.log('FFmpeg is initialized');
+                return ffmpeg;
             } catch (error) {
                 console.error('Error initializing FFmpeg:', error);
                 isFFmpegLoaded = false;
@@ -297,7 +300,10 @@
             document.getElementById('file-input').click();
         });
 
-        document.getElementById('convert-btn').addEventListener('click', convertToMP4);
+        document.getElementById('convert-btn').addEventListener('click', () => {
+            document.getElementById('progress-bar').style.display = 'block';
+            convertToMP4();
+        });
 
         // Handle Background Mode
         document.getElementById('change-background-btn').addEventListener('click', () => {
