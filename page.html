@@ -244,9 +244,20 @@
     </div>
 
     <!-- Ladda FFmpeg -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.3" onload="initializeFFmpeg()"></script>
 
     <script>
+        let ffmpeg;
+
+        function initializeFFmpeg() {
+            if (typeof createFFmpeg === 'function') {
+                ffmpeg = createFFmpeg({ log: true });
+                console.log('FFmpeg is loaded and ready.');
+            } else {
+                console.error('FFmpeg failed to load or createFFmpeg is not available.');
+            }
+        }
+
         let selectedFile = null;
 
         window.onload = () => {
@@ -288,7 +299,11 @@
                 return;
             }
 
-            const ffmpeg = createFFmpeg({ log: true });
+            if (!ffmpeg) {
+                console.error('FFmpeg is not initialized.');
+                return;
+            }
+
             await ffmpeg.load(); // Laddar ffmpeg ordentligt
 
             // Kör konverteringen
