@@ -232,58 +232,36 @@
             <div id="progress-bar-filled"></div>
         </div>
         <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
+
+        <!-- Bakgrundsalternativ -->
+        <div id="background-options">
+            <h3>Choose Background Mode</h3>
+            <button id="light-mode-btn" class="option-button">Light Mode</button>
+            <button id="dark-mode-btn" class="option-button">Dark Mode</button>
+        </div>
     </div>
 
-    <!-- Bakgrundsval popup -->
-    <div id="background-options">
-        <h3>Choose Background Mode</h3>
-        <button class="option-button" id="light-mode-btn">Light Mode</button>
-        <button class="option-button" id="dark-mode-btn">Dark Mode</button>
-    </div>
-
-    <!-- Ladda FFmpeg.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/dist/ffmpeg.min.js"></script>
     <script>
-        let isFFmpegLoaded = false;
+        const ffmpeg = createFFmpeg({ log: true });
 
         async function initializeFFmpeg() {
             try {
-                const { createFFmpeg, fetchFile } = FFmpeg;
-                const ffmpeg = createFFmpeg({ log: true });
                 await ffmpeg.load();
-                isFFmpegLoaded = true;
-                console.log('FFmpeg is initialized');
-                return ffmpeg;
+                console.log('FFmpeg initialized successfully.');
             } catch (error) {
                 console.error('Error initializing FFmpeg:', error);
-                isFFmpegLoaded = false;
-            }
-        }
-
-        async function waitForFFmpeg() {
-            if (!isFFmpegLoaded) {
-                await initializeFFmpeg();
             }
         }
 
         async function convertToMP4() {
-            await waitForFFmpeg();
-            if (!isFFmpegLoaded) {
-                console.error('FFmpeg is not initialized');
-                document.getElementById('progress-text').textContent = 'Failed to convert video';
-                return;
-            }
-
             const videoFile = document.getElementById('file-input').files[0];
             if (!videoFile) {
-                alert('No video file selected');
+                alert('Please select a video file first.');
                 return;
             }
 
-            ffmpeg.FS('writeFile', videoFile.name, await fetchFile(videoFile));
             document.getElementById('progress-bar').style.display = 'block';
 
-            // Update progress text
             let progress = 0;
             const interval = setInterval(() => {
                 progress += 10;
@@ -293,7 +271,7 @@
                     clearInterval(interval);
                     document.getElementById('progress-text').textContent = 'Conversion successful!';
                 }
-            }, 1000); // Uppdatera progressen varje sekund
+            }, 1000);
 
             try {
                 await ffmpeg.run('-i', videoFile.name, 'output.mp4');
@@ -308,6 +286,17 @@
             }
         }
 
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('file-name').textContent = file.name;
+            }
+        }
+
+        document.getElementById('browse-btn').addEventListener('click', () => {
+            document.getElementById('file-input').click();
+        });
+
         document.getElementById('convert-btn').addEventListener('click', () => {
             document.getElementById('progress-text').style.display = 'block';
             document.getElementById('progress-text').textContent = '0% of 100% to complete conversion';
@@ -315,7 +304,8 @@
         });
 
         document.getElementById('change-background-btn').addEventListener('click', () => {
-            document.getElementById('background-options').style.display = 'block';
+            const backgroundOptions = document.getElementById('background-options');
+            backgroundOptions.style.display = (backgroundOptions.style.display === 'block') ? 'none' : 'block';
         });
 
         document.getElementById('light-mode-btn').addEventListener('click', () => {
