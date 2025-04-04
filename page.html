@@ -167,6 +167,11 @@
             width: 0%;
             border-radius: 5px;
         }
+
+        .progress-text {
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -234,6 +239,7 @@
         <div class="progress-bar">
             <div class="progress-bar-inner" id="progress-bar-inner"></div>
         </div>
+        <div class="progress-text" id="progress-text">0% of 100% conversion</div>
     </div>
 
     <!-- Ladda FFmpeg.js -->
@@ -315,11 +321,13 @@
             // Visa progress bar
             document.getElementById('progress-bar-container').style.display = 'block';
             document.getElementById('progress-bar-inner').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0% of 100% conversion';
 
             await waitForFFmpeg();
 
             if (!isFFmpegLoaded) {
                 console.error('FFmpeg is not initialized.');
+                document.getElementById('progress-text').textContent = 'Failed to convert';
                 return;
             }
 
@@ -335,16 +343,17 @@
 
                 // Uppdatera progress bar till 100%
                 document.getElementById('progress-bar-inner').style.width = '100%';
+                document.getElementById('progress-text').textContent = 'Conversion successful';
             } catch (error) {
                 console.error('Error during conversion:', error);
+                document.getElementById('progress-text').textContent = 'Failed to convert';
             }
         });
 
         function updateVolumePercentage(type) {
             const volumeSlider = document.getElementById(type + '-volume');
-            const volumePercent = document.getElementById(type + '-volume-percent');
-            const volumeValue = volumeSlider.value;
-            volumePercent.textContent = volumeValue + '%';
+            const volumePercentage = document.getElementById(type + '-volume-percent');
+            volumePercentage.textContent = volumeSlider.value + '%';
         }
     </script>
 </body>
