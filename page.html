@@ -236,8 +236,8 @@
         </div>
     </div>
 
-    <!-- Ladda FFmpeg -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.3"></script>
+    <!-- Ladda FFmpeg.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.0/ffmpeg.min.js"></script>
 
     <script>
         let ffmpeg;
@@ -246,10 +246,15 @@
         // Asynkron funktion för att initiera FFmpeg
         async function initializeFFmpeg() {
             try {
-                ffmpeg = createFFmpeg({ log: true });
-                await ffmpeg.load();
-                isFFmpegLoaded = true;
-                console.log('FFmpeg is loaded and ready.');
+                if (typeof createFFmpeg !== 'undefined') {
+                    ffmpeg = createFFmpeg({ log: true });
+                    await ffmpeg.load();
+                    isFFmpegLoaded = true;
+                    console.log('FFmpeg is loaded and ready.');
+                } else {
+                    console.error('createFFmpeg function is not available.');
+                    isFFmpegLoaded = false;
+                }
             } catch (error) {
                 console.error('Error initializing FFmpeg:', error);
                 isFFmpegLoaded = false;
