@@ -249,13 +249,18 @@
     <script>
         let ffmpeg;
 
-        function initializeFFmpeg() {
+        async function initializeFFmpeg() {
             // Vänta tills FFmpeg är fullständigt laddat och skapa instansen
-            if (typeof createFFmpeg === 'function') {
-                ffmpeg = createFFmpeg({ log: true });
-                console.log('FFmpeg is loaded and ready.');
-            } else {
-                console.error('FFmpeg failed to load or createFFmpeg is not available.');
+            try {
+                if (typeof createFFmpeg === 'function') {
+                    ffmpeg = createFFmpeg({ log: true });
+                    await ffmpeg.load();  // Vänta tills FFmpeg är redo
+                    console.log('FFmpeg is loaded and ready.');
+                } else {
+                    console.error('createFFmpeg function is not available.');
+                }
+            } catch (error) {
+                console.error('Error initializing FFmpeg:', error);
             }
         }
 
@@ -305,7 +310,10 @@
                 return;
             }
 
-            await ffmpeg.load(); // Laddar ffmpeg ordentligt
+            // Ladda FFmpeg om den inte är laddad
+            if (!ffmpeg.isLoaded()) {
+                await ffmpeg.load();
+            }
 
             // Kör konverteringen
             await ffmpeg.FS('writeFile', selectedFile.name, await fetchFile(selectedFile));
