@@ -289,9 +289,7 @@
             }
 
             const ffmpeg = createFFmpeg({ log: true });
-            if (!ffmpeg.isLoaded()) {
-                await ffmpeg.load();
-            }
+            await ffmpeg.load(); // Laddar ffmpeg ordentligt
 
             // Kör konverteringen
             await ffmpeg.FS('writeFile', selectedFile.name, await fetchFile(selectedFile));
