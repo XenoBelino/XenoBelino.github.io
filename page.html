@@ -250,6 +250,7 @@
         let ffmpeg;
 
         function initializeFFmpeg() {
+            // Vänta tills FFmpeg är fullständigt laddat och skapa instansen
             if (typeof createFFmpeg === 'function') {
                 ffmpeg = createFFmpeg({ log: true });
                 console.log('FFmpeg is loaded and ready.');
