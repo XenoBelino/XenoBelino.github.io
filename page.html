@@ -155,6 +155,20 @@
             color: #333;
         }
 
+        /* För att texten 'No file selected' alltid ska vara vit när mörkt läge är aktivt */
+        body.dark-mode #file-name {
+            color: white !important;
+        }
+
+        /* För att säkerställa att texten 'Choose Background Mode' alltid är svart */
+        #background-options h3 {
+            color: black !important;
+        }
+
+        /* För att fixa texten i 'Choose Background Mode' så att den inte blir vit i mörkt läge */
+        body.dark-mode #background-options {
+            background-color: #333; /* Ändrar bakgrunden så att texten syns bättre */
+        }
     </style>
 </head>
 <body>
