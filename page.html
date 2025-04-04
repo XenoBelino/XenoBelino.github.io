@@ -160,9 +160,13 @@
             color: white !important;
         }
 
-        /* För att säkerställa att texten 'Choose Background Mode' alltid är svart */
+        /* För att texten 'Choose Background Mode' ska vara svart i light mode och vit i dark mode */
         #background-options h3 {
-            color: black !important;
+            color: black;
+        }
+
+        body.dark-mode #background-options h3 {
+            color: white;
         }
 
         /* För att fixa texten i 'Choose Background Mode' så att den inte blir vit i mörkt läge */
