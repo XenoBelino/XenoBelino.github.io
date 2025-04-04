@@ -146,6 +146,27 @@
         body.dark-mode #background-options {
             background-color: #333; /* Ändrar bakgrunden så att texten syns bättre */
         }
+
+        /* Progress Bar för konvertering */
+        .progress-bar-container {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .progress-bar {
+            background-color: #ddd;
+            height: 20px;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -213,7 +234,6 @@
         <div class="progress-bar">
             <div class="progress-bar-inner" id="progress-bar-inner"></div>
         </div>
-        <div class="status-message" id="status-message"></div>
     </div>
 
     <!-- Ladda FFmpeg -->
@@ -225,18 +245,13 @@
 
         // Asynkron funktion för att initiera FFmpeg
         async function initializeFFmpeg() {
-            if (typeof createFFmpeg === 'function') {
-                try {
-                    ffmpeg = createFFmpeg({ log: true });
-                    await ffmpeg.load();
-                    isFFmpegLoaded = true;
-                    console.log('FFmpeg is loaded and ready.');
-                } catch (error) {
-                    console.error('Error initializing FFmpeg:', error);
-                    isFFmpegLoaded = false;
-                }
-            } else {
-                console.error('createFFmpeg function is not available.');
+            try {
+                ffmpeg = createFFmpeg({ log: true });
+                await ffmpeg.load();
+                isFFmpegLoaded = true;
+                console.log('FFmpeg is loaded and ready.');
+            } catch (error) {
+                console.error('Error initializing FFmpeg:', error);
                 isFFmpegLoaded = false;
             }
         }
@@ -292,6 +307,10 @@
                 return;
             }
 
+            // Visa progress bar
+            document.getElementById('progress-bar-container').style.display = 'block';
+            document.getElementById('progress-bar-inner').style.width = '0%';
+
             await waitForFFmpeg();
 
             if (!isFFmpegLoaded) {
@@ -308,6 +327,9 @@
 
                 const videoPlayer = document.getElementById('video-player');
                 videoPlayer.src = videoURL;
+
+                // Uppdatera progress bar till 100%
+                document.getElementById('progress-bar-inner').style.width = '100%';
             } catch (error) {
                 console.error('Error during conversion:', error);
             }
