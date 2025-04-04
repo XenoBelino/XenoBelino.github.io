@@ -107,7 +107,7 @@
             position: fixed; /* Fast position */
             top: 60px;
             right: 20px;
-            padding: 15px;  /* Minskat med ungefär en tredjedel */
+            padding: 15px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
@@ -162,6 +162,7 @@
         /* För att texten 'Choose Background Mode' ska vara svart i light mode och vit i dark mode */
         #background-options h3 {
             color: black;
+            text-align: center; /* Centrera texten */
         }
 
         body.dark-mode #background-options h3 {
@@ -230,7 +231,7 @@
         <div id="progress-bar">
             <div id="progress-bar-filled"></div>
         </div>
-        <div id="progress-text">0% of 100% to complete conversion</div>
+        <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
     </div>
 
     <!-- Bakgrundsval popup -->
@@ -269,7 +270,7 @@
             await waitForFFmpeg();
             if (!isFFmpegLoaded) {
                 console.error('FFmpeg is not initialized');
-                alert('Failed to convert video');
+                document.getElementById('progress-text').textContent = 'Failed to convert video';
                 return;
             }
 
@@ -280,34 +281,39 @@
             }
 
             ffmpeg.FS('writeFile', videoFile.name, await fetchFile(videoFile));
-            await ffmpeg.run('-i', videoFile.name, 'output.mp4');
-            const output = ffmpeg.FS('readFile', 'output.mp4');
+            document.getElementById('progress-bar').style.display = 'block';
 
-            const videoBlob = new Blob([output.buffer], { type: 'video/mp4' });
-            const videoUrl = URL.createObjectURL(videoBlob);
-            document.getElementById('video-player').src = videoUrl;
-            console.log('Conversion successful!');
-            alert('Conversion successful!');
-        }
+            // Update progress text
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                document.getElementById('progress-text').textContent = `${progress}% of 100% to complete conversion`;
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('file-name').textContent = file.name;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('progress-text').textContent = 'Conversion successful!';
+                }
+            }, 1000); // Uppdatera progressen varje sekund
+
+            try {
+                await ffmpeg.run('-i', videoFile.name, 'output.mp4');
+                const data = ffmpeg.FS('readFile', 'output.mp4');
+                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                const videoUrl = URL.createObjectURL(videoBlob);
+                const videoPlayer = document.getElementById('video-player');
+                videoPlayer.src = videoUrl;
+            } catch (error) {
+                console.error('Error during conversion:', error);
+                document.getElementById('progress-text').textContent = 'Failed to convert video';
             }
         }
 
-        document.getElementById('browse-btn').addEventListener('click', () => {
-            document.getElementById('file-input').click();
-        });
-
         document.getElementById('convert-btn').addEventListener('click', () => {
-            document.getElementById('progress-bar').style.display = 'block';
             document.getElementById('progress-text').style.display = 'block';
+            document.getElementById('progress-text').textContent = '0% of 100% to complete conversion';
             convertToMP4();
         });
 
-        // Handle Background Mode
         document.getElementById('change-background-btn').addEventListener('click', () => {
             document.getElementById('background-options').style.display = 'block';
         });
@@ -324,10 +330,14 @@
             document.getElementById('background-options').style.display = 'none';
         });
 
-        // Back to Home Page Button
         document.getElementById('back-to-home-btn').addEventListener('click', () => {
             window.location.href = 'index.html';
         });
+
+        // Start FFmpeg initialisering när sidan laddas
+        window.onload = () => {
+            initializeFFmpeg();
+        };
     </script>
 </body>
 </html>
