@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-    <link rel="stylesheet" href="styles.css">
+
+    <!-- Lägg till länken till din stil-fil -->
+    <link rel="stylesheet" href="styles.css"> 
+
+    <!-- Lägg till FFmpeg.js bibliotek -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@4.0.0/ffmpeg.min.js"></script>
+
     <style>
         /* Grundläggande stil för hela sidan */
         body {
@@ -185,9 +191,7 @@
         <!-- Video Player Container -->
         <div class="video-container">
             <video id="video-player" controls>
-                <source src="assets/videos/sample.mp4" type="video/mp4">
-                <source src="assets/videos/sample.webm" type="video/webm">
-                <source src="assets/videos/sample.ogv" type="video/ogg">
+                <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
@@ -218,20 +222,7 @@
                 <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
                 <span id="music-volume-percent" class="volume-percentage">50%</span>
             </div>
-            <div>
-                <label for="final-volume">Final Volume:</label>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
-                <span id="final-volume-percent" class="volume-percentage">50%</span>
-            </div>
         </div>
-
-        <button id="back-to-home-btn" class="button">Back to Home Page</button>
-
-        <!-- Laddningsbar -->
-        <div id="progress-bar">
-            <div id="progress-bar-filled"></div>
-        </div>
-        <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
 
         <!-- Bakgrundsalternativ -->
         <div id="background-options">
@@ -239,11 +230,19 @@
             <button id="light-mode-btn" class="option-button">Light Mode</button>
             <button id="dark-mode-btn" class="option-button">Dark Mode</button>
         </div>
+
+        <!-- Laddningsbar för konvertering -->
+        <div id="progress-bar">
+            <div id="progress-bar-filled"></div>
+        </div>
+        <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
+
     </div>
 
     <script>
         const ffmpeg = createFFmpeg({ log: true });
 
+        // FFmpeg initialisering
         async function initializeFFmpeg() {
             try {
                 await ffmpeg.load();
@@ -291,6 +290,12 @@
             if (file) {
                 document.getElementById('file-name').textContent = file.name;
             }
+        }
+
+        // Uppdatera volymprocent
+        function updateVolumePercentage(type) {
+            const volume = document.getElementById(type + '-volume').value;
+            document.getElementById(type + '-volume-percent').textContent = volume + '%';
         }
 
         document.getElementById('browse-btn').addEventListener('click', () => {
