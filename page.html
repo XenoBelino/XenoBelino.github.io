@@ -107,12 +107,13 @@
             position: fixed; /* Fast position */
             top: 60px;
             right: 20px;
-            padding: 20px;
+            padding: 15px;  /* Minskat med ungefär en tredjedel */
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
             z-index: 9999;
             text-align: left;
+            width: 150px; /* Minskat för att göra boxen mindre */
         }
 
         #background-options button {
@@ -302,6 +303,7 @@
 
         document.getElementById('convert-btn').addEventListener('click', () => {
             document.getElementById('progress-bar').style.display = 'block';
+            document.getElementById('progress-text').style.display = 'block';
             convertToMP4();
         });
 
