@@ -308,11 +308,15 @@
                 document.getElementById('progress-text').textContent = 'Failed to convert video';
             }
         }
-        
+
+        document.getElementById('convert-btn').addEventListener('click', convertToMP4); 
+
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
                 document.getElementById('file-name').textContent = file.name;
+                const videoPlayer = document.getElementById('video-player');
+                videoPlayer.src = URL.createObjectURL(file); // Dynamiskt sätta video källan
             }
         }
 
