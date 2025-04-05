@@ -201,7 +201,7 @@
         <div id="file-name">No file selected</div>
         <button id="browse-btn" class="browse-button">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
-        <button id="convert-btn" class="button">Convert to MP4</button>
+        <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
 
         <button id="change-background-btn" class="button">Change Background</button>
 
@@ -288,13 +288,22 @@
 
             const ffmpeg = createFFmpeg({ log: true });
             await ffmpeg.load();
+
             const videoFile = document.getElementById('file-input').files[0];
+            if (!videoFile) {
+                alert('Please select a video file.');
+                return;
+            }
 
             try {
+                const videoName = videoFile.name;
+                await ffmpeg.FS('writeFile', videoName, new Uint8Array(await videoFile.arrayBuffer()));
+
                 const interval = setInterval(() => {
-                    const progress = (ffmpeg.FS('stat', videoFile.name).size / 1000000) * 100;
+                    const progress = (ffmpeg.FS('stat', videoName).size / 1000000) * 100;
                     document.getElementById('progress-bar-filled').style.width = progress + '%';
                     document.getElementById('progress-text').textContent = `${Math.round(progress)}% of 100% to complete conversion`;
+
                     if (progress === 100) {
                         clearInterval(interval);
                         document.getElementById('progress-text').textContent = 'Conversion successful!';
@@ -302,7 +311,7 @@
                 }, 1000);
 
                 // Kör konverteringen till MP4
-                await ffmpeg.run('-i', videoFile.name, 'output.mp4');
+                await ffmpeg.run('-i', videoName, 'output.mp4');
                 const data = ffmpeg.FS('readFile', 'output.mp4');
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
                 const videoUrl = URL.createObjectURL(videoBlob);
@@ -318,6 +327,10 @@
             const file = event.target.files[0];
             if (file) {
                 document.getElementById('file-name').textContent = file.name;
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = document.getElementById('video-source');
+                videoSource.src = URL.createObjectURL(file);
+                videoPlayer.load();  // Uppdaterar videospelaren
             }
         }
 
