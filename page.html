@@ -297,7 +297,7 @@
 
             try {
                 console.log('Initializing FFmpeg');
-                const ffmpeg = createFFmpeg({ log: true });
+                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
                 await ffmpeg.load(); // Ladda FFmpeg
 
                 console.log('FFmpeg loaded');
@@ -318,6 +318,7 @@
                     if (progress === 100) {
                         clearInterval(interval);
                         document.getElementById('progress-text').textContent = 'Conversion successful!';
+                        document.getElementById('progress-bar').style.display = 'none'; // Dölj progressbar
                     }
                 }, 1000);
 
