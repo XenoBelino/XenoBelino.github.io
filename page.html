@@ -254,7 +254,7 @@
         // Kontrollera om FFmpeg.js är korrekt laddat
         window.onload = function() {
             if (typeof FFmpeg === 'undefined') {
-                console.error('FFmpeg.js could not be loaded!');
+                alert('FFmpeg.js could not be loaded!');
             } else {
                 console.log('FFmpeg.js loaded successfully');
             }
@@ -283,7 +283,7 @@
         });
 
         document.getElementById('save-btn').addEventListener('click', function() {
-            console.log('Changes saved!');
+            alert('Changes saved!');
         });
 
         document.getElementById('back-to-home-btn').addEventListener('click', function() {
@@ -303,7 +303,7 @@
                 console.log('FFmpeg loaded');
                 const videoFile = document.getElementById('file-input').files[0];
                 if (!videoFile) {
-                    console.error('No video file selected.');
+                    alert('Please select a video file.');
                     return;
                 }
 
