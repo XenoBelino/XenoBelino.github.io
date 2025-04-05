@@ -295,6 +295,7 @@
             document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
 
             try {
+                console.log(FFmpeg);
                 const ffmpeg = createFFmpeg({ log: true });
                 await ffmpeg.load(); // Ladda FFmpeg
 
