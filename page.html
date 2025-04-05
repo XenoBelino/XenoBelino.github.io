@@ -248,7 +248,7 @@
     </div>
 
     <!-- Ladda FFmpeg.js här innan andra skript -->
-   <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
 
     <script>
         // Kontrollera om FFmpeg.js är korrekt laddat
@@ -318,7 +318,6 @@
                     if (progress === 100) {
                         clearInterval(interval);
                         document.getElementById('progress-text').textContent = 'Conversion successful!';
-                        document.getElementById('progress-bar').style.display = 'none'; // Dölj progressbar
                     }
                 }, 1000);
 
@@ -335,32 +334,6 @@
                 document.getElementById('progress-text').textContent = 'Failed to convert';
             }
         }
-        
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('file-name').textContent = file.name;
-                const videoPlayer = document.getElementById('video-player');
-                const videoSource = document.getElementById('video-source');
-                videoSource.src = URL.createObjectURL(file);
-                videoPlayer.load();  // Uppdaterar videospelaren
-            }
-        }
-
-        // Volymreglage funktion
-        function updateVolumePercentage(type) {
-            const volume = document.getElementById(type + '-volume').value;
-            document.getElementById(type + '-volume-percent').textContent = volume + '%';
-        }
-
-        // Stäng popupen för bakgrundsalternativ när man klickar utanför
-        document.addEventListener('click', function(event) {
-            const backgroundOptions = document.getElementById('background-options');
-            const changeBackgroundBtn = document.getElementById('change-background-btn');
-            if (!backgroundOptions.contains(event.target) && event.target !== changeBackgroundBtn) {
-                backgroundOptions.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>
