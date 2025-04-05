@@ -278,16 +278,26 @@
             document.getElementById('progress-bar').style.display = 'block';
             document.getElementById('progress-text').style.display = 'block';
 
+            const videoFile = document.getElementById('file-input').files[0];
+            if (!videoFile) {
+                alert('Please select a video file.');
+                document.getElementById('progress-bar').style.display = 'none';
+                document.getElementById('progress-text').style.display = 'none';
+                return;
+            }
+
+            // Kontrollera om filen redan är mp4
+            if (videoFile.type === "video/mp4") {
+                alert("Can't convert MP4 to MP4.");
+                document.getElementById('progress-bar').style.display = 'none';
+                document.getElementById('progress-text').style.display = 'none';
+                return;
+            }
+
             try {
                 console.log('Initializing FFmpeg');
                 const ffmpeg = FFmpeg.createFFmpeg({ log: true });
                 await ffmpeg.load();
-
-                const videoFile = document.getElementById('file-input').files[0];
-                if (!videoFile) {
-                    alert('Please select a video file.');
-                    return;
-                }
 
                 const videoName = videoFile.name;
                 await ffmpeg.FS('writeFile', videoName, new Uint8Array(await videoFile.arrayBuffer()));
@@ -313,6 +323,8 @@
             } catch (error) {
                 console.error('Error during conversion:', error);
                 document.getElementById('progress-text').textContent = 'Failed to convert';
+                document.getElementById('progress-bar').style.display = 'none';
+                document.getElementById('progress-text').style.display = 'none';
             }
         }
     </script>
