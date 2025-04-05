@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css">
 
     <!-- Lägg till FFmpeg.js bibliotek -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@4.0.0/ffmpeg.min.js"></script>
 
     <style>
         /* Grundläggande stil för hela sidan */
@@ -290,50 +290,58 @@
         });
 
         // Konvertering och videofunktioner
-       async function convertToMP4() {
-    document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
-    document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
+        async function convertToMP4() {
+            document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
+            document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
 
-    try {
-        // Vänta på att FFmpeg ska vara korrekt laddad
-        const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+            try {
+                const ffmpeg = createFFmpeg({ log: true });
+                await ffmpeg.load(); // Ladda FFmpeg
 
-        await ffmpeg.load(); // Ladda FFmpeg
+                const videoFile = document.getElementById('file-input').files[0];
+                if (!videoFile) {
+                    alert('Please select a video file.');
+                    return;
+                }
 
-        const videoFile = document.getElementById('file-input').files[0];
-        if (!videoFile) {
-            alert('Please select a video file.');
-            return;
-        }
+                const videoName = videoFile.name;
+                await ffmpeg.FS('writeFile', videoName, new Uint8Array(await videoFile.arrayBuffer()));
 
-        const videoName = videoFile.name;
-        await ffmpeg.FS('writeFile', videoName, new Uint8Array(await videoFile.arrayBuffer()));
+                const interval = setInterval(() => {
+                    const progress = (ffmpeg.FS('stat', videoName).size / 1000000) * 100;
+                    document.getElementById('progress-bar-filled').style.width = progress + '%';
+                    document.getElementById('progress-text').textContent = `${Math.round(progress)}% of 100% to complete conversion`;
 
-        const interval = setInterval(() => {
-            const progress = (ffmpeg.FS('stat', videoName).size / 1000000) * 100;
-            document.getElementById('progress-bar-filled').style.width = progress + '%';
-            document.getElementById('progress-text').textContent = `${Math.round(progress)}% of 100% to complete conversion`;
+                    if (progress === 100) {
+                        clearInterval(interval);
+                        document.getElementById('progress-text').textContent = 'Conversion successful!';
+                    }
+                }, 1000);
 
-            if (progress === 100) {
-                clearInterval(interval);
-                document.getElementById('progress-text').textContent = 'Conversion successful!';
+                // Kör konverteringen till MP4
+                await ffmpeg.run('-i', videoName, 'output.mp4');
+                const data = ffmpeg.FS('readFile', 'output.mp4');
+                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                const videoUrl = URL.createObjectURL(videoBlob);
+                const videoPlayer = document.getElementById('video-player');
+                videoPlayer.src = videoUrl;
+
+            } catch (error) {
+                console.error('Error during conversion:', error);
+                document.getElementById('progress-text').textContent = 'Failed to convert';
             }
-        }, 1000);
-
-        // Kör konverteringen till MP4
-        await ffmpeg.run('-i', videoName, 'output.mp4');
-        const data = ffmpeg.FS('readFile', 'output.mp4');
-        const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-        const videoUrl = URL.createObjectURL(videoBlob);
-        const videoPlayer = document.getElementById('video-player');
-        videoPlayer.src = videoUrl;
-
-    } catch (error) {
-        console.error('Error during conversion:', error);
-        document.getElementById('progress-text').textContent = 'Failed to convert';
-    }
-}
-
+        }
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('file-name').textContent = file.name;
+                const videoPlayer = document.getElementById('video-player');
+                const videoSource = document.getElementById('video-source');
+                videoSource.src = URL.createObjectURL(file);
+                videoPlayer.load();  // Uppdaterar videospelaren
+            }
+        }
 
         // Volymreglage funktion
         function updateVolumePercentage(type) {
