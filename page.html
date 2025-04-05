@@ -251,6 +251,14 @@
     </div>
 
     <script>
+        // Ladda FFmpeg.js korrekt
+        window.onload = function() {
+            if (typeof createFFmpeg === 'undefined') {
+                alert('FFmpeg.js could not be loaded!');
+                return;
+            }
+        };
+
         // Funktioner för knappar och händelser
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
@@ -286,16 +294,16 @@
             document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
             document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
 
-            const ffmpeg = createFFmpeg({ log: true });
-            await ffmpeg.load();
-
-            const videoFile = document.getElementById('file-input').files[0];
-            if (!videoFile) {
-                alert('Please select a video file.');
-                return;
-            }
-
             try {
+                const ffmpeg = createFFmpeg({ log: true });
+                await ffmpeg.load(); // Ladda FFmpeg
+
+                const videoFile = document.getElementById('file-input').files[0];
+                if (!videoFile) {
+                    alert('Please select a video file.');
+                    return;
+                }
+
                 const videoName = videoFile.name;
                 await ffmpeg.FS('writeFile', videoName, new Uint8Array(await videoFile.arrayBuffer()));
 
@@ -317,9 +325,10 @@
                 const videoUrl = URL.createObjectURL(videoBlob);
                 const videoPlayer = document.getElementById('video-player');
                 videoPlayer.src = videoUrl;
+
             } catch (error) {
                 console.error('Error during conversion:', error);
-                document.getElementById('progress-text').textContent = 'Failed to convert video';
+                document.getElementById('progress-text').textContent = 'Failed to convert';
             }
         }
         
