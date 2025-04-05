@@ -7,7 +7,7 @@
     <title>Video Player with Settings</title>
 
     <!-- Lägg till länken till din stil-fil -->
-    <link rel="stylesheet" href="styles.css"> 
+    <link rel="stylesheet" href="styles.css">
 
     <!-- Lägg till FFmpeg.js bibliotek -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@4.0.0/ffmpeg.min.js"></script>
@@ -243,42 +243,60 @@
         </div>
         <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
 
+        <!-- Go to homepage button -->
+        <button id="back-to-home-btn" class="button">Go to Homepage</button>
+
     </div>
 
     <script>
-        const ffmpeg = createFFmpeg({ log: true });
+        // Funktioner för knappar och händelser
+        document.getElementById('browse-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
 
-        // FFmpeg initialisering
-        async function initializeFFmpeg() {
-            try {
-                await ffmpeg.load();
-                console.log('FFmpeg initialized successfully.');
-            } catch (error) {
-                console.error('Error initializing FFmpeg:', error);
-            }
-        }
+        document.getElementById('change-background-btn').addEventListener('click', function() {
+            const backgroundOptions = document.getElementById('background-options');
+            backgroundOptions.style.display = (backgroundOptions.style.display === 'block') ? 'none' : 'block';
+        });
 
+        document.getElementById('light-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('dark-mode');
+            document.body.classList.add('light-mode');
+            document.getElementById('background-options').style.display = 'none';
+        });
+
+        document.getElementById('dark-mode-btn').addEventListener('click', function() {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+            document.getElementById('background-options').style.display = 'none';
+        });
+
+        document.getElementById('save-btn').addEventListener('click', function() {
+            alert('Changes saved!');
+        });
+
+        document.getElementById('back-to-home-btn').addEventListener('click', function() {
+            window.location.href = 'index.html'; // Navigerar till hemsidan
+        });
+
+        // Konvertering och videofunktioner
         async function convertToMP4() {
+            document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
+            const ffmpeg = createFFmpeg({ log: true });
+            await ffmpeg.load();
             const videoFile = document.getElementById('file-input').files[0];
-            if (!videoFile) {
-                alert('Please select a video file first.');
-                return;
-            }
-
-            document.getElementById('progress-bar').style.display = 'block';
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 10;
-                document.getElementById('progress-text').textContent = `${progress}% of 100% to complete conversion`;
-
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    document.getElementById('progress-text').textContent = 'Conversion successful!';
-                }
-            }, 1000);
 
             try {
+                const interval = setInterval(() => {
+                    const progress = (ffmpeg.FS('stat', videoFile.name).size / 1000000) * 100;
+                    document.getElementById('progress-bar-filled').style.width = progress + '%';
+                    document.getElementById('progress-text').textContent = `${Math.round(progress)}% of 100% to complete conversion`;
+                    if (progress === 100) {
+                        clearInterval(interval);
+                        document.getElementById('progress-text').textContent = 'Conversion successful!';
+                    }
+                }, 1000);
+
                 await ffmpeg.run('-i', videoFile.name, 'output.mp4');
                 const data = ffmpeg.FS('readFile', 'output.mp4');
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
@@ -290,7 +308,7 @@
                 document.getElementById('progress-text').textContent = 'Failed to convert video';
             }
         }
-
+        
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
@@ -298,47 +316,11 @@
             }
         }
 
-        // Uppdatera volymprocent
+        // Volymreglage funktion
         function updateVolumePercentage(type) {
             const volume = document.getElementById(type + '-volume').value;
             document.getElementById(type + '-volume-percent').textContent = volume + '%';
         }
-
-        document.getElementById('browse-btn').addEventListener('click', () => {
-            document.getElementById('file-input').click();
-        });
-
-        document.getElementById('convert-btn').addEventListener('click', () => {
-            document.getElementById('progress-text').style.display = 'block';
-            document.getElementById('progress-text').textContent = '0% of 100% to complete conversion';
-            convertToMP4();
-        });
-
-        document.getElementById('change-background-btn').addEventListener('click', () => {
-            const backgroundOptions = document.getElementById('background-options');
-            backgroundOptions.style.display = (backgroundOptions.style.display === 'block') ? 'none' : 'block';
-        });
-
-        document.getElementById('light-mode-btn').addEventListener('click', () => {
-            document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        document.getElementById('dark-mode-btn').addEventListener('click', () => {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        document.getElementById('back-to-home-btn').addEventListener('click', () => {
-            window.location.href = 'index.html';
-        });
-
-        // Start FFmpeg initialisering när sidan laddas
-        window.onload = () => {
-            initializeFFmpeg();
-        };
     </script>
 </body>
 </html>
