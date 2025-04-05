@@ -251,15 +251,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
 
     <script>
-        // Kontrollera om FFmpeg.js är korrekt laddat
-        window.onload = function() {
-            if (typeof FFmpeg === 'undefined') {
-                alert('FFmpeg.js could not be loaded!');
-            } else {
-                console.log('FFmpeg.js loaded successfully');
-            }
-        };
-
+       
         // Funktioner för knappar och händelser
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
