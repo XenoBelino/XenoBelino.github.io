@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
 
-    <!-- Lägg till länken till din stil-fil -->
     <link rel="stylesheet" href="styles.css">
 
     <style>
@@ -20,7 +19,6 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Dark Mode */
         body.dark-mode {
             background-color: #333;
             color: #fff;
@@ -33,7 +31,6 @@
             margin: auto;
         }
 
-        /* Stil för knappar */
         .button, .browse-button {
             padding: 10px 20px;
             font-size: 16px;
@@ -49,7 +46,6 @@
             background-color: #5c0b8a;
         }
 
-        /* Placering av knappar */
         #change-background-btn {
             position: fixed;
             top: 20px;
@@ -71,7 +67,6 @@
             z-index: 1000;
         }
 
-        /* Placering av "Browse Files" och "No file selected" */
         #file-name {
             color: black;
             font-size: 18px;
@@ -82,7 +77,6 @@
             margin-top: 10px;
         }
 
-        /* Stil för videospelaren */
         .video-container {
             margin-top: 30px;
             display: flex;
@@ -96,7 +90,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        /* Volymreglage */
         .volume-slider-container {
             margin-top: 20px;
             display: flex;
@@ -104,10 +97,34 @@
             gap: 10px;
         }
 
-        /* Popup-container för bakgrundsändring */
+        #progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            display: none;
+            border-radius: 15px;
+        }
+
+        #progress-bar-filled {
+            height: 20px;
+            background-color: #4caf50;
+            width: 0;
+            border-radius: 15px;
+        }
+
+        #progress-text {
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        body.dark-mode #file-name {
+            color: white !important;
+        }
+
         #background-options {
             display: none;
-            position: fixed; /* Fast position */
+            position: fixed;
             top: 60px;
             right: 20px;
             padding: 15px;
@@ -116,11 +133,11 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
             z-index: 9999;
             text-align: left;
-            width: 150px; /* Minskat för att göra boxen mindre */
+            width: 150px;
         }
 
         #background-options button {
-            margin: 10px 0; /* Vertikal marginal */
+            margin: 10px 0;
         }
 
         .option-button {
@@ -130,53 +147,11 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            width: 100%; /* Gör knapparna lika breda */
+            width: 100%;
         }
 
         .option-button:hover {
             background-color: #5c0b8a;
-        }
-
-        /* Laddningsbar */
-        #progress-bar {
-            width: 100%;
-            background-color: #ddd;
-            display: none; /* Döljer laddningsbaren tills knappen klickas */
-            border-radius: 15px; /* Runda kanter */
-        }
-
-        #progress-bar-filled {
-            height: 20px;
-            background-color: #4caf50;
-            width: 0;
-            border-radius: 15px; /* Runda kanter på själva progress */
-        }
-
-        #progress-text {
-            font-size: 14px;
-            margin-top: 5px;
-            text-align: center;
-            display: none; /* Döljer texten tills den är relevant */
-        }
-
-        /* För att texten 'No file selected' alltid ska vara vit när mörkt läge är aktivt */
-        body.dark-mode #file-name {
-            color: white !important;
-        }
-
-        /* För att texten 'Choose Background Mode' ska vara svart i light mode och vit i dark mode */
-        #background-options h3 {
-            color: black;
-            text-align: center; /* Centrera texten */
-        }
-
-        body.dark-mode #background-options h3 {
-            color: white;
-        }
-
-        /* För att fixa texten i 'Choose Background Mode' så att den inte blir vit i mörkt läge */
-        body.dark-mode #background-options {
-            background-color: #333; /* Ändrar bakgrunden så att texten syns bättre */
         }
     </style>
 </head>
@@ -210,23 +185,22 @@
         <div class="volume-slider-container">
             <div>
                 <label for="original-volume">Original Volume:</label>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('original')">
                 <span id="original-volume-percent" class="volume-percentage">50%</span>
             </div>
             <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('corrupted')">
                 <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
             </div>
             <div>
                 <label for="music-volume">Music Volume:</label>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('music')">
                 <span id="music-volume-percent" class="volume-percentage">50%</span>
             </div>
-            <!-- Final Volume Slider -->
             <div>
                 <label for="final-volume">Final Volume:</label>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('final')">
                 <span id="final-volume-percent" class="volume-percentage">50%</span>
             </div>
         </div>
@@ -238,22 +212,30 @@
             <button id="dark-mode-btn" class="option-button">Dark Mode</button>
         </div>
 
-        <!-- Laddningsbar för konvertering -->
         <div id="progress-bar">
             <div id="progress-bar-filled"></div>
         </div>
         <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
 
-        <!-- Go to homepage button -->
         <button id="back-to-home-btn" class="button">Go to Homepage</button>
 
     </div>
 
-    <!-- Ladda FFmpeg.js här innan andra skript -->
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
 
     <script>
-        // Funktioner för knappar och händelser
+        // Funktion för att uppdatera volymen när användaren ändrar volymskalan
+        function updateVolume(volumeType) {
+            const videoPlayer = document.getElementById('video-player');
+            const volumeSlider = document.getElementById(volumeType + '-volume');
+            const volumePercent = document.getElementById(volumeType + '-volume-percent');
+
+            const volume = volumeSlider.value;
+            volumePercent.textContent = volume + '%';
+            videoPlayer.volume = volume / 100;
+        }
+
+        // Klickhändelser och inställningar
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
         });
@@ -263,12 +245,10 @@
             backgroundOptions.style.display = (backgroundOptions.style.display === 'block') ? 'none' : 'block';
         });
 
-        // Lägg till eventlyssnare för att stänga bakgrundspanelen om användaren klickar utanför
         document.addEventListener('click', function(event) {
             const backgroundOptions = document.getElementById('background-options');
             const backgroundBtn = document.getElementById('change-background-btn');
-            
-            // Stänger panelen om klicket är utanför panelen och knappen
+
             if (!backgroundOptions.contains(event.target) && !backgroundBtn.contains(event.target)) {
                 backgroundOptions.style.display = 'none';
             }
@@ -291,20 +271,18 @@
         });
 
         document.getElementById('back-to-home-btn').addEventListener('click', function() {
-            window.location.href = 'index.html'; // Navigerar till hemsidan
+            window.location.href = 'index.html';
         });
 
-        // Konvertering och videofunktioner
         async function convertToMP4() {
-            document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
-            document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
+            document.getElementById('progress-bar').style.display = 'block';
+            document.getElementById('progress-text').style.display = 'block';
 
             try {
                 console.log('Initializing FFmpeg');
                 const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-                await ffmpeg.load(); // Ladda FFmpeg
+                await ffmpeg.load();
 
-                console.log('FFmpeg loaded');
                 const videoFile = document.getElementById('file-input').files[0];
                 if (!videoFile) {
                     alert('Please select a video file.');
@@ -325,7 +303,6 @@
                     }
                 }, 1000);
 
-                // Kör konverteringen till MP4
                 await ffmpeg.run('-i', videoName, 'output.mp4');
                 const data = ffmpeg.FS('readFile', 'output.mp4');
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
