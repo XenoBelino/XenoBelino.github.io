@@ -158,6 +158,8 @@
         #progress-text {
             font-size: 14px;
             margin-top: 5px;
+            text-align: center;
+            display: none; /* Döljer texten tills den är relevant */
         }
 
         /* För att texten 'No file selected' alltid ska vara vit när mörkt läge är aktivt */
@@ -282,6 +284,8 @@
         // Konvertering och videofunktioner
         async function convertToMP4() {
             document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
+            document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
+
             const ffmpeg = createFFmpeg({ log: true });
             await ffmpeg.load();
             const videoFile = document.getElementById('file-input').files[0];
@@ -297,6 +301,7 @@
                     }
                 }, 1000);
 
+                // Kör konverteringen till MP4
                 await ffmpeg.run('-i', videoFile.name, 'output.mp4');
                 const data = ffmpeg.FS('readFile', 'output.mp4');
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
@@ -308,15 +313,11 @@
                 document.getElementById('progress-text').textContent = 'Failed to convert video';
             }
         }
-
-        document.getElementById('convert-btn').addEventListener('click', convertToMP4); 
-
+        
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
                 document.getElementById('file-name').textContent = file.name;
-                const videoPlayer = document.getElementById('video-player');
-                videoPlayer.src = URL.createObjectURL(file); // Dynamiskt sätta video källan
             }
         }
 
@@ -325,6 +326,15 @@
             const volume = document.getElementById(type + '-volume').value;
             document.getElementById(type + '-volume-percent').textContent = volume + '%';
         }
+
+        // Stäng popupen för bakgrundsalternativ när man klickar utanför
+        document.addEventListener('click', function(event) {
+            const backgroundOptions = document.getElementById('background-options');
+            const changeBackgroundBtn = document.getElementById('change-background-btn');
+            if (!backgroundOptions.contains(event.target) && event.target !== changeBackgroundBtn) {
+                backgroundOptions.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
