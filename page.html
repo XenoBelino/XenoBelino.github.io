@@ -191,6 +191,8 @@
         <div class="video-container">
             <video id="video-player" controls>
                 <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4">
+                <source id="video-source-mkv" src="assets/videos/sample.mkv" type="video/x-matroska">
+                <source id="video-source-webm" src="assets/videos/sample.webm" type="video/webm">
                 Your browser does not support the video tag.
             </video>
         </div>
@@ -251,7 +253,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
 
     <script>
-      
         // Funktioner för knappar och händelser
         document.getElementById('browse-btn').addEventListener('click', function() {
             document.getElementById('file-input').click();
@@ -260,6 +261,17 @@
         document.getElementById('change-background-btn').addEventListener('click', function() {
             const backgroundOptions = document.getElementById('background-options');
             backgroundOptions.style.display = (backgroundOptions.style.display === 'block') ? 'none' : 'block';
+        });
+
+        // Lägg till eventlyssnare för att stänga bakgrundspanelen om användaren klickar utanför
+        document.addEventListener('click', function(event) {
+            const backgroundOptions = document.getElementById('background-options');
+            const backgroundBtn = document.getElementById('change-background-btn');
+            
+            // Stänger panelen om klicket är utanför panelen och knappen
+            if (!backgroundOptions.contains(event.target) && !backgroundBtn.contains(event.target)) {
+                backgroundOptions.style.display = 'none';
+            }
         });
 
         document.getElementById('light-mode-btn').addEventListener('click', function() {
