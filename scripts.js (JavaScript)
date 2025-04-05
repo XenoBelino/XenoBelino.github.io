@@ -1,20 +1,67 @@
 // Tilldela eventlisteners för knapparna
 document.getElementById("back-to-home-btn").addEventListener("click", function() {
-    window.location.href = "index.html"; // Gå tillbaka till hemsidan (eller anpassa till din riktiga hemsida)
+    window.location.href = "index.html"; // Gå tillbaka till hemsidan
 });
 
 document.getElementById("go-to-page-btn").addEventListener("click", function() {
-    window.location.href = "another-page.html"; // Gå till en annan sida (ändra URL till den sidan du vill länka till)
+    window.location.href = "another-page.html"; // Gå till en annan sida
 });
 
 // Funktion för att växla mellan Light Mode och Dark Mode
 document.getElementById("change-background-btn").addEventListener("click", function() {
-    // Kontrollera om body har dark-mode klassen
     if (document.body.classList.contains("dark-mode")) {
-        // Om det finns, ta bort dark-mode och återgå till Light Mode
         document.body.classList.remove("dark-mode");
     } else {
-        // Annars, lägg till dark-mode för att aktivera Dark Mode
         document.body.classList.add("dark-mode");
+    }
+});
+
+// FFmpeg.js funktionalitet för konvertering av MKV till MP4
+const { createFFmpeg, fetchFile } = FFmpeg;
+
+const ffmpeg = createFFmpeg({ log: true });
+
+async function convertMkvToMp4(file) {
+  try {
+    // Ladda FFmpeg
+    await ffmpeg.load();
+
+    // Skriv filen till FFmpeg filsystem
+    await ffmpeg.FS('writeFile', file.name, new Uint8Array(await file.arrayBuffer()));
+
+    // Konvertera MKV till MP4
+    await ffmpeg.run('-i', file.name, 'output.mp4');
+
+    // Hämta den konverterade filen
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+
+    // Skapa en URL för den konverterade filen och ladda ned den
+    const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+    const videoUrl = URL.createObjectURL(videoBlob);
+
+    // Skapa en nedladdningslänk och klicka för att ladda ned filen
+    const a = document.createElement('a');
+    a.href = videoUrl;
+    a.download = 'output.mp4';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Visa meddelande om att konverteringen var framgångsrik
+    alert("Conversion successful!");
+  } catch (error) {
+    console.error('Error during conversion:', error);
+    alert('Failed to convert the video.');
+  }
+}
+
+// Hantera filinläsning
+document.getElementById('file-input').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        document.getElementById('file-name').textContent = file.name;
+
+        // När filen har valts, konvertera den till MP4
+        convertMkvToMp4(file);
     }
 });
