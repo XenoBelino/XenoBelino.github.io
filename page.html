@@ -259,6 +259,13 @@
             }
         };
 
+        // Volymuppdateringsfunktionen
+        function updateVolumePercentage(sliderType) {
+            const volumeSlider = document.getElementById(`${sliderType}-volume`);
+            const volumePercent = document.getElementById(`${sliderType}-volume-percent`);
+            volumePercent.textContent = `${volumeSlider.value}%`;
+        }
+
         async function convertToMP4() {
             if (!document.getElementById('file-input').files[0]) {
                 alert('Please select a video file.');
