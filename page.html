@@ -156,7 +156,6 @@
             margin-top: 5px;
             text-align: center;
             display: none; /* Döljer texten tills den är relevant */
-            font-size: 14px; /* Samma storlek som de andra texterna */
         }
 
         /* För att texten 'No file selected' alltid ska vara vit när mörkt läge är aktivt */
@@ -248,7 +247,7 @@
     </div>
 
     <!-- Ladda FFmpeg.js här innan andra skript -->
-   <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
 
     <script>
         // Kontrollera om FFmpeg.js är korrekt laddat
@@ -292,22 +291,26 @@
 
         // Konvertering och videofunktioner
         async function convertToMP4() {
-            const progressBar = document.getElementById('progress-bar');
-            const progressText = document.getElementById('progress-text');
-            progressBar.style.display = 'block'; // Visa laddningsbar
-            progressText.style.display = 'block'; // Visa texten för progress
+            // Kontrollera om filen är vald
+            if (!document.getElementById('file-input').files[0]) {
+                alert('Please select a video file.');
+                return;
+            }
+            
+            document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
+            document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
 
             try {
                 const videoFile = document.getElementById('file-input').files[0];
                 if (!videoFile) {
-                    alert('Please select a video file.');
+                    document.getElementById('progress-text').textContent = 'Please select a video file.';
                     return;
                 }
 
                 // Kontrollera om filen redan är en MP4
                 if (videoFile.name.endsWith('.mp4')) {
-                    progressText.textContent = 'Cannot convert to MP4, your file is already in a MP4 format';
-                    progressBar.style.display = 'none';
+                    document.getElementById('progress-text').textContent = 'Cannot convert to MP4, your file is already in a MP4 format';
+                    document.getElementById('progress-bar').style.display = 'none';
                     return;
                 }
 
@@ -342,26 +345,39 @@
             } catch (error) {
                 console.error('Error during conversion:', error);
                 document.getElementById('progress-text').textContent = 'Failed to convert';
-                document.getElementById('progress-bar').style.display = 'none'; // Dölj progressbar vid misslyckande
+                document.getElementById('progress-bar').style.display = 'none';
             }
         }
-
-        // Hantera filval och återställ progressbar vid ny fil
+        
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
-                // Rensa progressbar och text när en ny fil väljs
-                document.getElementById('progress-bar').style.display = 'none';
-                document.getElementById('progress-bar-filled').style.width = '0%';
-                document.getElementById('progress-text').style.display = 'none'; // Döljer texten
-
                 document.getElementById('file-name').textContent = file.name;
                 const videoPlayer = document.getElementById('video-player');
                 const videoSource = document.getElementById('video-source');
                 videoSource.src = URL.createObjectURL(file);
                 videoPlayer.load();  // Uppdaterar videospelaren
+                
+                // Nollställ laddningsbar och text när filen ändras
+                document.getElementById('progress-bar').style.display = 'none';
+                document.getElementById('progress-text').style.display = 'none';
             }
         }
+
+        // Volymreglage funktion
+        function updateVolumePercentage(type) {
+            const volume = document.getElementById(type + '-volume').value;
+            document.getElementById(type + '-volume-percent').textContent = volume + '%';
+        }
+
+        // Stäng popupen för bakgrundsalternativ när man klickar utanför
+        document.addEventListener('click', function(event) {
+            const backgroundOptions = document.getElementById('background-options');
+            const changeBackgroundBtn = document.getElementById('change-background-btn');
+            if (!backgroundOptions.contains(event.target) && event.target !== changeBackgroundBtn) {
+                backgroundOptions.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
