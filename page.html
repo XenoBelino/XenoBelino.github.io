@@ -152,7 +152,7 @@
         }
 
         #progress-text {
-            font-size: 18px; /* Förstorat för att matcha 'No file selected' */
+            font-size: 14px;
             margin-top: 5px;
             text-align: center;
             display: none; /* Döljer texten tills den är relevant */
@@ -259,46 +259,14 @@
             }
         };
 
-        // Funktioner för knappar och händelser
-        document.getElementById('browse-btn').addEventListener('click', function() {
-            document.getElementById('file-input').click();
-        });
-
-        document.getElementById('change-background-btn').addEventListener('click', function() {
-            const backgroundOptions = document.getElementById('background-options');
-            backgroundOptions.style.display = (backgroundOptions.style.display === 'block') ? 'none' : 'block';
-        });
-
-        document.getElementById('light-mode-btn').addEventListener('click', function() {
-            document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        document.getElementById('dark-mode-btn').addEventListener('click', function() {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
-            document.getElementById('background-options').style.display = 'none';
-        });
-
-        document.getElementById('save-btn').addEventListener('click', function() {
-            alert('Changes saved!');
-        });
-
-        document.getElementById('back-to-home-btn').addEventListener('click', function() {
-            window.location.href = 'index.html'; // Navigerar till hemsidan
-        });
-
-        // Konvertering och videofunktioner
         async function convertToMP4() {
-            // Kontrollera om filen är vald
             if (!document.getElementById('file-input').files[0]) {
                 alert('Please select a video file.');
                 return;
             }
-            
-            document.getElementById('progress-bar').style.display = 'block'; // Visa laddningsbar
-            document.getElementById('progress-text').style.display = 'block'; // Visa texten för progress
+
+            document.getElementById('progress-bar').style.display = 'block';
+            document.getElementById('progress-text').style.display = 'block';
 
             try {
                 const videoFile = document.getElementById('file-input').files[0];
@@ -307,16 +275,15 @@
                     return;
                 }
 
-                // Kontrollera om filen redan är en MP4
                 if (videoFile.name.endsWith('.mp4')) {
-                    document.getElementById('progress-text').textContent = 'Cannot convert to MP4, your file is already in a MP4 format';
+                    document.getElementById('progress-text').textContent = 'Cannot convert to MP4, your file is already in MP4 format';
                     document.getElementById('progress-bar').style.display = 'none';
                     return;
                 }
 
                 console.log('Initializing FFmpeg');
                 const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-                await ffmpeg.load(); // Ladda FFmpeg
+                await ffmpeg.load();
 
                 console.log('FFmpeg loaded');
                 const videoName = videoFile.name;
@@ -330,11 +297,10 @@
                     if (progress === 100) {
                         clearInterval(interval);
                         document.getElementById('progress-text').textContent = 'Conversion successful!';
-                        document.getElementById('progress-bar').style.display = 'none'; // Dölj progressbar
+                        document.getElementById('progress-bar').style.display = 'none';
                     }
                 }, 1000);
 
-                // Kör konverteringen till MP4
                 await ffmpeg.run('-i', videoName, 'output.mp4');
                 const data = ffmpeg.FS('readFile', 'output.mp4');
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
@@ -348,35 +314,15 @@
                 document.getElementById('progress-bar').style.display = 'none';
             }
         }
-        
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('file-name').textContent = file.name;
-                const videoPlayer = document.getElementById('video-player');
-                const videoSource = document.getElementById('video-source');
-                videoSource.src = URL.createObjectURL(file);
-                videoPlayer.load();  // Uppdaterar videospelaren
-                
-                // Nollställ laddningsbar och text när filen ändras
-                document.getElementById('progress-bar').style.display = 'none';
-                document.getElementById('progress-text').style.display = 'none';
-            }
-        }
 
-        // Volymreglage funktion
-        function updateVolumePercentage(type) {
-            const volume = document.getElementById(type + '-volume').value;
-            document.getElementById(type + '-volume-percent').textContent = volume + '%';
-        }
-
-        // Stäng popupen för bakgrundsalternativ när man klickar utanför
-        document.addEventListener('click', function(event) {
-            const backgroundOptions = document.getElementById('background-options');
-            const changeBackgroundBtn = document.getElementById('change-background-btn');
-            if (!backgroundOptions.contains(event.target) && event.target !== changeBackgroundBtn) {
-                backgroundOptions.style.display = 'none';
-            }
+        // Save functionality for the converted video
+        document.getElementById('save-btn').addEventListener('click', function() {
+            const videoPlayer = document.getElementById('video-player');
+            const videoUrl = videoPlayer.src;
+            const link = document.createElement('a');
+            link.href = videoUrl;
+            link.download = 'converted-video.mp4';
+            link.click();
         });
     </script>
 </body>
