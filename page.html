@@ -250,6 +250,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
 
     <script>
+        let originalFileName = '';
+
         // Kontrollera om FFmpeg.js är korrekt laddat
         window.onload = function() {
             if (typeof FFmpeg === 'undefined') {
@@ -269,7 +271,9 @@
         // Browse Files Funktion
         function handleFileSelect(event) {
             const fileInput = event.target;
-            const fileName = fileInput.files[0]?.name || 'No file selected';
+            const file = fileInput.files[0];
+            const fileName = file ? file.name : 'No file selected';
+            originalFileName = file ? file.name : '';
             document.getElementById('file-name').textContent = fileName;
         }
 
@@ -353,6 +357,15 @@
                 const videoPlayer = document.getElementById('video-player');
                 videoPlayer.src = videoUrl;
 
+                // När konverteringen är klar, skapa en nedladdningslänk med rätt namn
+                const downloadFileName = originalFileName.replace(/\.[^/.]+$/, '') + '-converted-video.mp4';
+                document.getElementById('save-btn').addEventListener('click', function() {
+                    const link = document.createElement('a');
+                    link.href = videoUrl;
+                    link.download = downloadFileName;
+                    link.click();
+                });
+
             } catch (error) {
                 console.error('Error during conversion:', error);
                 document.getElementById('progress-text').textContent = 'Failed to convert';
@@ -360,16 +373,6 @@
             }
         }
 
-        // Save functionality for the converted video
-        document.getElementById('save-btn').addEventListener('click', function() {
-            const videoPlayer = document.getElementById('video-player');
-            const videoUrl = videoPlayer.src;
-            const link = document.createElement('a');
-            link.href = videoUrl;
-            link.download = 'converted-video.mp4';
-            link.click();
-        });
     </script>
 </body>
 </html>
-
