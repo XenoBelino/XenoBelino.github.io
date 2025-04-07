@@ -271,6 +271,17 @@
             const fileName = file ? file.name : 'No file selected';
             originalFileName = file ? file.name : '';
             document.getElementById('file-name').textContent = fileName;
+
+            // Återställ progress och text när ny fil väljs
+            document.getElementById('progress-bar').style.display = 'none';
+            document.getElementById('progress-text').style.display = 'none';
+            document.getElementById('progress-bar-filled').style.width = '0';
+            document.getElementById('progress-text').textContent = '0% of 100% to complete conversion';
+
+            // Uppdatera videospelaren med den valda filen
+            const videoPlayer = document.getElementById('video-player');
+            videoPlayer.src = URL.createObjectURL(file);
+            videoPlayer.load(); // Ladda om videon
         }
 
         // Change Background Options
