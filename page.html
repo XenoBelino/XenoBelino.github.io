@@ -7,7 +7,7 @@
     <title>Video Player with Settings</title>
 
     <link rel="stylesheet" href="styles.css">
-
+    
     <style>
         /* Grundläggande stil för hela sidan */
         body {
@@ -195,7 +195,7 @@
         </div>
 
         <div id="file-name">No file selected</div>
-        <button id="browse-btn" class="browse-button">Browse Files</button>
+        <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
         <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
         <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
 
@@ -252,20 +252,16 @@
     <script>
         let originalFileName = '';
 
-        // Kontrollera om FFmpeg.js är korrekt laddat
-        window.onload = function() {
-            if (typeof FFmpeg === 'undefined') {
-                alert('FFmpeg.js could not be loaded!');
-            } else {
-                console.log('FFmpeg.js loaded successfully');
-            }
-        };
-
         // Volymuppdateringsfunktionen
         function updateVolumePercentage(sliderType) {
             const volumeSlider = document.getElementById(`${sliderType}-volume`);
             const volumePercent = document.getElementById(`${sliderType}-volume-percent`);
             volumePercent.textContent = `${volumeSlider.value}%`;
+        }
+
+        // Funktion för att trigga filväljaren
+        function triggerFileInput() {
+            document.getElementById('file-input').click();
         }
 
         // Browse Files Funktion
@@ -372,7 +368,6 @@
                 document.getElementById('progress-bar').style.display = 'none';
             }
         }
-
     </script>
 </body>
 </html>
