@@ -75,6 +75,7 @@
             color: black;
             font-size: 18px;
             margin-bottom: 10px;
+            text-align: center;
         }
 
         #browse-btn {
@@ -152,7 +153,7 @@
         }
 
         #progress-text {
-            font-size: 14px;
+            font-size: 18px; /* Justera storleken för progress texten */
             margin-top: 5px;
             text-align: center;
             display: none; /* Döljer texten tills den är relevant */
@@ -271,17 +272,6 @@
             const fileName = file ? file.name : 'No file selected';
             originalFileName = file ? file.name : '';
             document.getElementById('file-name').textContent = fileName;
-
-            // Återställ progress och text när ny fil väljs
-            document.getElementById('progress-bar').style.display = 'none';
-            document.getElementById('progress-text').style.display = 'none';
-            document.getElementById('progress-bar-filled').style.width = '0';
-            document.getElementById('progress-text').textContent = '0% of 100% to complete conversion';
-
-            // Uppdatera videospelaren med den valda filen
-            const videoPlayer = document.getElementById('video-player');
-            videoPlayer.src = URL.createObjectURL(file);
-            videoPlayer.load(); // Ladda om videon
         }
 
         // Change Background Options
@@ -310,11 +300,12 @@
             toggleBackgroundOptions();
         }
 
-        // Go to Homepage Function
+        // Gå tillbaka till startsidan
         function goToHomePage() {
-            window.location.href = 'index.html'; // Byt till din hemsida
+            window.location.href = "index.html"; // Byt ut mot din startsida
         }
 
+        // Konvertera video till MP4
         async function convertToMP4() {
             if (!document.getElementById('file-input').files[0]) {
                 alert('Please select a video file.');
