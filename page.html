@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>FFmpeg Video Konverterare</title>
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script> <!-- Använder annan källa -->
+    <!-- Använda den senaste versionen av ffmpeg.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -35,8 +36,7 @@
 
     <h1>Konvertera Videoer</h1>
 
-   <input type="file" id="uploader" accept="video/mp4,video/webm,video/avi,video/flv,video/mkv,video/mov">
-
+    <input type="file" id="uploader" accept="video/mp4,video/webm,video/avi,video/flv,video/mkv,video/mov"><br><br>
     <button onclick="convertToMP4()">Konvertera</button>
 
     <div id="progress-bar">
@@ -51,12 +51,13 @@
     <script>
         let ffmpeg;
 
+        // Vänta tills FFmpeg har laddats innan vi fortsätter
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const { createFFmpeg } = FFmpeg;
                 ffmpeg = createFFmpeg({ log: true });
                 await ffmpeg.load();
-                console.log("FFmpeg är laddad!");
+                console.log("FFmpeg är laddad och klar att användas!");
             } catch (error) {
                 console.error("Fel vid inläsning av FFmpeg:", error);
                 alert("Det gick inte att ladda FFmpeg! Kontrollera konsolen för mer information.");
@@ -76,6 +77,11 @@
                 return;
             }
 
+            if (!ffmpeg) {
+                alert("FFmpeg har inte laddats korrekt. Försök igen.");
+                return;
+            }
+
             progressBar.style.display = 'block';
             status.textContent = 'Konverterar...';
 
@@ -84,12 +90,14 @@
 
             try {
                 console.log("Laddar fil:", inputName);
+                // Skriv filen till FFmpeg filsystem
                 await ffmpeg.FS('writeFile', inputName, new Uint8Array(await file.arrayBuffer()));
 
-                // Försök konvertera filen
+                // Kör FFmpeg kommandot för att konvertera video
                 console.log("Kör FFmpeg konvertering...");
                 await ffmpeg.run('-i', inputName, '-c:v', 'libx264', '-crf', '23', outputName);
 
+                // Läs utdatafilen och visa resultatet
                 const data = ffmpeg.FS('readFile', outputName);
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
                 const videoURL = URL.createObjectURL(videoBlob);
