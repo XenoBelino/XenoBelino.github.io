@@ -248,7 +248,7 @@
     </div>
 
     <!-- Ladda FFmpeg.js här innan andra skript -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script>
 
     <script>
         let originalFileName = '';
@@ -338,7 +338,8 @@
                 }
 
                 console.log('Initializing FFmpeg');
-                const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+                const { createFFmpeg } = FFmpeg;
+                const ffmpeg = createFFmpeg({ log: true });
                 await ffmpeg.load();
 
                 console.log('FFmpeg loaded');
