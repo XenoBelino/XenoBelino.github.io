@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-
     <link rel="stylesheet" href="styles.css">
 
     <style>
@@ -102,6 +101,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            align-items: center; /* Gör så att symbolerna och volymen centreras */
         }
 
         .volume-symbol {
@@ -109,13 +109,14 @@
         }
 
         .volume-slider {
-            width: 100%;
-            max-width: 300px;
+            width: 60%; /* För att göra reglagen mer kompakta */
         }
 
         .volume-percentage {
             margin-top: 5px;
             font-size: 16px;
+            margin-left: 10px; /* För att skapa mellanrum mellan % och symbol */
+            display: inline-block;
         }
 
         /* Popup-container för bakgrundsändring */
@@ -371,6 +372,12 @@
                     clearInterval(interval);
                 }
             }, 200);
+        }
+
+        // Bakgrundsfunktion
+        function toggleBackgroundOptions() {
+            const backgroundOptions = document.getElementById('background-options');
+            backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
         }
 
         // Gå till startsidan
