@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Player with Settings</title>
-
     <link rel="stylesheet" href="styles.css">
 
     <style>
@@ -48,54 +47,6 @@
             background-color: #5c0b8a;
         }
 
-        /* Placering av knappar */
-        #change-background-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        #back-to-home-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        #save-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        /* Placering av "Browse Files" och "No file selected" */
-        #file-name {
-            color: black;
-            font-size: 18px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        #browse-btn {
-            margin-top: 10px;
-        }
-
-        /* Stil för videospelaren */
-        .video-container {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-        }
-
-        #video-player {
-            border-radius: 15px;
-            width: 80%;
-            max-width: 800px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
         /* Volymreglage */
         .volume-slider-container {
             margin-top: 20px;
@@ -104,7 +55,20 @@
             gap: 10px;
         }
 
-        /* Popup-container för bakgrundsändring */
+        .volume-slider-container div {
+            display: flex;
+            align-items: center;
+        }
+
+        .volume-percentage {
+            margin-left: 10px;
+        }
+
+        .volume-icon {
+            margin-left: 5px;
+        }
+
+        /* Bakgrundsalternativ */
         #background-options {
             display: none;
             position: fixed; /* Fast position */
@@ -208,24 +172,27 @@
         <div class="volume-slider-container">
             <div>
                 <label for="original-volume">Original Volume:</label>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('original')">
                 <span id="original-volume-percent" class="volume-percentage">50%</span>
+                <span id="original-volume-icon" class="volume-icon">🔉</span>
             </div>
             <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('corrupted')">
                 <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+                <span id="corrupted-volume-icon" class="volume-icon">🔉</span>
             </div>
             <div>
                 <label for="music-volume">Music Volume:</label>
-                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('music')">
                 <span id="music-volume-percent" class="volume-percentage">50%</span>
+                <span id="music-volume-icon" class="volume-icon">🔉</span>
             </div>
-            <!-- Final Volume Slider -->
             <div>
                 <label for="final-volume">Final Volume:</label>
-                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" onchange="updateVolumePercentage('final')">
                 <span id="final-volume-percent" class="volume-percentage">50%</span>
+                <span id="final-volume-icon" class="volume-icon">🔉</span>
             </div>
         </div>
 
@@ -252,6 +219,15 @@
 
     <script>
         let originalFileName = '';
+        let ffmpeg;
+
+        // Ladda FFmpeg.js
+        async function loadFFmpeg() {
+            if (!ffmpeg) {
+                ffmpeg = FFmpeg.createFFmpeg({ log: true });
+                await ffmpeg.load();
+            }
+        }
 
         // Volymuppdateringsfunktionen
         function updateVolumePercentage(sliderType) {
@@ -330,27 +306,34 @@
             document.getElementById('progress-text').style.display = 'block';
             document.getElementById('progress-text').textContent = '0% of 100% to complete conversion';
 
-            const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-            await ffmpeg.load();
+            // Ladda FFmpeg
+            await loadFFmpeg();
 
-            // Ladda upp video till FFmpeg.js
-            ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+            try {
+                // Ladda upp video till FFmpeg.js
+                ffmpeg.FS('writeFile', file.name, await fetchFile(file));
 
-            // Konvertera filen
-            await ffmpeg.run('-i', file.name, 'output.mp4');
+                // Konvertera filen
+                await ffmpeg.run('-i', file.name, 'output.mp4');
 
-            // Ladda ned den konverterade filen
-            const data = ffmpeg.FS('readFile', 'output.mp4');
-            const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-            const videoURL = URL.createObjectURL(videoBlob);
+                // Ladda ned den konverterade filen
+                const data = ffmpeg.FS('readFile', 'output.mp4');
+                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                const videoURL = URL.createObjectURL(videoBlob);
 
-            // Uppdatera videospelaren med den nya filen
-            videoPlayer.src = videoURL;
+                // Uppdatera videospelaren med den nya filen
+                videoPlayer.src = videoURL;
 
-            // Uppdatera progressen
-            document.getElementById('progress-bar-filled').style.width = '100%';
-            document.getElementById('progress-text').textContent = '100% of 100% to complete conversion';
+                // Uppdatera progressen
+                document.getElementById('progress-bar-filled').style.width = '100%';
+                document.getElementById('progress-text').textContent = '100% of 100% to complete conversion';
+            } catch (error) {
+                // Visa felmeddelande om konverteringen misslyckas
+                document.getElementById('progress-text').textContent = 'Failed to convert';
+                console.error('Error during conversion:', error);
+            }
         }
     </script>
 </body>
 </html>
+
