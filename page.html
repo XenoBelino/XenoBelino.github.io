@@ -2,8 +2,8 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>FFmpeg MP4 Konverterare</title>
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script>
+    <title>FFmpeg Video Konverterare</title>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script> <!-- Använder annan källa -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,9 +33,10 @@
 </head>
 <body>
 
-    <h1>Konvertera Video till MP4</h1>
+    <h1>Konvertera Videoer</h1>
 
-    <input type="file" id="uploader" accept="video/*"><br><br>
+   <input type="file" id="uploader" accept="video/mp4,video/webm,video/avi,video/flv,video/mkv,video/mov">
+
     <button onclick="convertToMP4()">Konvertera</button>
 
     <div id="progress-bar">
@@ -55,10 +56,10 @@
                 const { createFFmpeg } = FFmpeg;
                 ffmpeg = createFFmpeg({ log: true });
                 await ffmpeg.load();
-                console.log("FFmpeg is loaded!");
+                console.log("FFmpeg är laddad!");
             } catch (error) {
-                console.error("Error loading FFmpeg:", error);
-                alert("Fel vid inläsning av FFmpeg! Kontrollera konsolen för mer info.");
+                console.error("Fel vid inläsning av FFmpeg:", error);
+                alert("Det gick inte att ladda FFmpeg! Kontrollera konsolen för mer information.");
             }
         });
 
@@ -82,15 +83,13 @@
             const outputName = 'output.mp4';
 
             try {
-                // Logga filen och dess information
                 console.log("Laddar fil:", inputName);
                 await ffmpeg.FS('writeFile', inputName, new Uint8Array(await file.arrayBuffer()));
-                
-                // Kör konvertering
+
+                // Försök konvertera filen
                 console.log("Kör FFmpeg konvertering...");
                 await ffmpeg.run('-i', inputName, '-c:v', 'libx264', '-crf', '23', outputName);
 
-                // Läs ut resultatet
                 const data = ffmpeg.FS('readFile', outputName);
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
                 const videoURL = URL.createObjectURL(videoBlob);
