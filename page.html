@@ -100,22 +100,27 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            align-items: center; /* Gör så att symbolerna och volymen centreras */
+            align-items: center;
+        }
+
+        .volume-slider-container div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .volume-symbol {
             font-size: 24px; /* Återställt storleken på symbolerna */
+            margin-left: 10px;
         }
 
         .volume-slider {
-            width: 60%; /* För att göra reglagen mer kompakta */
+            width: 60%;
         }
 
         .volume-percentage {
-            margin-top: 5px;
+            margin-left: 10px; /* Justerat mellanrum mellan % och ljudsymbolen */
             font-size: 16px;
-            margin-left: 10px; /* För att skapa mellanrum mellan % och symbol */
-            display: inline-block;
         }
 
         /* Popup-container för bakgrundsändring */
@@ -221,32 +226,32 @@
         <!-- Volymreglage -->
         <div class="volume-slider-container">
             <!-- För original volym -->
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <div id="original-volume-symbol" class="volume-symbol">🔇</div>
+            <div>
                 <label for="original-volume">Original Volume:</label>
                 <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('original')">
                 <span id="original-volume-percent" class="volume-percentage">50%</span>
+                <div id="original-volume-symbol" class="volume-symbol">🔇</div>
             </div>
             <!-- För förlorad volym -->
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <div id="corrupted-volume-symbol" class="volume-symbol">🔇</div>
+            <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
                 <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('corrupted')">
                 <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+                <div id="corrupted-volume-symbol" class="volume-symbol">🔇</div>
             </div>
             <!-- För musikvolym -->
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <div id="music-volume-symbol" class="volume-symbol">🔇</div>
+            <div>
                 <label for="music-volume">Music Volume:</label>
                 <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('music')">
                 <span id="music-volume-percent" class="volume-percentage">50%</span>
+                <div id="music-volume-symbol" class="volume-symbol">🔇</div>
             </div>
             <!-- För slutgiltig volym -->
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <div id="final-volume-symbol" class="volume-symbol">🔇</div>
+            <div>
                 <label for="final-volume">Final Volume:</label>
                 <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolume('final')">
                 <span id="final-volume-percent" class="volume-percentage">50%</span>
+                <div id="final-volume-symbol" class="volume-symbol">🔇</div>
             </div>
         </div>
 
@@ -280,120 +285,42 @@
             const volumePercent = document.getElementById(`${sliderType}-volume-percent`);
             const volumeSymbol = document.getElementById(`${sliderType}-volume-symbol`);
 
-            const volume = volumeSlider.value;
-            volumePercent.textContent = `${volume}%`;
+            const volumeValue = volumeSlider.value;
+            volumePercent.textContent = `${volumeValue}%`;
 
-            // Uppdatera ljudsymbolen beroende på volymen
-            if (volume == 0) {
-                volumeSymbol.textContent = '🔇';  // Muted
-            } else if (volume > 0 && volume <= 33) {
-                volumeSymbol.textContent = '🔈';  // Låg volym (inga bågar)
-            } else if (volume > 33 && volume <= 66) {
-                volumeSymbol.textContent = '🔉';  // Medium volym (1 båge)
+            if (volumeValue === '0') {
+                volumeSymbol.textContent = '🔇'; // Mute symbol
+            } else if (volumeValue <= 33) {
+                volumeSymbol.textContent = '🔉'; // Low volume
+            } else if (volumeValue <= 66) {
+                volumeSymbol.textContent = '🔊'; // Medium volume
             } else {
-                volumeSymbol.textContent = '🔊';  // Full volym (2 bågar)
+                volumeSymbol.textContent = '📣'; // High volume
             }
         }
 
-        // Funktion för att trigga filväljaren
-        function triggerFileInput() {
-            document.getElementById('file-input').click();
-        }
-
-        // Browse Files Funktion
+        // Funktion för att välja en fil
         function handleFileSelect(event) {
-            const fileInput = event.target;
-            const file = fileInput.files[0];
-            const fileName = file ? file.name : 'No file selected';
-            originalFileName = file ? file.name : '';
-            document.getElementById('file-name').textContent = fileName;
+            const file = event.target.files[0];
+            originalFileName = file.name;
 
-            // Återställ progress texten och baren när en ny fil väljs
-            document.getElementById('progress-text').style.display = 'none';
-            document.getElementById('progress-bar').style.display = 'none';
-
-            // Uppdatera videospelaren med den nya filen
-            const videoPlayer = document.getElementById('video-player');
-            const videoUrl = URL.createObjectURL(file);
-            videoPlayer.src = videoUrl;
+            document.getElementById('file-name').textContent = originalFileName;
+            document.getElementById('browse-btn').textContent = 'Change File';
         }
 
-        // Convert to MP4 funktion
-        async function convertToMP4() {
-            const progressText = document.getElementById('progress-text');
-            const progressBar = document.getElementById('progress-bar');
-            const progressBarFilled = document.getElementById('progress-bar-filled');
-
-            progressText.style.display = 'block';
-            progressBar.style.display = 'block';
-
-            const fileInput = document.getElementById('file-input');
-            const file = fileInput.files[0];
-
-            if (!file) {
-                alert('No file selected.');
-                return;
-            }
-
-            // Kontrollera om filen redan är en MP4
-            if (file.type === 'video/mp4') {
-                progressText.textContent = 'Cannot convert to MP4, your file is already in MP4 format';
-                return;
-            }
-
-            const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-            await ffmpeg.load();
-
-            // Konvertering här
-            ffmpeg.FS('writeFile', file.name, await fetchFile(file));
-
-            const outputFile = file.name.replace(/\.[^/.]+$/, "") + '.mp4';
-
-            try {
-                await ffmpeg.run('-i', file.name, outputFile);
-
-                const data = ffmpeg.FS('readFile', outputFile);
-
-                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-                const videoUrl = URL.createObjectURL(videoBlob);
-
-                const videoPlayer = document.getElementById('video-player');
-                videoPlayer.src = videoUrl;
-
-                progressText.textContent = 'Conversion successful';
-            } catch (error) {
-                progressText.textContent = 'Failed to convert';
-            }
-
-            // Ladda om progress texten
-            let percentage = 0;
-            const interval = setInterval(() => {
-                percentage += 5;
-                progressBarFilled.style.width = `${percentage}%`;
-                progressText.textContent = `${percentage}% of 100% to complete conversion`;
-
-                if (percentage >= 100) {
-                    clearInterval(interval);
-                }
-            }, 200);
-        }
-
-        // Bakgrundsfunktion
         function toggleBackgroundOptions() {
             const backgroundOptions = document.getElementById('background-options');
-            backgroundOptions.style.display = backgroundOptions.style.display === 'none' ? 'block' : 'none';
+            backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
         }
 
+        // För att sätta ljusläge
         function setLightMode() {
             document.body.classList.remove('dark-mode');
         }
 
+        // För att sätta mörkt läge
         function setDarkMode() {
             document.body.classList.add('dark-mode');
-        }
-
-        function goToHomePage() {
-            window.location.href = 'home.html'; // Byt ut till din hemsida
         }
     </script>
 </body>
