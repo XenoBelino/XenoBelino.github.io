@@ -51,10 +51,15 @@
         let ffmpeg;
 
         window.addEventListener('DOMContentLoaded', async () => {
-            const { createFFmpeg } = FFmpeg;
-            ffmpeg = createFFmpeg({ log: true });
-            await ffmpeg.load();
-            console.log("FFmpeg is ready!");
+            try {
+                const { createFFmpeg } = FFmpeg;
+                ffmpeg = createFFmpeg({ log: true });
+                await ffmpeg.load();
+                console.log("FFmpeg is loaded!");
+            } catch (error) {
+                console.error("Error loading FFmpeg:", error);
+                alert("Fel vid inläsning av FFmpeg! Kontrollera konsolen för mer info.");
+            }
         });
 
         async function convertToMP4() {
@@ -77,9 +82,15 @@
             const outputName = 'output.mp4';
 
             try {
+                // Logga filen och dess information
+                console.log("Laddar fil:", inputName);
                 await ffmpeg.FS('writeFile', inputName, new Uint8Array(await file.arrayBuffer()));
+                
+                // Kör konvertering
+                console.log("Kör FFmpeg konvertering...");
                 await ffmpeg.run('-i', inputName, '-c:v', 'libx264', '-crf', '23', outputName);
 
+                // Läs ut resultatet
                 const data = ffmpeg.FS('readFile', outputName);
                 const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
                 const videoURL = URL.createObjectURL(videoBlob);
@@ -96,8 +107,8 @@
                 progressBarFilled.style.width = '100%';
                 status.textContent = 'Konvertering klar!';
             } catch (err) {
-                console.error(err);
-                status.textContent = 'Fel vid konvertering.';
+                console.error("Fel under konverteringen:", err);
+                status.textContent = 'Fel vid konvertering. Se konsolen för mer info.';
             }
         }
     </script>
