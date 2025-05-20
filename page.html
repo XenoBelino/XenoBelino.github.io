@@ -115,6 +115,12 @@
             display: none; /* Döljer texten tills den är relevant */
         }
 
+        /* Ljudreglage */
+        #volume-slider {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -139,9 +145,15 @@
         <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
         
         <button id="back-to-home-btn" class="button" onclick="goToHomePage()">Go to Homepage</button>
+
+        <!-- Mörkt & ljust läge knapp -->
+        <button id="change-background-btn" class="button" onclick="toggleMode()">Toggle Dark/Light Mode</button>
+
+        <!-- Ljudreglage -->
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" onchange="setVolume(event)">
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.0.0/ffmpeg.min.js"></script>
     <script>
         let originalFileName = ''; // För att lagra filnamn
 
@@ -227,6 +239,17 @@
                 document.getElementById('progress-text').textContent = 'Failed to convert';
                 document.getElementById('progress-bar').style.display = 'none';
             }
+        }
+
+        // Mörkt och ljust läge
+        function toggleMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Justera volym
+        function setVolume(event) {
+            const videoPlayer = document.getElementById('video-player');
+            videoPlayer.volume = event.target.value;
         }
 
         // Gå tillbaka till startsidan
