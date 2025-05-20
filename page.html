@@ -199,9 +199,22 @@
   </div>
 
   <!-- Lägg till ffmpeg.wasm via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.5/dist/ffmpeg.min.js"></script>
 
   <script>
+    // Vi sätter ett globalt variabel för att hålla koll på FFmpeg instans
+    let ffmpeg;
+
+    // Vänta tills FFmpeg är laddat
+    async function loadFFmpeg() {
+      ffmpeg = await FFmpeg.createFFmpeg({ log: true });
+      await ffmpeg.load();
+      console.log("FFmpeg is loaded.");
+    }
+
+    // Kör när sidan har laddats och när användaren försöker konvertera en video
+    document.addEventListener('DOMContentLoaded', loadFFmpeg);
+
     function triggerFileInput() {
       document.getElementById('file-input').click();
     }
@@ -216,15 +229,17 @@
     }
 
     async function convertToMP4() {
+      if (!ffmpeg) {
+        alert("FFmpeg is not loaded yet. Please try again later.");
+        return;
+      }
+
       const video = document.getElementById('video-player');
       const progressBar = document.getElementById('progress-bar');
       const progressBarFilled = document.getElementById('progress-bar-filled');
       const progressText = document.getElementById('progress-text');
       progressBar.style.display = 'block';
       progressText.style.display = 'block';
-
-      const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-      await ffmpeg.load();
 
       const file = document.getElementById('video-source').src;
       const response = await fetch(file);
