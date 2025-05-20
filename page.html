@@ -1,306 +1,384 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-  <title>Video Player with Settings</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <style>
-    /* Din tidigare CSS behålls oförändrad för UI och stil */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: black;
-      margin: 0;
-      padding: 0;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-    body.dark-mode {
-      background-color: #333;
-      color: #fff;
-    }
-    .editor-content {
-      text-align: center;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .button, .browse-button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      border: none;
-      background-color: #6a0dad;
-      color: white;
-      transition: background-color 0.3s;
-    }
-    .button:hover, .browse-button:hover {
-      background-color: #5c0b8a;
-    }
-    #change-background-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-    #back-to-home-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-    }
-    #save-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-    #file-name {
-      color: black;
-      font-size: 18px;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    #browse-btn {
-      margin-top: 10px;
-    }
-    .video-container {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-    }
-    #video-player {
-      border-radius: 15px;
-      width: 80%;
-      max-width: 800px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-    .volume-slider-container {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    #background-options {
-      display: none;
-      position: fixed;
-      top: 60px;
-      right: 20px;
-      padding: 15px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      text-align: left;
-      width: 150px;
-    }
-    #background-options button {
-      margin: 10px 0;
-    }
-    .option-button {
-      padding: 10px 20px;
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-    }
-    .option-button:hover {
-      background-color: #5c0b8a;
-    }
-    #progress-bar {
-      width: 100%;
-      background-color: #ddd;
-      display: none;
-      border-radius: 15px;
-    }
-    #progress-bar-filled {
-      height: 20px;
-      background-color: #4caf50;
-      width: 0;
-      border-radius: 15px;
-    }
-    #progress-text {
-      font-size: 18px;
-      margin-top: 5px;
-      text-align: center;
-      display: none;
-    }
-    body.dark-mode #file-name {
-      color: white !important;
-    }
-    #background-options h3 {
-      color: black;
-      text-align: center;
-    }
-    body.dark-mode #background-options h3 {
-      color: white;
-    }
-    body.dark-mode #background-options {
-      background-color: #333;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Video Player with Settings</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* Grundläggande stil för hela sidan */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: black;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .editor-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Stil för knappar */
+        .button, .browse-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover, .browse-button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Placering av knappar */
+        #change-background-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #back-to-home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #save-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Placering av "Browse Files" och "No file selected" */
+        #file-name {
+            color: black;
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #browse-btn {
+            margin-top: 10px;
+        }
+
+        /* Stil för videospelaren */
+        .video-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #video-player {
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Volymreglage */
+        .volume-slider-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Popup-container för bakgrundsändring */
+        #background-options {
+            display: none;
+            position: fixed; /* Fast position */
+            top: 60px;
+            right: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            text-align: left;
+            width: 150px; /* Minskat för att göra boxen mindre */
+        }
+
+        #background-options button {
+            margin: 10px 0; /* Vertikal marginal */
+        }
+
+        .option-button {
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Gör knapparna lika breda */
+        }
+
+        .option-button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Laddningsbar */
+        #progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            display: none; /* Döljer laddningsbaren tills knappen klickas */
+            border-radius: 15px; /* Runda kanter */
+        }
+
+        #progress-bar-filled {
+            height: 20px;
+            background-color: #4caf50;
+            width: 0;
+            border-radius: 15px; /* Runda kanter på själva progress */
+        }
+
+        #progress-text {
+            font-size: 18px; /* Justera storleken för progress texten */
+            margin-top: 5px;
+            text-align: center;
+            display: none; /* Döljer texten tills den är relevant */
+        }
+
+        /* För att texten 'No file selected' alltid ska vara vit när mörkt läge är aktivt */
+        body.dark-mode #file-name {
+            color: white !important;
+        }
+
+        /* För att texten 'Choose Background Mode' ska vara svart i light mode och vit i dark mode */
+        #background-options h3 {
+            color: black;
+            text-align: center; /* Centrera texten */
+        }
+
+        body.dark-mode #background-options h3 {
+            color: white;
+        }
+
+        /* För att fixa texten i 'Choose Background Mode' så att den inte blir vit i mörkt läge */
+        body.dark-mode #background-options {
+            background-color: #333; /* Ändrar bakgrunden så att texten syns bättre */
+        }
+    </style>
 </head>
 <body>
-  <div class="editor-content">
-    <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-    <p>Ladda upp en video, justera ljud, ändra bakgrund.</p>
+    <div class="editor-content">
+        <div class="intro-section">
+            <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+            <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
+        </div>
 
-    <div class="video-container">
-      <video id="video-player" controls>
-        <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+        <!-- Video Player Container -->
+        <div class="video-container">
+            <video id="video-player" controls>
+                <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div id="file-name">No file selected</div>
+        <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
+        <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
+
+        <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+
+        <button id="save-btn" class="button">Save Changes</button>
+
+        <!-- Volymreglage -->
+        <div class="volume-slider-container">
+            <div>
+                <label for="original-volume">Original Volume:</label>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+                <span id="original-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="corrupted-volume">Corrupted Volume:</label>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
+                <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="music-volume">Music Volume:</label>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
+                <span id="music-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <!-- Final Volume Slider -->
+            <div>
+                <label for="final-volume">Final Volume:</label>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
+                <span id="final-volume-percent" class="volume-percentage">50%</span>
+            </div>
+        </div>
+
+        <!-- Bakgrundsalternativ -->
+        <div id="background-options">
+            <h3>Choose Background Mode</h3>
+            <button id="light-mode-btn" class="option-button" onclick="setLightMode()">Light Mode</button>
+            <button id="dark-mode-btn" class="option-button" onclick="setDarkMode()">Dark Mode</button>
+        </div>
+
+        <!-- Laddningsbar för konvertering -->
+        <div id="progress-bar">
+            <div id="progress-bar-filled"></div>
+        </div>
+        <div id="progress-text" style="display:none;">0% of 100% to complete conversion</div>
+
+        <!-- Go to homepage button -->
+        <button id="back-to-home-btn" class="button" onclick="goToHomePage()">Go to Homepage</button>
+
     </div>
 
-    <div id="file-name">No file selected</div>
-    <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
-    <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
-    <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
-    <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
-    <button id="save-btn" class="button">Save Changes</button>
+    <!-- Ladda FFmpeg.js här innan andra skript -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
 
-    <div class="volume-slider-container">
-      <div>
-        <label for="original-volume">Original Volume:</label>
-        <input type="range" id="original-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
-        <span id="original-volume-percent">50%</span>
-      </div>
-      <div>
-        <label for="corrupted-volume">Corrupted Volume:</label>
-        <input type="range" id="corrupted-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
-        <span id="corrupted-volume-percent">50%</span>
-      </div>
-      <div>
-        <label for="music-volume">Music Volume:</label>
-        <input type="range" id="music-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
-        <span id="music-volume-percent">50%</span>
-      </div>
-      <div>
-        <label for="final-volume">Final Volume:</label>
-        <input type="range" id="final-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
-        <span id="final-volume-percent">50%</span>
-      </div>
-    </div>
+    <script>
+        let originalFileName = '';
 
-    <div id="background-options">
-      <h3>Choose Background Mode</h3>
-      <button class="option-button" onclick="setLightMode()">Light Mode</button>
-      <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
-    </div>
+        // Volymuppdateringsfunktionen
+        function updateVolumePercentage(sliderType) {
+            const volumeSlider = document.getElementById(`${sliderType}-volume`);
+            const volumePercent = document.getElementById(`${sliderType}-volume-percent`);
+            volumePercent.textContent = `${volumeSlider.value}%`;
+        }
 
-    <div id="progress-bar"><div id="progress-bar-filled"></div></div>
-    <div id="progress-text">0% of 100% to complete conversion</div>
+        // Funktion för att trigga filväljaren
+        function triggerFileInput() {
+            document.getElementById('file-input').click();
+        }
 
-    <button id="back-to-home-btn" class="button" onclick="goToHomePage()">Go to Homepage</button>
-  </div>
+        // Browse Files Funktion
+        function handleFileSelect(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const fileName = file ? file.name : 'No file selected';
+            originalFileName = file ? file.name : '';
+            document.getElementById('file-name').textContent = fileName;
 
-  <!-- FFmpeg -->
-  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+            // Återställ progress texten och baren när en ny fil väljs
+            document.getElementById('progress-text').style.display = 'none';
+            document.getElementById('progress-bar').style.display = 'none';
 
-  <script>
-    const { createFFmpeg, fetchFile } = FFmpeg;
-    let originalFileName = '';
+            // Uppdatera videospelaren med den nya filen
+            const videoPlayer = document.getElementById('video-player');
+            const videoUrl = URL.createObjectURL(file);
+            videoPlayer.src = videoUrl;
+        }
 
-    function updateVolumePercentage(sliderType) {
-      const volumeSlider = document.getElementById(`${sliderType}-volume`);
-      const volumePercent = document.getElementById(`${sliderType}-volume-percent`);
-      volumePercent.textContent = `${volumeSlider.value}%`;
-    }
+        // Change Background Options
+        function toggleBackgroundOptions() {
+            const options = document.getElementById('background-options');
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
+        }
 
-    function triggerFileInput() {
-      document.getElementById('file-input').click();
-    }
+        // Stäng popup när man klickar utanför den
+        window.addEventListener('click', function(event) {
+            const options = document.getElementById('background-options');
+            if (!options.contains(event.target) && !document.getElementById('change-background-btn').contains(event.target)) {
+                options.style.display = 'none';
+            }
+        });
 
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      originalFileName = file?.name || '';
-      document.getElementById('file-name').textContent = originalFileName || 'No file selected';
-      document.getElementById('progress-text').style.display = 'none';
-      document.getElementById('progress-bar').style.display = 'none';
+        // Set Light Mode
+        function setLightMode() {
+            document.body.classList.remove('dark-mode');
+            toggleBackgroundOptions();
+        }
 
-      const videoPlayer = document.getElementById('video-player');
-      videoPlayer.src = URL.createObjectURL(file);
-    }
+        // Set Dark Mode
+        function setDarkMode() {
+            document.body.classList.add('dark-mode');
+            toggleBackgroundOptions();
+        }
 
-    function toggleBackgroundOptions() {
-      const options = document.getElementById('background-options');
-      options.style.display = options.style.display === 'block' ? 'none' : 'block';
-    }
+        // Gå tillbaka till startsidan
+        function goToHomePage() {
+            window.location.href = "index.html"; // Byt ut mot din startsida
+        }
 
-    window.addEventListener('click', function (e) {
-      const options = document.getElementById('background-options');
-      const button = document.getElementById('change-background-btn');
-      if (!options.contains(e.target) && !button.contains(e.target)) {
-        options.style.display = 'none';
-      }
-    });
+        // Konvertera video till MP4
+        async function convertToMP4() {
+            const file = document.getElementById('file-input
 
-    function setLightMode() {
-      document.body.classList.remove('dark-mode');
-      toggleBackgroundOptions();
-    }
 
-    function setDarkMode() {
-      document.body.classList.add('dark-mode');
-      toggleBackgroundOptions();
-    }
+ChatGPT sade:
+').files[0];
+if (!file) {
+alert('Please select a video file.');
+return;
+}
 
-    function goToHomePage() {
-      window.location.href = "index.html";
-    }
+javascript
+Kopiera
+Redigera
+        if (file.name.endsWith('.mp4')) {
+            document.getElementById('progress-text').textContent = 'Filen är redan i MP4-format.';
+            return;
+        }
 
-    async function convertToMP4() {
-      const file = document.getElementById('file-input').files[0];
-      if (!file) return alert('Please select a video file.');
-      if (file.name.endsWith('.mp4')) {
-        document.getElementById('progress-text').textContent = 'Filen är redan i MP4-format.';
+        const { createFFmpeg, fetchFile } = FFmpeg;
+        const ffmpeg = createFFmpeg({ log: true });
+
+        document.getElementById('progress-bar').style.display = 'block';
         document.getElementById('progress-text').style.display = 'block';
-        return;
-      }
 
-      const ffmpeg = createFFmpeg({ log: true });
-      document.getElementById('progress-bar').style.display = 'block';
-      document.getElementById('progress-text').style.display = 'block';
+        ffmpeg.setProgress(({ ratio }) => {
+            const percent = Math.round(ratio * 100);
+            document.getElementById('progress-bar-filled').style.width = `${percent}%`;
+            document.getElementById('progress-text').textContent = `${percent}% av 100% för att slutföra konverteringen`;
+        });
 
-      ffmpeg.setProgress(({ ratio }) => {
-        const percent = Math.round(ratio * 100);
-        document.getElementById('progress-bar-filled').style.width = `${percent}%`;
-        document.getElementById('progress-text').textContent = `${percent}% av 100% för att slutföra konverteringen`;
-      });
+        try {
+            await ffmpeg.load();
 
-      try {
-        await ffmpeg.load();
-        const inputName = file.name;
-        const outputName = 'output.mp4';
-        await ffmpeg.FS('writeFile', inputName, await fetchFile(file));
-        await ffmpeg.run('-i', inputName, outputName);
-        const data = ffmpeg.FS('readFile', outputName);
-        const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-        const videoUrl = URL.createObjectURL(videoBlob);
+            const inputName = file.name;
+            const outputName = 'output.mp4';
 
-        document.getElementById('video-player').src = videoUrl;
-        const downloadName = originalFileName.replace(/\.[^/.]+$/, '') + '-converted.mp4';
+            await ffmpeg.FS('writeFile', inputName, await fetchFile(file));
+            await ffmpeg.run('-i', inputName, '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental', outputName);
 
-        document.getElementById('save-btn').onclick = () => {
-          const a = document.createElement('a');
-          a.href = videoUrl;
-          a.download = downloadName;
-          a.click();
-        };
+            const data = ffmpeg.FS('readFile', outputName);
+            const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+            const videoUrl = URL.createObjectURL(videoBlob);
 
-        document.getElementById('progress-text').textContent = 'Konvertering klar!';
-        document.getElementById('progress-bar').style.display = 'none';
+            const videoPlayer = document.getElementById('video-player');
+            videoPlayer.src = videoUrl;
 
-      } catch (err) {
-        console.error(err);
-        document.getElementById('progress-text').textContent = 'Fel vid konvertering.';
-        document.getElementById('progress-bar').style.display = 'none';
-      }
+            const downloadFileName = originalFileName.replace(/\.[^/.]+$/, '') + '-converted.mp4';
+            document.getElementById('save-btn').addEventListener('click', function () {
+                const a = document.createElement('a');
+                a.href = videoUrl;
+                a.download = downloadFileName;
+                a.click();
+            });
+
+            document.getElementById('progress-text').textContent = 'Konvertering klar!';
+            document.getElementById('progress-bar').style.display = 'none';
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('progress-text').textContent = 'Fel vid konvertering.';
+            document.getElementById('progress-bar').style.display = 'none';
+        }
     }
-  </script>
-</body>
-</html>
+</script>
+</body> 
+</html> 
