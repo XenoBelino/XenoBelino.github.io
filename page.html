@@ -16,12 +16,27 @@
       background-color: #333;
       color: white;
     }
-    .editor-content {
-      text-align: center;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
+
+    /* Header container med Go to homepage och Change Background */
+    #top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10000;
     }
+
+    #top-header .left,
+    #top-header .right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .button {
       padding: 10px 20px;
       font-size: 16px;
@@ -29,18 +44,35 @@
       border: none;
       background-color: #6a0dad;
       color: white;
-      margin: 5px;
       cursor: pointer;
+      transition: background-color 0.3s;
+      user-select: none;
     }
     .button:hover {
       background-color: #5c0b8a;
     }
+
+    .button.homepage {
+      background-color: #007bff;
+    }
+    .button.homepage:hover {
+      background-color: #0056b3;
+    }
+
+    .editor-content {
+      text-align: center;
+      padding: 20px;
+      max-width: 900px;
+      margin: 20px auto 50px auto; /* lite extra toppmarginal pga sticky header */
+    }
+
     .video-container video {
       width: 80%;
       max-width: 800px;
       border-radius: 15px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
+
     .volume-slider-container {
       margin-top: 20px;
       display: flex;
@@ -48,6 +80,7 @@
       align-items: center;
       gap: 10px;
     }
+
     #progress-bar {
       width: 100%;
       height: 20px;
@@ -67,17 +100,18 @@
       font-size: 18px;
       margin-top: 10px;
     }
+
     /* Popup: Change Background */
     #background-options {
       position: absolute;
-      top: 150px; /* Återställt till ursprunglig position */
+      top: 50px; /* något nedanför header */
       right: 20px;
       background-color: white;
       padding: 15px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       display: none;
-      z-index: 999;
+      z-index: 9999;
       width: 140px;
       text-align: center;
     }
@@ -95,6 +129,7 @@
     #background-options button:hover {
       background-color: #5c0b8a;
     }
+
     /* Popup: Upgrade Resolution */
     #resolution-options {
       position: absolute;
@@ -103,7 +138,7 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.3);
       display: none;
-      z-index: 999;
+      z-index: 9999;
       width: 180px;
       text-align: center;
     }
@@ -126,6 +161,7 @@
     #resolution-options button:hover {
       background-color: #5c0b8a;
     }
+
     /* Popup: Terms */
     #terms-popup {
       position: fixed;
@@ -137,7 +173,7 @@
       border-radius: 15px;
       box-shadow: 0 0 15px rgba(0,0,0,0.4);
       display: none;
-      z-index: 1000;
+      z-index: 10000;
       width: 320px;
       text-align: center;
     }
@@ -168,6 +204,7 @@
     #terms-popup button:last-child:hover {
       background-color: #b8332a;
     }
+
     /* Popup: Apply video warning */
     #apply-popup {
       position: fixed;
@@ -186,6 +223,16 @@
   </style>
 </head>
 <body>
+  <!-- Header med knappar längst upp -->
+  <div id="top-header">
+    <div class="left">
+      <a href="index.html" class="button homepage" style="user-select:none;">Go to homepage</a>
+    </div>
+    <div class="right">
+      <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+    </div>
+  </div>
+
   <div class="editor-content">
     <h1>Välkommen till Video- och Ljudredigeraren!</h1>
 
@@ -203,12 +250,6 @@
 
     <!-- Placera Upgrade Your Video knappen bredvid Convert to MP4 -->
     <button id="upgrade-video-btn" class="button" onclick="startUpgradeProcess()" style="margin-left: 10px;">Upgrade Your Video</button>
-
-    <!-- Placera Change Background knappen på sin ursprungliga position -->
-    <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
-
-    <!-- Lägg till Go to homepage knapp -->
-    <a href="index.html" class="button" style="background-color: #007bff; margin-left: 10px;">Go to homepage</a>
 
     <div class="volume-slider-container">
       <label>Original Volume:
@@ -260,44 +301,23 @@
     let selectedResolution = '';
     let upgradeAccepted = false;
 
-    const backgroundOptions = document.getElementById('background-options');
-    const resolutionOptions = document.getElementById('resolution-options');
-    const upgradeBtn = document.getElementById('upgrade-video-btn');
     const applyPopup = document.getElementById('apply-popup');
+    const resolutionOptions = document.getElementById('resolution-options');
     const termsPopup = document.getElementById('terms-popup');
+    const backgroundOptions = document.getElementById('background-options');
+    const changeBackgroundBtn = document.getElementById('change-background-btn');
+    const upgradeVideoBtn = document.getElementById('upgrade-video-btn');
 
-    // Placera resolution-popup under Upgrade-knappen
-    function positionResolutionPopup() {
-      const rect = upgradeBtn.getBoundingClientRect();
-      resolutionOptions.style.top = (rect.bottom + window.scrollY + 8) + 'px';
-      resolutionOptions.style.left = (rect.left + window.scrollX) + 'px';
-    }
-
-    document.addEventListener('click', (e) => {
-      // Stäng Change Background popup om klick utanför
-      if (!backgroundOptions.contains(e.target) && e.target !== document.getElementById('change-background-btn')) {
-        backgroundOptions.style.display = 'none';
-      }
-
-      // Stäng resolution-popup om klick utanför eller klick på andra element än knapparna i popupen
-      if (!resolutionOptions.contains(e.target) && e.target !== upgradeBtn) {
-        resolutionOptions.style.display = 'none';
-      }
-    });
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      originalFileName = file.name;
-      document.getElementById('file-name').textContent = file.name;
-      const videoPlayer = document.getElementById('video-player');
-      videoPlayer.src = URL.createObjectURL(file);
-    }
-
+    // Toggle background popup
     function toggleBackgroundOptions() {
-      backgroundOptions.style.display = backgroundOptions.style.display === 'block' ? 'none' : 'block';
+      if (backgroundOptions.style.display === 'block') {
+        backgroundOptions.style.display = 'none';
+      } else {
+        backgroundOptions.style.display = 'block';
+      }
     }
 
+    // Set light/dark mode
     function setLightMode() {
       document.body.classList.remove('dark-mode');
       backgroundOptions.style.display = 'none';
@@ -308,76 +328,105 @@
       backgroundOptions.style.display = 'none';
     }
 
-    async function convertToMP4() {
-      const file = document.getElementById('file-input').files[0];
-      if (!file) return alert('Please select a video file.');
+    // Positionera resolution popup under upgrade button
+    function positionResolutionPopup() {
+      const rect = upgradeVideoBtn.getBoundingClientRect();
+      resolutionOptions.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+      resolutionOptions.style.left = (rect.left + window.scrollX) + 'px';
+    }
 
-      const { createFFmpeg } = FFmpeg;
+    // Stäng popupar om klick utanför
+    document.addEventListener('click', function(event) {
+      if (!backgroundOptions.contains(event.target) && event.target !== changeBackgroundBtn) {
+        backgroundOptions.style.display = 'none';
+      }
+      if (!resolutionOptions.contains(event.target) && event.target !== upgradeVideoBtn) {
+        resolutionOptions.style.display = 'none';
+      }
+      if (!termsPopup.contains(event.target) && event.target !== upgradeVideoBtn) {
+        // Men vi låter villkorspopup vara tills användaren väljer något
+      }
+    });
+
+    // Hantera filval
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      originalFileName = file.name;
+      document.getElementById('file-name').textContent = 'Selected file: ' + originalFileName;
+
+      const video = document.getElementById('video-player');
+      video.src = URL.createObjectURL(file);
+      video.load();
+    }
+
+    // Convert to MP4 med ffmpeg.wasm
+    async function convertToMP4() {
+      const fileInput = document.getElementById('file-input');
+      if (!fileInput.files.length) {
+        alert('No file selected for conversion!');
+        return;
+      }
+
+      const { createFFmpeg, fetchFile } = FFmpeg;
       const ffmpeg = createFFmpeg({ log: true });
       await ffmpeg.load();
+
+      const file = fileInput.files[0];
       await ffmpeg.FS('writeFile', file.name, await fetchFile(file));
-
       await ffmpeg.run('-i', file.name, 'output.mp4');
-      const data = ffmpeg.FS('readFile', 'output.mp4');
 
+      const data = ffmpeg.FS('readFile', 'output.mp4');
       const video = document.getElementById('video-player');
       video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
 
       alert('Conversion to MP4 completed!');
     }
 
-    // Hjälpfunktion för fetchFile (ffmpeg)
-    async function fetchFile(file) {
-      return new Uint8Array(await file.arrayBuffer());
-    }
-
-    // Upgrade video process
+    // Starta uppgradering - visa upplösningsval
     function startUpgradeProcess() {
       const fileInput = document.getElementById('file-input');
       if (!fileInput.files.length) {
         applyPopup.style.display = 'block';
-        setTimeout(() => {
-          applyPopup.style.display = 'none';
-        }, 3000);
+        setTimeout(() => applyPopup.style.display = 'none', 3000);
         return;
       }
-      // Visa upplösningsval popup
       positionResolutionPopup();
       resolutionOptions.style.display = 'block';
     }
 
+    // Välj upplösning
     function selectResolution(res) {
       selectedResolution = res;
       resolutionOptions.style.display = 'none';
-      // Kontrollera om videon redan är den upplösningen
+
       if (isVideoResolutionSufficient(res)) {
-        alert(`Your video is already sufficient; it already has ${res} resolution.`);
+        alert(`Your video already has sufficient resolution (${res}).`);
         return;
       }
-      // Visa villkors-popup
       termsPopup.style.display = 'block';
     }
 
+    // Dummy kontroll för video upplösning
     function isVideoResolutionSufficient(res) {
-      // TODO: Lägg in riktig videoupplösningskontroll här
-      // Just nu bara dummy-kod som alltid returnerar false för demo
-      // Du kan läsa av video.metadata om tillgängligt och jämföra
       return false;
     }
 
+    // Acceptera villkor
     function acceptTerms() {
       upgradeAccepted = true;
       termsPopup.style.display = 'none';
-      alert(`Terms accepted. Click the resolution button again to start upgrading to ${selectedResolution}.`);
+      alert(`Terms accepted. Klicka upplösningsknappen igen för att starta uppgraderingen till ${selectedResolution}.`);
     }
 
+    // Nekar villkor
     function denyTerms() {
       upgradeAccepted = false;
       termsPopup.style.display = 'none';
       alert('Upgrade cancelled.');
     }
 
-    // Hantera klick på upplösningsknappar igen efter acceptans
+    // Lyssna på upplösningsknappar för start av uppgradering efter acceptans
     resolutionOptions.querySelectorAll('button').forEach(button => {
       button.addEventListener('click', () => {
         if (upgradeAccepted && selectedResolution === button.textContent) {
@@ -387,18 +436,23 @@
       });
     });
 
-    // Starta uppgradering (dummy)
+    // Starta dummy uppgradering med progress bar
     function startUpgrade(resolution) {
       let progress = 0;
-      document.getElementById('progress-bar').style.display = 'block';
-      document.getElementById('progress-text').style.display = 'block';
+      const progressBar = document.getElementById('progress-bar');
+      const progressBarFilled = document.getElementById('progress-bar-filled');
+      const progressText = document.getElementById('progress-text');
+
+      progressBar.style.display = 'block';
+      progressText.style.display = 'block';
+
       const interval = setInterval(() => {
-        progress += 1;
-        document.getElementById('progress-bar-filled').style.width = progress + '%';
-        document.getElementById('progress-text').textContent = progress + '% completed';
+        progress++;
+        progressBarFilled.style.width = progress + '%';
+        progressText.textContent = progress + '% completed';
         if (progress >= 100) {
           clearInterval(interval);
-          document.getElementById('progress-text').textContent = 'Upgrade completed!';
+          progressText.textContent = 'Upgrade completed!';
         }
       }, 100);
     }
