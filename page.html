@@ -3,29 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Video Player with Settings</title>
-  <link rel="stylesheet" href="styles.css" />
   <style>
-    /* [Behåller ditt UI och styling] */
-    body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: black; margin: 0; padding: 0; }
-    body.dark-mode { background-color: #333; color: #fff; }
-    .editor-content { text-align: center; padding: 20px; max-width: 900px; margin: auto; }
-    .button, .browse-button { padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background-color: #6a0dad; color: white; }
-    .button:hover, .browse-button:hover { background-color: #5c0b8a; }
-    #change-background-btn, #upgrade-video-btn { position: fixed; top: 20px; right: 20px; margin-left: 10px; }
-    #back-to-home-btn { position: fixed; top: 20px; left: 20px; }
-    #save-btn { position: fixed; bottom: 20px; right: 20px; }
-    .video-container { margin-top: 30px; display: flex; justify-content: center; }
-    #video-player { border-radius: 15px; width: 80%; max-width: 800px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
-    .volume-slider-container { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-    #background-options, #resolution-options, #terms-popup, #language-popup, #apply-popup { display: none; position: fixed; padding: 15px; background-color: white; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); z-index: 9999; text-align: center; width: 200px; }
-    .popup-button { margin: 5px 0; }
-    .option-button { background-color: #6a0dad; color: white; border: none; border-radius: 5px; padding: 10px 20px; cursor: pointer; }
-    .option-button:hover { background-color: #5c0b8a; }
-    #progress-bar { width: 100%; background-color: #ddd; border-radius: 15px; display: none; }
-    #progress-bar-filled { height: 20px; background-color: #4caf50; width: 0; border-radius: 15px; }
-    #progress-text { font-size: 18px; margin-top: 5px; display: none; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: black;
+      margin: 0;
+      padding: 0;
+    }
+    body.dark-mode {
+      background-color: #333;
+      color: white;
+    }
+    .editor-content {
+      text-align: center;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      background-color: #6a0dad;
+      color: white;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #5c0b8a;
+    }
+    .popup, .popup-small {
+      position: absolute;
+      top: 120px;
+      right: 20px;
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 999;
+    }
+    .popup button, .popup-small button {
+      display: block;
+      margin: 5px auto;
+      width: 100px;
+    }
+    .video-container video {
+      width: 80%;
+      max-width: 800px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .volume-slider-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    #progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+      display: none;
+    }
+    #progress-bar-filled {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+    }
+    #progress-text {
+      display: none;
+      font-size: 18px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -37,143 +94,154 @@
         Your browser does not support the video tag.
       </video>
     </div>
+
     <div id="file-name">No file selected</div>
-    <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
     <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" />
-    <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
+    <button class="button" onclick="document.getElementById('file-input').click()">Browse Files</button>
+    <button class="button" onclick="convertToMP4()">Convert to MP4</button>
     <button id="upgrade-video-btn" class="button" onclick="startUpgradeProcess()">Upgrade Your Video</button>
     <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
-    <button id="save-btn" class="button">Save Changes</button>
 
     <div class="volume-slider-container">
-      <div><label for="original-volume">Original Volume:</label> <input type="range" id="original-volume" min="0" max="100" value="50"></div>
-      <div><label for="corrupted-volume">Corrupted Volume:</label> <input type="range" id="corrupted-volume" min="0" max="100" value="50"></div>
-      <div><label for="music-volume">Music Volume:</label> <input type="range" id="music-volume" min="0" max="100" value="50"></div>
-      <div><label for="final-volume">Final Volume:</label> <input type="range" id="final-volume" min="0" max="100" value="50"></div>
+      <label>Original Volume:
+        <input type="range" id="original-volume" min="0" max="100" value="50" />
+      </label>
+      <label>Corrupted Volume:
+        <input type="range" id="corrupted-volume" min="0" max="100" value="50" />
+      </label>
+      <label>Music Volume:
+        <input type="range" id="music-volume" min="0" max="100" value="50" />
+      </label>
+      <label>Final Volume:
+        <input type="range" id="final-volume" min="0" max="100" value="50" />
+      </label>
     </div>
 
-    <div id="background-options">
-      <h3>Choose Background</h3>
-      <button class="option-button" onclick="setLightMode()">Light</button>
-      <button class="option-button" onclick="setDarkMode()">Dark</button>
+    <div id="progress-bar">
+      <div id="progress-bar-filled"></div>
     </div>
-
-    <div id="resolution-options">
-      <h3>Choose Resolution</h3>
-      <button class="option-button" onclick="confirmResolution('720p')">720p</button>
-      <button class="option-button" onclick="confirmResolution('1080p')">1080p</button>
-      <button class="option-button" onclick="confirmResolution('1440p')">1440p</button>
-      <button class="option-button" onclick="confirmResolution('4k')">4K</button>
-    </div>
-
-    <div id="terms-popup">
-      <p>This upgrade happens locally and may reduce performance. Continue?</p>
-      <button class="option-button" onclick="acceptTerms()">Accept</button>
-      <button class="option-button" onclick="denyTerms()">Deny</button>
-    </div>
-
-    <div id="apply-popup"><p>Please apply a video first.</p></div>
-
-    <div id="progress-bar"><div id="progress-bar-filled"></div></div>
     <div id="progress-text">0% completed</div>
-    <button id="back-to-home-btn" class="button" onclick="goToHomePage()">Go to Homepage</button>
   </div>
 
-  <!-- FFmpeg -->
+  <!-- Popups -->
+  <div id="background-options" class="popup-small">
+    <button onclick="setLightMode()">Light Mode</button>
+    <button onclick="setDarkMode()">Dark Mode</button>
+  </div>
+
+  <div id="resolution-options" class="popup">
+    <p>Select resolution to upgrade:</p>
+    <button onclick="selectResolution('720p')">720p</button>
+    <button onclick="selectResolution('1080p')">1080p</button>
+    <button onclick="selectResolution('1440p')">1440p</button>
+    <button onclick="selectResolution('4k')">4K</button>
+  </div>
+
+  <div id="terms-popup" class="popup">
+    <p>This upgrade runs locally and may affect performance. Do you accept the terms?</p>
+    <button onclick="acceptTerms()">Accept Terms</button>
+    <button onclick="denyTerms()">Deny</button>
+  </div>
+
+  <div id="apply-popup" class="popup-small">Please apply a video first.</div>
+
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
-
-  <!-- Ditt eget JS -->
-  <script src="libs/whisper/whisper.js"></script>
-  <script src="libs/rnnoise/rnnoise.js"></script>
-  <script src="libs/spleeterjs/spleeter.js"></script>
-
-  <!-- Funktioner -->
   <script>
     let originalFileName = '';
-    let upgradeTermsAccepted = false;
     let selectedResolution = '';
-    
-    function triggerFileInput() {
-      document.getElementById('file-input').click();
-    }
+    let upgradeAccepted = false;
+
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('background-options').contains(e.target) &&
+          !document.getElementById('change-background-btn').contains(e.target)) {
+        document.getElementById('background-options').style.display = 'none';
+      }
+    });
 
     function handleFileSelect(event) {
       const file = event.target.files[0];
-      originalFileName = file?.name || '';
-      document.getElementById('file-name').textContent = originalFileName;
-      document.getElementById('video-player').src = URL.createObjectURL(file);
-    }
-
-    function convertToMP4() {
-      alert("Convert to MP4 clicked (funktion laddas in med FFmpeg)");
+      originalFileName = file.name;
+      document.getElementById('file-name').textContent = file.name;
+      const videoPlayer = document.getElementById('video-player');
+      videoPlayer.src = URL.createObjectURL(file);
     }
 
     function toggleBackgroundOptions() {
-      const options = document.getElementById('background-options');
-      options.style.display = options.style.display === 'block' ? 'none' : 'block';
+      const el = document.getElementById('background-options');
+      el.style.display = el.style.display === 'block' ? 'none' : 'block';
     }
-
-    window.addEventListener('click', function (event) {
-      ['background-options', 'resolution-options', 'terms-popup'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el && el.style.display === 'block' && !el.contains(event.target)) {
-          el.style.display = 'none';
-        }
-      });
-    });
 
     function setLightMode() {
       document.body.classList.remove('dark-mode');
+      toggleBackgroundOptions();
     }
 
     function setDarkMode() {
       document.body.classList.add('dark-mode');
+      toggleBackgroundOptions();
     }
 
-    function goToHomePage() {
-      window.location.href = "index.html";
+    async function convertToMP4() {
+      const file = document.getElementById('file-input').files[0];
+      if (!file) return alert('Please select a video file.');
+
+      const { createFFmpeg } = FFmpeg;
+      const ffmpeg = createFFmpeg({ log: true });
+      await ffmpeg.load();
+      await ffmpeg.FS('writeFile', file.name, new Uint8Array(await file.arrayBuffer()));
+      await ffmpeg.run('-i', file.name, 'output.mp4');
+      const data = ffmpeg.FS('readFile', 'output.mp4');
+
+      const videoUrl = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+      document.getElementById('video-player').src = videoUrl;
+      document.getElementById('progress-text').textContent = 'Conversion completed!';
     }
 
     function startUpgradeProcess() {
       if (!originalFileName) {
         document.getElementById('apply-popup').style.display = 'block';
-        setTimeout(() => document.getElementById('apply-popup').style.display = 'none', 3000);
+        setTimeout(() => {
+          document.getElementById('apply-popup').style.display = 'none';
+        }, 3000);
         return;
       }
       document.getElementById('resolution-options').style.display = 'block';
     }
 
-    function confirmResolution(res) {
+    function selectResolution(res) {
       selectedResolution = res;
+      document.getElementById('resolution-options').style.display = 'none';
       document.getElementById('terms-popup').style.display = 'block';
     }
 
     function acceptTerms() {
-      upgradeTermsAccepted = true;
+      upgradeAccepted = true;
       document.getElementById('terms-popup').style.display = 'none';
       simulateUpgrade();
     }
 
     function denyTerms() {
-      upgradeTermsAccepted = false;
+      upgradeAccepted = false;
       document.getElementById('terms-popup').style.display = 'none';
     }
 
     function simulateUpgrade() {
-      if (!upgradeTermsAccepted) return;
+      if (!upgradeAccepted) return;
 
       let progress = 0;
       document.getElementById('progress-bar').style.display = 'block';
       document.getElementById('progress-text').style.display = 'block';
+
       const interval = setInterval(() => {
-        progress += 5;
+        progress += 1;
         document.getElementById('progress-bar-filled').style.width = progress + '%';
-        document.getElementById('progress-text').textContent = `${progress}% completed`;
+        document.getElementById('progress-text').textContent = progress + '% completed';
         if (progress >= 100) {
           clearInterval(interval);
           document.getElementById('progress-text').textContent = 'Upgrade completed!';
         }
-      }, 200);
+      }, 100);
     }
   </script>
 </body>
