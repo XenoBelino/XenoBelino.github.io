@@ -1,141 +1,386 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Video Player med Inställningar</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Video Player with Settings</title>
   <style>
-    /* Din befintliga CSS här */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: black;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .editor-content {
+      text-align: center;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .button, .browse-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background-color: #6a0dad;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover, .browse-button:hover {
+      background-color: #5c0b8a;
+    }
+
+    #change-background-btn, #upgrade-video-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      margin-left: 10px;
+    }
+
+    #back-to-home-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    #save-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    #file-name {
+      color: black;
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    #browse-btn {
+      margin-top: 10px;
+    }
+
+    .video-container {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #video-player {
+      border-radius: 15px;
+      width: 80%;
+      max-width: 800px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .volume-slider-container {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .volume-slider-container label {
+      display: inline-block;
+      width: 160px;
+    }
+
+    #background-options, #upgrade-options, #terms-popup {
+      display: none;
+      position: fixed;
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      text-align: center;
+    }
+
+    #background-options {
+      top: 60px;
+      right: 20px;
+      width: 150px;
+    }
+
+    #upgrade-options {
+      top: 300px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #terms-popup {
+      top: 420px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .option-button {
+      padding: 10px 20px;
+      background-color: #6a0dad;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px 0;
+    }
+
+    .option-button:hover {
+      background-color: #5c0b8a;
+    }
+
+    #progress-bar {
+      width: 100%;
+      background-color: #ddd;
+      display: none;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    #progress-bar-filled {
+      height: 20px;
+      background-color: #4caf50;
+      width: 0;
+      border-radius: 15px;
+    }
+
+    #progress-text {
+      font-size: 18px;
+      margin-top: 5px;
+      text-align: center;
+      display: none;
+    }
+
+    body.dark-mode #file-name, body.dark-mode #background-options h3 {
+      color: white !important;
+    }
+
+    body.dark-mode #background-options,
+    body.dark-mode #terms-popup,
+    body.dark-mode #upgrade-options {
+      background-color: #333;
+      color: white;
+    }
   </style>
 </head>
 <body>
-  <div class="editor-content">
-    <div class="intro-section">
-      <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-      <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
-    </div>
-
-    <div class="video-container">
-      <video id="video-player" controls>
-        <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4" />
-        Din webbläsare stödjer inte videouppspelning.
-      </video>
-    </div>
-
-    <div id="file-name">Ingen fil vald</div>
-    <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Bläddra Filer</button>
-    <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" />
-    <button id="convert-btn" class="button" onclick="convertToMP4()">Konvertera till MP4</button>
-    <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Ändra Bakgrund</button>
-    <button id="save-btn" class="button">Spara Ändringar</button>
-
-    <div class="volume-slider-container">
-      <div>
-        <label for="original-volume">Original Volym:</label>
-        <input type="range" id="original-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('original')" />
-        <span id="original-volume-percent">50%</span>
-      </div>
-      <div>
-        <label for="corrupted-volume">Corrupted Volym:</label>
-        <input type="range" id="corrupted-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')" />
-        <span id="corrupted-volume-percent">50%</span>
-      </div>
-      <div>
-        <label for="music-volume">Musik Volym:</label>
-        <input type="range" id="music-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('music')" />
-        <span id="music-volume-percent">50%</span>
-      </div>
-      <div>
-        <label for="final-volume">Slutgiltig Volym:</label>
-        <input type="range" id="final-volume" min="0" max="100" value="50" oninput="updateVolumePercentage('final')" />
-        <span id="final-volume-percent">50%</span>
-      </div>
-    </div>
-
-    <div id="background-options">
-      <h3>Välj Bakgrundsläge</h3>
-      <button class="option-button" onclick="setLightMode()">Ljust Läge</button>
-      <button class="option-button" onclick="setDarkMode()">Mörkt Läge</button>
-    </div>
-
-    <div id="progress-bar">
-      <div id="progress-bar-filled"></div>
-    </div>
-    <div id="progress-text">0% av 100% för att slutföra konverteringen</div>
-
-    <button id="back-to-home-btn" class="button" onclick="goToHomePage()">Tillbaka till Hem</button>
+<div class="editor-content">
+  <div class="intro-section">
+    <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+    <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
   </div>
 
-  <script src="libs/whisper/whisper.js"></script>
-  <script src="libs/spleeterjs/spleeter.js"></script>
-  <script src="libs/rnnoise/rnnoise.js"></script>
-  <script>
-    let originalFileName = '';
-    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    let audioBuffer = null;
-    let corruptedLanguages = [];
+  <div class="video-container">
+    <video id="video-player" controls>
+      <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
 
-    // Uppdatera volymprocent
-    function updateVolumePercentage(sliderType) {
-      const slider = document.getElementById(`${sliderType}-volume`);
-      const output = document.getElementById(`${sliderType}-volume-percent`);
-      output.textContent = `${slider.value}%`;
-    }
+  <div id="file-name">No file selected</div>
+  <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
+  <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" />
+  <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
+  <button id="upgrade-video-btn" class="button">Upgrade Your Video</button>
+  <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+  <button id="save-btn" class="button">Save Changes</button>
 
-    // Trigga filval
-    function triggerFileInput() {
-      document.getElementById('file-input').click();
-    }
+  <div class="volume-slider-container">
+    <div>
+      <label for="original-volume">Original Volume:</label>
+      <input type="range" id="original-volume" min="0" max="100" value="50" oninput="updateVolume('original')" />
+      <span id="original-volume-percent">50%</span>
+    </div>
+    <div>
+      <label for="corrupted-volume">Corrupted Volume:</label>
+      <input type="range" id="corrupted-volume" min="0" max="100" value="50" oninput="updateVolume('corrupted')" />
+      <span id="corrupted-volume-percent">50%</span>
+    </div>
+    <div>
+      <label for="music-volume">Music Volume:</label>
+      <input type="range" id="music-volume" min="0" max="100" value="50" oninput="updateVolume('music')" />
+      <span id="music-volume-percent">50%</span>
+    </div>
+    <div>
+      <label for="final-volume">Final Volume:</label>
+      <input type="range" id="final-volume" min="0" max="100" value="50" oninput="updateVolume('final')" />
+      <span id="final-volume-percent">50%</span>
+    </div>
+  </div>
 
-    // Hantera vald fil
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      originalFileName = file?.name || '';
-      document.getElementById('file-name').textContent = originalFileName || 'Ingen fil vald';
+  <div id="background-options">
+    <h3>Choose Background Mode</h3>
+    <button class="option-button" onclick="setLightMode()">Light Mode</button>
+    <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
+  </div>
 
-      const videoPlayer = document.getElementById('video-player');
-      videoPlayer.src = URL.createObjectURL(file);
+  <div id="upgrade-options">
+    <button class="option-button" onclick="selectUpgrade('720p')">720p</button>
+    <button class="option-button" onclick="selectUpgrade('1080p')">1080p</button>
+    <button class="option-button" onclick="selectUpgrade('1440p')">1440p</button>
+    <button class="option-button" onclick="selectUpgrade('4k')">4K</button>
+  </div>
 
+  <div id="terms-popup">
+    <p>Warning: This upgrade does not use a server and may impact performance. Proceed?</p>
+    <button onclick="acceptTerms()">Accept the terms</button>
+    <button onclick="denyTerms()">Deny</button>
+  </div>
+
+  <div id="progress-bar">
+    <div id="progress-bar-filled"></div>
+  </div>
+  <div id="progress-text">0% of 100% to complete conversion</div>
+  <button id="back-to-home-btn" class="button" onclick="goToHomePage()">Go to Homepage</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@5.2.0/ffmpeg.min.js"></script>
+<script>
+  let originalFileName = '';
+  let selectedResolution = null;
+  let termsAccepted = false;
+
+  function updateVolume(type) {
+    const slider = document.getElementById(`${type}-volume`);
+    const output = document.getElementById(`${type}-volume-percent`);
+    output.textContent = `${slider.value}%`;
+  }
+
+  function triggerFileInput() {
+    document.getElementById('file-input').click();
+  }
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    originalFileName = file?.name || '';
+    document.getElementById('file-name').textContent = originalFileName || 'No file selected';
+    const videoPlayer = document.getElementById('video-player');
+    videoPlayer.src = URL.createObjectURL(file);
+    document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('progress-text').style.display = 'none';
+  }
+
+  function toggleBackgroundOptions() {
+    const options = document.getElementById('background-options');
+    options.style.display = options.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function setLightMode() {
+    document.body.classList.remove('dark-mode');
+    toggleBackgroundOptions();
+  }
+
+  function setDarkMode() {
+    document.body.classList.add('dark-mode');
+    toggleBackgroundOptions();
+  }
+
+  function goToHomePage() {
+    window.location.href = "index.html";
+  }
+
+  async function convertToMP4() {
+    const file = document.getElementById('file-input').files[0];
+    if (!file) return alert('Please select a video file.');
+    document.getElementById('progress-bar').style.display = 'block';
+    document.getElementById('progress-text').style.display = 'block';
+
+    if (file.name.endsWith('.mp4')) {
+      document.getElementById('progress-text').textContent = 'Your file is already in MP4 format';
       document.getElementById('progress-bar').style.display = 'none';
-      document.getElementById('progress-text').style.display = 'none';
-
-      // Läs in ljudet för vidare bearbetning
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        audioContext.decodeAudioData(e.target.result, function(buffer) {
-          audioBuffer = buffer;
-        });
-      };
-      reader.readAsArrayBuffer(file);
+      return;
     }
 
-    // Konvertera till MP4
-    async function convertToMP4() {
-      const file = document.getElementById('file-input').files[0];
-      if (!file) return alert('Vänligen välj en videofil.');
+    const { createFFmpeg } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+    await ffmpeg.load();
+    await ffmpeg.FS('writeFile', file.name, new Uint8Array(await file.arrayBuffer()));
+    await ffmpeg.run('-i', file.name, 'output.mp4');
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+    const videoUrl = URL.createObjectURL(videoBlob);
+    document.getElementById('video-player').src = videoUrl;
+    const downloadFileName = originalFileName.replace(/\.[^/.]+$/, '') + '-converted-video.mp4';
+    document.getElementById('save-btn').addEventListener('click', function () {
+      const link = document.createElement('a');
+      link.href = videoUrl;
+      link.download = downloadFileName;
+      link.click();
+    });
+    document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('progress-text').textContent = 'Conversion successful!';
+  }
 
-      document.getElementById('progress-bar').style.display = 'block';
-      document.getElementById('progress-text').style.display = 'block';
+  document.getElementById('upgrade-video-btn').addEventListener('click', () => {
+    const file = document.getElementById('file-input').files[0];
+    if (!file) {
+      alert("Apply a video first!");
+      return;
+    }
+    document.getElementById('upgrade-options').style.display = 'block';
+  });
 
-      if (file.name.endsWith('.mp4')) {
-        document.getElementById('progress-text').textContent = 'Din fil är redan i MP4-format';
-        document.getElementById('progress-bar').style.display = 'none';
+  function selectUpgrade(res) {
+    selectedResolution = res;
+    document.getElementById('terms-popup').style.display = 'block';
+  }
+
+  function acceptTerms() {
+    termsAccepted = true;
+    document.getElementById('terms-popup').style.display = 'none';
+    checkCurrentResolution(selectedResolution);
+  }
+
+  function denyTerms() {
+    termsAccepted = false;
+    document.getElementById('terms-popup').style.display = 'none';
+    alert("You must accept terms to upgrade.");
+  }
+
+  function checkCurrentResolution(res) {
+    const videoPlayer = document.getElementById('video-player');
+    videoPlayer.addEventListener('loadedmetadata', () => {
+      const height = videoPlayer.videoHeight;
+      const resMap = { '720p': 720, '1080p': 1080, '1440p': 1440, '4k': 2160 };
+      if (height >= resMap[res]) {
+        alert(`Your video is already sufficient. It already has ${res} quality.`);
         return;
       }
+      if (termsAccepted) {
+        startUpgradeProcess(res);
+      }
+    });
+  }
 
-      const { createFFmpeg } = FFmpeg;
-      const ffmpeg = createFFmpeg({ log: true });
-      await ffmpeg.load();
+  function startUpgradeProcess(res) {
+    document.getElementById('progress-bar').style.display = 'block';
+    document.getElementById('progress-text').style.display = 'block';
 
-      await ffmpeg.FS('writeFile', file.name, new Uint8Array(await file.arrayBuffer()));
-      await ffmpeg.run('-i', file.name, 'output.mp4');
-      const data = ffmpeg.FS('readFile', 'output.mp4');
-
-      const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-      const videoUrl = URL.createObjectURL(videoBlob);
-      const videoPlayer = document.getElementById('video-player');
-      videoPlayer.src = videoUrl
-::contentReference[oaicite:0]{index=0}
- 
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 5;
+      document.getElementById('progress-bar-filled').style.width = progress + '%';
+      document.getElementById('progress-text').textContent = `${progress}% of 100% to upgrade to ${res}`;
+      if (progress >= 100) {
+        clearInterval(interval);
+        document.getElementById('progress-text').textContent = 'Upgrade successful!';
+      }
+    }, 200);
+  }
+</script>
+</body>
+</html>
