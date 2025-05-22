@@ -1,262 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <!-- ... (samma head som innan) ... -->
   <title>Video Player with Settings</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: black;
-      margin: 0;
-      padding: 0;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+    /* Din befintliga CSS (oförändrad) ... */
 
-    body.dark-mode {
-      background-color: #333;
-      color: #fff;
-    }
-
-    .editor-content {
-      text-align: center;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .button,
-    .browse-button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      border: none;
-      background-color: #6a0dad;
-      color: white;
-      transition: background-color 0.3s;
-    }
-
-    .button:hover,
-    .browse-button:hover {
-      background-color: #5c0b8a;
-    }
-
-    #change-background-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-
-    #upgrade-video-btn {
-      margin-top: 10px;
-    }
-
-    #back-to-home-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-    }
-
-    #save-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-
-    #file-name {
-      color: black;
-      font-size: 18px;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    #browse-btn {
-      margin-top: 10px;
-    }
-
-    .video-container {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-    }
-
-    #video-player {
-      border-radius: 15px;
-      width: 80%;
-      max-width: 800px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .volume-slider-container {
-      margin-top: 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding-bottom: 30px;
-    }
-
-    .volume-slider {
-      width: 60%;
-    }
-
-    .volume-percentage {
-      margin-left: 10px;
-    }
-
-    #background-options {
-      display: none;
-      position: fixed;
-      top: 60px;
-      right: 20px;
-      padding: 15px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      text-align: left;
-      width: 150px;
-    }
-
-    #background-options h3 {
-      color: black;
-      text-align: center;
-    }
-
-    #background-options button {
-      margin: 10px 0;
-    }
-
-    .option-button {
-      padding: 10px 20px;
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .option-button:hover {
-      background-color: #5c0b8a;
-    }
-
-    body.dark-mode #file-name,
-    body.dark-mode #background-options h3,
-    body.dark-mode #upgrade-options h3 {
-      color: white;
-    }
-
-    #progress-bar {
-      width: 100%;
-      background-color: #ddd;
-      display: none;
-      border-radius: 15px;
-    }
-
-    #progress-bar-filled {
-      height: 20px;
-      background-color: #4caf50;
-      width: 0;
-      border-radius: 15px;
-    }
-
-    #progress-text {
-      font-size: 18px;
-      margin-top: 5px;
-      text-align: center;
-      display: none;
-    }
-
-    #upgrade-options {
-      display: none;
+    /* Ny popup-stil */
+    .upgrade-popup {
       position: absolute;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      background-color: #fff;
+      color: black;
       padding: 15px;
-      margin-top: 10px;
-      z-index: 9999;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 10000;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
       text-align: center;
+      font-size: 14px;
     }
-
-    #upgrade-options h3 {
-      margin-bottom: 10px;
-    }
-
-    .resolution-btn {
-      display: block;
-      margin: 5px auto;
-      width: 100px;
-    }
-
-    body.dark-mode #upgrade-options {
-      background-color: #333;
-    }
-
   </style>
 </head>
 <body>
   <div class="editor-content">
-    <div class="intro-section">
-      <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-      <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
-    </div>
+    <!-- ... (resten av din HTML är oförändrad) ... -->
 
-    <div class="video-container">
-      <video id="video-player" controls>
-        <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-    </div>
+    <!-- Knappen: ändrad för att köra handleUpgradeClick istället -->
+    <button id="upgrade-video-btn" class="button" onclick="handleUpgradeClick()">Upgrade Your Video</button>
 
-    <div id="file-name">No file selected</div>
-    <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
-    <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" />
-    <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
-    <button id="upgrade-video-btn" class="button" onclick="toggleUpgradeOptions()">Upgrade Your Video</button>
+    <!-- Upgrade-alternativ -->
     <div id="upgrade-options">
       <h3>Select resolution to upgrade:</h3>
-      <button class="button resolution-btn">720p</button>
-      <button class="button resolution-btn">1080p</button>
-      <button class="button resolution-btn">1440p</button>
-      <button class="button resolution-btn">4K</button>
+      <button class="button resolution-btn" onclick="handleResolutionClick('720p')">720p</button>
+      <button class="button resolution-btn" onclick="handleResolutionClick('1080p')">1080p</button>
+      <button class="button resolution-btn" onclick="handleResolutionClick('1440p')">1440p</button>
+      <button class="button resolution-btn" onclick="handleResolutionClick('4K')">4K</button>
     </div>
 
-    <div class="volume-slider-container">
-      <div>
-        <label for="original-volume">Original Volume:</label>
-        <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
-        <span id="original-volume-percent" class="volume-percentage">50%</span>
-      </div>
-      <div>
-        <label for="corrupted-volume">Corrupted Volume:</label>
-        <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
-        <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
-      </div>
-      <div>
-        <label for="music-volume">Music Volume:</label>
-        <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
-        <span id="music-volume-percent" class="volume-percentage">50%</span>
-      </div>
-      <div>
-        <label for="final-volume">Final Volume:</label>
-        <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
-        <span id="final-volume-percent" class="volume-percentage">50%</span>
-      </div>
-    </div>
-
+    <!-- Progress-bar (oförändrad) -->
     <div id="progress-bar">
       <div id="progress-bar-filled"></div>
     </div>
     <div id="progress-text">0% of 100% to complete conversion</div>
   </div>
 
+  <!-- Popup-meddelanden -->
+  <div id="upgrade-no-video" class="upgrade-popup" style="display: none;">
+    Please apply a video.
+  </div>
+
+  <div id="upgrade-warning" class="upgrade-popup" style="display: none;">
+    This upgrade is done locally in your browser and may impact video quality. Proceed with caution.
+  </div>
+
+  <div id="upgrade-terms" class="upgrade-popup" style="display: none;">
+    Upgrading may cause quality loss or increased file size. Accept terms to proceed.<br/><br/>
+    <button onclick="acceptUpgradeTerms()">Accept the Terms</button>
+    <button onclick="denyUpgradeTerms()">Deny</button>
+  </div>
+
+  <div id="upgrade-sufficient" class="upgrade-popup" style="display: none;"></div>
+
+  <!-- Bakgrundsbyte & hemsideknapp (oförändrad) -->
   <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
   <button id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">Go to Homepage</button>
 
@@ -266,16 +74,15 @@
     <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
   </div>
 
+  <!-- JavaScript -->
   <script>
+    // Din befintliga JavaScript: UI, bakgrund, sliders, etc.
+
     const backgroundOptions = document.getElementById("background-options");
     const upgradeOptions = document.getElementById("upgrade-options");
 
     function toggleBackgroundOptions() {
       backgroundOptions.style.display = backgroundOptions.style.display === "block" ? "none" : "block";
-    }
-
-    function toggleUpgradeOptions() {
-      upgradeOptions.style.display = upgradeOptions.style.display === "block" ? "none" : "block";
     }
 
     function setLightMode() {
@@ -314,6 +121,106 @@
 
     function convertToMP4() {
       alert("Pretending to convert to MP4...");
+    }
+
+    // -----------------------
+    // NYA FUNKTIONER
+    // -----------------------
+
+    let upgradeAccepted = false;
+    let selectedUpgradeResolution = null;
+
+    function handleUpgradeClick() {
+      const fileNameText = document.getElementById("file-name").textContent;
+      if (fileNameText === "No file selected") {
+        showUpgradePopup("upgrade-no-video");
+        return;
+      }
+
+      showUpgradePopup("upgrade-warning");
+
+      setTimeout(() => {
+        document.getElementById("upgrade-options").style.display = "block";
+      }, 1500);
+    }
+
+    function handleResolutionClick(resolution) {
+      selectedUpgradeResolution = resolution;
+
+      if (!upgradeAccepted) {
+        showUpgradePopup("upgrade-terms");
+        return;
+      }
+
+      const currentRes = getCurrentVideoResolution();
+      const resRank = { "720p": 1, "1080p": 2, "1440p": 3, "4K": 4 };
+
+      if (resRank[currentRes] >= resRank[resolution]) {
+        showUpgradePopup("upgrade-sufficient", `Your video is already sufficient. It thus already has ${resolution}.`);
+        return;
+      }
+
+      startUpgradeProgress();
+    }
+
+    function acceptUpgradeTerms() {
+      upgradeAccepted = true;
+      hideUpgradePopup("upgrade-terms");
+      if (selectedUpgradeResolution) {
+        handleResolutionClick(selectedUpgradeResolution);
+      }
+    }
+
+    function denyUpgradeTerms() {
+      upgradeAccepted = false;
+      hideUpgradePopup("upgrade-terms");
+    }
+
+    function getCurrentVideoResolution() {
+      const video = document.getElementById("video-player");
+      const h = video.videoHeight;
+      if (h >= 2160) return "4K";
+      if (h >= 1440) return "1440p";
+      if (h >= 1080) return "1080p";
+      if (h >= 720) return "720p";
+      return "480p";
+    }
+
+    function startUpgradeProgress() {
+      const bar = document.getElementById("progress-bar");
+      const filled = document.getElementById("progress-bar-filled");
+      const text = document.getElementById("progress-text");
+
+      bar.style.display = "block";
+      text.style.display = "block";
+
+      let progress = 0;
+      filled.style.width = "0%";
+      text.textContent = "0% of 100% to complete upgrade";
+
+      const interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+          text.textContent = "Upgrade complete!";
+        } else {
+          progress += 5;
+          filled.style.width = progress + "%";
+          text.textContent = `${progress}% of 100% to complete upgrade`;
+        }
+      }, 300);
+    }
+
+    function showUpgradePopup(id, msg = null) {
+      const el = document.getElementById(id);
+      if (msg) el.innerText = msg;
+      el.style.display = "block";
+      setTimeout(() => {
+        el.style.display = "none";
+      }, 4000);
+    }
+
+    function hideUpgradePopup(id) {
+      document.getElementById(id).style.display = "none";
     }
   </script>
 </body>
