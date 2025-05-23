@@ -73,6 +73,10 @@
       text-align: center;
     }
 
+    body.dark-mode #file-name {
+  color: white;
+}
+
     #browse-btn {
       margin-top: 10px;
     }
@@ -353,14 +357,16 @@
     }
 
     function setLightMode() {
-      document.body.classList.remove("dark-mode");
-      updatePopupDarkMode(false);
-    }
+  document.body.classList.remove("dark-mode");
+  updatePopupDarkMode(false);
+  document.getElementById("background-options").style.display = "none"; // Stäng popup
+}
 
-    function setDarkMode() {
-      document.body.classList.add("dark-mode");
-      updatePopupDarkMode(true);
-    }
+function setDarkMode() {
+  document.body.classList.add("dark-mode");
+  updatePopupDarkMode(true);
+  document.getElementById("background-options").style.display = "none"; // Stäng popup
+}
 
     function updatePopupDarkMode(isDark) {
       const popups = document.querySelectorAll('.popup');
