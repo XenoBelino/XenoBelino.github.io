@@ -208,17 +208,17 @@
     /* Ny popup-stil som liknar change-background */
    .popup {
   display: none;
-  position: fixed;  
+  position: fixed;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  padding: 5px 10px;
-  margin-top: 10px;
+  padding: 5px 10px;           /* Behåll liten sidopadding */
+  margin-top: 5px;             /* Mindre marginal */
   z-index: 10000;
   width: 300px; 
-  min-height: 5px;  
-  font-size: 14px;
+  font-size: 13px;             /* Mindre text */
   text-align: center;
+  line-height: 1.2;            /* Tätt mellan rader */
 }
 
     .popup.dark-mode {
@@ -226,24 +226,24 @@
       color: white;
     }
 
-    .popup-buttons {
-      margin-top: 15px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-    }
+   .popup-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
 
-    .popup-buttons button {
-      flex: 1;
-      padding: 8px 12px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      background-color: #6a0dad;
-      color: white;
-      transition: background-color 0.3s;
-    }
+.popup-buttons button {
+  flex: 1;
+  padding: 6px 10px;           /* Mindre padding */
+  font-size: 13px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: #6a0dad;
+  color: white;
+  transition: background-color 0.3s;
+}
 
     .popup-buttons button:hover {
       background-color: #5c0b8a;
