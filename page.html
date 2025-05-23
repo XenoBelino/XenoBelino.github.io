@@ -400,48 +400,59 @@ function setDarkMode() {
 
     // Funktion för att visa popup under knapparna
     function positionPopup(popupId) {
-      const popup = document.getElementById(popupId);
-      const browseBtn = document.getElementById("browse-btn");
-      const convertBtn = document.getElementById("convert-btn");
-      const upgradeBtn = document.getElementById("upgrade-video-btn");
+  const popup = document.getElementById(popupId);
+  const browseBtn = document.getElementById("browse-btn");
+  const convertBtn = document.getElementById("convert-btn");
+  const upgradeBtn = document.getElementById("upgrade-video-btn");
 
-      // Hitta positionen och bredden för området med knapparna
-      const lefts = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().left);
-      const rights = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().right);
-      const tops = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().bottom);
-      const containerTop = Math.min(...tops) + window.scrollY;
+  // Hämta vänster och höger positioner
+  const lefts = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().left);
+  const rights = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().right);
+  const tops = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().bottom);
 
-      // popup ska centreras under knapparna (mellan left och right)
-      const left = Math.min(...lefts);
-      const right = Math.max(...rights);
-      const center = (left + right) / 2;
+  // Centrera mellan knapparna
+  const containerTop = Math.min(...tops) + window.scrollY;
+  const left = Math.min(...lefts);
+  const right = Math.max(...rights);
+  const center = (left + right) / 2;
 
-      popup.style.left = (center - popup.offsetWidth / 2) + "px";
-      popup.style.top = (containerTop + 10) + "px";
-      popup.style.display = "block";
-    }
+  popup.style.position = 'absolute';
+  popup.style.left = `${center - popup.offsetWidth / 2}px`;
+  popup.style.top = `${containerTop + 10}px`;
+  popup.style.display = "block";
+}
 
     function closePopup(popupId) {
       const popup = document.getElementById(popupId);
       popup.style.display = "none";
     }
 
-    function onUpgradeClick() {
-      // Kontrollera om video är vald
-      if (!document.getElementById('file-input').files.length) {
-        positionPopup('popup-no-video');
-        return;
-      }
-      acceptedTerms = false; // Reset accepted terms on each upgrade click
-      selectedResolution = null;
-      closePopup('popup-sufficient');
-      closePopup('popup-terms');
-      closePopup('popup-warning');
-      closePopup('upgrade-options');
+   function onUpgradeClick() {
+  const popup = document.getElementById('popup-no-video');
 
-      // Visa varnings-popup (om ej server etc)
-      positionPopup('popup-warning');
-    }
+  // Om popupen redan är synlig, stäng den
+  if (popup.style.display === 'block') {
+    popup.style.display = 'none';
+    return;
+  }
+
+  // Kontrollera om video är vald
+  if (!document.getElementById('file-input').files.length) {
+    positionPopup('popup-no-video');
+    return;
+  }
+
+  // Om video är vald men popup är öppen, stäng alla popup:er
+  closePopup('popup-sufficient');
+  closePopup('popup-terms');
+  closePopup('popup-warning');
+  closePopup('upgrade-options');
+
+  acceptedTerms = false;
+  selectedResolution = null;
+
+  positionPopup('popup-warning');
+}
 
     function proceedToResolution() {
       closePopup('popup-warning');
