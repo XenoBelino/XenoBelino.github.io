@@ -402,18 +402,26 @@ function setDarkMode() {
     // Funktion för att visa popup under knapparna
     function positionPopup(popupId) {
   const popup = document.getElementById(popupId);
-  const browseBtn = document.getElementById("browse-btn");
-  const convertBtn = document.getElementById("convert-btn");
-  const upgradeBtn = document.getElementById("upgrade-video-btn");
+  const btns = [
+    document.getElementById("browse-btn"),
+    document.getElementById("convert-btn"),
+    document.getElementById("upgrade-video-btn")
+  ];
 
-  const btns = [browseBtn, convertBtn, upgradeBtn];
+  const firstBtnRect = btns[0].getBoundingClientRect();
+  const lastBtnRect = btns[btns.length - 1].getBoundingClientRect();
 
-  const lefts = btns.map(btn => btn.getBoundingClientRect().left);
-  const rights = btns.map(btn => btn.getBoundingClientRect().right);
-  const bottoms = btns.map(btn => btn.getBoundingClientRect().bottom);
+  const popupTop = lastBtnRect.bottom + window.scrollY + 10;
 
-  const popupTop = Math.max(...bottoms) + window.scrollY + 10;
-  const popupLeft = (Math.min(...lefts) + Math.max(...rights)) / 2 - popup.offsetWidth / 2;
+  // Center mellan första och sista knapp
+  const centerX = (firstBtnRect.left + lastBtnRect.right) / 2;
+
+  // Popup bredd måste hämtas först
+  popup.style.display = "block";
+  const popupWidth = popup.offsetWidth;
+  popup.style.display = "none";
+
+  const popupLeft = centerX - popupWidth / 2;
 
   popup.style.top = `${popupTop}px`;
   popup.style.left = `${popupLeft}px`;
