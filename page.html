@@ -215,10 +215,11 @@
   padding: 15px 20px;
   margin-top: 10px;
   z-index: 10000;
-  width: 160px; /* hälften av 320px */
-  min-height: 60px; /* lite mindre höjd */
-  padding: 10px 15px; /* justerad padding */
+  width: 300px; 
+  min-height: 60px; 
+  padding: 15px 20px; 
   font-size: 14px;
+  text-align: center;
 }
 
     .popup.dark-mode {
@@ -408,24 +409,25 @@ function setDarkMode() {
     document.getElementById("convert-btn"),
     document.getElementById("upgrade-video-btn")
   ];
+  const firstSlider = document.getElementById("original-volume");
 
-  const firstBtnRect = btns[0].getBoundingClientRect();
-  const lastBtnRect = btns[btns.length - 1].getBoundingClientRect();
+  const btnRects = btns.map(btn => btn.getBoundingClientRect());
+  const firstBtnTop = btnRects[0].top;
+  const lastBtnBottom = btnRects[btnRects.length - 1].bottom;
+  const sliderTop = firstSlider.getBoundingClientRect().top;
 
-  const popupTop = lastBtnRect.bottom + window.scrollY + 10;
+  const centerY = (lastBtnBottom + sliderTop) / 2 + window.scrollY;
 
-  // Center mellan första och sista knapp
-  const centerX = (firstBtnRect.left + lastBtnRect.right) / 2;
+  const lefts = btnRects.map(rect => rect.left);
+  const rights = btnRects.map(rect => rect.right);
+  const centerX = (Math.min(...lefts) + Math.max(...rights)) / 2;
 
-  // Popup bredd måste hämtas först
-  popup.style.display = "block";
+  popup.style.display = "block"; // behövs för att kunna mäta offsetWidth
   const popupWidth = popup.offsetWidth;
   popup.style.display = "none";
 
-  const popupLeft = centerX - popupWidth / 2;
-
-  popup.style.top = `${popupTop}px`;
-  popup.style.left = `${popupLeft}px`;
+  popup.style.top = `${centerY - 30}px`; // lite upp för visuell balans
+  popup.style.left = `${centerX - popupWidth / 2}px`;
   popup.style.display = "block";
 }
 
