@@ -208,7 +208,7 @@
     /* Ny popup-stil som liknar change-background */
    .popup {
   display: none;
-  position: absolute;
+  position: fixed;  
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
@@ -401,35 +401,42 @@ function setDarkMode() {
     }
 
     // Funktion för att visa popup under knapparna
-    function positionPopup(popupId) {
+   function positionPopup(popupId) {
   const popup = document.getElementById(popupId);
-  const btns = [
-    document.getElementById("browse-btn"),
-    document.getElementById("convert-btn"),
-    document.getElementById("upgrade-video-btn")
-  ];
+
+  const browseBtn = document.getElementById("browse-btn");
+  const convertBtn = document.getElementById("convert-btn");
+  const upgradeBtn = document.getElementById("upgrade-video-btn");
   const firstSlider = document.getElementById("original-volume");
 
-  const btnRects = btns.map(btn => btn.getBoundingClientRect());
-  const firstBtnTop = btnRects[0].top;
-  const lastBtnBottom = btnRects[btnRects.length - 1].bottom;
+  const btnBottom = Math.max(
+    browseBtn.getBoundingClientRect().bottom,
+    convertBtn.getBoundingClientRect().bottom,
+    upgradeBtn.getBoundingClientRect().bottom
+  );
+
   const sliderTop = firstSlider.getBoundingClientRect().top;
 
-  const centerY = (lastBtnBottom + sliderTop) / 2 + window.scrollY;
+  // Hämta mitten i Y-led
+  const centerY = (btnBottom + sliderTop) / 2;
 
-  const lefts = btnRects.map(rect => rect.left);
-  const rights = btnRects.map(rect => rect.right);
-  const centerX = (Math.min(...lefts) + Math.max(...rights)) / 2;
+  // Hämta mitten i X-led mellan vänsterkant av browseBtn och högerkant av upgradeBtn
+  const leftEdge = browseBtn.getBoundingClientRect().left;
+  const rightEdge = upgradeBtn.getBoundingClientRect().right;
+  const centerX = (leftEdge + rightEdge) / 2;
 
-  popup.style.display = "block"; // behövs för att kunna mäta offsetWidth
+  // Visa tillfälligt popup för att mäta bredd
+  popup.style.display = "block";
   const popupWidth = popup.offsetWidth;
+  const popupHeight = popup.offsetHeight;
   popup.style.display = "none";
 
-  popup.style.top = `${centerY - 30}px`; // lite upp för visuell balans
+  // Positionera popup mitt på skärmen där du vill
+  popup.style.top = `${centerY - popupHeight / 2}px`;
   popup.style.left = `${centerX - popupWidth / 2}px`;
   popup.style.display = "block";
 }
-
+    
     function closePopup(popupId) {
       const popup = document.getElementById(popupId);
       popup.style.display = "none";
