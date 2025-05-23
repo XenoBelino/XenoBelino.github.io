@@ -106,6 +106,25 @@
       margin-left: 10px;
     }
 
+  .volume-slider::-webkit-slider-thumb {
+  background: #007bff;
+  border: none;
+}
+
+.volume-slider::-moz-range-thumb {
+  background: #007bff;
+  border: none;
+}
+
+.volume-slider::-ms-thumb {
+  background: #007bff;
+  border: none;
+}
+
+.volume-slider {
+  accent-color: #007bff; /* för moderna browsers */
+}
+
     #background-options {
       display: none;
       position: fixed;
@@ -121,19 +140,20 @@
     }
 
     #background-options h3 {
-      color: black;
-      text-align: center;
-    }
+  color: black !important;
+  text-align: center;
+}
 
     .option-button {
-      padding: 10px 20px;
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-    }
+  padding: 10px 20px;
+  background-color: #6a0dad;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 10px; /* lägger till mellanrum mellan knapparna */
+}
 
     .option-button:hover {
       background-color: #5c0b8a;
@@ -226,8 +246,6 @@
     /* För mörkt läge */
     body.dark-mode #file-name,
     body.dark-mode #background-options h3,
-    body.dark-mode #upgrade-options h3 {
-      color: white;
     }
 
     body.dark-mode #upgrade-options {
