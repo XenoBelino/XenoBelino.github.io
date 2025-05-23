@@ -206,18 +206,19 @@
     }
 
     /* Ny popup-stil som liknar change-background */
-    .popup {
-      display: none;
-      position: absolute;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      padding: 15px 20px;
-      margin-top: 10px;
-      z-index: 10000;
-      width: 280px;
-      text-align: center;
-    }
+   .popup {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  padding: 15px 20px;
+  margin-top: 10px;
+  z-index: 10000;
+  width: 320px; /* större bredd */
+  min-height: 80px; /* kortare höjd */
+  text-align: center;
+}
 
     .popup.dark-mode {
       background-color: #333;
@@ -410,15 +411,15 @@ function setDarkMode() {
   const convertBtn = document.getElementById("convert-btn");
   const upgradeBtn = document.getElementById("upgrade-video-btn");
 
-  // Hitta vänster- och högergränser för knapparna
-  const lefts = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().left);
-  const rights = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().right);
-  const tops = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().bottom);
+  const btns = [browseBtn, convertBtn, upgradeBtn];
 
-  const popupTop = Math.max(...tops) + window.scrollY + 10; // Placera strax under knappar
+  const lefts = btns.map(btn => btn.getBoundingClientRect().left);
+  const rights = btns.map(btn => btn.getBoundingClientRect().right);
+  const bottoms = btns.map(btn => btn.getBoundingClientRect().bottom);
+
+  const popupTop = Math.max(...bottoms) + window.scrollY + 10;
   const popupLeft = (Math.min(...lefts) + Math.max(...rights)) / 2 - popup.offsetWidth / 2;
 
-  popup.style.position = "absolute";
   popup.style.top = `${popupTop}px`;
   popup.style.left = `${popupLeft}px`;
   popup.style.display = "block";
