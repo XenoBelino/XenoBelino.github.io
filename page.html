@@ -7,7 +7,12 @@
   <title>Video Player with Settings</title>
   <style>
     /* Din befintliga CSS här, plus tillägg nedan */
-
+/* För alla popup-fönster som används av Upgrade Your Video */
+.popup {
+  width: 140px !important; /* ungefär hälften av tidigare 280px */
+  font-size: 14px;
+  padding: 10px;
+}
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
@@ -405,20 +410,17 @@ function setDarkMode() {
   const convertBtn = document.getElementById("convert-btn");
   const upgradeBtn = document.getElementById("upgrade-video-btn");
 
-  // Hämta vänster och höger positioner
+  // Hitta vänster- och högergränser för knapparna
   const lefts = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().left);
   const rights = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().right);
   const tops = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().bottom);
 
-  // Centrera mellan knapparna
-  const containerTop = Math.min(...tops) + window.scrollY;
-  const left = Math.min(...lefts);
-  const right = Math.max(...rights);
-  const center = (left + right) / 2;
+  const popupTop = Math.max(...tops) + window.scrollY + 10; // Placera strax under knappar
+  const popupLeft = (Math.min(...lefts) + Math.max(...rights)) / 2 - popup.offsetWidth / 2;
 
-  popup.style.position = 'absolute';
-  popup.style.left = `${center - popup.offsetWidth / 2}px`;
-  popup.style.top = `${containerTop + 10}px`;
+  popup.style.position = "absolute";
+  popup.style.top = `${popupTop}px`;
+  popup.style.left = `${popupLeft}px`;
   popup.style.display = "block";
 }
 
@@ -428,28 +430,32 @@ function setDarkMode() {
     }
 
    function onUpgradeClick() {
-  const popup = document.getElementById('popup-no-video');
+  // Lista alla upgrade-popup:er
+  const upgradePopupIds = ['popup-no-video', 'popup-warning', 'popup-terms', 'popup-sufficient', 'upgrade-options'];
 
-  // Om popupen redan är synlig, stäng den
-  if (popup.style.display === 'block') {
-    popup.style.display = 'none';
+  // Om någon är synlig, stäng alla och avbryt
+  const isAnyVisible = upgradePopupIds.some(id => {
+    const popup = document.getElementById(id);
+    return popup && popup.style.display === 'block';
+  });
+
+  if (isAnyVisible) {
+    upgradePopupIds.forEach(id => closePopup(id));
     return;
   }
 
-  // Kontrollera om video är vald
+  // Kontrollera om fil har valts
   if (!document.getElementById('file-input').files.length) {
     positionPopup('popup-no-video');
     return;
   }
 
-  // Om video är vald men popup är öppen, stäng alla popup:er
+  acceptedTerms = false;
+  selectedResolution = null;
   closePopup('popup-sufficient');
   closePopup('popup-terms');
   closePopup('popup-warning');
   closePopup('upgrade-options');
-
-  acceptedTerms = false;
-  selectedResolution = null;
 
   positionPopup('popup-warning');
 }
