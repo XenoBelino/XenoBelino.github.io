@@ -485,25 +485,28 @@ function setDarkMode() {
     }
 
     function showUpgradeOptions() {
-      const upgradeOpts = document.getElementById('upgrade-options');
-      // Placera upgrade-options centrerat under knapparna också
-      const browseBtn = document.getElementById("browse-btn");
-      const convertBtn = document.getElementById("convert-btn");
-      const upgradeBtn = document.getElementById("upgrade-video-btn");
+  const upgradeOpts = document.getElementById('upgrade-options');
+  const browseBtn = document.getElementById("browse-btn");
+  const convertBtn = document.getElementById("convert-btn");
+  const upgradeBtn = document.getElementById("upgrade-video-btn");
 
-      const lefts = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().left);
-      const rights = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().right);
-      const tops = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().bottom);
-      const containerTop = Math.min(...tops) + window.scrollY;
+  // Hämta knapparnas bounding box:ar
+  const lefts = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().left);
+  const rights = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().right);
+  const bottoms = [browseBtn, convertBtn, upgradeBtn].map(btn => btn.getBoundingClientRect().bottom);
 
-      const left = Math.min(...lefts);
-      const right = Math.max(...rights);
-      const center = (left + right) / 2;
+  // Räkna ut center och topp för popup i viewport
+  const left = Math.min(...lefts);
+  const right = Math.max(...rights);
+  const centerX = (left + right) / 2;
 
-      upgradeOpts.style.left = (center - upgradeOpts.offsetWidth / 2) + "px";
-      upgradeOpts.style.top = (containerTop + 10) + "px";
-      upgradeOpts.style.display = "block";
-    }
+  const top = Math.max(...bottoms) + 10; // 10px nedanför knapparna
+
+  // Visa popup, positionera utan att ta med scroll (fixed position)
+  upgradeOpts.style.left = `${centerX - upgradeOpts.offsetWidth / 2}px`;
+  upgradeOpts.style.top = `${top}px`;
+  upgradeOpts.style.display = "block";
+}
 
    function startUpgradeProcess(resolution) {
   selectedResolution = resolution;
