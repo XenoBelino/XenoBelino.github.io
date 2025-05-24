@@ -383,19 +383,23 @@ function setDarkMode() {
       document.getElementById("file-input").click();
     }
 
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        document.getElementById("file-name").textContent = file.name;
-        acceptedTerms = false; // Reset terms acceptance on new file
-      }
-    }
+  function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (file) {
+    document.getElementById("file-name").textContent = file.name;
+    acceptedTerms = false; // Reset terms acceptance on new file
+
+    const videoPlayer = document.getElementById("video-player");
+    videoPlayer.src = URL.createObjectURL(file);
+    videoPlayer.load();
+  }
+}
 
     function updateVolumePercentage(type) {
-      const slider = document.getElementById(${type}-volume);
-      const percent = document.getElementById(${type}-volume-percent);
-      percent.textContent = ${slider.value}%;
-    }
+  const slider = document.getElementById(`${type}-volume`);
+  const percent = document.getElementById(`${type}-volume-percent`);
+  percent.textContent = `${slider.value}%`;
+}
 
     function convertToMP4() {
       alert("Pretending to convert to MP4...");
@@ -433,8 +437,8 @@ function setDarkMode() {
   popup.style.display = "none";
 
   // Positionera popup mitt på skärmen där du vill
-  popup.style.top = ${centerY - popupHeight / 2}px;
-  popup.style.left = ${centerX - popupWidth / 2}px;
+  popup.style.top = `${centerY - popupHeight / 2}px`;
+  popup.style.left = `${centerX - popupWidth / 2}px`;
   popup.style.display = "block";
 }
     
@@ -509,7 +513,7 @@ function setDarkMode() {
       const videoRes = getCurrentVideoResolution();
       if (isResolutionSufficient(videoRes, resolution)) {
         document.getElementById('sufficient-text').textContent =
-          Your video is already sufficient, it already has the ${resolution} version.;
+  `Your video is already sufficient, it already has the ${resolution} version.`;
         positionPopup('popup-sufficient');
         return;
       }
@@ -552,7 +556,7 @@ function setDarkMode() {
       const interval = setInterval(() => {
         progress += 5;
         progressFilled.style.width = ${progress}%;
-        progressText.textContent = ${progress}% of 100% to complete conversion;
+        progressText.textContent = `0% of 100% to complete conversion`;
 
         if (progress >= 100) {
           clearInterval(interval);
