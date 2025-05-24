@@ -207,25 +207,28 @@
     }
 
     /* Ny popup-stil som liknar change-background */
-   .popup {
+  .popup {
   display: none;
   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  padding: 5px 10px;           /* Behåll liten sidopadding */
-  margin-top: 5px;             /* Mindre marginal */
+  padding: 5px 10px;
   z-index: 10000;
-  width: 300px; 
-  font-size: 13px;             /* Mindre text */
+  width: 300px;
+  font-size: 13px;
   text-align: center;
-  line-height: 1.2;            /* Tätt mellan rader */
+  line-height: 1.2;
 }
 
-    .popup.dark-mode {
-      background-color: #333;
-      color: white;
-    }
+    .popup.dark-mode,
+  #upgrade-options.dark-mode {
+    background-color: #333;
+    color: white;
+  }
 
    .popup-buttons {
   margin-top: 10px;
