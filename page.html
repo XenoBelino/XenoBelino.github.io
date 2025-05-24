@@ -1,126 +1,545 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Video Player with Settings</title>
-  <style>
-    /* ... (samma CSS som tidigare, ingen ändring krävs) ... */
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Video Player with Settings</title>
+
+    <style>
+        /* Grundläggande stilar */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: black;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .editor-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            position: relative;
+        }
+
+        /* Knappar */
+        .button,
+        .browse-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .button:hover,
+        .browse-button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Positionering av fasta knappar */
+        #change-background-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #back-to-home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        #upgrade-video-btn {
+            margin-top: 10px;
+        }
+
+        /* Filnamn */
+        #file-name {
+            color: black;
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        body.dark-mode #file-name {
+            color: white;
+        }
+
+        /* Video och container */
+        .video-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #video-player {
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Volym-slider */
+        .volume-slider-container {
+            margin-top: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 30px;
+        }
+
+        .volume-slider {
+            width: 60%;
+            accent-color: #007bff; /* för moderna browsers */
+        }
+
+        .volume-percentage {
+            margin-left: 10px;
+        }
+
+        /* Stil för slider-tum */
+        .volume-slider::-webkit-slider-thumb {
+            background: #007bff;
+            border: none;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            background: #007bff;
+            border: none;
+        }
+
+        .volume-slider::-ms-thumb {
+            background: #007bff;
+            border: none;
+        }
+
+        /* Bakgrundsalternativ */
+        #background-options {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            text-align: left;
+            width: 150px;
+        }
+
+        #background-options h3 {
+            color: black !important;
+            text-align: center;
+        }
+
+        .option-button {
+            padding: 10px 20px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px; /* Mellanrum mellan knappar */
+        }
+
+        .option-button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Progress bar */
+        #progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            display: none;
+            border-radius: 15px;
+            height: 20px;
+            margin-top: 20px;
+        }
+
+        #progress-bar-filled {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0;
+            border-radius: 15px;
+        }
+
+        #progress-text {
+            font-size: 18px;
+            margin-top: 5px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Popup-stilar */
+        .popup {
+            display: none;
+            position: fixed;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            margin-top: 5px;
+            z-index: 10000;
+            width: 300px;
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.2;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 100px;
+        }
+
+        .popup.dark-mode {
+            background-color: #333;
+            color: white;
+        }
+
+        .popup-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .popup-buttons button {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 13px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .popup-buttons button:hover {
+            background-color: #5c0b8a;
+        }
+
+        /* Uppgraderingsalternativ */
+        #upgrade-options {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            margin-top: 10px;
+            z-index: 9999;
+            text-align: center;
+            width: 220px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 180px;
+        }
+
+        .resolution-btn {
+            display: block;
+            margin: 5px auto;
+            width: 100px;
+        }
+
+        /* Dark mode bakgrund i popup */
+        body.dark-mode #upgrade-options {
+            background-color: #333;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="editor-content" id="editor-content">
-    <div class="intro-section">
-      <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-      <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
+    <div class="editor-content" id="editor-content">
+
+        <!-- Introduktion -->
+        <div class="intro-section">
+            <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+            <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
+        </div>
+
+        <!-- Videospelare -->
+        <div class="video-container">
+            <video id="video-player" controls>
+                <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Filnamn och filuppladdning -->
+        <div id="file-name">No file selected</div>
+        <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
+        <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" />
+
+        <!-- Konvertera och uppgradera knappar -->
+        <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
+        <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
+
+        <!-- Volymkontroller -->
+        <div class="volume-slider-container">
+            <div>
+                <label for="original-volume">Original Volume:</label>
+                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50"
+                    oninput="updateVolumePercentage('original')">
+                <span id="original-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="corrupted-volume">Corrupted Volume:</label>
+                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50"
+                    oninput="updateVolumePercentage('corrupted')">
+                <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="music-volume">Music Volume:</label>
+                <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50"
+                    oninput="updateVolumePercentage('music')">
+                <span id="music-volume-percent" class="volume-percentage">50%</span>
+            </div>
+            <div>
+                <label for="final-volume">Final Volume:</label>
+                <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50"
+                    oninput="updateVolumePercentage('final')">
+                <span id="final-volume-percent" class="volume-percentage">50%</span>
+            </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div id="progress-bar">
+            <div id="progress-bar-filled"></div>
+        </div>
+        <div id="progress-text">0% of 100% to complete conversion</div>
+
     </div>
 
-    <div class="video-container">
-      <video id="video-player" controls>
-        <source id="video-source" src="assets/videos/sample.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <!-- Fasta knappar -->
+    <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+    <button id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">Go to Homepage</button>
+
+    <!-- Bakgrundsalternativ -->
+    <div id="background-options">
+        <h3>Choose Theme</h3>
+        <button class="option-button" onclick="setLightMode()">Light Mode</button>
+        <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
     </div>
 
-    <div id="file-name">No file selected</div>
-    <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
-    <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)" />
+    <!-- Popups -->
 
-    <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
-    <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
-
-    <div class="volume-slider-container">
-      <!-- Volym sliders (oförändrade) -->
+    <!-- Popup 1: Ingen video vald -->
+    <div id="popup-no-video" class="popup">
+        <p>Apply a video before upgrading.</p>
+        <div class="popup-buttons">
+            <button onclick="closePopup('popup-no-video')">OK</button>
+        </div>
     </div>
 
-    <div id="progress-bar"><div id="progress-bar-filled"></div></div>
-    <div id="progress-text">0% of 100% to complete conversion</div>
-  </div>
+    <!-- Popup 2: Varning -->
+    <div id="popup-warning" class="popup">
+        <p>⚠️ This upgrade does not use a server. It may stress your device. Proceed with caution.</p>
+        <div class="popup-buttons">
+            <button onclick="proceedToResolution()">OK</button>
+            <button onclick="closePopup('popup-warning')">Cancel</button>
+        </div>
+    </div>
 
-  <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
-  <button id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">Go to Homepage</button>
+    <!-- Popup 3: Acceptera villkor -->
+    <div id="popup-terms" class="popup">
+        <p id="terms-text">Are you sure you want to upgrade your video?</p>
+        <div class="popup-buttons">
+            <button onclick="acceptTerms()">Accept the Terms</button>
+            <button onclick="denyTerms()">Deny</button>
+        </div>
+    </div>
 
-  <div id="background-options">
-    <h3>Choose Theme</h3>
-    <button class="option-button" onclick="setLightMode()">Light Mode</button>
-    <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
-  </div>
+    <!-- Popup 4: Video tillräcklig -->
+    <div id="popup-sufficient" class="popup">
+        <p id="sufficient-text">Your video is already sufficient.</p>
+        <div class="popup-buttons">
+            <button onclick="closePopup('popup-sufficient')">OK</button>
+        </div>
+    </div>
 
-  <!-- Popups -->
-  <div id="popup-no-video" class="popup"><p>Apply a video before upgrading.</p><div class="popup-buttons"><button onclick="closePopup('popup-no-video')">OK</button></div></div>
-  <div id="popup-warning" class="popup"><p>⚠️ This upgrade does not use a server. It may stress your device. Proceed with caution.</p><div class="popup-buttons"><button onclick="proceedToResolution()">OK</button><button onclick="closePopup('popup-warning')">Cancel</button></div></div>
-  <div id="popup-terms" class="popup"><p id="terms-text">Are you sure you want to upgrade your video?</p><div class="popup-buttons"><button onclick="acceptTerms()">Accept the Terms</button><button onclick="denyTerms()">Deny</button></div></div>
-  <div id="popup-sufficient" class="popup"><p id="sufficient-text">Your video is already sufficient.</p><div class="popup-buttons"><button onclick="closePopup('popup-sufficient')">OK</button></div></div>
+    <!-- Popup: Upgraderingsval -->
+    <div id="upgrade-options">
+        <h3>Select Resolution</h3>
+        <button class="resolution-btn" onclick="startUpgradeProcess('480p')">480p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('720p')">720p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('1080p')">1080p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('1440p')">1440p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('2160p')">2160p</button>
+    </div>
 
-  <div id="upgrade-options" style="display:none;">
-    <h3>Select Resolution</h3>
-    <button class="resolution-btn" onclick="startUpgradeProcess('480p')">480p</button>
-    <button class="resolution-btn" onclick="startUpgradeProcess('720p')">720p</button>
-    <button class="resolution-btn" onclick="startUpgradeProcess('1080p')">1080p</button>
-    <button class="resolution-btn" onclick="startUpgradeProcess('1440p')">1440p</button>
-    <button class="resolution-btn" onclick="startUpgradeProcess('2160p')">2160p</button>
-  </div>
+    <script>
+        // Globala variabler
+        let acceptedTerms = false;
+        let selectedResolution = null;
 
-  <script>
-    // ... Alla dina befintliga funktioner ...
+        // Visa eller dölj bakgrundsalternativ
+        function toggleBackgroundOptions() {
+            const bgOpts = document.getElementById("background-options");
+            bgOpts.style.display = bgOpts.style.display === "block" ? "none" : "block";
+        }
 
-    function onUpgradeClick() {
-      const videoPlayer = document.getElementById("video-player");
-      const videoSource = document.getElementById("video-source").src;
-      if (!videoSource || videoSource === "" || videoSource.includes("sample.mp4")) {
-        openPopup("popup-no-video");
-        return;
-      }
+        // Sätt ljus läge
+        function setLightMode() {
+            document.body.classList.remove("dark-mode");
+            updatePopupDarkMode(false);
+            document.getElementById("background-options").style.display = "none"; // Stäng popup
+        }
 
-      // Vänta tills videon har metadata innan vi kontrollerar upplösning
-      if (videoPlayer.readyState >= 1) {
-        checkVideoResolution(videoPlayer);
-      } else {
-        videoPlayer.addEventListener("loadedmetadata", function handler() {
-          videoPlayer.removeEventListener("loadedmetadata", handler);
-          checkVideoResolution(videoPlayer);
-        });
-      }
-    }
+        // Sätt mörkt läge
+        function setDarkMode() {
+            document.body.classList.add("dark-mode");
+            updatePopupDarkMode(true);
+            document.getElementById("background-options").style.display = "none"; // Stäng popup
+        }
 
-    function checkVideoResolution(video) {
-      const minResolution = 480;
-      const width = video.videoWidth;
-      const height = video.videoHeight;
+        // Uppdatera popup-stil efter mörkt/ljust läge
+        function updatePopupDarkMode(isDark) {
+            const popups = document.querySelectorAll(".popup");
+            popups.forEach(popup => {
+                if (isDark) {
+                    popup.classList.add("dark-mode");
+                } else {
+                    popup.classList.remove("dark-mode");
+                }
+            });
+        }
 
-      console.log("Video resolution:", width, "x", height);
+        // Triggera file input för filval
+        function triggerFileInput() {
+            document.getElementById("file-input").click();
+        }
 
-      if (width < minResolution || height < minResolution) {
-        openPopup("popup-sufficient");
-      } else {
-        openPopup("popup-warning");
-      }
-    }
+        // Hantera filval
+        function handleFileSelect(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            if (!file) return;
 
-    function openPopup(id) {
-      document.getElementById(id).style.display = "block";
-    }
+            const video = document.getElementById("video-player");
+            const source = document.getElementById("video-source");
 
-    function closePopup(id) {
-      document.getElementById(id).style.display = "none";
-    }
+            // Visa filnamn
+            document.getElementById("file-name").textContent = file.name;
 
-    function proceedToResolution() {
-      closePopup("popup-warning");
-      openUpgradeOptions();
-    }
+            // Läs fil som URL
+            const url = URL.createObjectURL(file);
+            source.src = url;
+            video.load();
+            video.play();
 
-    function openUpgradeOptions() {
-      document.getElementById("upgrade-options").style.display = "block";
-    }
+            // Återställ acceptedTerms när ny video laddas
+            acceptedTerms = false;
+            selectedResolution = null;
+        }
 
-    function startUpgradeProcess(resolution) {
-      document.getElementById("upgrade-options").style.display = "none";
-      alert(`Video uppgraderas till ${resolution}. Denna process kan ta tid.`);
-    }
+        // Konvertera till MP4 (dummy-funktion)
+        function convertToMP4() {
+            alert("Convert to MP4 funktion kommer snart!");
+        }
 
-    // Resterande funktioner (setLightMode, setDarkMode, triggerFileInput etc.) förblir oförändrade
-  </script>
+        // Uppdatera volymprocent
+        function updateVolumePercentage(type) {
+            const slider = document.getElementById(type + "-volume");
+            const percentSpan = document.getElementById(type + "-volume-percent");
+            percentSpan.textContent = slider.value + "%";
+        }
+
+        // Visa popup
+        function showPopup(id) {
+            document.getElementById(id).style.display = "block";
+        }
+
+        // Dölj popup
+        function closePopup(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        // Kolla om video är vald
+        function isVideoSelected() {
+            const videoSrc = document.getElementById("video-source").src;
+            // Kolla om src är tom eller standard, dvs ingen video laddad
+            return videoSrc && !videoSrc.endsWith("sample.mp4") && videoSrc !== "";
+        }
+
+        // När användaren klickar på "Upgrade Your Video"
+        function onUpgradeClick() {
+            if (!isVideoSelected()) {
+                showPopup("popup-no-video");
+                return;
+            }
+            showPopup("popup-warning");
+        }
+
+        // Om användaren klickar OK på varningen
+        function proceedToResolution() {
+            closePopup("popup-warning");
+
+            // Exempel logik för video kvalitet, ersätt med riktig logik om du vill
+            // Här testar vi om acceptTerms är satt - om ja, visa tillräcklig video popup,
+            // annars visa terms popup.
+
+            // Vi kollar "sufficiency" på volymen som dummy (om final volume >= 80% suff)
+            const finalVolume = parseInt(document.getElementById("final-volume").value);
+            if (finalVolume >= 80) {
+                showPopup("popup-sufficient");
+            } else {
+                showPopup("popup-terms");
+            }
+        }
+
+        // Acceptera villkoren i terms-popup
+        function acceptTerms() {
+            acceptedTerms = true;
+            closePopup("popup-terms");
+            showUpgradeOptions();
+        }
+
+        // Nekar villkoren
+        function denyTerms() {
+            acceptedTerms = false;
+            closePopup("popup-terms");
+        }
+
+        // Visa upplgraderingsval popup
+        function showUpgradeOptions() {
+            const upgradeBox = document.getElementById("upgrade-options");
+            upgradeBox.style.display = "block";
+        }
+
+        // Starta uppgraderingsprocess baserat på resolution
+        function startUpgradeProcess(resolution) {
+            selectedResolution = resolution;
+            alert("Startar uppgradering till " + resolution + " - funktionalitet ej implementerad än.");
+            // Här kan du lägga till faktisk uppgraderingslogik
+            // Stäng popup efter val
+            document.getElementById("upgrade-options").style.display = "none";
+        }
+
+        // Initiera volymvisning vid sidladdning
+        window.onload = function () {
+            updateVolumePercentage("original");
+            updateVolumePercentage("corrupted");
+            updateVolumePercentage("music");
+            updateVolumePercentage("final");
+        };
+    </script>
 </body>
+
 </html>
