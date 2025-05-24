@@ -482,6 +482,11 @@ function setDarkMode() {
   closePopup('upgrade-options');
 
   positionPopup('popup-warning');
+  const popup = document.getElementById(popupId);
+    popup.style.display = "block";
+    popup.style.top = "50%";
+    popup.style.left = "50%";
+    popup.style.transform = "translate(-50%, -50%)";
 }
 
     function proceedToResolution() {
@@ -509,9 +514,10 @@ function setDarkMode() {
   const top = Math.max(...bottoms) + 10; // 10px nedanför knapparna
 
   // Visa popup, positionera utan att ta med scroll (fixed position)
-  upgradeOpts.style.left = `${centerX - upgradeOpts.offsetWidth / 2}px`;
-  upgradeOpts.style.top = `${top}px`;
-  upgradeOpts.style.display = "block";
+    upgradeOpts.style.display = "block";
+    upgradeOpts.style.top = "50%";
+    upgradeOpts.style.left = "50%";
+    upgradeOpts.style.transform = "translate(-50%, -50%)";
 }
 
    function startUpgradeProcess(resolution) {
