@@ -460,70 +460,53 @@
                 } else {
                     progress += 5;
                     progressBarFilled.style.width = progress + "%";
-                    progressText.textContent = `${progress}% of 100% to complete conversion`;
+                    progressText.textContent = ${progress}% of 100% to complete conversion;
                 }
             }, 300);
         }
 
-        // Klick på uppgradera knapp
-        function onUpgradeClick() {
-            const videoSource = document.getElementById("video-source").src;
-            if (!videoSource || videoSource === "") {
-                openPopup("popup-no-video");
-                return;
-            }
+      // Klick på uppgradera knapp
+function onUpgradeClick() {
+    const videoSource = document.getElementById("video-source").src;
+    if (!videoSource || videoSource === "") {
+        openPopup("popup-no-video");
+        return;
+    }
 
-            // Visa varnings-popup
-            openPopup("popup-warning");
-        }
+    // Visa varnings-popup
+    openPopup("popup-warning");
+}
 
-        // Popup-funktioner
-        function openPopup(id) {
-            document.getElementById(id).style.display = "block";
-        }
+// Popup-funktioner
+function openPopup(id) {
+    document.getElementById(id).style.display = "block";
+}
 
-        function closePopup(id) {
-            document.getElementById(id).style.display = "none";
-        }
+function closePopup(id) {
+    document.getElementById(id).style.display = "none";
+}
 
-        // Gå till upplösningsval från varnings-popup
-        function proceedToResolution() {
-            closePopup("popup-warning");
-            if (!acceptedTerms) {
-                openPopup("popup-terms");
-            } else {
-                openUpgradeOptions();
-            }
-        }
+// Gå till upplösningsval från varnings-popup
+function proceedToResolution() {
+    closePopup("popup-warning");
+    // Hoppar över villkors-popupen och visar upplösningsval direkt
+    openUpgradeOptions();
+}
 
-        // Acceptera villkor
-        function acceptTerms() {
-            acceptedTerms = true;
-            closePopup("popup-terms");
-            openUpgradeOptions();
-        }
+// Visa upplösningsval popup
+function openUpgradeOptions() {
+    document.getElementById("upgrade-options").style.display = "block";
+}
 
-        // Nekar villkor
-        function denyTerms() {
-            acceptedTerms = false;
-            closePopup("popup-terms");
-        }
+// Starta uppgraderingsprocess baserat på val
+function startUpgradeProcess(resolution) {
+    selectedResolution = resolution;
+    document.getElementById("upgrade-options").style.display = "none";
 
-        // Visa upplösningsval popup
-        function openUpgradeOptions() {
-            document.getElementById("upgrade-options").style.display = "block";
-        }
-
-        // Starta uppgraderingsprocess baserat på val
-        function startUpgradeProcess(resolution) {
-            selectedResolution = resolution;
-            document.getElementById("upgrade-options").style.display = "none";
-
-            // Simulera uppgradering
-            alert(`Video uppgraderas till ${resolution}. Denna process kan ta tid.`);
-            // Här kan du lägga till verklig funktionalitet för uppgradering
-        }
+    // Simulera uppgradering
+    alert(`Video uppgraderas till ${resolution}. Denna process kan ta tid.`);
+    // Här kan du lägga till verklig funktionalitet för uppgradering
+}
     </script>
-</body>
-
+</body>   
 </html>
