@@ -443,6 +443,7 @@
 
         // Simulerad konverteringsfunktion
         function convertToMP4() {
+            console.log("convertToMP4 triggered");
             const progressBar = document.getElementById("progress-bar");
             const progressBarFilled = document.getElementById("progress-bar-filled");
             const progressText = document.getElementById("progress-text");
@@ -467,6 +468,7 @@
 
       // Klick på uppgradera knapp
 function onUpgradeClick() {
+    console.log("onUpgradeClick triggered");
     const videoSource = document.getElementById("video-source").src;
     if (!videoSource || videoSource === "") {
         openPopup("popup-no-video");
