@@ -414,31 +414,34 @@ function setDarkMode() {
   const upgradeBtn = document.getElementById("upgrade-video-btn");
   const firstSlider = document.getElementById("original-volume");
 
-  const btnBottom = Math.max(
-    browseBtn.getBoundingClientRect().bottom,
-    convertBtn.getBoundingClientRect().bottom,
-    upgradeBtn.getBoundingClientRect().bottom
-  );
+  // Hämta knapparnas position i viewport
+  const browseRect = browseBtn.getBoundingClientRect();
+  const convertRect = convertBtn.getBoundingClientRect();
+  const upgradeRect = upgradeBtn.getBoundingClientRect();
+  const sliderRect = firstSlider.getBoundingClientRect();
 
-  const sliderTop = firstSlider.getBoundingClientRect().top;
+  // Botten på knapparna i viewport
+  const btnBottom = Math.max(browseRect.bottom, convertRect.bottom, upgradeRect.bottom);
 
-  // Hämta mitten i Y-led
+  // Toppen på slidern i viewport
+  const sliderTop = sliderRect.top;
+
+  // Vertikal mittpunkt mellan knappar och slider
   const centerY = (btnBottom + sliderTop) / 2;
 
-  // Hämta mitten i X-led mellan vänsterkant av browseBtn och högerkant av upgradeBtn
-  const leftEdge = browseBtn.getBoundingClientRect().left;
-  const rightEdge = upgradeBtn.getBoundingClientRect().right;
-  const centerX = (leftEdge + rightEdge) / 2;
+  // Horisontell mittpunkt mellan vänsterkant på browse och högerkant på upgrade
+  const centerX = (browseRect.left + upgradeRect.right) / 2;
 
-  // Visa tillfälligt popup för att mäta bredd
+  // Visa popup för att mäta bredd och höjd
   popup.style.display = "block";
   const popupWidth = popup.offsetWidth;
   const popupHeight = popup.offsetHeight;
-  popup.style.display = "none";
 
-  // Positionera popup mitt på skärmen där du vill
+  // Positionera popup centrerat (position: fixed = relativ viewport)
   popup.style.top = `${centerY - popupHeight / 2}px`;
   popup.style.left = `${centerX - popupWidth / 2}px`;
+
+  // Visa popup (om den inte redan är synlig)
   popup.style.display = "block";
 }
     
