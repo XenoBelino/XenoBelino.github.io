@@ -319,7 +319,14 @@
         <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
         <div class="upgrade-popup-wrapper">
     <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
-
+    <!-- Popup 1: Ingen video vald -->
+    <div id="popup-no-video" class="popup">
+        <p>Apply a video before upgrading.</p>
+        <div class="popup-buttons">
+            <button onclick="closePopup('popup-no-video')">OK</button>
+        </div>
+    </div>
+            
     <!-- Popup 2: Varning -->
     <div id="popup-warning" class="popup">
         <p>⚠️ This upgrade does not use a server. It may stress your device. Proceed with caution.</p>
@@ -405,14 +412,6 @@
     </div>
 
     <!-- Popups -->
-
-    <!-- Popup 1: Ingen video vald -->
-    <div id="popup-no-video" class="popup">
-        <p>Apply a video before upgrading.</p>
-        <div class="popup-buttons">
-            <button onclick="closePopup('popup-no-video')">OK</button>
-        </div>
-    </div>
 
    <script>
     // Globala variabler
