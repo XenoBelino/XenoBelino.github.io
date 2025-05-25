@@ -506,8 +506,9 @@
     }
 
     // När "Upgrade" klickas
-    function onUpgradeClick() {
+   function onUpgradeClick() {
     const anyPopupOpen = isAnyUpgradePopupOpen();
+
     if (anyPopupOpen) {
         closeAllUpgradePopups();
         return;
@@ -519,19 +520,17 @@
     }
 
     if (warningAccepted) {
-        // Gå direkt till upplösningsval om varningen accepterats
-        showResolutionOptions();
+        showResolutionOptions(); // Visa direkt om redan godkänt
     } else {
-        // Visa varning först
-        showPopup("popup-warning");
+        showPopup("popup-warning"); // Visa varning först
     }
 }
 
     function proceedToResolution() {
+        warningAccepted = true;
         closePopup("popup-warning");
         const optionsBox = document.getElementById("upgrade-options");
         optionsBox.style.display = optionsBox.style.display === "block" ? "none" : "block";
-        warningAccepted = true;
         showResolutionOptions();
     }
 
@@ -621,14 +620,13 @@
     if (!isClickInside) {
         closeAllUpgradePopups();
     }
+    
+  });
 
     function showResolutionOptions() {
     const optionsBox = document.getElementById("upgrade-options");
     optionsBox.style.display = "block";
-}
-  
-        
-    });
+}   
     
        
 </script>
