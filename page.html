@@ -237,21 +237,20 @@
 
         /* Uppgraderingsalternativ */
         #upgrade-options {
-            display: none;
-            position: absolute;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            margin-top: 10px;
-            z-index: 9999;
-            text-align: center;
-            width: 220px;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 180px;
-        }
-
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 10px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        padding: 15px;
+        z-index: 9999;
+       text-align: center;
+       width: 220px;
+      }
+        
         .resolution-btn {
             display: block;
             margin: 5px auto;
@@ -487,9 +486,42 @@
             showPopup("popup-warning");
         }
 
+        let pendingResolution = null;
+
+function selectResolution(resolution) {
+    pendingResolution = resolution;
+
+    // Här kollar vi om videon redan har den upplösningen
+    const currentVideo = document.getElementById("video-player");
+    const videoWidth = currentVideo.videoWidth;
+
+    const resolutionMap = {
+        "720p": 1280,
+        "1080p": 1920,
+        "1440p": 2560,
+        "4k": 3840
+    };
+
+    const selectedWidth = resolutionMap[resolution];
+
+    if (videoWidth >= selectedWidth) {
+        // Visa popup att videon redan har denna kvalitet
+        const textElement = document.getElementById("sufficient-text");
+        textElement.textContent = `Your video is already sufficient, it already has ${resolution}`;
+        showPopup("popup-sufficient");
+        return;
+    }
+
+    // Visa villkors-popup
+    showPopup("popup-terms");
+}
         // Om användaren klickar OK på varningen
         function proceedToResolution() {
             closePopup("popup-warning");
+              // Visa knappar under knappen
+    const optionsBox = document.getElementById("upgrade-options");
+    optionsBox.style.display = optionsBox.style.display === "block" ? "none" : "block";
+}
 
             // Exempel logik för video kvalitet, ersätt med riktig logik om du vill
             // Här testar vi om acceptTerms är satt - om ja, visa tillräcklig video popup,
@@ -508,15 +540,37 @@
         function acceptTerms() {
             acceptedTerms = true;
             closePopup("popup-terms");
-            showUpgradeOptions();
-        }
-
+            if (pendingResolution) {
+        startUpgrade(pendingResolution);
+    }
+}
+        
         // Nekar villkoren
         function denyTerms() {
             acceptedTerms = false;
             closePopup("popup-terms");
+            pendingResolution = null;
         }
 
+        function startUpgrade(resolution) {
+    // Simulerad uppgradering
+    document.getElementById("progress-bar").style.display = "block";
+    document.getElementById("progress-text").style.display = "block";
+
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 5;
+        document.getElementById("progress-bar-filled").style.width = `${progress}%`;
+        document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+        if (progress >= 100) {
+            clearInterval(interval);
+            alert(`Upgrade to ${resolution} complete!`);
+            document.getElementById("progress-bar").style.display = "none";
+            document.getElementById("progress-text").style.display = "none";
+            document.getElementById("progress-bar-filled").style.width = `0%`;
+        }
+    }, 300);
+}
         // Visa upplgraderingsval popup
         function showUpgradeOptions() {
             const upgradeBox = document.getElementById("upgrade-options");
