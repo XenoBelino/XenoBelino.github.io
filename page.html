@@ -317,7 +317,45 @@
 
         <!-- Konvertera och uppgradera knappar -->
         <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
-        <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
+        <div class="upgrade-popup-wrapper">
+    <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
+
+    <!-- Popup 2: Varning -->
+    <div id="popup-warning" class="popup">
+        <p>⚠️ This upgrade does not use a server. It may stress your device. Proceed with caution.</p>
+        <div class="popup-buttons">
+            <button onclick="proceedToResolution()">OK</button>
+            <button onclick="closePopup('popup-warning')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Popup 3: Acceptera villkor -->
+    <div id="popup-terms" class="popup">
+        <p id="terms-text">Are you sure you want to upgrade your video?</p>
+        <div class="popup-buttons">
+            <button onclick="acceptTerms()">Accept the Terms</button>
+            <button onclick="denyTerms()">Deny</button>
+        </div>
+    </div>
+
+    <!-- Popup 4: Video tillräcklig -->
+    <div id="popup-sufficient" class="popup">
+        <p id="sufficient-text">Your video is already sufficient.</p>
+        <div class="popup-buttons">
+            <button onclick="closePopup('popup-sufficient')">OK</button>
+        </div>
+    </div>
+
+    <!-- Popup: Upgraderingsval -->
+    <div id="upgrade-options">
+        <h3>Select Resolution</h3>
+        <button class="resolution-btn" onclick="startUpgradeProcess('480p')">480p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('720p')">720p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('1080p')">1080p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('1440p')">1440p</button>
+        <button class="resolution-btn" onclick="startUpgradeProcess('2160p')">2160p</button>
+    </div>
+</div>
 
         <!-- Volymkontroller -->
         <div class="volume-slider-container">
@@ -374,44 +412,6 @@
         <div class="popup-buttons">
             <button onclick="closePopup('popup-no-video')">OK</button>
         </div>
-    </div>
-<div class="upgrade-popup-wrapper">
-    <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
-
-    <!-- Popup 2: Varning -->
-    <div id="popup-warning" class="popup">
-        <p>⚠️ This upgrade does not use a server. It may stress your device. Proceed with caution.</p>
-        <div class="popup-buttons">
-            <button onclick="proceedToResolution()">OK</button>
-            <button onclick="closePopup('popup-warning')">Cancel</button>
-        </div>
-    </div>
-
-    <!-- Popup 3: Acceptera villkor -->
-    <div id="popup-terms" class="popup">
-        <p id="terms-text">Are you sure you want to upgrade your video?</p>
-        <div class="popup-buttons">
-            <button onclick="acceptTerms()">Accept the Terms</button>
-            <button onclick="denyTerms()">Deny</button>
-        </div>
-    </div>
-
-    <!-- Popup 4: Video tillräcklig -->
-    <div id="popup-sufficient" class="popup">
-        <p id="sufficient-text">Your video is already sufficient.</p>
-        <div class="popup-buttons">
-            <button onclick="closePopup('popup-sufficient')">OK</button>
-        </div>
-    </div>
-
-    <!-- Popup: Upgraderingsval -->
-    <div id="upgrade-options">
-        <h3>Select Resolution</h3>
-        <button class="resolution-btn" onclick="startUpgradeProcess('480p')">480p</button>
-        <button class="resolution-btn" onclick="startUpgradeProcess('720p')">720p</button>
-        <button class="resolution-btn" onclick="startUpgradeProcess('1080p')">1080p</button>
-        <button class="resolution-btn" onclick="startUpgradeProcess('1440p')">1440p</button>
-        <button class="resolution-btn" onclick="startUpgradeProcess('2160p')">2160p</button>
     </div>
 
    <script>
