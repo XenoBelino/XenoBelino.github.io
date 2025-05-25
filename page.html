@@ -472,6 +472,10 @@
         document.getElementById("file-name").textContent = file.name;
         acceptedTerms = false;
         selectedUpgradeResolution = null;
+        warningAccepted = false;
+        userAcceptedTerms = false;
+        selectedUpgradeResolution = null;
+
     }
 
     // Dummy-funktion
@@ -514,13 +518,21 @@
         return;
     }
 
-    showPopup("popup-warning");
+    if (warningAccepted) {
+        // Gå direkt till upplösningsval om varningen accepterats
+        showResolutionOptions();
+    } else {
+        // Visa varning först
+        showPopup("popup-warning");
+    }
 }
 
     function proceedToResolution() {
         closePopup("popup-warning");
         const optionsBox = document.getElementById("upgrade-options");
         optionsBox.style.display = optionsBox.style.display === "block" ? "none" : "block";
+        warningAccepted = true;
+        showResolutionOptions();
     }
 
     function handleResolutionClick(resolution) {
@@ -609,7 +621,15 @@
     if (!isClickInside) {
         closeAllUpgradePopups();
     }
-});
+
+    function showResolutionOptions() {
+    const optionsBox = document.getElementById("upgrade-options");
+    optionsBox.style.display = "block";
+}
+  
+        
+    });
+    
        
 </script>
 </body>
