@@ -503,12 +503,19 @@
 
     // När "Upgrade" klickas
     function onUpgradeClick() {
-        if (!isVideoSelected()) {
-            showPopup("popup-no-video");
-            return;
-        }
-        showPopup("popup-warning");
+    const anyPopupOpen = isAnyUpgradePopupOpen();
+    if (anyPopupOpen) {
+        closeAllUpgradePopups();
+        return;
     }
+
+    if (!isVideoSelected()) {
+        showPopup("popup-no-video");
+        return;
+    }
+
+    showPopup("popup-warning");
+}
 
     function proceedToResolution() {
         closePopup("popup-warning");
@@ -580,6 +587,30 @@
         const order = { "480p": 0, "720p": 1, "1080p": 2, "1440p": 3, "2160p": 4 };
         return order[current] - order[target];
     }
+
+       function isAnyUpgradePopupOpen() {
+    const popupIds = ["popup-no-video", "popup-warning", "popup-terms", "popup-sufficient", "upgrade-options"];
+    return popupIds.some(id => document.getElementById(id).style.display === "block");
+    }
+   
+    function closeAllUpgradePopups() {
+    const popupIds = ["popup-no-video", "popup-warning", "popup-terms", "popup-sufficient", "upgrade-options"];
+    popupIds.forEach(id => {
+        document.getElementById(id).style.display = "none";
+    });
+}       
+
+    document.addEventListener("click", function (event) {
+    const upgradeButton = document.getElementById("upgrade-video-btn");
+    const popups = document.querySelectorAll("#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options");
+
+    const isClickInside = [...popups].some(popup => popup.contains(event.target)) || upgradeButton.contains(event.target);
+
+    if (!isClickInside) {
+        closeAllUpgradePopups();
+    }
+});
+       
 </script>
 </body>
 
