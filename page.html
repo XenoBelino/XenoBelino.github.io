@@ -190,22 +190,23 @@
 
         /* Popup-stilar */
         .popup {
-            display: none;
-            position: fixed;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-            padding: 5px 10px;
-            margin-top: 5px;
-            z-index: 10000;
-            width: 300px;
-            font-size: 16px;
-            text-align: center;
-            line-height: 1.2;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 100px;
-        }
+    display: none;
+    position: fixed;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    padding: 5px 10px;
+    margin-top: 5px;
+    z-index: 10000;
+    width: 300px;
+    font-size: 13px; /* 👈 Större och matchar knappar */
+    font-family: Arial, sans-serif; /* 👈 Samma stil */
+    text-align: center;
+    line-height: 1.4;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100px;
+}
 
         .popup.dark-mode {
             background-color: #333;
@@ -264,10 +265,12 @@
     padding: 15px;
     z-index: 9999;
     text-align: center;
-    width: 600px; /* 👈 Bredden ökad så alla knappar får plats */
+    width: 450px; /* 👈 Minskad bredd */
     white-space: normal;
-    max-height: fit-content; /* 👈 Låt höjden anpassa sig automatiskt */
-    overflow: hidden; /* 👈 Inget scroll om inte behövs */
+    max-height: fit-content;
+    overflow: hidden;
+    font-size: 13px; /* 👈 Samma storlek som knappar */
+    font-family: Arial, sans-serif; /* Samma typsnitt */
 }
         
         /* Dark mode bakgrund i popup */
