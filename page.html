@@ -420,6 +420,7 @@
 
    <script>
     // Globala variabler
+    let uploadedFile = null;
     let acceptedTerms = false;
     let userAcceptedTerms = false;
     let selectedUpgradeResolution = null;
@@ -463,25 +464,26 @@
 
     // Hantera vald videofil
     function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+    const file = event.target.files[0];
+    if (!file) return;
 
-        const video = document.getElementById("video-player");
-        const source = document.getElementById("video-source");
+    uploadedFile = file; // <--- SPARAR filen
 
-        const url = URL.createObjectURL(file);
-        source.src = url;
-        video.load();
-        video.play();
+    const video = document.getElementById("video-player");
+    const source = document.getElementById("video-source");
 
-        document.getElementById("file-name").textContent = file.name;
-        acceptedTerms = false;
-        selectedUpgradeResolution = null;
-        warningAccepted = false;
-        userAcceptedTerms = false;
-        selectedUpgradeResolution = null;
+    const url = URL.createObjectURL(file);
+    source.src = url;
+    video.load();
+    video.play();
 
-    }
+    document.getElementById("file-name").textContent = file.name;
+
+    acceptedTerms = false;
+    selectedUpgradeResolution = null;
+    warningAccepted = false;
+    userAcceptedTerms = false;
+}
 
     // Dummy-funktion
     function convertToMP4() {
@@ -596,7 +598,7 @@
         }
     }, 100);
 }
-       function downloadUpgradedVideo() {
+     function downloadUpgradedVideo() {
     const videoSrc = document.getElementById("video-source").src;
 
     if (!videoSrc) {
@@ -604,9 +606,17 @@
         return;
     }
 
+    let fileName = "upgraded_video"; // fallback
+    if (uploadedFile) {
+        const originalName = uploadedFile.name;
+        const extension = originalName.split('.').pop();
+        const baseName = originalName.replace(/\.[^/.]+$/, ""); // tar bort ändelsen
+        fileName = `upgraded_${baseName}.${extension}`;
+    }
+
     const link = document.createElement("a");
     link.href = videoSrc;
-    link.download = "upgraded_video.mp4";  // Du kan anpassa namnet
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
