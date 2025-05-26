@@ -252,10 +252,13 @@
       }
         
         .resolution-btn {
-            display: block;
-            margin: 5px auto;
-            width: 100px;
-        }
+    display: inline-block;     /* Horisontell rad */
+    margin: 3px;
+    padding: 6px 8px;
+    font-size: 12px;
+    width: auto;
+    min-width: 45px;
+}
         
         /* Popup nära uppgraderingsknappen */
 #upgrade-options {
@@ -264,12 +267,18 @@
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    padding: 15px;
+    padding: 10px;
     z-index: 9999;
     text-align: center;
-   width: 400px;
-    height: auto; /* Låt höjden anpassas automatiskt */
-    white-space: nowrap;
+
+    /* Minskad storlek */
+    width: 200px;
+    height: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100px;
+}
+
 }
         
         /* Dark mode bakgrund i popup */
