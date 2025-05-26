@@ -533,23 +533,23 @@
     }
 
     function handleResolutionClick(resolution) {
-        selectedUpgradeResolution = resolution;
+    selectedUpgradeResolution = resolution;
 
-        const currentResolution = getVideoResolution(); // Dummy
+    const currentResolution = getVideoResolution(); // Dummy
 
-        if (compareResolutions(currentResolution, resolution) >= 0) {
-            document.getElementById("sufficient-text").textContent = Your video is already sufficient. It already has ${currentResolution}.;
-            showPopup("popup-sufficient");
-            return;
-        }
-
-        if (!userAcceptedTerms) {
-            showPopup("popup-terms");
-        } else {
-            startUpgradeProcess(resolution);
-        }
+    if (compareResolutions(currentResolution, resolution) >= 0) {
+        document.getElementById("sufficient-text").textContent = `Your video is already sufficient. It already has ${currentResolution}.`;
+        showPopup("popup-sufficient");
+        return;
     }
 
+    if (!userAcceptedTerms) {
+        showPopup("popup-terms");
+    } else {
+        startUpgradeProcess(resolution);
+    }
+}
+       
     function acceptTerms() {
         userAcceptedTerms = true;
         closePopup("popup-terms");
@@ -566,25 +566,25 @@
 
     // Starta fake-uppladdning
     function startUpgradeProcess(resolution) {
-        document.getElementById("upgrade-options").style.display = "none";
-        document.getElementById("progress-bar").style.display = "block";
-        document.getElementById("progress-text").style.display = "block";
+    document.getElementById("upgrade-options").style.display = "none";
+    document.getElementById("progress-bar").style.display = "block";
+    document.getElementById("progress-text").style.display = "block";
 
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 2;
-            document.getElementById("progress-bar-filled").style.width = ${progress}%;
-            document.getElementById("progress-text").textContent = ${progress}% of 100% to complete upgrade;
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 2;
+        document.getElementById("progress-bar-filled").style.width = `${progress}%`;
+        document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
 
-            if (progress >= 100) {
-                clearInterval(interval);
-                alert("Upgrade completed to " + resolution);
-                document.getElementById("progress-bar").style.display = "none";
-                document.getElementById("progress-text").style.display = "none";
-                document.getElementById("progress-bar-filled").style.width = 0%;
-            }
-        }, 100);
-    }
+        if (progress >= 100) {
+            clearInterval(interval);
+            alert("Upgrade completed to " + resolution);
+            document.getElementById("progress-bar").style.display = "none";
+            document.getElementById("progress-text").style.display = "none";
+            document.getElementById("progress-bar-filled").style.width = "0%";
+        }
+    }, 100);
+}
 
     // Dummy-metod: få aktuell videoupplösning
     function getVideoResolution() {
