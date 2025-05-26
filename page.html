@@ -246,10 +246,19 @@
     color: white;
     cursor: pointer;
     white-space: nowrap;
+    flex: 1;
+    min-width: 0;
 }
 
 .resolution-btn:hover {
     background-color: #5c0b8a;
+}
+        
+        .resolution-btn-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap; /* hindrar radbrytning */
+    gap: 6px;
 }
         
         /* Popup nära uppgraderingsknappen */
@@ -352,8 +361,9 @@
     </div>
 
     <!-- Popup: Upgraderingsval -->
-    <div id="upgrade-options">
-        <h3>Select Resolution</h3>
+   <div id="upgrade-options">
+    <h3>Select Resolution</h3>
+    <div class="resolution-btn-container">
         <button class="resolution-btn" onclick="startUpgradeProcess('480p')">480p</button>
         <button class="resolution-btn" onclick="startUpgradeProcess('720p')">720p</button>
         <button class="resolution-btn" onclick="startUpgradeProcess('1080p')">1080p</button>
