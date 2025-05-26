@@ -261,11 +261,13 @@
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    padding: 10px;
+    padding: 15px;
     z-index: 9999;
     text-align: center;
-    width: 250px; /* Ändrat från max-content */
-    white-space: normal; /* Tillåter radbrytning */
+    width: 600px; /* 👈 Bredden ökad så alla knappar får plats */
+    white-space: normal;
+    max-height: fit-content; /* 👈 Låt höjden anpassa sig automatiskt */
+    overflow: hidden; /* 👈 Inget scroll om inte behövs */
 }
         
         /* Dark mode bakgrund i popup */
