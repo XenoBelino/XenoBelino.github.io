@@ -235,34 +235,7 @@
             background-color: #5c0b8a;
         }
         
-    .resolution-btn {
-    display: inline-block;
-    margin: 5px 4px;
-    padding: 6px 10px;
-    font-size: 13px;
-    border-radius: 5px;
-    border: none;
-    background-color: #6a0dad;
-    color: white;
-    cursor: pointer;
-    white-space: nowrap;
-    flex: 1;
-    min-width: 0;
-}
-
-.resolution-btn:hover {
-    background-color: #5c0b8a;
-}
-        
-        .resolution-btn-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: nowrap; /* hindrar radbrytning */
-    gap: 6px;
-}
-        
-        /* Popup nära uppgraderingsknappen */
-#upgrade-options {
+ #upgrade-options {
     display: none;
     position: absolute;
     top: calc(100% + 5px);
@@ -273,8 +246,31 @@
     padding: 10px;
     z-index: 9999;
     text-align: center;
-    width: 300px; /* Ändrat från max-content */
-    white-space: normal; /* Tillåter radbrytning */
+    width: max-content;
+    min-width: 360px;
+    white-space: normal;
+}
+
+.resolution-btn-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.resolution-btn {
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+    border: none;
+    background-color: #6a0dad;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+        
+     .resolution-btn:hover {
+    background-color: #5c0b8a;
 }
         
         /* Dark mode bakgrund i popup */
