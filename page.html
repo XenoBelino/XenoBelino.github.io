@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@latest"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Video Player with Settings</title>
 
@@ -355,6 +356,8 @@
         <p id="sufficient-text">Your video is already sufficient.</p>
         <div class="popup-buttons">
             <button onclick="closePopup('popup-sufficient')">OK</button>
+            <input type="file" id="file-input" accept="video/*" />
+
         </div>
     </div>
 
@@ -676,6 +679,41 @@
         bgOptions.style.display = "none";
     }
 });
+       const fileInput = document.getElementById('file-input');
+
+fileInput.addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Ladda upp och bearbeta videofilen här
+  }
+});
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+
+const ffmpeg = createFFmpeg({ log: true });
+
+await ffmpeg.load();
+const inputFile = await fetchFile(file);
+await ffmpeg.FS('writeFile', 'input.flv', inputFile);
+
+await ffmpeg.run('-i', 'input.flv', '-vf', 'scale=1920:1080', '-c:v', 'libx264', '-preset', 'fast', '-c:a', 'aac', 'output.mp4');
+
+const data = ffmpeg.FS('readFile', 'output.mp4');
+const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+const videoURL = URL.createObjectURL(videoBlob);
+
+// Skapa en nedladdningslänk för den uppgraderade videon
+const downloadLink = document.createElement('a');
+downloadLink.href = videoURL;
+downloadLink.download = 'upgraded_video.mp4';
+downloadLink.click();
+if (window.crossOriginIsolated) {
+  // Initiera FFmpeg med flertrådad bearbetning
+  const ffmpeg = createFFmpeg({ log: true, corePath: 'path/to/ffmpeg-core.js' });
+  await ffmpeg.load();
+} else {
+  console.warn('Flertrådad bearbetning är inte tillgänglig.');
+}
+
        
 </script>
 </body>
