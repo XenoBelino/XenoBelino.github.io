@@ -402,7 +402,7 @@
             <div id="progress-bar-filled"></div>
         </div>
         <div id="progress-text">0% of 100% to complete conversion</div>
-
+        <button id="download-btn" class="button" style="display: none;" onclick="downloadUpgradedVideo()">Download Upgraded Video</button>
     </div>
 
     <!-- Fasta knappar -->
@@ -572,7 +572,7 @@
     }
 
     // Starta fake-uppladdning
-    function startUpgradeProcess(resolution) {
+   function startUpgradeProcess(resolution) {
     document.getElementById("upgrade-options").style.display = "none";
     document.getElementById("progress-bar").style.display = "block";
     document.getElementById("progress-text").style.display = "block";
@@ -585,13 +585,36 @@
 
         if (progress >= 100) {
             clearInterval(interval);
-            alert("Upgrade completed to " + resolution);
+
+            // Visa nedladdningsknappen
+            document.getElementById("download-btn").style.display = "inline-block";
+
+            // Göm progressgrejer
             document.getElementById("progress-bar").style.display = "none";
             document.getElementById("progress-text").style.display = "none";
             document.getElementById("progress-bar-filled").style.width = "0%";
         }
     }, 100);
 }
+       function downloadUpgradedVideo() {
+    const videoSrc = document.getElementById("video-source").src;
+
+    if (!videoSrc) {
+        alert("No video available to download.");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = videoSrc;
+    link.download = "upgraded_video.mp4";  // Du kan anpassa namnet
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Dölj knappen efter nedladdning
+    document.getElementById("download-btn").style.display = "none";
+}
+
 
     // Dummy-metod: få aktuell videoupplösning
     function getVideoResolution() {
