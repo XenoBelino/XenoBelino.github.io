@@ -199,7 +199,7 @@
             margin-top: 5px;
             z-index: 10000;
             width: 300px;
-            font-size: 12px;
+            font-size: 10px;
             text-align: center;
             line-height: 1.2;
             left: 50%;
@@ -235,7 +235,25 @@
             background-color: #5c0b8a;
         }
         
- #upgrade-options {
+    .resolution-btn {
+    display: inline-block;
+    margin: 5px 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 5px;
+    border: none;
+    background-color: #6a0dad;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.resolution-btn:hover {
+    background-color: #5c0b8a;
+}
+        
+        /* Popup nära uppgraderingsknappen */
+#upgrade-options {
     display: none;
     position: absolute;
     top: calc(100% + 5px);
@@ -246,31 +264,8 @@
     padding: 10px;
     z-index: 9999;
     text-align: center;
-    width: max-content;
-    min-width: 360px;
-    white-space: normal;
-}
-
-.resolution-btn-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.resolution-btn {
-    padding: 5px 8px;
-    font-size: 12px;
-    border-radius: 5px;
-    border: none;
-    background-color: #6a0dad;
-    color: white;
-    cursor: pointer;
-    white-space: nowrap;
-}
-        
-     .resolution-btn:hover {
-    background-color: #5c0b8a;
+    width: 250px; /* Ändrat från max-content */
+    white-space: normal; /* Tillåter radbrytning */
 }
         
         /* Dark mode bakgrund i popup */
@@ -357,9 +352,8 @@
     </div>
 
     <!-- Popup: Upgraderingsval -->
-   <div id="upgrade-options">
-    <h3>Select Resolution</h3>
-    <div class="resolution-btn-container">
+    <div id="upgrade-options">
+        <h3>Select Resolution</h3>
         <button class="resolution-btn" onclick="startUpgradeProcess('480p')">480p</button>
         <button class="resolution-btn" onclick="startUpgradeProcess('720p')">720p</button>
         <button class="resolution-btn" onclick="startUpgradeProcess('1080p')">1080p</button>
@@ -544,7 +538,7 @@
         const currentResolution = getVideoResolution(); // Dummy
 
         if (compareResolutions(currentResolution, resolution) >= 0) {
-            document.getElementById("sufficient-text").textContent = `Your video is already sufficient. It already has ${currentResolution}.`;
+            document.getElementById("sufficient-text").textContent = Your video is already sufficient. It already has ${currentResolution}.;
             showPopup("popup-sufficient");
             return;
         }
@@ -579,15 +573,15 @@
         let progress = 0;
         const interval = setInterval(() => {
             progress += 2;
-            document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-            document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+            document.getElementById("progress-bar-filled").style.width = ${progress}%;
+            document.getElementById("progress-text").textContent = ${progress}% of 100% to complete upgrade;
 
             if (progress >= 100) {
                 clearInterval(interval);
                 alert("Upgrade completed to " + resolution);
                 document.getElementById("progress-bar").style.display = "none";
                 document.getElementById("progress-text").style.display = "none";
-                document.getElementById("progress-bar-filled").style.width = `0%`;
+                document.getElementById("progress-bar-filled").style.width = 0%;
             }
         }, 100);
     }
@@ -630,8 +624,9 @@
     function showResolutionOptions() {
     const optionsBox = document.getElementById("upgrade-options");
     optionsBox.style.display = "block";
-}   
-    document.addEventListener("click", function (event) {
+}  
+       
+   document.addEventListener("click", function (event) {
     const backgroundButton = document.getElementById("change-background-btn");
     const bgOptions = document.getElementById("background-options");
 
@@ -640,8 +635,8 @@
     if (!isClickInside) {
         bgOptions.style.display = "none";
     }
-});   
+});
        
 </script>
 </body>
-</html>
+</html> 
