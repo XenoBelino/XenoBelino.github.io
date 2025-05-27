@@ -236,60 +236,66 @@ document.addEventListener("click", function (event) {
 }  
        
 async function startUpgradeProcess(resolution) {
-  document.getElementById("upgrade-options").style.display = "none";
-  document.getElementById("progress-bar").style.display = "block";
-  document.getElementById("progress-text").style.display = "block";
+    const videoFile = window.currentVideoFile;
+    if (!videoFile) {
+        showPopup("popup-no-video");
+        return;
+    }
 
-  let progress = 0;
-  const interval = setInterval(() => {
-    progress += 2;
-    document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-    document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
-  }, 100);
+    const reader = new FileReader();
+    reader.onload = async () => {
+        const { createFFmpeg } = FFmpeg;
+        const ffmpeg = createFFmpeg({ log: true });
 
-  if (!ffmpeg.isLoaded()) {
-    await ffmpeg.load();
-  }
+        await ffmpeg.load();
+        ffmpeg.FS('writeFile', 'input.mp4', new Uint8Array(reader.result));
 
-  const inputName = uploadedFile.name;
-  const inputFile = await fetchFile(uploadedFile);
-  ffmpeg.FS('writeFile', inputName, inputFile);
+        // Visa progressbar
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("progress-text");
+        progressBar.style.display = "block";
+        progressText.style.display = "block";
 
-  let width, height;
-  switch (resolution) {
-    case '480p': width = 854; height = 480; break;
-    case '720p': width = 1280; height = 720; break;
-    case '1080p': width = 1920; height = 1080; break;
-    case '1440p': width = 2560; height = 1440; break;
-    case '2160p': width = 3840; height = 2160; break;
-    default: width = 1280; height = 720;
-  }
+        // 🟩 Riktig progress med ffmpeg.setProgress()
+        ffmpeg.setProgress(({ ratio }) => {
+            const percent = Math.min(Math.round(ratio * 100), 100);
+            document.getElementById("progress-bar-filled").style.width = `${percent}%`;
+            document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade`;
+        });
 
-  const outputName = `output_${resolution}.mp4`;
-  await ffmpeg.run('-i', inputName, '-vf', `scale=${width}:${height}`, outputName);
+        const resolutionMap = {
+            '480p': '854x480',
+            '720p': '1280x720',
+            '1080p': '1920x1080',
+            '1440p': '2560x1440',
+            '2160p': '3840x2160'
+        };
 
-  const data = ffmpeg.FS('readFile', outputName);
-  const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-  const url = URL.createObjectURL(videoBlob);
+        const size = resolutionMap[resolution] || '1280x720';
 
-  clearInterval(interval);
-  document.getElementById("progress-bar").style.display = "none";
-  document.getElementById("progress-text").style.display = "none";
-  document.getElementById("progress-bar-filled").style.width = "0%";
+        await ffmpeg.run('-i', 'input.mp4', '-vf', `scale=${size}`, 'output.mp4');
 
-  const downloadBtn = document.getElementById("download-btn");
-  downloadBtn.style.display = "inline-block";
-  downloadBtn.onclick = () => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `upgraded_${uploadedFile.name}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    downloadBtn.style.display = "none";
-  };
+        const data = ffmpeg.FS('readFile', 'output.mp4');
+        const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'upgraded_video.mp4';
+        document.getElementById("download-btn").style.display = "block";
+
+        // Avsluta progress
+        document.getElementById("progress-bar-filled").style.width = `100%`;
+        document.getElementById("progress-text").textContent = `100% of 100% to complete upgrade`;
+
+        // Snygg fördröjning innan döljs
+        setTimeout(() => {
+            progressBar.style.display = "none";
+            progressText.textContent = "Upgrade complete!";
+        }, 1500);
+    };
+
+    reader.readAsArrayBuffer(videoFile);
 }
-
 
 window.addEventListener("load", () => {
   window.onUpgradeClick = onUpgradeClick;
