@@ -103,3 +103,6 @@ async function startUpgradeProcess(resolution) {
   };
 }
 window.startUpgradeProcess = startUpgradeProcess;
+window.onUpgradeClick = onUpgradeClick;
+window.acceptTerms = acceptTerms;
+window.denyTerms = denyTerms;
