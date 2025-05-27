@@ -575,31 +575,6 @@
         closePopup("popup-terms");
     }
 
-    // Starta fake-uppladdning
-   function startUpgradeProcess(resolution) {
-    document.getElementById("upgrade-options").style.display = "none";
-    document.getElementById("progress-bar").style.display = "block";
-    document.getElementById("progress-text").style.display = "block";
-
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress += 2;
-        document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-        document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
-
-        if (progress >= 100) {
-            clearInterval(interval);
-
-            // Visa nedladdningsknappen
-            document.getElementById("download-btn").style.display = "inline-block";
-
-            // Göm progressgrejer
-            document.getElementById("progress-bar").style.display = "none";
-            document.getElementById("progress-text").style.display = "none";
-            document.getElementById("progress-bar-filled").style.width = "0%";
-        }
-    }, 100);
-}
      function downloadUpgradedVideo() {
     const videoSrc = document.getElementById("video-source").src;
 
