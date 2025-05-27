@@ -106,3 +106,11 @@ window.startUpgradeProcess = startUpgradeProcess;
 window.onUpgradeClick = onUpgradeClick;
 window.acceptTerms = acceptTerms;
 window.denyTerms = denyTerms;
+ const fileInput = document.getElementById('file-input');
+
+fileInput.addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Ladda upp och bearbeta videofilen här
+  }
+});      
