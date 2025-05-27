@@ -16,15 +16,17 @@ document.addEventListener("click", function (event) {
     const upgradeButton = document.getElementById("upgrade-video-btn");
     const popups = document.querySelectorAll("#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options");
 
-    const isClickInside = [...popups].some(popup => popup.contains(event.target)) || upgradeButton.contains(event.target);
-    if (!isClickInside) {
+    const isClickInsidePopup = [...popups].some(popup => popup.contains(event.target)) || upgradeButton.contains(event.target);
+
+    if (!isClickInsidePopup) {
         closeAllUpgradePopups();
     }
 
     const backgroundButton = document.getElementById("change-background-btn");
     const bgOptions = document.getElementById("background-options");
-    const clickInsideBg = bgOptions.contains(event.target) || backgroundButton.contains(event.target);
-    if (!clickInsideBg) {
+    const isClickInsideBg = bgOptions.contains(event.target) || backgroundButton.contains(event.target);
+
+    if (!isClickInsideBg) {
         bgOptions.style.display = "none";
     }
 });
@@ -228,33 +230,11 @@ document.addEventListener("click", function (event) {
     });
 }       
 
-    document.addEventListener("click", function (event) {
-    const upgradeButton = document.getElementById("upgrade-video-btn");
-    const popups = document.querySelectorAll("#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options");
-
-    const isClickInside = [...popups].some(popup => popup.contains(event.target)) || upgradeButton.contains(event.target);
-
-    if (!isClickInside) {
-        closeAllUpgradePopups();
-    }
-    
-  });
-
     function showResolutionOptions() {
     const optionsBox = document.getElementById("upgrade-options");
     optionsBox.style.display = "block";
 }  
        
-   document.addEventListener("click", function (event) {
-    const backgroundButton = document.getElementById("change-background-btn");
-    const bgOptions = document.getElementById("background-options");
-
-    const isClickInside = bgOptions.contains(event.target) || backgroundButton.contains(event.target);
-
-    if (!isClickInside) {
-        bgOptions.style.display = "none";
-    }
-});
 async function startUpgradeProcess(resolution) {
   document.getElementById("upgrade-options").style.display = "none";
   document.getElementById("progress-bar").style.display = "block";
