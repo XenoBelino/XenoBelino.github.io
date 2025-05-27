@@ -291,17 +291,19 @@ async function startUpgradeProcess(resolution) {
 }
 
 
-// Gör funktioner tillgängliga i HTML
-window.onUpgradeClick = onUpgradeClick;
-window.acceptTerms = acceptTerms;
-window.denyTerms = denyTerms;
-window.setLightMode = setLightMode;
-window.setDarkMode = setDarkMode;
-window.triggerFileInput = triggerFileInput;
-window.downloadUpgradedVideo = downloadUpgradedVideo;
-window.handleFileSelect = handleFileSelect;
-window.convertToMP4 = convertToMP4;
-window.toggleBackgroundOptions = toggleBackgroundOptions;
-window.closePopup = closePopup;
-window.updateVolumePercentage = updateVolumePercentage;
-window.proceedToResolution = proceedToResolution;
+window.addEventListener("load", () => {
+  window.onUpgradeClick = onUpgradeClick;
+  window.acceptTerms = acceptTerms;
+  window.denyTerms = denyTerms;
+  window.setLightMode = setLightMode;
+  window.setDarkMode = setDarkMode;
+  window.triggerFileInput = triggerFileInput;
+  window.downloadUpgradedVideo = downloadUpgradedVideo;
+  window.handleFileSelect = handleFileSelect;
+  window.convertToMP4 = convertToMP4;
+  window.toggleBackgroundOptions = toggleBackgroundOptions;
+  window.closePopup = closePopup;
+  window.updateVolumePercentage = updateVolumePercentage;
+  window.proceedToResolution = proceedToResolution;
+  window.startUpgradeProcess = startUpgradeProcess; 
+});
