@@ -114,9 +114,9 @@ document.addEventListener("click", function (event) {
 
     // Kontroll om video är vald (ej sample.mp4)
     function isVideoSelected() {
-        const src = document.getElementById("video-source").src;
-        return src && !src.includes("sample.mp4") && src !== "";
-    }
+    const videoSource = document.getElementById("video-source");
+    return videoSource && videoSource.src && videoSource.src !== "";
+}
 
     // När "Upgrade" klickas
    function onUpgradeClick() {
@@ -236,7 +236,8 @@ document.addEventListener("click", function (event) {
 }  
        
 async function startUpgradeProcess(resolution) {
-    const videoFile = window.currentVideoFile;
+    const videoFile = uploadedFile; // <-- fix: använd sparad fil
+
     if (!videoFile) {
         showPopup("popup-no-video");
         return;
@@ -244,7 +245,6 @@ async function startUpgradeProcess(resolution) {
 
     const reader = new FileReader();
     reader.onload = async () => {
-        const { createFFmpeg } = FFmpeg;
         const ffmpeg = createFFmpeg({ log: true });
 
         await ffmpeg.load();
@@ -256,12 +256,15 @@ async function startUpgradeProcess(resolution) {
         progressBar.style.display = "block";
         progressText.style.display = "block";
 
-        // 🟩 Riktig progress med ffmpeg.setProgress()
-        ffmpeg.setProgress(({ ratio }) => {
-            const percent = Math.min(Math.round(ratio * 100), 100);
-            document.getElementById("progress-bar-filled").style.width = `${percent}%`;
-            document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade`;
-        });
+        // Starta simulerad progressbar
+        let progress = 0;
+        const interval = setInterval(() => {
+            if (progress < 99) {
+                progress += 1;
+                document.getElementById("progress-bar-filled").style.width = `${progress}%`;
+                document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+            }
+        }, 100);
 
         const resolutionMap = {
             '480p': '854x480',
@@ -270,24 +273,27 @@ async function startUpgradeProcess(resolution) {
             '1440p': '2560x1440',
             '2160p': '3840x2160'
         };
-
         const size = resolutionMap[resolution] || '1280x720';
 
         await ffmpeg.run('-i', 'input.mp4', '-vf', `scale=${size}`, 'output.mp4');
 
+        // Stoppa tick och sätt till 100%
+        clearInterval(interval);
+        document.getElementById("progress-bar-filled").style.width = "100%";
+        document.getElementById("progress-text").textContent = "100% of 100% to complete upgrade";
+
         const data = ffmpeg.FS('readFile', 'output.mp4');
         const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
 
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'upgraded_video.mp4';
+        const source = document.getElementById("video-source");
+        const video = document.getElementById("video-player");
+        source.src = url;
+        video.load();
+        video.play();
+
         document.getElementById("download-btn").style.display = "block";
 
-        // Avsluta progress
-        document.getElementById("progress-bar-filled").style.width = `100%`;
-        document.getElementById("progress-text").textContent = `100% of 100% to complete upgrade`;
-
-        // Snygg fördröjning innan döljs
+        // Efter 1.5 sekunder: dölj bar + visa klart-text
         setTimeout(() => {
             progressBar.style.display = "none";
             progressText.textContent = "Upgrade complete!";
