@@ -75,6 +75,9 @@ let gainNodeOriginal;
 let gainNodeMusic;
 let gainNodeCorrupted;
 let gainNodeFinal;
+setTimeout(() => {
+  showLanguageDetectionPopup(["Svenska", "Engelska"], true);
+}, 1000);
 
 function handleFileSelect(event) {
   const file = event.target.files[0];
@@ -99,23 +102,35 @@ function handleFileSelect(event) {
 
   let languagePopupShown = false;
 
+let languagePopupShown = false;
+}    
+
 function showLanguageDetectionPopup(detectedLanguages = [], includesRobotVoice = true) {
   if (languagePopupShown) return;
 
-  // Begränsa till max 2 språk + ev robot
   const langsToShow = detectedLanguages.slice(0, 2);
   const message = `Multiple audio tracks detected: ${langsToShow.join(" and ")}${includesRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
 
-  // Sätt text i popup
   document.getElementById("language-detection-message").innerHTML = message;
 
-  // Sätt upp knappar
   langsToShow.forEach((lang, i) => {
     const btn = document.getElementById(`lang-btn-${i + 1}`);
     btn.textContent = `Move ${lang}`;
     btn.onclick = () => assignLanguageToCorrupted(lang);
     btn.style.display = "inline-block";
   });
+
+  const robotBtn = document.getElementById("lang-btn-3");
+  if (includesRobotVoice) {
+    robotBtn.style.display = "inline-block";
+    robotBtn.onclick = () => assignLanguageToCorrupted("Robotic voice");
+  } else {
+    robotBtn.style.display = "none";
+  }
+
+  showPopup("popup-language-detection");
+  languagePopupShown = true;
+}
 
   // Robotröst knapp
   const robotBtn = document.getElementById("lang-btn-3");
@@ -384,6 +399,11 @@ function setupAudioGraph(videoElement) {
     .connect(gainNodeCorrupted)
     .connect(gainNodeFinal)
     .connect(audioContext.destination);
+}
+
+function assignLanguageToCorrupted(language) {
+  alert(`${language} has been assigned to Corrupted Volume.`);
+  closePopup("popup-language-detection");
 }
 
 window.addEventListener("load", () => {
