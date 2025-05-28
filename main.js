@@ -108,11 +108,8 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
 
     message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
 
-    const corruptedLabel = document.querySelector("label[for='corrupted-volume']");
-    const rect = corruptedLabel.getBoundingClientRect();
-
-    popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
-    popup.style.left = `${rect.left + window.scrollX}px`;
+    const anchor = document.getElementById("language-popup-anchor");
+     anchor.appendChild(popup);
     popup.style.display = "block";
 
     // Visa knappar
