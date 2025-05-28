@@ -7,6 +7,7 @@ let acceptedTerms = false;
 let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
 let warningAccepted = false;
+let languagePopupShown = false;
 
 document.getElementById('file-input').addEventListener('change', handleFileSelect);
 document.getElementById('convert-btn').addEventListener('click', convertToMP4);
@@ -88,8 +89,6 @@ function handleFileSelect(event) {
 
   // Skapa ljudkedja
   setupAudioGraph(video);
-
-  let languagePopupShown = false;
 }    
 
 function showLanguageDetectionPopup(detectedLanguages = [], includesRobotVoice = true) {
@@ -127,8 +126,6 @@ const robotVoiceIncluded = true;
 setTimeout(() => {
   showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
 }, 1000);
-
-}
 
     // Dummy-funktion
     function convertToMP4() {
