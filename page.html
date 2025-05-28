@@ -280,11 +280,17 @@
             background-color: #333;
         }
 
-        #popup-language-detection {
-    position: absolute;
-    z-index: 9999;
-    display: none;
-    transform: none;
+       #language-popup-anchor {
+  position: relative;
+  display: inline-block;
+}
+
+#popup-language-detection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-250px); /* justera så det hamnar till vänster */
+  z-index: 1000;
 }
 
         /* Varningspopup under knappen */
@@ -413,6 +419,7 @@
 <!-- Popup: språkdetektering – rätt placerad -->
 <div id="popup-language-detection" class="popup">
   <p id="language-detection-message"></p>
+  <div id="language-popup-anchor"></div>
   <div class="popup-buttons">
     <button id="lang-btn-1" style="display: none;"></button>
     <button id="lang-btn-2" style="display: none;"></button>
