@@ -92,15 +92,18 @@ function handleFileSelect(event) {
 }    
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
+    if (languagePopupShown) return;
+    languagePopupShown = true;
+
     const popup = document.getElementById("popup-language-detection");
     const message = document.getElementById("language-detection-message");
 
-    message.textContent = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}. Which one should be moved to Corrupted Volume?`;
+    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
 
     const corruptedLabel = document.querySelector("label[for='corrupted-volume']");
     const rect = corruptedLabel.getBoundingClientRect();
 
-    popup.style.top = `${rect.bottom + window.scrollY}px`;
+    popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
     popup.style.left = `${rect.left + window.scrollX}px`;
     popup.style.display = "block";
 
@@ -110,46 +113,22 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
 
     if (languages[0]) {
         btn1.textContent = `Move ${languages[0]}`;
+        btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
         btn1.style.display = "inline-block";
     }
 
     if (languages[1]) {
         btn2.textContent = `Move ${languages[1]}`;
+        btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
         btn2.style.display = "inline-block";
     }
 
     if (hasRobotVoice) {
         btn3.textContent = "Move Robotic Voice";
+        btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
         btn3.style.display = "inline-block";
     }
 }
-
-  if (languagePopupShown) return;
-
-  const langsToShow = detectedLanguages.slice(0, 2);
-  const message = `Multiple audio tracks detected: ${langsToShow.join(" and ")}${includesRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
-
-  document.getElementById("language-detection-message").innerHTML = message;
-
-  langsToShow.forEach((lang, i) => {
-    const btn = document.getElementById(`lang-btn-${i + 1}`);
-    btn.textContent = `Move ${lang}`;
-    btn.onclick = () => assignLanguageToCorrupted(lang);
-    btn.style.display = "inline-block";
-  });
-
-  const robotBtn = document.getElementById("lang-btn-3");
-  if (includesRobotVoice) {
-    robotBtn.style.display = "inline-block";
-    robotBtn.onclick = () => assignLanguageToCorrupted("Robotic voice");
-  } else {
-    robotBtn.style.display = "none";
-  }
-
-  showPopup("popup-language-detection");
-  languagePopupShown = true;
-}
-
 
 // Simulera språkdetektion
 const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
