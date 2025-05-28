@@ -110,6 +110,9 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
 
     const anchor = document.getElementById("language-popup-anchor");
      anchor.appendChild(popup);
+    if (!anchor.contains(popup)) {
+  anchor.appendChild(popup);
+}
     popup.style.display = "block";
 
     // Visa knappar
@@ -353,9 +356,10 @@ async function startUpgradeProcess(resolution) {
         const video = document.getElementById("video-player");
         source.src = url;
         video.load();
-        video.play();
-
-        document.getElementById("download-btn").style.display = "block";
+        video.onloadeddata = () => {
+        video.play().catch((e) => console.warn("Autoplay error:", e));
+    
+       document.getElementById("download-btn").style.display = "block";
 
         // Efter 1.5 sekunder: dölj bar + visa klart-text
         setTimeout(() => {
@@ -372,15 +376,23 @@ function setupAudioGraph(videoElement) {
     audioContext = new AudioContext();
   }
 
+  // Kontrollera om sourceNode redan finns och är kopplad till samma video
+  if (sourceNode) {
+    try {
+      sourceNode.disconnect();
+    } catch (e) {
+      console.warn("sourceNode already disconnected or invalid:", e);
+    }
+  }
+
+  // Skapa ny koppling
   sourceNode = audioContext.createMediaElementSource(videoElement);
 
-  // Skapa gain-noder
   gainNodeOriginal = audioContext.createGain();
   gainNodeMusic = audioContext.createGain();
   gainNodeCorrupted = audioContext.createGain();
   gainNodeFinal = audioContext.createGain();
 
-  // Här simulerar vi mixning genom att koppla dem i kedja
   sourceNode
     .connect(gainNodeOriginal)
     .connect(gainNodeMusic)
