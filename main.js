@@ -119,19 +119,7 @@ function showLanguageDetectionPopup(detectedLanguages = [], includesRobotVoice =
   languagePopupShown = true;
 }
 
-  // Robotröst knapp
-  const robotBtn = document.getElementById("lang-btn-3");
-  if (includesRobotVoice) {
-    robotBtn.style.display = "inline-block";
-    robotBtn.onclick = () => assignLanguageToCorrupted("Robotic voice");
-  } else {
-    robotBtn.style.display = "none";
-  }
 
-  // Visa popup
-  showPopup("popup-language-detection");
-  languagePopupShown = true;
-}
 // Simulera språkdetektion
 const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
 const robotVoiceIncluded = true;
