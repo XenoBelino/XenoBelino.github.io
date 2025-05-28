@@ -316,7 +316,6 @@ async function startUpgradeProcess(resolution) {
 
     const reader = new FileReader();
     reader.onload = async () => {
-        const ffmpeg = createFFmpeg({ log: true });
 
         await ffmpeg.load();
         ffmpeg.FS('writeFile', 'input.mp4', new Uint8Array(reader.result));
