@@ -91,7 +91,39 @@ function handleFileSelect(event) {
   setupAudioGraph(video);
 }    
 
-function showLanguageDetectionPopup(detectedLanguages = [], includesRobotVoice = true) {
+function showLanguageDetectionPopup(languages, hasRobotVoice) {
+    const popup = document.getElementById("popup-language-detection");
+    const message = document.getElementById("language-detection-message");
+
+    message.textContent = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}. Which one should be moved to Corrupted Volume?`;
+
+    const corruptedLabel = document.querySelector("label[for='corrupted-volume']");
+    const rect = corruptedLabel.getBoundingClientRect();
+
+    popup.style.top = `${rect.bottom + window.scrollY}px`;
+    popup.style.left = `${rect.left + window.scrollX}px`;
+    popup.style.display = "block";
+
+    // Visa knappar
+    const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
+    [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
+
+    if (languages[0]) {
+        btn1.textContent = `Move ${languages[0]}`;
+        btn1.style.display = "inline-block";
+    }
+
+    if (languages[1]) {
+        btn2.textContent = `Move ${languages[1]}`;
+        btn2.style.display = "inline-block";
+    }
+
+    if (hasRobotVoice) {
+        btn3.textContent = "Move Robotic Voice";
+        btn3.style.display = "inline-block";
+    }
+}
+
   if (languagePopupShown) return;
 
   const langsToShow = detectedLanguages.slice(0, 2);
@@ -167,7 +199,20 @@ setTimeout(() => {
 }
 
     // När "Upgrade" klickas
-   function onUpgradeClick() {
+  function onUpgradeClick() {
+    const video = document.getElementById("video-player");
+    const source = document.getElementById("video-source");
+
+    // Kontrollera om video har src
+    if (!source || !source.src || source.src === "") {
+        showPopup("popup-no-video");
+        return;
+    }
+
+    // Om video finns, visa varningspopup
+    showPopup("popup-warning");
+}
+
     const anyPopupOpen = isAnyUpgradePopupOpen();
 
     if (anyPopupOpen) {
