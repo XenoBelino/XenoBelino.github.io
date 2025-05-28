@@ -382,9 +382,6 @@
         <div class="volume-slider-container">
             <div>
                 <label for="original-volume">Original Volume:</label>
-                <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50"
-                    oninput="updateVolumePercentage('original')">
-                <span id="original-volume-percent" class="volume-percentage">50%</span>
             </div>
             <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
@@ -392,14 +389,20 @@
 <span id="corrupted-volume-percent">50%</span>                
 <div id="popup-language-detection" class="popup">
   <p id="language-detection-message"></p>
-  <div class="popup-buttons">
+  </div> 
+      class="popup-buttons">
     <button id="lang-btn-1" style="display: none;"></button>
     <button id="lang-btn-2" style="display: none;"></button>
     <button id="lang-btn-3" style="display: none;"></button>
-
-
             </div>
             <div>
+                <input type="range" id="corrupted-volume" ... />
+<span id="corrupted-volume-percent">50%</span>                
+
+<!-- FEL: Den här popupen ligger mitt i volymkontroller -->
+<div id="popup-language-detection" class="popup">...
+</div>
+
                 <label for="music-volume">Music Volume:</label>
                 <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50"
                     oninput="updateVolumePercentage('music')">
