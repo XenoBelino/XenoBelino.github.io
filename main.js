@@ -89,6 +89,14 @@ function handleFileSelect(event) {
 
   // Skapa ljudkedja
   setupAudioGraph(video);
+    
+ // Simulera språkdetektion
+const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
+const robotVoiceIncluded = true;
+
+setTimeout(() => {
+  showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
+}, 1000);
 }    
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
@@ -129,14 +137,6 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
         btn3.style.display = "inline-block";
     }
 }
-
-// Simulera språkdetektion
-const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
-const robotVoiceIncluded = true;
-
-setTimeout(() => {
-  showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
-}, 1000);
 
     // Dummy-funktion
     function convertToMP4() {
