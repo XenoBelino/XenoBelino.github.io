@@ -380,9 +380,25 @@
             </div>
             <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
-                <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50"
-                    oninput="updateVolumePercentage('corrupted')">
-                <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+<input type="range" id="corrupted-volume" ... />
+<span id="corrupted-volume-percent">50%</span>
+
+#popup-language-detection {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: none;
+  display: none;
+  z-index: 9999;
+}
+<div id="popup-language-detection" class="popup">
+  <p id="language-detection-message"></p>
+  <div class="popup-buttons">
+    <button id="lang-btn-1" style="display: none;"></button>
+    <button id="lang-btn-2" style="display: none;"></button>
+    <button id="lang-btn-3" style="display: none;"></button>
+
+
             </div>
             <div>
                 <label for="music-volume">Music Volume:</label>
