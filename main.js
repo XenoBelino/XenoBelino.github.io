@@ -397,28 +397,26 @@ function assignLanguageToCorrupted(language) {
   closePopup("popup-language-detection");
 }
 
-    window.addEventListener("load", () => {
-    document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
-    document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
-    document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
-    document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
-    window.updateVolumePercentage = updateVolumePercentage;
-    window.onUpgradeClick = onUpgradeClick;
-    window.acceptTerms = acceptTerms;
-    window.denyTerms = denyTerms;
-    window.setLightMode = setLightMode;
-    window.setDarkMode = setDarkMode;
-    window.triggerFileInput = triggerFileInput;
-    window.downloadUpgradedVideo = downloadUpgradedVideo;
-    window.handleFileSelect = handleFileSelect;
-    window.convertToMP4 = convertToMP4;
-    window.toggleBackgroundOptions = toggleBackgroundOptions;
-    window.closePopup = closePopup;
-    window.proceedToResolution = proceedToResolution;
-    window.startUpgradeProcess = startUpgradeProcess;
-    window.updateVolumePercentage = updateVolumePercentage;
-    window.onUpgradeClick = onUpgradeClick;
-    window.convertToMP4 = convertToMP4;
-    window.triggerFileInput = triggerFileInput;
-    window.toggleBackgroundOptions = toggleBackgroundOptions;
-});
+   // Se till att allt detta ligger INUTI EN enda `load`-lyssnare:
+window.addEventListener("load", () => {
+  document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
+  document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
+  document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
+  document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
+
+  // Gör funktionerna globala
+  window.updateVolumePercentage = updateVolumePercentage;
+  window.onUpgradeClick = onUpgradeClick;
+  window.acceptTerms = acceptTerms;
+  window.denyTerms = denyTerms;
+  window.setLightMode = setLightMode;
+  window.setDarkMode = setDarkMode;
+  window.triggerFileInput = triggerFileInput;
+  window.downloadUpgradedVideo = downloadUpgradedVideo;
+  window.handleFileSelect = handleFileSelect;
+  window.convertToMP4 = convertToMP4;
+  window.toggleBackgroundOptions = toggleBackgroundOptions;
+  window.closePopup = closePopup;
+  window.proceedToResolution = proceedToResolution;
+  window.startUpgradeProcess = startUpgradeProcess;
+}); 
