@@ -405,18 +405,19 @@ function assignLanguageToCorrupted(language) {
 }
 
 window.addEventListener("load", () => {
-  window.onUpgradeClick = onUpgradeClick;
-  window.acceptTerms = acceptTerms;
-  window.denyTerms = denyTerms;
-  window.setLightMode = setLightMode;
-  window.setDarkMode = setDarkMode;
-  window.triggerFileInput = triggerFileInput;
-  window.downloadUpgradedVideo = downloadUpgradedVideo;
-  window.handleFileSelect = handleFileSelect;
-  window.convertToMP4 = convertToMP4;
-  window.toggleBackgroundOptions = toggleBackgroundOptions;
-  window.closePopup = closePopup;
-  window.updateVolumePercentage = updateVolumePercentage;
-  window.proceedToResolution = proceedToResolution;
-  window.startUpgradeProcess = startUpgradeProcess; 
+window.updateVolumePercentage = function (type) {
+window.onUpgradeClick = onUpgradeClick;
+window.acceptTerms = acceptTerms;
+window.denyTerms = denyTerms;
+window.setLightMode = setLightMode;
+window.setDarkMode = setDarkMode;
+window.triggerFileInput = triggerFileInput;
+window.downloadUpgradedVideo = downloadUpgradedVideo;
+window.handleFileSelect = handleFileSelect;
+window.convertToMP4 = convertToMP4;
+window.toggleBackgroundOptions = toggleBackgroundOptions;
+window.closePopup = closePopup;
+window.updateVolumePercentage = updateVolumePercentage;
+window.proceedToResolution = proceedToResolution;
+window.startUpgradeProcess = startUpgradeProcess; 
 });
