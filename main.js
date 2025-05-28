@@ -189,11 +189,10 @@ setTimeout(() => {
 
     // Om video finns, visa varningspopup
     showPopup("popup-warning");
-}
 
     const anyPopupOpen = isAnyUpgradePopupOpen();
-
-    if (anyPopupOpen) {
+   
+      if (anyPopupOpen) {
         closeAllUpgradePopups();
         return;
     }
@@ -420,4 +419,9 @@ window.addEventListener("load", () => {
     window.closePopup = closePopup;
     window.proceedToResolution = proceedToResolution;
     window.startUpgradeProcess = startUpgradeProcess;
+    window.updateVolumePercentage = updateVolumePercentage;
+    window.onUpgradeClick = onUpgradeClick;
+    window.convertToMP4 = convertToMP4;
+    window.triggerFileInput = triggerFileInput;
+    window.toggleBackgroundOptions = toggleBackgroundOptions;
 });
