@@ -68,17 +68,6 @@ document.addEventListener("click", function (event) {
         document.getElementById("file-input").click();
     }
 
-    // Hantera vald videofil
-    let audioContext;
-let sourceNode;
-let gainNodeOriginal;
-let gainNodeMusic;
-let gainNodeCorrupted;
-let gainNodeFinal;
-setTimeout(() => {
-  showLanguageDetectionPopup(["Svenska", "Engelska"], true);
-}, 1000);
-
 function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
