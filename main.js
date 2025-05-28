@@ -96,13 +96,6 @@ function handleFileSelect(event) {
 
   // Skapa ljudkedja
   setupAudioGraph(video);
-    
-    document.getElementById("file-name").textContent = file.name;
-
-    acceptedTerms = false;
-    selectedUpgradeResolution = null;
-    warningAccepted = false;
-    userAcceptedTerms = false;
 }
 
     // Dummy-funktion
