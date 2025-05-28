@@ -101,8 +101,6 @@ function handleFileSelect(event) {
   setupAudioGraph(video);
 
   let languagePopupShown = false;
-
-let languagePopupShown = false;
 }    
 
 function showLanguageDetectionPopup(detectedLanguages = [], includesRobotVoice = true) {
