@@ -420,4 +420,6 @@ window.closePopup = closePopup;
 window.updateVolumePercentage = updateVolumePercentage;
 window.proceedToResolution = proceedToResolution;
 window.startUpgradeProcess = startUpgradeProcess; 
+window.onUpgradeClick = onUpgradeClick; 
+window.toggleBackgroundOptions = toggleBackgroundOptions; 
 });
