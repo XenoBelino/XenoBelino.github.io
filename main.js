@@ -96,6 +96,48 @@ function handleFileSelect(event) {
 
   // Skapa ljudkedja
   setupAudioGraph(video);
+
+  let languagePopupShown = false;
+
+function showLanguageDetectionPopup(detectedLanguages = [], includesRobotVoice = true) {
+  if (languagePopupShown) return;
+
+  // Begränsa till max 2 språk + ev robot
+  const langsToShow = detectedLanguages.slice(0, 2);
+  const message = `Multiple audio tracks detected: ${langsToShow.join(" and ")}${includesRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+
+  // Sätt text i popup
+  document.getElementById("language-detection-message").innerHTML = message;
+
+  // Sätt upp knappar
+  langsToShow.forEach((lang, i) => {
+    const btn = document.getElementById(`lang-btn-${i + 1}`);
+    btn.textContent = `Move ${lang}`;
+    btn.onclick = () => assignLanguageToCorrupted(lang);
+    btn.style.display = "inline-block";
+  });
+
+  // Robotröst knapp
+  const robotBtn = document.getElementById("lang-btn-3");
+  if (includesRobotVoice) {
+    robotBtn.style.display = "inline-block";
+    robotBtn.onclick = () => assignLanguageToCorrupted("Robotic voice");
+  } else {
+    robotBtn.style.display = "none";
+  }
+
+  // Visa popup
+  showPopup("popup-language-detection");
+  languagePopupShown = true;
+}
+// Simulera språkdetektion
+const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
+const robotVoiceIncluded = true;
+
+setTimeout(() => {
+  showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
+}, 1000);
+
 }
 
     // Dummy-funktion
