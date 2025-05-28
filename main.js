@@ -181,12 +181,11 @@ setTimeout(() => {
   function onUpgradeClick() {
     const video = document.getElementById("video-player");
     const source = document.getElementById("video-source");
-
-    // Kontrollera om video har src
+     // Kontrollera om video har src
     if (!source || !source.src || source.src === "") {
         showPopup("popup-no-video");
         return;
-    }
+   } 
 
     // Om video finns, visa varningspopup
     showPopup("popup-warning");
@@ -403,6 +402,11 @@ function assignLanguageToCorrupted(language) {
 }
 
 window.addEventListener("load", () => {
+    window.addEventListener("load", () => {
+    document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
+    document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
+    document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
+    document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
     window.updateVolumePercentage = updateVolumePercentage;
     window.onUpgradeClick = onUpgradeClick;
     window.acceptTerms = acceptTerms;
