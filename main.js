@@ -69,20 +69,34 @@ document.addEventListener("click", function (event) {
     }
 
     // Hantera vald videofil
-    function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+    let audioContext;
+let sourceNode;
+let gainNodeOriginal;
+let gainNodeMusic;
+let gainNodeCorrupted;
+let gainNodeFinal;
 
-    uploadedFile = file; // <--- SPARAR filen
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-    const video = document.getElementById("video-player");
-    const source = document.getElementById("video-source");
+  uploadedFile = file;
+  const video = document.getElementById("video-player");
+  const source = document.getElementById("video-source");
+  const url = URL.createObjectURL(file);
+  source.src = url;
+  video.load();
+  video.play();
 
-    const url = URL.createObjectURL(file);
-    source.src = url;
-    video.load();
-    video.play();
+  document.getElementById("file-name").textContent = file.name;
+  acceptedTerms = false;
+  selectedUpgradeResolution = null;
+  warningAccepted = false;
+  userAcceptedTerms = false;
 
+  // Skapa ljudkedja
+  setupAudioGraph(video);
+    
     document.getElementById("file-name").textContent = file.name;
 
     acceptedTerms = false;
@@ -106,11 +120,23 @@ document.addEventListener("click", function (event) {
     }
 
     // Uppdatera volym
-    function updateVolumePercentage(type) {
-        const slider = document.getElementById(type + "-volume");
-        const percentSpan = document.getElementById(type + "-volume-percent");
-        percentSpan.textContent = slider.value + "%";
-    }
+   function updateVolumePercentage(type) {
+  const slider = document.getElementById(type + "-volume");
+  const percentSpan = document.getElementById(type + "-volume-percent");
+  percentSpan.textContent = slider.value + "%";
+
+  const gainValue = parseInt(slider.value) / 100;
+
+  if (type === "original" && gainNodeOriginal) {
+    gainNodeOriginal.gain.value = gainValue;
+  } else if (type === "music" && gainNodeMusic) {
+    gainNodeMusic.gain.value = gainValue;
+  } else if (type === "corrupted" && gainNodeCorrupted) {
+    gainNodeCorrupted.gain.value = gainValue;
+  } else if (type === "final" && gainNodeFinal) {
+    gainNodeFinal.gain.value = gainValue;
+  }
+}
 
     // Kontroll om video är vald (ej sample.mp4)
     function isVideoSelected() {
@@ -301,6 +327,28 @@ async function startUpgradeProcess(resolution) {
     };
 
     reader.readAsArrayBuffer(videoFile);
+}
+
+function setupAudioGraph(videoElement) {
+  if (!audioContext) {
+    audioContext = new AudioContext();
+  }
+
+  sourceNode = audioContext.createMediaElementSource(videoElement);
+
+  // Skapa gain-noder
+  gainNodeOriginal = audioContext.createGain();
+  gainNodeMusic = audioContext.createGain();
+  gainNodeCorrupted = audioContext.createGain();
+  gainNodeFinal = audioContext.createGain();
+
+  // Här simulerar vi mixning genom att koppla dem i kedja
+  sourceNode
+    .connect(gainNodeOriginal)
+    .connect(gainNodeMusic)
+    .connect(gainNodeCorrupted)
+    .connect(gainNodeFinal)
+    .connect(audioContext.destination);
 }
 
 window.addEventListener("load", () => {
