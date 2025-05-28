@@ -279,6 +279,14 @@
         body.dark-mode #upgrade-options {
             background-color: #333;
         }
+
+        #popup-language-detection {
+    position: absolute;
+    z-index: 9999;
+    display: none;
+    transform: none;
+}
+
         /* Varningspopup under knappen */
 #popup-warning, #popup-terms, #popup-sufficient, #popup-no-video  {
     position: absolute;
@@ -381,15 +389,7 @@
             <div>
                 <label for="corrupted-volume">Corrupted Volume:</label>
 <input type="range" id="corrupted-volume" ... />
-<span id="corrupted-volume-percent">50%</span>
-
-#popup-language-detection {
-  position: absolute;
-  z-index: 9999;
-  display: none;
-  transform: none;
-}
-                
+<span id="corrupted-volume-percent">50%</span>                
 <div id="popup-language-detection" class="popup">
   <p id="language-detection-message"></p>
   <div class="popup-buttons">
