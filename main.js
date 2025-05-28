@@ -1,7 +1,7 @@
 import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/+esm';
 
 const ffmpeg = createFFmpeg({ log: true });
-
+let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal, audioContext, sourceNode;
 let uploadedFile = null;
 let acceptedTerms = false;
 let userAcceptedTerms = false;
@@ -195,12 +195,10 @@ setTimeout(() => {
       if (anyPopupOpen) {
         closeAllUpgradePopups();
         return;
-    }
 
     if (!isVideoSelected()) {
         showPopup("popup-no-video");
         return;
-    }
 
     if (warningAccepted) {
         showResolutionOptions(); // Visa direkt om redan godkänt
@@ -399,7 +397,6 @@ function assignLanguageToCorrupted(language) {
   closePopup("popup-language-detection");
 }
 
-window.addEventListener("load", () => {
     window.addEventListener("load", () => {
     document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
     document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
