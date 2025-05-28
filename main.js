@@ -178,27 +178,27 @@ setTimeout(() => {
 }
 
     // När "Upgrade" klickas
-  function onUpgradeClick() {
+ function onUpgradeClick() {
     const video = document.getElementById("video-player");
     const source = document.getElementById("video-source");
-     // Kontrollera om video har src
+
+    // Kontrollera om video har src
     if (!source || !source.src || source.src === "") {
         showPopup("popup-no-video");
         return;
-   } 
-
-    // Om video finns, visa varningspopup
-    showPopup("popup-warning");
+    }
 
     const anyPopupOpen = isAnyUpgradePopupOpen();
-   
-      if (anyPopupOpen) {
+
+    if (anyPopupOpen) {
         closeAllUpgradePopups();
         return;
+    }
 
     if (!isVideoSelected()) {
         showPopup("popup-no-video");
         return;
+    }
 
     if (warningAccepted) {
         showResolutionOptions(); // Visa direkt om redan godkänt
