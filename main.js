@@ -312,63 +312,60 @@ async function startUpgradeProcess(resolution) {
     }
 
     const reader = new FileReader();
-    reader.onload = async () => {
+   reader.onload = async () => {
+    await ffmpeg.load();
+    ffmpeg.FS('writeFile', 'input.mp4', new Uint8Array(reader.result));
 
-        await ffmpeg.load();
-        ffmpeg.FS('writeFile', 'input.mp4', new Uint8Array(reader.result));
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("progress-text");
+    progressBar.style.display = "block";
+    progressText.style.display = "block";
 
-        // Visa progressbar
-        const progressBar = document.getElementById("progress-bar");
-        const progressText = document.getElementById("progress-text");
-        progressBar.style.display = "block";
-        progressText.style.display = "block";
+    let progress = 0;
+    const interval = setInterval(() => {
+        if (progress < 99) {
+            progress += 1;
+            document.getElementById("progress-bar-filled").style.width = `${progress}%`;
+            document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+        }
+    }, 100);
 
-        // Starta simulerad progressbar
-        let progress = 0;
-        const interval = setInterval(() => {
-            if (progress < 99) {
-                progress += 1;
-                document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-                document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
-            }
-        }, 100);
+    const resolutionMap = {
+        '480p': '854x480',
+        '720p': '1280x720',
+        '1080p': '1920x1080',
+        '1440p': '2560x1440',
+        '2160p': '3840x2160'
+    };
+    const size = resolutionMap[resolution] || '1280x720';
 
-        const resolutionMap = {
-            '480p': '854x480',
-            '720p': '1280x720',
-            '1080p': '1920x1080',
-            '1440p': '2560x1440',
-            '2160p': '3840x2160'
-        };
-        const size = resolutionMap[resolution] || '1280x720';
+    await ffmpeg.run('-i', 'input.mp4', '-vf', `scale=${size}`, 'output.mp4');
 
-        await ffmpeg.run('-i', 'input.mp4', '-vf', `scale=${size}`, 'output.mp4');
+    clearInterval(interval);
+    document.getElementById("progress-bar-filled").style.width = "100%";
+    document.getElementById("progress-text").textContent = "100% of 100% to complete upgrade";
 
-        // Stoppa tick och sätt till 100%
-        clearInterval(interval);
-        document.getElementById("progress-bar-filled").style.width = "100%";
-        document.getElementById("progress-text").textContent = "100% of 100% to complete upgrade";
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
 
-        const data = ffmpeg.FS('readFile', 'output.mp4');
-        const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-
-        const source = document.getElementById("video-source");
-        const video = document.getElementById("video-player");
-        source.src = url;
-        video.load();
-        video.onloadeddata = () => {
+    const source = document.getElementById("video-source");
+    const video = document.getElementById("video-player");
+    source.src = url;
+    video.load();
+    video.onloadeddata = () => {
         video.play().catch((e) => console.warn("Autoplay error:", e));
-    
-       document.getElementById("download-btn").style.display = "block";
+        document.getElementById("download-btn").style.display = "block";
 
-        // Efter 1.5 sekunder: dölj bar + visa klart-text
         setTimeout(() => {
             progressBar.style.display = "none";
             progressText.textContent = "Upgrade complete!";
         }, 1500);
     };
+};
 
-    reader.readAsArrayBuffer(videoFile);
+// ✅ Flytta reader.readAsArrayBuffer(videoFile) INNANFÖR funktionen:
+reader.readAsArrayBuffer(videoFile); // <-- ska vara här inne
+
  };
      }
 
