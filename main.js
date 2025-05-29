@@ -369,7 +369,8 @@ async function startUpgradeProcess(resolution) {
     };
 
     reader.readAsArrayBuffer(videoFile);
-}
+ };
+     }
 
 function setupAudioGraph(videoElement) {
   if (!audioContext) {
