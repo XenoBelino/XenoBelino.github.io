@@ -109,7 +109,6 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
 
     const anchor = document.getElementById("language-popup-anchor");
-     anchor.appendChild(popup);
     if (!anchor.contains(popup)) {
   anchor.appendChild(popup);
 }
@@ -402,44 +401,6 @@ function setupAudioGraph(videoElement) {
 function assignLanguageToCorrupted(language) {
   alert(`${language} has been assigned to Corrupted Volume.`);
   closePopup("popup-language-detection");
-}
-function showProgressBar() {
-  document.getElementById("progress-bar").style.display = "block";
-  document.getElementById("progress-text").style.display = "block";
-}
-
-function simulateUpgrade(resolution) {
-  let progress = 0;
-  const interval = setInterval(() => {
-    if (progress >= 100) {
-      clearInterval(interval);
-      document.getElementById("progress-text").textContent = `Upgrade to ${resolution} complete!`;
-      document.getElementById("download-btn").style.display = "block";
-    } else {
-      progress += 10;
-      document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-      document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
-    }
-  }, 500);
-}
-function showProgressBar() {
-  document.getElementById("progress-bar").style.display = "block";
-  document.getElementById("progress-text").style.display = "block";
-}
-
-function simulateUpgrade(resolution) {
-  let progress = 0;
-  const interval = setInterval(() => {
-    if (progress >= 100) {
-      clearInterval(interval);
-      document.getElementById("progress-text").textContent = `Upgrade to ${resolution} complete!`;
-      document.getElementById("download-btn").style.display = "block";
-    } else {
-      progress += 10;
-      document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-      document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
-    }
-  }, 500);
 }
 
    // Se till att allt detta ligger INUTI EN enda `load`-lyssnare:
