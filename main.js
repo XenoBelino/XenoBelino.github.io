@@ -450,7 +450,8 @@ function closeNoVideoPopup() {
   document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
   document.getElementById('file-input').addEventListener('change', handleFileSelect);
   document.getElementById('convert-btn').addEventListener('click', convertToMP4);
-    
+  document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
+  
   // Gör funktionerna globala
   window.updateVolumePercentage = updateVolumePercentage;
   window.onUpgradeClick = onUpgradeClick;
