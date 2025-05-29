@@ -368,6 +368,27 @@ reader.readAsArrayBuffer(videoFile); // <-- ska vara här inne
 
  };
 
+function showProgressBar() {
+  document.getElementById("progress-bar").style.display = "block";
+  document.getElementById("progress-text").style.display = "block";
+}
+
+function simulateUpgrade(resolution) {
+  let progress = 0;
+  const interval = setInterval(() => {
+    if (progress >= 100) {
+      clearInterval(interval);
+      document.getElementById("progress-text").textContent = `Upgrade to ${resolution} complete!`;
+      document.getElementById("download-btn").style.display = "block";
+    } else {
+      progress += 10;
+      document.getElementById("progress-bar-filled").style.width = `${progress}%`;
+      document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+    }
+  }, 500);
+}
+
+
 function setupAudioGraph(videoElement) {
   if (!audioContext) {
     audioContext = new AudioContext();
