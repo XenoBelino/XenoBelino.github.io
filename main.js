@@ -145,12 +145,18 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
 
     // Visa popup
     function showPopup(id) {
-        document.getElementById(id).style.display = "block";
+    const popup = document.getElementById(id);
+    if (popup) {
+        popup.style.display = "block";
     }
+}
 
-    function closePopup(id) {
-        document.getElementById(id).style.display = "none";
+function closePopup(id) {
+    const popup = document.getElementById(id);
+    if (popup) {
+        popup.style.display = "none";
     }
+}
 
     // Uppdatera volym
    function updateVolumePercentage(type) {
@@ -180,13 +186,17 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     // När "Upgrade" klickas
  function onUpgradeClick() {
     const video = document.getElementById("video-player");
-    const source = document.getElementById("video-source");
 
-    // Kontrollera om video har src
-    if (!source || !source.src || source.src === "") {
+    // ✅ Kontrollera om video har ett aktivt källvärde (src)
+    if (!video || !video.src || video.src.includes("sample.mp4") || video.src === window.location.href) {
+        // Visa popupen "Apply a video before upgrading"
         showPopup("popup-no-video");
-        return;
+        return; // ⛔ STOPPA resten av funktionen!
     }
+
+    // ✅ Annars: Fortsätt med varningen
+    showPopup("popup-warning");
+}
 
     const anyPopupOpen = isAnyUpgradePopupOpen();
 
