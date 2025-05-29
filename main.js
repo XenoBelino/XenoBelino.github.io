@@ -441,12 +441,14 @@ function closeNoVideoPopup() {
 
 
    // Se till att allt detta ligger INUTI EN enda `load`-lyssnare:
-window.addEventListener("load", () => {
+  window.addEventListener("load", () => {
   document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
   document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
   document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
   document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
-
+  document.getElementById('file-input').addEventListener('change', handleFileSelect);
+  document.getElementById('convert-btn').addEventListener('click', convertToMP4);
+    
   // Gör funktionerna globala
   window.updateVolumePercentage = updateVolumePercentage;
   window.onUpgradeClick = onUpgradeClick;
