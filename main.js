@@ -185,35 +185,23 @@ function closePopup(id) {
 
     // När "Upgrade" klickas
  function onUpgradeClick() {
-    const video = document.getElementById("video-player");
-
-    // ✅ Kontrollera om video har ett aktivt källvärde (src)
-    if (!video || !video.src || video.src.includes("sample.mp4") || video.src === window.location.href) {
-        // Visa popupen "Apply a video before upgrading"
+    // ❗ Kontrollera först om ingen video är vald (säkert sätt)
+    if (!uploadedFile) {
         showPopup("popup-no-video");
-        return; // ⛔ STOPPA resten av funktionen!
+        return; // ⛔ Stoppa här!
     }
 
-    // ✅ Annars: Fortsätt med varningen
-    showPopup("popup-warning");
-}
-
-    const anyPopupOpen = isAnyUpgradePopupOpen();
-
-    if (anyPopupOpen) {
+    // ✅ Stäng popup om redan öppen
+    if (isAnyUpgradePopupOpen()) {
         closeAllUpgradePopups();
         return;
     }
 
-    if (!isVideoSelected()) {
-        showPopup("popup-no-video");
-        return;
-    }
-
+    // ✅ Fortsätt med varning och upplösning
     if (warningAccepted) {
-        showResolutionOptions(); // Visa direkt om redan godkänt
+        showResolutionOptions();
     } else {
-        showPopup("popup-warning"); // Visa varning först
+        showPopup("popup-warning");
     }
 }
 
