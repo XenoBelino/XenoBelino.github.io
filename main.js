@@ -427,6 +427,19 @@ function assignLanguageToCorrupted(language) {
   closePopup("popup-language-detection");
 }
 
+function closeResolutionPopup() {
+    document.getElementById('upgrade-options').style.display = 'none';
+}
+function onUpgradeComplete() {
+    document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('download-btn').style.display = 'block';
+}
+function closeNoVideoPopup() {
+    document.getElementById('popup-no-video').style.display = 'none';
+}
+
+
+
    // Se till att allt detta ligger INUTI EN enda `load`-lyssnare:
 window.addEventListener("load", () => {
   document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
