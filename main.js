@@ -394,17 +394,23 @@ function setupAudioGraph(videoElement) {
     audioContext = new AudioContext();
   }
 
-  // Kontrollera om sourceNode redan finns och är kopplad till samma video
-  if (sourceNode) {
-    try {
+  // Undvik att skapa flera MediaElementSourceNode från samma element
+  try {
+    if (sourceNode) {
       sourceNode.disconnect();
-    } catch (e) {
-      console.warn("sourceNode already disconnected or invalid:", e);
+      sourceNode.mediaElement = null; // 👈 viktigt ibland för vissa browsers
+      sourceNode = null;
     }
+  } catch (e) {
+    console.warn("Error disconnecting sourceNode:", e);
   }
 
-  // Skapa ny koppling
-  sourceNode = audioContext.createMediaElementSource(videoElement);
+  try {
+    sourceNode = audioContext.createMediaElementSource(videoElement);
+  } catch (e) {
+    console.warn("MediaElementSourceNode error:", e);
+    return;
+  }
 
   gainNodeOriginal = audioContext.createGain();
   gainNodeMusic = audioContext.createGain();
@@ -434,7 +440,6 @@ function onUpgradeComplete() {
 function closeNoVideoPopup() {
     document.getElementById('popup-no-video').style.display = 'none';
 }
-
 
 
    // Se till att allt detta ligger INUTI EN enda `load`-lyssnare:
