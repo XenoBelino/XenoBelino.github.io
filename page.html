@@ -371,7 +371,8 @@
         <!-- Konvertera och uppgradera knappar -->
         <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
         <div class="upgrade-popup-wrapper">
-    <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
+        <button id="upgrade-video-btn" class="button" onclick="handleUpgradeClick()">Upgrade Your Video</button>
+            
     <!-- Popup 1: Ingen video vald -->
     <div id="popup-no-video" class="popup">
         <p>Apply a video before upgrading.</p>
@@ -461,7 +462,6 @@
   </div>
 </div>
 <button class="resolution-btn" onclick="startUpgradeProcess('480p'); closeResolutionPopup();">480p</button>
-<button id="upgrade-video-btn" class="button" onclick="onUpgradeClick(); closeNoVideoPopup();">Upgrade Your Video</button>
 
         <!-- Progress bar -->
         <div id="progress-bar" style="display: none;">
