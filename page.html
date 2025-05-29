@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Video Player with Settings</title>
-    <script type="module" src="main.js"></script>
 
     <style>
         /* Grundläggande stilar */
@@ -370,8 +369,9 @@
 
         <!-- Konvertera och uppgradera knappar -->
         <button id="convert-btn" class="button" onclick="convertToMP4()">Convert to MP4</button>
-        <div class="upgrade-popup-wrapper">
-        <button id="upgrade-video-btn" class="button" onclick="handleUpgradeClick()">Upgrade Your Video</button>
+        <div class="upgrade-popup-wrapper"> 
+        <button id="upgrade-video-btn" class="button" onclick="onUpgradeClick()">Upgrade Your Video</button>
+
             
     <!-- Popup 1: Ingen video vald -->
     <div id="popup-no-video" class="popup">
@@ -482,5 +482,6 @@
         <button class="option-button" onclick="setLightMode()">Light Mode</button>
         <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
     </div>
-</body>
+</body
+ <script type="module" src="main.js"></script> 
 </html> 
