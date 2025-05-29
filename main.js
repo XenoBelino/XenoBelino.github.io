@@ -428,4 +428,5 @@ window.addEventListener("load", () => {
   window.closePopup = closePopup;
   window.proceedToResolution = proceedToResolution;
   window.startUpgradeProcess = startUpgradeProcess;
+  console.log("main.js loaded successfully!");
 }); 
