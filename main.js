@@ -367,7 +367,6 @@ async function startUpgradeProcess(resolution) {
 reader.readAsArrayBuffer(videoFile); // <-- ska vara här inne
 
  };
-     }
 
 function setupAudioGraph(videoElement) {
   if (!audioContext) {
