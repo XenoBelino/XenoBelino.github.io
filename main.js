@@ -9,9 +9,6 @@ let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
 
-document.getElementById('file-input').addEventListener('change', handleFileSelect);
-document.getElementById('convert-btn').addEventListener('click', convertToMP4);
-
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
     const upgradeButton = document.getElementById("upgrade-video-btn");
