@@ -130,6 +130,19 @@
             border: none;
         }
 
+        .volume-control-label {
+        display: inline-block;
+        margin-bottom: 4px; /* Mindre avstånd */
+        font-weight: bold;
+            
+        }
+
+        .volume-control-container {
+        margin-bottom: 10px; /* Justera för jämnt avstånd mellan kontroller */
+            
+       }
+
+
         /* Bakgrundsalternativ */
         #background-options {
             display: none;
@@ -286,11 +299,15 @@
 }
 
 #popup-language-detection {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translateX(-250px); /* justera så det hamnar till vänster */
-  z-index: 1000;
+  max-width: 300px;
+  padding: 15px;
+  font-size: 14px;
+}
+
+#popup-language-detection button {
+  margin: 5px 2px;
+  font-size: 13px;
+  padding: 6px 10px;
 }
 
         /* Varningspopup under knappen */
@@ -385,7 +402,12 @@
 </div>
 
         <!-- Volymkontroller -->
-       <!-- Volymkontroller -->
+        <div class="volume-control-container">
+  <label class="volume-control-label">Corrupted Volume:</label>
+  <input type="range" id="corrupted-volume" />
+  <span id="corrupted-volume-percent">100%</span>
+</div>
+
 <div class="volume-slider-container">
     <div>
         <label for="original-volume">Original Volume:</label>
@@ -402,6 +424,13 @@
 </div>
 
 <div id="language-popup-anchor"></div>
+    <div id="popup-language-detection" class="popup">
+  <p id="language-detection-message"></p>
+  <button id="lang-btn-1"></button>
+  <button id="lang-btn-2"></button>
+  <button id="lang-btn-3"></button>
+</div>
+
 
     <div>
         <label for="music-volume">Music Volume:</label>
