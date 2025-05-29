@@ -227,9 +227,10 @@ function closePopup(id) {
         showPopup("popup-terms");
     } else {
         startUpgradeProcess(resolution);
-    }
 }
-       
+     document.getElementById("upgrade-options").style.display = "none";
+} 
+
     function acceptTerms() {
         userAcceptedTerms = true;
         closePopup("popup-terms");
@@ -269,6 +270,8 @@ function closePopup(id) {
 
     // Dölj knappen efter nedladdning
     document.getElementById("download-btn").style.display = "none";
+    document.getElementById("progress-bar").style.display = "none";
+    document.getElementById("progress-text").style.display = "none";
 }
 
 
