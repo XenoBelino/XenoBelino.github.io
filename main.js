@@ -181,10 +181,15 @@ function closePopup(id) {
 
     // När "Upgrade" klickas
  function onUpgradeClick() {
-    // ❗ Kontrollera först om ingen video är vald (säkert sätt)
-    if (!uploadedFile) {
-        showPopup("popup-no-video");
-        return; // ⛔ Stoppa här!
+   const noVideoPopup = document.getElementById("popup-no-video");
+     if (!uploadedFile) {
+        // Om popup redan är öppen -> stäng den
+        if (noVideoPopup.style.display === "block") {
+            closePopup("popup-no-video");
+        } else {
+            showPopup("popup-no-video");
+        }
+        return;
     }
 
     // ✅ Stäng popup om redan öppen
@@ -297,7 +302,11 @@ function closePopup(id) {
 
     function showResolutionOptions() {
     const optionsBox = document.getElementById("upgrade-options");
-    optionsBox.style.display = "block";
+    if (optionsBox.style.display === "block") {
+        optionsBox.style.display = "none";
+    } else {
+        optionsBox.style.display = "block";
+    }
 }  
        
 async function startUpgradeProcess(resolution) {
