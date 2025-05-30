@@ -214,24 +214,34 @@ function closePopup(id) {
         showResolutionOptions();
     }
 
-    function handleResolutionClick(resolution) {
+    async function handleResolutionClick(resolution) {
     selectedUpgradeResolution = resolution;
+    document.getElementById("upgrade-options").style.display = "none"; // Stäng popup
 
-    const currentResolution = getVideoResolution(); // Dummy
+    const currentResolution = getVideoResolution(); // Din egen funktion
 
+    // Kontrollera om videon redan har tillräckligt hög upplösning
     if (compareResolutions(currentResolution, resolution) >= 0) {
-        document.getElementById("sufficient-text").textContent = `Your video is already sufficient. It already has ${currentResolution}.`;
+        document.getElementById("sufficient-text").textContent = 
+            `Your video is already sufficient. It already has ${currentResolution}.`;
         showPopup("popup-sufficient");
         return;
     }
 
+    // Kontrollera om användaren godkänt villkoren
     if (!userAcceptedTerms) {
         showPopup("popup-terms");
-    } else {
-        startUpgradeProcess(resolution);
+        return;
+    }
+
+    // Kör uppgraderingen, säkert med felhantering
+    try {
+        await startUpgradeProcess(resolution);
+    } catch (error) {
+        console.error("Upgrade failed:", error);
+        showPopup("popup-error"); // Visa något om det misslyckas
+    }
 }
-     document.getElementById("upgrade-options").style.display = "none";
-} 
 
     function acceptTerms() {
         userAcceptedTerms = true;
