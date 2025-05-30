@@ -472,6 +472,7 @@ function closeNoVideoPopup() {
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
   
   // Gör funktionerna globala
+  window.handleResolutionClick = handleResolutionClick;
   window.updateVolumePercentage = updateVolumePercentage;
   window.onUpgradeClick = onUpgradeClick;
   window.acceptTerms = acceptTerms;
