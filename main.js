@@ -20,29 +20,6 @@ document.addEventListener("click", function (event) {
         closeAllUpgradePopups();
     }
 
-    const backgroundButton = document.getElementById("change-background-btn");
-    const bgOptions = document.getElementById("background-options");
-    const isClickInsideBg = bgOptions.contains(event.target) || backgroundButton.contains(event.target);
-
-    if (!isClickInsideBg) {
-        bgOptions.style.display = "none";
-        const corruptedAudio = document.querySelector('.corrupted-audio');
-const bgOptions = corruptedAudio.querySelector('.bg-options');
-
-corruptedAudio.addEventListener('click', function (e) {
-  e.stopPropagation();
-  bgOptions.style.display = (bgOptions.style.display === 'block') ? 'none' : 'block';
-});
-
-document.addEventListener('click', function () {
-  bgOptions.style.display = 'none';
-});
-
-bgOptions.addEventListener('click', function (e) {
-  e.stopPropagation(); // så popupen inte stängs om du klickar i den
-});
-
-    }
 });
 
  // Visa eller dölj bakgrundsalternativ
@@ -475,18 +452,36 @@ function onUpgradeComplete() {
 function closeNoVideoPopup() {
     document.getElementById('popup-no-video').style.display = 'none';
 }
+function setupCorruptedVolumePopup() {
+  const corruptedAudio = document.getElementById("corrupted-volume-container");
+  const popupMultiple = document.getElementById("popup-language-detection");
 
+  if (!corruptedAudio || !popupMultiple) return;
+
+  corruptedAudio.addEventListener("click", (e) => {
+    e.stopPropagation();
+    popupMultiple.style.display = (popupMultiple.style.display === "block") ? "none" : "block";
+  });
+
+  popupMultiple.addEventListener("click", (e) => e.stopPropagation());
+
+  document.addEventListener("click", () => {
+    popupMultiple.style.display = "none";
+  });
+}
 
    // Se till att allt detta ligger INUTI EN enda `load`-lyssnare:
   window.addEventListener("load", () => {
   document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
   document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
   document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
-  document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
+  document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));    
   document.getElementById('file-input').addEventListener('change', handleFileSelect);
   document.getElementById('convert-btn').addEventListener('click', convertToMP4);
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
-  
+
+ setupCorruptedVolumePopup();
+    
   // Gör funktionerna globala
   window.handleResolutionClick = handleResolutionClick;
   window.updateVolumePercentage = updateVolumePercentage;
