@@ -26,6 +26,22 @@ document.addEventListener("click", function (event) {
 
     if (!isClickInsideBg) {
         bgOptions.style.display = "none";
+        const corruptedAudio = document.querySelector('.corrupted-audio');
+const bgOptions = corruptedAudio.querySelector('.bg-options');
+
+corruptedAudio.addEventListener('click', function (e) {
+  e.stopPropagation();
+  bgOptions.style.display = (bgOptions.style.display === 'block') ? 'none' : 'block';
+});
+
+document.addEventListener('click', function () {
+  bgOptions.style.display = 'none';
+});
+
+bgOptions.addEventListener('click', function (e) {
+  e.stopPropagation(); // så popupen inte stängs om du klickar i den
+});
+
     }
 });
 
