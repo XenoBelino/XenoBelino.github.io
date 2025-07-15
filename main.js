@@ -20,6 +20,13 @@ document.addEventListener("click", function (event) {
         closeAllUpgradePopups();
     }
 
+    const backgroundButton = document.getElementById("change-background-btn");
+    const bgOptions = document.getElementById("background-options");
+    const isClickInsideBg = bgOptions.contains(event.target) || backgroundButton.contains(event.target);
+
+    if (!isClickInsideBg) {
+        bgOptions.style.display = "none";
+    }
 });
 
  // Visa eller dölj bakgrundsalternativ
@@ -96,7 +103,7 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     const popup = document.getElementById("popup-language-detection");
     const message = document.getElementById("language-detection-message");
 
-    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+    message.innerHTML = Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?;
 
     const anchor = document.getElementById("language-popup-anchor");
     if (!anchor.contains(popup)) {
@@ -109,13 +116,13 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
 
     if (languages[0]) {
-        btn1.textContent = `Move ${languages[0]}`;
+        btn1.textContent = Move ${languages[0]};
         btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
         btn1.style.display = "inline-block";
     }
 
     if (languages[1]) {
-        btn2.textContent = `Move ${languages[1]}`;
+        btn2.textContent = Move ${languages[1]};
         btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
         btn2.style.display = "inline-block";
     }
@@ -216,7 +223,7 @@ function closePopup(id) {
     // Kontrollera om videon redan har tillräckligt hög upplösning
     if (compareResolutions(currentResolution, resolution) >= 0) {
         document.getElementById("sufficient-text").textContent = 
-            `Your video is already sufficient. It already has ${currentResolution}.`;
+            Your video is already sufficient. It already has ${currentResolution}.;
         showPopup("popup-sufficient");
         return;
     }
@@ -263,7 +270,7 @@ function closePopup(id) {
         const originalName = uploadedFile.name;
         const extension = originalName.split('.').pop();
         const baseName = originalName.replace(/\.[^/.]+$/, ""); // tar bort ändelsen
-        fileName = `upgraded_${baseName}.${extension}`;
+        fileName = upgraded_${baseName}.${extension};
     }
 
     const link = document.createElement("a");
@@ -337,8 +344,8 @@ async function startUpgradeProcess(resolution) {
     const interval = setInterval(() => {
         if (progress < 99) {
             progress += 1;
-            document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-            document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+            document.getElementById("progress-bar-filled").style.width = ${progress}%;
+            document.getElementById("progress-text").textContent = ${progress}% of 100% to complete upgrade;
         }
     }, 100);
 
@@ -351,7 +358,7 @@ async function startUpgradeProcess(resolution) {
     };
     const size = resolutionMap[resolution] || '1280x720';
 
-    await ffmpeg.run('-i', 'input.mp4', '-vf', `scale=${size}`, 'output.mp4');
+    await ffmpeg.run('-i', 'input.mp4', '-vf', scale=${size}, 'output.mp4');
 
     clearInterval(interval);
     document.getElementById("progress-bar-filled").style.width = "100%";
@@ -390,12 +397,12 @@ function simulateUpgrade(resolution) {
   const interval = setInterval(() => {
     if (progress >= 100) {
       clearInterval(interval);
-      document.getElementById("progress-text").textContent = `Upgrade to ${resolution} complete!`;
+      document.getElementById("progress-text").textContent = Upgrade to ${resolution} complete!;
       document.getElementById("download-btn").style.display = "block";
     } else {
       progress += 10;
-      document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-      document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+      document.getElementById("progress-bar-filled").style.width = ${progress}%;
+      document.getElementById("progress-text").textContent = ${progress}% of 100% to complete upgrade;
     }
   }, 500);
 }
@@ -438,7 +445,7 @@ function setupAudioGraph(videoElement) {
 }
 
 function assignLanguageToCorrupted(language) {
-  alert(`${language} has been assigned to Corrupted Volume.`);
+  alert(${language} has been assigned to Corrupted Volume.);
   closePopup("popup-language-detection");
 }
 
@@ -452,36 +459,18 @@ function onUpgradeComplete() {
 function closeNoVideoPopup() {
     document.getElementById('popup-no-video').style.display = 'none';
 }
-function setupCorruptedVolumePopup() {
-  const corruptedAudio = document.getElementById("corrupted-volume-container");
-  const popupMultiple = document.getElementById("popup-language-detection");
 
-  if (!corruptedAudio || !popupMultiple) return;
 
-  corruptedAudio.addEventListener("click", (e) => {
-    e.stopPropagation();
-    popupMultiple.style.display = (popupMultiple.style.display === "block") ? "none" : "block";
-  });
-
-  popupMultiple.addEventListener("click", (e) => e.stopPropagation());
-
-  document.addEventListener("click", () => {
-    popupMultiple.style.display = "none";
-  });
-}
-
-   // Se till att allt detta ligger INUTI EN enda `load`-lyssnare:
+   // Se till att allt detta ligger INUTI EN enda load-lyssnare:
   window.addEventListener("load", () => {
   document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
   document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
   document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
-  document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));    
+  document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
   document.getElementById('file-input').addEventListener('change', handleFileSelect);
   document.getElementById('convert-btn').addEventListener('click', convertToMP4);
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
-
- setupCorruptedVolumePopup();
-    
+  
   // Gör funktionerna globala
   window.handleResolutionClick = handleResolutionClick;
   window.updateVolumePercentage = updateVolumePercentage;
