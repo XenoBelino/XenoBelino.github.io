@@ -290,8 +290,16 @@ function closePopup(id) {
 
     // Dummy-metod: få aktuell videoupplösning
     function getVideoResolution() {
-        return "720p"; // Ersätt med faktisk metadata om möjligt
-    }
+  const video = document.getElementById("video-player");
+  if (video.videoHeight) {
+    if (video.videoHeight >= 2160) return "2160p";
+    if (video.videoHeight >= 1440) return "1440p";
+    if (video.videoHeight >= 1080) return "1080p";
+    if (video.videoHeight >= 720)  return "720p";
+    return "480p";
+  }
+  return "Unknown";
+}
 
     // Jämför upplösningar
     function compareResolutions(current, target) {
@@ -333,7 +341,9 @@ async function startUpgradeProcess(resolution) {
 
     const reader = new FileReader();
    reader.onload = async () => {
-    await ffmpeg.load();
+    if (!ffmpeg.isLoaded()) {
+  await ffmpeg.load();
+}
     ffmpeg.FS('writeFile', 'input.mp4', new Uint8Array(reader.result));
 
     const progressBar = document.getElementById("progress-bar");
