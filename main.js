@@ -117,13 +117,13 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
 
     if (languages[0]) {
-        btn1.textContent = Move ${languages[0]};
+        btn1.textContent = `Move ${languages[0]}`;
         btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
         btn1.style.display = "inline-block";
     }
 
     if (languages[1]) {
-        btn2.textContent = Move ${languages[1]};
+        btn2.textContent = `Move ${languages[1]}`;
         btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
         btn2.style.display = "inline-block";
     }
