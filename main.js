@@ -409,12 +409,12 @@ function simulateUpgrade(resolution) {
   const interval = setInterval(() => {
     if (progress >= 100) {
       clearInterval(interval);
-      document.getElementById("progress-text").textContent = Upgrade to ${resolution} complete!;
+      document.getElementById("progress-text").textContent = `Upgrade to ${resolution} complete!`;
       document.getElementById("download-btn").style.display = "block";
     } else {
       progress += 10;
-      document.getElementById("progress-bar-filled").style.width = ${progress}%;
-      document.getElementById("progress-text").textContent = ${progress}% of 100% to complete upgrade;
+      document.getElementById("progress-bar-filled").style.width = `${progress}%`;
+      document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
     }
   }, 500);
 }
