@@ -456,7 +456,9 @@ function setupAudioGraph(videoElement) {
 }
 
 function assignLanguageToCorrupted(language) {
-  alert(${language} has been assigned to Corrupted Volume.);
+  const messageDiv = document.getElementById("corrupted-selected-language");
+  messageDiv.textContent = `${language} has been assigned to Corrupted Volume.`;
+  messageDiv.style.display = "block"; // visa texten
   closePopup("popup-language-detection");
 }
 
@@ -471,14 +473,6 @@ function onUpgradeComplete() {
 
 function closeNoVideoPopup() {
     document.getElementById('popup-no-video').style.display = 'none';
-}
-
-function assignLanguageToCorrupted(language) {
-  const messageDiv = document.getElementById("corrupted-selected-language");
-  messageDiv.textContent = `${language} has been assigned to Corrupted Volume.`;
-  messageDiv.style.display = "block"; // visa texten
-
-  closePopup("popup-language-detection");
 }
 
    // Se till att allt detta ligger INUTI EN enda load-lyssnare:
