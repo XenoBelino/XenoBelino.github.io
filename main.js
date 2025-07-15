@@ -271,7 +271,7 @@ function closePopup(id) {
         const originalName = uploadedFile.name;
         const extension = originalName.split('.').pop();
         const baseName = originalName.replace(/\.[^/.]+$/, ""); // tar bort ändelsen
-        fileName = upgraded_${baseName}.${extension};
+        fileName = `upgraded_${baseName}.${extension}`;
     }
 
     const link = document.createElement("a");
