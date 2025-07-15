@@ -452,14 +452,23 @@ function assignLanguageToCorrupted(language) {
 function closeResolutionPopup() {
     document.getElementById('upgrade-options').style.display = 'none';
 }
+
 function onUpgradeComplete() {
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('download-btn').style.display = 'block';
 }
+
 function closeNoVideoPopup() {
     document.getElementById('popup-no-video').style.display = 'none';
 }
 
+function assignLanguageToCorrupted(language) {
+  const messageDiv = document.getElementById("corrupted-selected-language");
+  messageDiv.textContent = `${language} has been assigned to Corrupted Volume.`;
+  messageDiv.style.display = "block"; // visa texten
+
+  closePopup("popup-language-detection");
+}
 
    // Se till att allt detta ligger INUTI EN enda load-lyssnare:
   window.addEventListener("load", () => {
@@ -470,7 +479,9 @@ function closeNoVideoPopup() {
   document.getElementById('file-input').addEventListener('change', handleFileSelect);
   document.getElementById('convert-btn').addEventListener('click', convertToMP4);
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
-  
+  document.getElementById("corrupted-selected-language").textContent = "";
+  document.getElementById("corrupted-selected-language").style.display = "none";
+
   // Gör funktionerna globala
   window.handleResolutionClick = handleResolutionClick;
   window.updateVolumePercentage = updateVolumePercentage;
