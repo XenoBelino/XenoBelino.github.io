@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -331,39 +332,16 @@
     position: relative;
     display: inline-block;
 }
-
-   #corrupted-volume-container {
-    position: relative;
-    display: inline-block;
-}
-        
     #popup-multiple-audio {
     position: absolute;
-    left: calc(100% + 10px); /* +10px mellanrum */
-    top: 0;
-    transform: none;
+    left: -300px; /* Justera detta värde efter behov */
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 1001;
-    max-width: 250px;
-}
-
-    .corrupted-audio {
-  position: relative; /* detta är viktigt! */
-  display: inline-block;
-  cursor: pointer;
-}
-
-.bg-options {
-  position: absolute;
-  top: 0;
-  left: 100%; /* placera till höger om texten */
-  margin-left: 10px; /* lite mellanrum */
-  display: none;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 10px;
-  z-index: 1000;
-}
     
+}
+
+        
     </style>
 </head>
 
@@ -448,24 +426,15 @@
         <span id="original-volume-percent" class="volume-percentage">50%</span>
     </div>
 
-
-<div id="language-popup-anchor"></div>
-<div id="corrupted-volume-container">
+    <div>
     <label for="corrupted-volume">Corrupted Volume:</label>
     <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50"
         oninput="updateVolumePercentage('corrupted')">
     <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
-    
-    <div id="popup-multiple-audio" class="popup">
-        <!-- Lägg gärna till ett meddelande här -->
-        <p>This video contains multiple audio tracks.</p>
-        <div class="popup-buttons">
-            <button onclick="closePopup('popup-multiple-audio')">OK</button>
-        </div>
-    </div>
 </div>
 
-        
+<div id="language-popup-anchor"></div>
+
     <div>
         <label for="music-volume">Music Volume:</label>
         <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50"
@@ -512,5 +481,5 @@
         <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
     </div>
 <script type="module" src="main.js"></script> 
-</body>
-</html>
+</body
+</html> 
