@@ -103,7 +103,8 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     const popup = document.getElementById("popup-language-detection");
     const message = document.getElementById("language-detection-message");
 
-    message.innerHTML = Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?;
+    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+
 
     const anchor = document.getElementById("language-popup-anchor");
     if (!anchor.contains(popup)) {
@@ -358,7 +359,7 @@ async function startUpgradeProcess(resolution) {
     };
     const size = resolutionMap[resolution] || '1280x720';
 
-    await ffmpeg.run('-i', 'input.mp4', '-vf', scale=${size}, 'output.mp4');
+    await ffmpeg.run('-i', 'input.mp4', '-vf', `scale=${size}`, 'output.mp4');
 
     clearInterval(interval);
     document.getElementById("progress-bar-filled").style.width = "100%";
