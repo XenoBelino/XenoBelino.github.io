@@ -223,8 +223,8 @@ function closePopup(id) {
 
     // Kontrollera om videon redan har tillräckligt hög upplösning
     if (compareResolutions(currentResolution, resolution) >= 0) {
-        document.getElementById("sufficient-text").textContent = 
-            Your video is already sufficient. It already has ${currentResolution}.;
+       document.getElementById("sufficient-text").textContent = 
+    `Your video is already sufficient. It already has ${currentResolution}.`;
         showPopup("popup-sufficient");
         return;
     }
@@ -355,8 +355,9 @@ async function startUpgradeProcess(resolution) {
     const interval = setInterval(() => {
         if (progress < 99) {
             progress += 1;
-            document.getElementById("progress-bar-filled").style.width = ${progress}%;
-            document.getElementById("progress-text").textContent = ${progress}% of 100% to complete upgrade;
+            document.getElementById("progress-bar-filled").style.width = `${progress}%`;
+            document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
+
         }
     }, 100);
 
