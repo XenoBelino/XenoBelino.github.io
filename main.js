@@ -78,7 +78,7 @@ function handleFileSelect(event) {
   video.load();
   video.onloadedmetadata = () => {
   video.play().catch((e) => console.warn("Autoplay error:", e));
-  
+  };
 
   document.getElementById("file-name").textContent = file.name;
   acceptedTerms = false;
