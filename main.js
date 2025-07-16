@@ -76,7 +76,9 @@ function handleFileSelect(event) {
   const url = URL.createObjectURL(file);
   source.src = url;
   video.load();
-  video.play();
+  video.onloadedmetadata = () => {
+  video.play().catch((e) => console.warn("Autoplay error:", e));
+  
 
   document.getElementById("file-name").textContent = file.name;
   acceptedTerms = false;
@@ -487,6 +489,39 @@ function closeNoVideoPopup() {
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
   document.getElementById("corrupted-selected-language").textContent = "";
   document.getElementById("corrupted-selected-language").style.display = "none";
+  document.addEventListener("keydown", (e) => {
+  const video = document.getElementById("video-player");
+  if (!video) return;
+
+  switch (e.key.toLowerCase()) {
+    case "f":
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        video.requestFullscreen();
+      }
+      break;
+    case "m":
+      video.muted = !video.muted;
+      break;
+    case "k":
+    case " ":
+      // Play/pause
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+      e.preventDefault(); // förhindra scroll om det är mellanslag
+      break;
+    case "arrowleft":
+      video.currentTime = Math.max(0, video.currentTime - 5);
+      break;
+    case "arrowright":
+      video.currentTime = Math.min(video.duration, video.currentTime + 5);
+      break;
+  }
+});
 
   // Gör funktionerna globala
   window.handleResolutionClick = handleResolutionClick;
