@@ -600,6 +600,5 @@ function closeNoVideoPopup() {
   window.closePopup = closePopup;
   window.proceedToResolution = proceedToResolution;
   window.startUpgradeProcess = startUpgradeProcess;
-  convertBtn.addEventListener('click', convertToMP4);
   console.log("main.js loaded successfully!");
 }); 
