@@ -203,13 +203,17 @@
        height: 20px;
        background: #ccc;
        margin-top: 10px;
+       border-radius: 10px;
+       overflow: hidden; /* detta krävs */
        }
 
        #progress-bar-filled {
        height: 100%;
        width: 0%;
        background-color: #4caf50;
-       transition: width 0.3s;
+       transition: width 0.3s ease;
+       border-radius: 10px 0 0 10px; /* rundad i början */
+  
            
       }
 
