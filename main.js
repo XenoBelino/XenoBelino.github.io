@@ -533,6 +533,14 @@ function closeNoVideoPopup() {
 
    // Se till att allt detta ligger INUTI EN enda load-lyssnare:
   window.addEventListener("load", () => {
+  const convertBtn = document.getElementById('convert-btn');
+  const fileInput = document.getElementById('file-input');
+  const videoPlayer = document.getElementById('video-player');
+  const progressBar = document.getElementById('progress-bar');
+  const progressBarFilled = document.getElementById('progress-bar-filled');
+  const progressText = document.getElementById('progress-text');
+  const downloadBtn = document.getElementById('download-btn');
+
   document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
   document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
   document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
