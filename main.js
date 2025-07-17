@@ -492,6 +492,12 @@ function closeNoVideoPopup() {
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
   document.getElementById("corrupted-selected-language").textContent = "";
   document.getElementById("corrupted-selected-language").style.display = "none";
+  async function loadFFmpeg() {
+  if (!ffmpeg.isLoaded()) {
+    await ffmpeg.load();
+  }
+}
+
   async function convertToMP4() {
   if (!fileInput.files.length) {
     alert('Vänligen välj en videofil först!');
