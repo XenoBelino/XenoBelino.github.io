@@ -137,64 +137,6 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     }
 }
 
-  // Ersätt din gamla convertToMP4 med denna:
-  async function convertToMP4() {
-  if (!fileInput.files.length) {
-    alert('Vänligen välj en videofil först!');
-    return;
-  }
-
-  convertBtn.disabled = true;
-  convertBtn.textContent = 'Konverterar...';
-
-  progressBar.style.display = 'block';
-  progressBarFilled.style.width = '0%';
-  progressText.style.display = 'block';
-  progressText.textContent = '0% av 100% klart';
-
-  await loadFFmpeg();
-
-  const file = fileInput.files[0];
-  ffmpeg.FS('writeFile', file.name, await fetchFile(file));
-
-  ffmpeg.setProgress(({ ratio }) => {
-    const percent = Math.round(ratio * 100);
-    progressBarFilled.style.width = percent + '%';
-    progressText.textContent = `${percent}% av 100% klart`;
-  });
-
-  try {
-    await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
-  } catch (e) {
-    alert('Fel vid konvertering: ' + e.message);
-    convertBtn.disabled = false;
-    convertBtn.textContent = 'Convert to MP4';
-    progressBar.style.display = 'none';
-    progressText.style.display = 'none';
-    return;
-  }
-
-  const data = ffmpeg.FS('readFile', 'output.mp4');
-  const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-  const videoURL = URL.createObjectURL(videoBlob);
-
-  videoPlayer.src = videoURL;
-
-  downloadBtn.style.display = 'inline-block';
-  downloadBtn.onclick = () => {
-    const a = document.createElement('a');
-    a.href = videoURL;
-    a.download = 'converted-video.mp4';
-    a.click();
-  };
-
-  convertBtn.disabled = false;
-  convertBtn.textContent = 'Convert to MP4';
-
-  progressBar.style.display = 'none';
-  progressText.style.display = 'none';
-}
-
     // Visa popup
     function showPopup(id) {
     const popup = document.getElementById(id);
@@ -550,6 +492,62 @@ function closeNoVideoPopup() {
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
   document.getElementById("corrupted-selected-language").textContent = "";
   document.getElementById("corrupted-selected-language").style.display = "none";
+  async function convertToMP4() {
+  if (!fileInput.files.length) {
+    alert('Vänligen välj en videofil först!');
+    return;
+  }
+
+  convertBtn.disabled = true;
+  convertBtn.textContent = 'Konverterar...';
+
+  progressBar.style.display = 'block';
+  progressBarFilled.style.width = '0%';
+  progressText.style.display = 'block';
+  progressText.textContent = '0% av 100% klart';
+
+  await loadFFmpeg();
+
+  const file = fileInput.files[0];
+  ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+
+  ffmpeg.setProgress(({ ratio }) => {
+    const percent = Math.round(ratio * 100);
+    progressBarFilled.style.width = percent + '%';
+    progressText.textContent = `${percent}% av 100% klart`;
+  });
+
+  try {
+    await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
+  } catch (e) {
+    alert('Fel vid konvertering: ' + e.message);
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Convert to MP4';
+    progressBar.style.display = 'none';
+    progressText.style.display = 'none';
+    return;
+  }
+
+  const data = ffmpeg.FS('readFile', 'output.mp4');
+  const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+  const videoURL = URL.createObjectURL(videoBlob);
+
+  videoPlayer.src = videoURL;
+
+  downloadBtn.style.display = 'inline-block';
+  downloadBtn.onclick = () => {
+    const a = document.createElement('a');
+    a.href = videoURL;
+    a.download = 'converted-video.mp4';
+    a.click();
+  };
+
+  convertBtn.disabled = false;
+  convertBtn.textContent = 'Convert to MP4';
+
+  progressBar.style.display = 'none';
+  progressText.style.display = 'none';
+}
   document.addEventListener("keydown", (e) => {
   const video = document.getElementById("video-player");
   if (!video) return;
