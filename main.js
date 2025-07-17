@@ -137,10 +137,35 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     }
 }
 
-    // Dummy-funktion
-    function convertToMP4() {
-        alert("Convert to MP4-funktion kommer snart!");
-    }
+    async function convertToMP4() {
+  if (!uploadedFile) {
+    alert("No video selected.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    if (!ffmpeg.isLoaded()) await ffmpeg.load();
+
+    ffmpeg.FS('writeFile', 'input', new Uint8Array(reader.result));
+
+    await ffmpeg.run('-i', 'input', 'output.mp4');
+
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+
+    const source = document.getElementById("video-source");
+    const video = document.getElementById("video-player");
+    source.src = url;
+    video.load();
+    video.play().catch(e => console.warn("Autoplay error:", e));
+
+    document.getElementById("download-btn").style.display = "block";
+  };
+
+  reader.readAsArrayBuffer(uploadedFile);
+}
+
 
     // Visa popup
     function showPopup(id) {
