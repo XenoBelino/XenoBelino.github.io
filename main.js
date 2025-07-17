@@ -473,6 +473,11 @@ function closeNoVideoPopup() {
     document.getElementById('popup-no-video').style.display = 'none';
 }
 
+ async function loadFFmpeg() {
+  if (!ffmpeg.isLoaded()) {
+    await ffmpeg.load();
+  }
+}
    // Se till att allt detta ligger INUTI EN enda load-lyssnare:
   window.addEventListener("load", () => {
   const convertBtn = document.getElementById('convert-btn');
@@ -492,12 +497,6 @@ function closeNoVideoPopup() {
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
   document.getElementById("corrupted-selected-language").textContent = "";
   document.getElementById("corrupted-selected-language").style.display = "none";
-  async function loadFFmpeg() {
-  if (!ffmpeg.isLoaded()) {
-    await ffmpeg.load();
-  }
-}
-
   async function convertToMP4() {
   if (!fileInput.files.length) {
     alert('Vänligen välj en videofil först!');
