@@ -205,12 +205,14 @@ function closePopup(id) {
 }
 
     function proceedToResolution() {
-        warningAccepted = true;
-        closePopup("popup-warning");
-        const optionsBox = document.getElementById("upgrade-options");
-        optionsBox.style.display = optionsBox.style.display === "block" ? "none" : "block";
-        showResolutionOptions();
-    }
+    warningAccepted = true;
+    closePopup("popup-warning");
+
+    const optionsBox = document.getElementById("upgrade-options");
+    optionsBox.style.display = "block"; // 👈 visa alltid – inte toggle
+
+    showResolutionOptions(); // om den behövs
+}
 
     async function handleResolutionClick(resolution) {
     selectedUpgradeResolution = resolution;
