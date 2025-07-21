@@ -444,6 +444,14 @@ function setupAudioGraph(videoElement) {
   audioContext.resume().catch(e => console.warn("AudioContext resume failed:", e));
 }
 
+function stopArrowKeysFromAffectingVideo(sliderElement) {
+  sliderElement.addEventListener('keydown', (e) => {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
+      e.stopPropagation();
+    }
+  });
+}
+
 function assignLanguageToCorrupted(language) {
   const messageDiv = document.getElementById("corrupted-selected-language");
   messageDiv.textContent = `${language} has been assigned to Corrupted Volume.`;
