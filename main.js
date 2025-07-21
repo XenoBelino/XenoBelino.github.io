@@ -487,6 +487,30 @@ function closeNoVideoPopup() {
   const progressBarFilled = document.getElementById('progress-bar-filled');
   const progressText = document.getElementById('progress-text');
   const downloadBtn = document.getElementById('download-btn');
+  const originalVolumeSlider = document.getElementById('original-volume');
+  const video = document.getElementById('video-player');
+
+// 1. Initiera slider med videons volym (standard 1.0 = 100%)
+originalVolumeSlider.value = video.volume * 100;
+
+// 2. När man ändrar på Original Volume-slidern → uppdatera video.volume
+originalVolumeSlider.addEventListener('input', () => {
+  const volumeValue = originalVolumeSlider.value / 100;
+  video.volume = volumeValue;
+  video.muted = volumeValue === 0;
+  updateVolumePercentage("original");
+});
+
+// 3. När videons volym/mute ändras (t.ex. via 'm' på tangentbordet)
+video.addEventListener('volumechange', () => {
+  if (video.muted) {
+    originalVolumeSlider.value = 0;
+  } else {
+    originalVolumeSlider.value = video.volume * 100;
+  }
+  updateVolumePercentage("original");
+});
+
 
   document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
   document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
