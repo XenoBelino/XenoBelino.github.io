@@ -210,8 +210,6 @@ function closePopup(id) {
 
     const optionsBox = document.getElementById("upgrade-options");
     optionsBox.style.display = "block"; // 👈 visa alltid – inte toggle
-
-    showResolutionOptions(); // om den behövs
 }
 
     async function handleResolutionClick(resolution) {
