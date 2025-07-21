@@ -166,7 +166,20 @@
        color: #666;
        text-align: left;
       }
-        
+
+       #corrupted-selected-language {
+    color: black; /* Standard för ljust läge */
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 500;
+    font-size: 1.1em;
+}
+
+/* Om body har klassen "dark-mode" */
+body.dark-mode #corrupted-selected-language {
+    color: white;
+}
+  
         /* Bakgrundsalternativ */
         #background-options {
             display: none;
