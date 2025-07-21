@@ -1,5 +1,4 @@
 import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/+esm';
-
 const ffmpeg = createFFmpeg({ log: true });
 let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal, audioContext, sourceNode;
 let uploadedFile = null;
@@ -416,41 +415,33 @@ function simulateUpgrade(resolution) {
   }, 500);
 }
 
-
 function setupAudioGraph(videoElement) {
   if (!audioContext) {
     audioContext = new AudioContext();
   }
-
-  // Undvik att skapa flera MediaElementSourceNode från samma element
-  try {
-    if (sourceNode) {
-      sourceNode.disconnect();
-      sourceNode.mediaElement = null; // 👈 viktigt ibland för vissa browsers
-      sourceNode = null;
-    }
-  } catch (e) {
-    console.warn("Error disconnecting sourceNode:", e);
-  }
-
-  try {
-    sourceNode = audioContext.createMediaElementSource(videoElement);
-  } catch (e) {
-    console.warn("MediaElementSourceNode error:", e);
-    return;
-  }
+  sourceNode = audioContext.createMediaElementSource(videoElement);
 
   gainNodeOriginal = audioContext.createGain();
   gainNodeMusic = audioContext.createGain();
   gainNodeCorrupted = audioContext.createGain();
   gainNodeFinal = audioContext.createGain();
 
-  sourceNode
-    .connect(gainNodeOriginal)
-    .connect(gainNodeMusic)
-    .connect(gainNodeCorrupted)
-    .connect(gainNodeFinal)
-    .connect(audioContext.destination);
+  // Parallell koppling:
+  sourceNode.connect(gainNodeOriginal);
+  sourceNode.connect(gainNodeMusic);
+  sourceNode.connect(gainNodeCorrupted);
+
+  gainNodeOriginal.connect(audioContext.destination);
+  gainNodeMusic.connect(audioContext.destination);
+  gainNodeCorrupted.connect(audioContext.destination);
+
+  // Om du vill mixa allting, koppla till en final:
+  gainNodeOriginal.connect(gainNodeFinal);
+  gainNodeMusic.connect(gainNodeFinal);
+  gainNodeCorrupted.connect(gainNodeFinal);
+  gainNodeFinal.connect(audioContext.destination);
+
+  audioContext.resume().catch(e => console.warn("AudioContext resume failed:", e));
 }
 
 function assignLanguageToCorrupted(language) {
@@ -545,7 +536,7 @@ video.addEventListener('volumechange', () => {
     progressBarFilled.style.width = percent + '%';
     progressText.textContent = `${percent}% av 100% klart`;
   });
-
+      
   try {
     await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
   } catch (e) {
