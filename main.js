@@ -488,6 +488,10 @@ function closeNoVideoPopup() {
   const downloadBtn = document.getElementById('download-btn');
   const originalVolumeSlider = document.getElementById('original-volume');
   const video = document.getElementById('video-player');
+  ['original-volume', 'corrupted-volume', 'music-volume', 'final-volume'].forEach(id => {
+    const slider = document.getElementById(id);
+    if (slider) stopArrowKeysFromAffectingVideo(slider);
+  });
 
 // 1. Initiera slider med videons volym (standard 1.0 = 100%)
 originalVolumeSlider.value = video.volume * 100;
