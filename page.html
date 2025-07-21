@@ -97,11 +97,16 @@
         }
 
         #video-player {
-            border-radius: 15px;
-            width: 80%;
-            max-width: 800px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
+        width: 100%;
+        max-width: 800px;
+        height: auto;
+        aspect-ratio: 16 / 9;  /* Håller 16:9-ratio även innan videon laddats */
+        background: black;     /* Svart bakgrund gör att det inte ser tomt ut */
+        display: block;
+       border-radius: 15px;
+       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+       }
 
         /* Volym-slider */
         .volume-slider-container {
