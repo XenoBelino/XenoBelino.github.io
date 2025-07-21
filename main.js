@@ -318,14 +318,10 @@ function closePopup(id) {
     });
 }       
 
-    function showResolutionOptions() {
+   function showResolutionOptions() {
     const optionsBox = document.getElementById("upgrade-options");
-    if (optionsBox.style.display === "block") {
-        optionsBox.style.display = "none";
-    } else {
-        optionsBox.style.display = "block";
-    }
-}  
+    optionsBox.style.display = "block";
+}
        
 async function startUpgradeProcess(resolution) {
      console.log("Resolution selected:", resolution); // Debug
