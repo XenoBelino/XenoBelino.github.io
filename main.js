@@ -495,7 +495,6 @@ function closeNoVideoPopup() {
   });
 
 // 1. Initiera slider med videons volym (standard 1.0 = 100%)
-originalVolumeSlider.value = video.volume * 100;
 
 // 2. När man ändrar på Original Volume-slidern → uppdatera video.volume
 originalVolumeSlider.addEventListener('input', () => {
