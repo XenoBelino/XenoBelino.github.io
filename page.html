@@ -159,20 +159,16 @@
        }
 
       #corrupted-selected-language {
-       display: none; /* göm tills något är valt */
-       margin-top: -8px;  /* negativ marginal för att det inte ska se för utspritt ut */
-       margin-bottom: 24px; /* detta ökar avståndet till nästa rad (Music) */
-       font-style: italic;
-       color: #666;
-       text-align: left;
-      }
-
-       #corrupted-selected-language {
-    color: black; /* Standard för ljust läge */
-    text-align: center;
+    display: none;              /* göm tills något är valt */
     margin-top: 20px;
+    margin-bottom: 24px;
     font-weight: 500;
-    font-size: 1.1em;
+    font-size: 1em;
+    color: black;
+    text-align: center;
+}
+body.dark-mode #corrupted-selected-language {
+    color: white;
 }
 
 /* Om body har klassen "dark-mode" */
