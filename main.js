@@ -68,16 +68,17 @@ document.addEventListener("click", function (event) {
 function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
-
   uploadedFile = file;
   const video = document.getElementById("video-player");
   const source = document.getElementById("video-source");
   const url = URL.createObjectURL(file);
   source.src = url;
-  video.load();
   video.onloadedmetadata = () => {
-  video.play().catch((e) => console.warn("Autoplay error:", e));
-  };
+  video.play().catch(console.warn);
+  originalVolumeSlider.value = video.volume * 100;
+  updateVolumePercentage("original");
+};
+  video.load(); // Viktigt att detta ligger efter .onloadedmetadata
 
   document.getElementById("file-name").textContent = file.name;
   acceptedTerms = false;
