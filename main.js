@@ -2,6 +2,7 @@ import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ff
 const ffmpeg = createFFmpeg({ log: true });
 let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal, audioContext, sourceNode;
 let uploadedFile = null;
+let isFfmpegBusy = false;
 let acceptedTerms = false;
 let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
@@ -322,6 +323,12 @@ function closePopup(id) {
 }
        
 async function startUpgradeProcess(resolution) {
+    if (isFfmpegBusy) {
+  alert("FFmpeg kör redan ett kommando. Vänta klart först.");
+  return;
+}
+isFfmpegBusy = true;
+
      console.log("Resolution selected:", resolution); // Debug
   showProgressBar(); // Visa progress bar
   simulateUpgrade(resolution);
@@ -389,6 +396,9 @@ async function startUpgradeProcess(resolution) {
 
 // ✅ Flytta reader.readAsArrayBuffer(videoFile) INNANFÖR funktionen:
 reader.readAsArrayBuffer(videoFile); // <-- ska vara här inne
+} finally {
+  isFfmpegBusy = false;
+}
 
  };
 
@@ -521,6 +531,12 @@ video.addEventListener('volumechange', () => {
   document.getElementById("corrupted-selected-language").textContent = "";
   document.getElementById("corrupted-selected-language").style.display = "none";
   async function convertToMP4() {
+  if (isFfmpegBusy) {
+  alert("Konvertering pågår redan. Vänta tills den är klar.");
+  return;
+}
+isFfmpegBusy = true;
+
   if (!fileInput.files.length) {
     alert('Vänligen välj en videofil först!');
     return;
@@ -607,7 +623,10 @@ video.addEventListener('volumechange', () => {
     case "arrowright":
       video.currentTime = Math.min(video.duration, video.currentTime + 5);
       break;
-  }
+      } finally {
+  isFfmpegBusy = false;
+}
+
 });
 
   // Gör funktionerna globala
