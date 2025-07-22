@@ -2,7 +2,8 @@ import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ff
 const ffmpeg = createFFmpeg({ log: true });
 let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal, audioContext, sourceNode;
 let uploadedFile = null;
-let isFfmpegBusy = false;
+let isConverting = false;
+let isUpgrading = false;
 let acceptedTerms = false;
 let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
@@ -323,17 +324,19 @@ function closePopup(id) {
 }
        
 async function startUpgradeProcess(resolution) {
-  if (isFfmpegBusy) {
-    alert("FFmpeg kör redan ett kommando. Vänta klart först.");
+  if (isUpgrading) {
+    alert("En uppgradering pågår redan. Vänta tills den är klar.");
     return;
   }
-  isFfmpegBusy = true;
+
+  isUpgrading = true; // 🟢 Blockera nya körningar tills denna är klar
 
   try {
-    console.log("Resolution selected:", resolution); // Debug
-    showProgressBar(); // Visa progress bar
+    console.log("Resolution selected:", resolution);
+    showProgressBar();
     simulateUpgrade(resolution);
-    const videoFile = uploadedFile; // <-- fix: använd sparad fil
+
+    const videoFile = uploadedFile;
 
     if (!videoFile) {
       showPopup("popup-no-video");
@@ -345,6 +348,7 @@ async function startUpgradeProcess(resolution) {
       if (!ffmpeg.isLoaded()) {
         await ffmpeg.load();
       }
+
       ffmpeg.FS('writeFile', 'input.mp4', new Uint8Array(reader.result));
 
       const progressBar = document.getElementById("progress-bar");
@@ -394,13 +398,14 @@ async function startUpgradeProcess(resolution) {
       };
     };
 
+    // ✅ Korrekt plats: kör reader först efter definierad `onload`
     reader.readAsArrayBuffer(videoFile);
 
   } catch (err) {
     console.error("Fel vid uppgradering:", err);
     alert("Ett fel uppstod under videouppgraderingen.");
   } finally {
-    isFfmpegBusy = false;
+    isUpgrading = false; // 🔚 Återställ flaggan oavsett om det gick bra eller ej
   }
 }
 
@@ -533,15 +538,17 @@ video.addEventListener('volumechange', () => {
   document.getElementById("corrupted-selected-language").textContent = "";
   document.getElementById("corrupted-selected-language").style.display = "none";
  async function convertToMP4() {
-  if (isFfmpegBusy) {
+  console.log("isConverting innan start:", isConverting);
+  if (isConverting) {
     alert("Konvertering pågår redan. Vänta tills den är klar.");
     return;
   }
-  isFfmpegBusy = true;
+
+  isConverting = true;
 
   if (!fileInput.files.length) {
     alert('Vänligen välj en videofil först!');
-    isFfmpegBusy = false;
+    isConverting = false;
     return;
   }
 
@@ -588,7 +595,7 @@ video.addEventListener('volumechange', () => {
     convertBtn.textContent = 'Convert to MP4';
     progressBar.style.display = 'none';
     progressText.style.display = 'none';
-    isFfmpegBusy = false; // ✅ Här är den på rätt plats
+    isConverting = false;
   }
 }
 
