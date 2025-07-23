@@ -339,7 +339,6 @@ async function startUpgradeProcess(resolution) {
   try {
     console.log("Resolution selected:", resolution);
     showProgressBar();
-    simulateUpgrade(resolution);
 
     const videoFile = uploadedFile;
 
