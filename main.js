@@ -564,7 +564,7 @@ video.addEventListener('volumechange', () => {
   updateVolumePercentage("original");
 });
 
-       async function convertToMP4() {
+  async function convertToMP4() {
   console.log("isConverting innan start:", isConverting);
   if (isConverting) {
     alert("Konvertering pågår redan. Vänta tills den är klar.");
