@@ -73,76 +73,54 @@ document.addEventListener("click", function (event) {
 function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
+
   uploadedFile = file;
+
   const video = document.getElementById("video-player");
   const source = document.getElementById("video-source");
   const url = URL.createObjectURL(file);
   source.src = url;
-  video.onloadedmetadata = () => {
-  video.volume = 0.5; // sätt startvolym
-  video.muted = false;
+
+  // Sätt volymreglage och uppdatera
+  originalVolumeSlider = document.getElementById("original-volume");
   originalVolumeSlider.value = 50;
   updateVolumePercentage("original");
-  video.play().catch(console.warn);
-};
 
-  video.load(); // Viktigt att detta ligger efter .onloadedmetadata
+  // När metadata laddats (då vet vi duration och kan spela upp)
+  video.onloadedmetadata = () => {
+    video.volume = 0.5;
+    video.muted = false;
+    video.play().catch(console.warn);
+  };
 
+  video.load(); // Viktigt – laddar ny src
+
+  // 🧹 Nollställ GUI när ny fil laddas
+  document.getElementById("download-btn").style.display = "none";
+  document.getElementById("progress-bar").style.display = "none";
+  document.getElementById("progress-text").style.display = "none";
+  document.getElementById("progress-bar-filled").style.width = "0%";
+
+  // Uppdatera visning av filnamn
   document.getElementById("file-name").textContent = file.name;
+
+  // Återställ interna flaggor
   acceptedTerms = false;
   selectedUpgradeResolution = null;
   warningAccepted = false;
   userAcceptedTerms = false;
+  languagePopupShown = false;
 
-  // Skapa ljudkedja
+  // Starta ljudkedjan
   setupAudioGraph(video);
-    
- // Simulera språkdetektion
-const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
-const robotVoiceIncluded = true;
 
-setTimeout(() => {
-  showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
-}, 1000);
-}    
+  // Simulera språkdetektion
+  const simulatedLanguages = ["Svenska", "Engelska"];
+  const robotVoiceIncluded = true;
 
-function showLanguageDetectionPopup(languages, hasRobotVoice) {
-    if (languagePopupShown) return;
-    languagePopupShown = true;
-
-    const popup = document.getElementById("popup-language-detection");
-    const message = document.getElementById("language-detection-message");
-
-    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
-
-
-    const anchor = document.getElementById("language-popup-anchor");
-    if (!anchor.contains(popup)) {
-  anchor.appendChild(popup);
-}
-    popup.style.display = "block";
-
-    // Visa knappar
-    const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
-    [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
-
-    if (languages[0]) {
-        btn1.textContent = `Move ${languages[0]}`;
-        btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
-        btn1.style.display = "inline-block";
-    }
-
-    if (languages[1]) {
-        btn2.textContent = `Move ${languages[1]}`;
-        btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
-        btn2.style.display = "inline-block";
-    }
-
-    if (hasRobotVoice) {
-        btn3.textContent = "Move Robotic Voice";
-        btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
-        btn3.style.display = "inline-block";
-    }
+  setTimeout(() => {
+    showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
+  }, 1000);
 }
 
     // Visa popup
@@ -533,7 +511,6 @@ function closeNoVideoPopup() {
   const progressBarFilled = document.getElementById('progress-bar-filled');
   const progressText = document.getElementById('progress-text');
   const downloadBtn = document.getElementById('download-btn');
-  const originalVolumeSlider = document.getElementById('original-volume');
   const video = videoPlayer;
 
   let isConverting = false;
