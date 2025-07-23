@@ -361,14 +361,11 @@ async function startUpgradeProcess(resolution) {
       progressBar.style.display = "block";
       progressText.style.display = "block";
 
-      let progress = 0;
-      const interval = setInterval(() => {
-        if (progress < 99) {
-          progress += 1;
-          document.getElementById("progress-bar-filled").style.width = `${progress}%`;
-          document.getElementById("progress-text").textContent = `${progress}% of 100% to complete upgrade`;
-        }
-      }, 100);
+    ffmpeg.setProgress(({ ratio }) => {
+    const percent = Math.min(Math.round(ratio * 100), 100);
+    document.getElementById("progress-bar-filled").style.width = `${percent}%`;
+    document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade`;
+});
 
       const resolutionMap = {
         '480p': '854x480',
@@ -389,7 +386,6 @@ async function startUpgradeProcess(resolution) {
       'output.mp4'
 );
 
-      clearInterval(interval);
       document.getElementById("progress-bar-filled").style.width = "100%";
       document.getElementById("progress-text").textContent = "100% of 100% to complete upgrade";
 
