@@ -379,7 +379,15 @@ async function startUpgradeProcess(resolution) {
       };
       const size = resolutionMap[resolution] || '1280x720';
 
-      await ffmpeg.run('-i', 'input.mp4', '-vf', `scale=${size}`, 'output.mp4');
+      await ffmpeg.run(
+      '-i', 'input.mp4',
+      '-vf', `scale=${size}:flags=lanczos`, // 🔍 bättre uppskalning
+      '-c:v', 'libx264',
+      '-preset', 'slow', // 🔄 kvalitetsoptimering
+      '-crf', '18',       // 🎥 visuell kvalitet (lägre = bättre)
+      '-c:a', 'copy',
+      'output.mp4'
+);
 
       clearInterval(interval);
       document.getElementById("progress-bar-filled").style.width = "100%";
@@ -392,6 +400,12 @@ async function startUpgradeProcess(resolution) {
       const video = document.getElementById("video-player");
       source.src = url;
       video.load();
+      let fileName = "upgraded_video.mp4";
+      if (uploadedFile) {
+      const originalName = uploadedFile.name.replace(/\.[^/.]+$/, ""); // Tar bort filändelsen
+      fileName = `${originalName}_upgraded_to_${resolution}.mp4`;
+}
+
       video.onloadeddata = () => {
         video.play().catch((e) => console.warn("Autoplay error:", e));
         document.getElementById("download-btn").style.display = "block";
