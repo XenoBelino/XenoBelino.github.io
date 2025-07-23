@@ -529,42 +529,8 @@ function closeNoVideoPopup() {
     await ffmpeg.load();
   }
 }
-   // Se till att allt detta ligger INUTI EN enda load-lyssnare:
-  window.addEventListener("load", () => {
-  const fileInput = document.getElementById('file-input');
-  const videoPlayer = document.getElementById('video-player');
-  const progressBar = document.getElementById('progress-bar');
-  const progressBarFilled = document.getElementById('progress-bar-filled');
-  const progressText = document.getElementById('progress-text');
-  downloadBtn = document.getElementById('download-btn');
-  originalVolumeSlider = document.getElementById('original-volume');
-  const video = document.getElementById('video-player');
-  ['original-volume', 'corrupted-volume', 'music-volume', 'final-volume'].forEach(id => {
-    const slider = document.getElementById(id);
-    if (slider) stopArrowKeysFromAffectingVideo(slider);
-  });
 
-// 1. Initiera slider med videons volym (standard 1.0 = 100%)
-
-// 2. När man ändrar på Original Volume-slidern → uppdatera video.volume
-originalVolumeSlider.addEventListener('input', () => {
-  const volumeValue = originalVolumeSlider.value / 100;
-  video.volume = volumeValue;
-  video.muted = volumeValue === 0;
-  updateVolumePercentage("original");
-});
-
-// 3. När videons volym/mute ändras (t.ex. via 'm' på tangentbordet)
-video.addEventListener('volumechange', () => {
-  if (video.muted) {
-    originalVolumeSlider.value = 0;
-  } else {
-    originalVolumeSlider.value = video.volume * 100;
-  }
-  updateVolumePercentage("original");
-});
-
-  async function convertToMP4() {
+    async function convertToMP4() {
   console.log("isConverting innan start:", isConverting);
   if (isConverting) {
     alert("Konvertering pågår redan. Vänta tills den är klar.");
@@ -638,6 +604,41 @@ video.addEventListener('volumechange', () => {
     downloadUpgradedVideo();
   }
 };
+    
+   // Se till att allt detta ligger INUTI EN enda load-lyssnare:
+  window.addEventListener("load", () => {
+  const fileInput = document.getElementById('file-input');
+  const videoPlayer = document.getElementById('video-player');
+  const progressBar = document.getElementById('progress-bar');
+  const progressBarFilled = document.getElementById('progress-bar-filled');
+  const progressText = document.getElementById('progress-text');
+  downloadBtn = document.getElementById('download-btn');
+  originalVolumeSlider = document.getElementById('original-volume');
+  const video = document.getElementById('video-player');
+  ['original-volume', 'corrupted-volume', 'music-volume', 'final-volume'].forEach(id => {
+    const slider = document.getElementById(id);
+    if (slider) stopArrowKeysFromAffectingVideo(slider);
+  });
+
+// 1. Initiera slider med videons volym (standard 1.0 = 100%)
+
+// 2. När man ändrar på Original Volume-slidern → uppdatera video.volume
+originalVolumeSlider.addEventListener('input', () => {
+  const volumeValue = originalVolumeSlider.value / 100;
+  video.volume = volumeValue;
+  video.muted = volumeValue === 0;
+  updateVolumePercentage("original");
+});
+
+// 3. När videons volym/mute ändras (t.ex. via 'm' på tangentbordet)
+video.addEventListener('volumechange', () => {
+  if (video.muted) {
+    originalVolumeSlider.value = 0;
+  } else {
+    originalVolumeSlider.value = video.volume * 100;
+  }
+  updateVolumePercentage("original");
+});
 
   document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
   document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
