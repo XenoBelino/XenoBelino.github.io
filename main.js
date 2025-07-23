@@ -609,21 +609,37 @@ downloadBtn.onclick = () => {
     downloadBtn.textContent = "Download Converted Video";
   }
 }
-    document.addEventListener("keydown", (e) => {
+   document.addEventListener("keydown", (e) => {
   const video = document.getElementById("video-player");
-
   if (!video) return;
 
-  if (e.key === "f") {
-    if (!document.fullscreenElement) {
-      video.requestFullscreen().catch(err => console.warn("Fullscreen error:", err));
-    } else {
-      document.exitFullscreen();
-    }
-  }
-
-  if (e.key === "m") {
-    video.muted = !video.muted;
+  switch (e.key) {
+    case "f":
+      if (!document.fullscreenElement) {
+        video.requestFullscreen().catch(err => console.warn("Fullscreen error:", err));
+      } else {
+        document.exitFullscreen();
+      }
+      break;
+    case "m":
+      video.muted = !video.muted;
+      break;
+    case "ArrowLeft":
+      video.currentTime = Math.max(0, video.currentTime - 5);
+      break;
+    case "ArrowRight":
+      video.currentTime = Math.min(video.duration, video.currentTime + 5);
+      break;
+    case "ArrowUp":
+      video.volume = Math.min(1, video.volume + 0.05);
+      originalVolumeSlider.value = video.volume * 100;
+      updateVolumePercentage("original");
+      break;
+    case "ArrowDown":
+      video.volume = Math.max(0, video.volume - 0.05);
+      originalVolumeSlider.value = video.volume * 100;
+      updateVolumePercentage("original");
+      break;
   }
 });
 
