@@ -564,17 +564,7 @@ video.addEventListener('volumechange', () => {
   updateVolumePercentage("original");
 });
 
-
-  document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
-  document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
-  document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
-  document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
-  document.getElementById('file-input').addEventListener('change', handleFileSelect);
-  document.getElementById('convert-btn').addEventListener('click', convertToMP4);
-  document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
-  document.getElementById("corrupted-selected-language").textContent = "";
-  document.getElementById("corrupted-selected-language").style.display = "none";
-  async function convertToMP4() {
+       async function convertToMP4() {
   console.log("isConverting innan start:", isConverting);
   if (isConverting) {
     alert("Konvertering pågår redan. Vänta tills den är klar.");
@@ -649,7 +639,16 @@ video.addEventListener('volumechange', () => {
   }
 };
 
-   document.addEventListener("keydown", (e) => {
+  document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
+  document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
+  document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
+  document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
+  document.getElementById('file-input').addEventListener('change', handleFileSelect);
+  document.getElementById('convert-btn').addEventListener('click', convertToMP4);
+  document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
+  document.getElementById("corrupted-selected-language").textContent = "";
+  document.getElementById("corrupted-selected-language").style.display = "none";
+  document.addEventListener("keydown", (e) => {
   const video = document.getElementById("video-player");
   if (!video) return;
 
