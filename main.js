@@ -6,6 +6,7 @@ let isConverting = false;
 let isUpgrading = false;
 let originalVolumeSlider;
 let acceptedTerms = false;
+let lastOperation = ""; // "convert" eller "upgrade"
 let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
 let warningAccepted = false;
@@ -407,6 +408,8 @@ async function startUpgradeProcess(resolution) {
     alert("Ett fel uppstod under videouppgraderingen.");
   } finally {
     isUpgrading = false; // 🔚 Återställ flaggan oavsett om det gick bra eller ej
+    lastOperation = "upgrade";
+    downloadBtn.textContent = "Download Upgraded Video";
   }
 }
 
@@ -501,7 +504,7 @@ function closeNoVideoPopup() {
   const progressBarFilled = document.getElementById('progress-bar-filled');
   const progressText = document.getElementById('progress-text');
   const downloadBtn = document.getElementById('download-btn');
-  const originalVolumeSlider = document.getElementById('original-volume');
+  originalVolumeSlider = document.getElementById('original-volume');
   const video = document.getElementById('video-player');
   ['original-volume', 'corrupted-volume', 'music-volume', 'final-volume'].forEach(id => {
     const slider = document.getElementById(id);
@@ -538,7 +541,7 @@ video.addEventListener('volumechange', () => {
   document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
   document.getElementById("corrupted-selected-language").textContent = "";
   document.getElementById("corrupted-selected-language").style.display = "none";
- async function convertToMP4() {
+  async function convertToMP4() {
   console.log("isConverting innan start:", isConverting);
   if (isConverting) {
     alert("Konvertering pågår redan. Vänta tills den är klar.");
@@ -582,12 +585,15 @@ video.addEventListener('volumechange', () => {
     videoPlayer.src = videoURL;
 
     downloadBtn.style.display = 'inline-block';
-    downloadBtn.onclick = () => {
-      const a = document.createElement('a');
-      a.href = videoURL;
-      a.download = 'converted-video.mp4';
-      a.click();
-    };
+    downloadBtn.textContent = "Download Converted Video";
+downloadBtn.onclick = () => {
+  const originalName = file.name.replace(/\.[^/.]+$/, "");
+  a.download = `${originalName}_converted.mp4`;
+  const a = document.createElement('a');
+  a.href = videoURL;
+  a.download = `${originalName}_converted.mp4`;
+  a.click();
+};
 
   } catch (e) {
     alert('Fel vid konvertering: ' + e.message);
@@ -597,6 +603,8 @@ video.addEventListener('volumechange', () => {
     progressBar.style.display = 'none';
     progressText.style.display = 'none';
     isConverting = false;
+    lastOperation = "convert";
+    downloadBtn.textContent = "Download Converted Video";
   }
 }
 
