@@ -78,10 +78,13 @@ function handleFileSelect(event) {
   const url = URL.createObjectURL(file);
   source.src = url;
   video.onloadedmetadata = () => {
-  video.play().catch(console.warn);
-  originalVolumeSlider.value = video.volume * 100;
+  video.volume = 0.5; // sätt startvolym
+  video.muted = false;
+  originalVolumeSlider.value = 50;
   updateVolumePercentage("original");
+  video.play().catch(console.warn);
 };
+
   video.load(); // Viktigt att detta ligger efter .onloadedmetadata
 
   document.getElementById("file-name").textContent = file.name;
@@ -606,6 +609,23 @@ downloadBtn.onclick = () => {
     downloadBtn.textContent = "Download Converted Video";
   }
 }
+    document.addEventListener("keydown", (e) => {
+  const video = document.getElementById("video-player");
+
+  if (!video) return;
+
+  if (e.key === "f") {
+    if (!document.fullscreenElement) {
+      video.requestFullscreen().catch(err => console.warn("Fullscreen error:", err));
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  if (e.key === "m") {
+    video.muted = !video.muted;
+  }
+});
 
   // Gör funktionerna globala
   window.handleResolutionClick = handleResolutionClick;
