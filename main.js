@@ -571,7 +571,7 @@ video.addEventListener('volumechange', () => {
   }
 
   isConverting = true;
-  const convertBtn = document.getElementById('convert-btn'); // ✅ Flytta in här
+  const convertBtn = document.getElementById('convert-btn');
 
   if (!fileInput.files.length) {
     alert('Vänligen välj en videofil först!');
@@ -609,26 +609,35 @@ video.addEventListener('volumechange', () => {
 
     downloadBtn.style.display = 'inline-block';
     downloadBtn.textContent = "Download Converted Video";
-downloadBtn.onclick = () => {
-  const originalName = file.name.replace(/\.[^/.]+$/, "");
-  const a = document.createElement('a');
-  a.href = videoURL;
-  a.download = `${originalName}_converted.mp4`;
-  a.click();
-};
+
+    // 🔁 Viktigt för att rätt nedladdning ska ske
+    lastOperation = "convert";
 
   } catch (e) {
     alert('Fel vid konvertering: ' + e.message);
   } finally {
-  convertBtn.disabled = false;
-  convertBtn.textContent = 'Convert to MP4';
-  progressBar.style.display = 'none';
-  progressText.style.display = 'none';
-  isConverting = false;
-  lastOperation = "convert";
-  downloadBtn.textContent = "Download Converted Video"; // ✅ behåll bara denna
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Convert to MP4';
+    progressBar.style.display = 'none';
+    progressText.style.display = 'none';
+    isConverting = false;
   }
 }
+    downloadBtn.onclick = () => {
+    if (lastOperation === "convert") {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const originalName = file.name.replace(/\.[^/.]+$/, "");
+    const a = document.createElement("a");
+    a.href = videoPlayer.src;
+    a.download = `${originalName}_converted.mp4`;
+    a.click();
+  } else if (lastOperation === "upgrade") {
+    downloadUpgradedVideo();
+  }
+};
+
    document.addEventListener("keydown", (e) => {
   const video = document.getElementById("video-player");
   if (!video) return;
