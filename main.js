@@ -406,9 +406,15 @@ async function startUpgradeProcess(resolution) {
       fileName = `${originalName}_upgraded_to_${resolution}.mp4`;
 }
 
-      video.onloadeddata = () => {
-        video.play().catch((e) => console.warn("Autoplay error:", e));
-        document.getElementById("download-btn").style.display = "block";
+       const link = document.createElement("a");
+       link.href = url;
+       link.download = fileName;
+       document.body.appendChild(link);
+       link.click();
+       document.body.removeChild(link);
+       video.onloadeddata = () => {
+       video.play().catch((e) => console.warn("Autoplay error:", e));
+       document.getElementById("download-btn").style.display = "block";
 
         setTimeout(() => {
           progressBar.style.display = "none";
