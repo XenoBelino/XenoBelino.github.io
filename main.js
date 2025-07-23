@@ -433,7 +433,8 @@ async function startUpgradeProcess(resolution) {
 }
 
  }
-
+}
+    
 function showProgressBar() {
   document.getElementById("progress-bar").style.display = "block";
   document.getElementById("progress-text").style.display = "block";
