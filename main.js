@@ -496,6 +496,34 @@ function closeNoVideoPopup() {
     document.getElementById('popup-no-video').style.display = 'none';
 }
 
+ function setupAudioRouting(originalBuffer, musicBuffer, corruptedBuffer) {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  const gainOriginal = audioContext.createGain();
+  const gainMusic = audioContext.createGain();
+  const gainCorrupted = audioContext.createGain();
+
+  const originalSource = audioContext.createBufferSource();
+  const musicSource = audioContext.createBufferSource();
+  const corruptedSource = audioContext.createBufferSource();
+
+  originalSource.buffer = originalBuffer;
+  musicSource.buffer = musicBuffer;
+  corruptedSource.buffer = corruptedBuffer;
+
+  originalSource.connect(gainOriginal).connect(audioContext.destination);
+  musicSource.connect(gainMusic).connect(audioContext.destination);
+  corruptedSource.connect(gainCorrupted).connect(audioContext.destination);
+
+  gainOriginal.gain.value = 1.0;
+  gainMusic.gain.value = 0.5;
+  gainCorrupted.gain.value = 0.2;
+
+  originalSource.start();
+  musicSource.start();
+  corruptedSource.start();
+}
+   
  async function loadFFmpeg() {
   if (!ffmpeg.isLoaded()) {
     await ffmpeg.load();
