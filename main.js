@@ -620,13 +620,13 @@ downloadBtn.onclick = () => {
   } catch (e) {
     alert('Fel vid konvertering: ' + e.message);
   } finally {
-    convertBtn.disabled = false;
-    convertBtn.textContent = 'Convert to MP4';
-    progressBar.style.display = 'none';
-    progressText.style.display = 'none';
-    isConverting = false;
-    lastOperation = "convert";
-    downloadBtn.textContent = "Download Converted Video";
+  convertBtn.disabled = false;
+  convertBtn.textContent = 'Convert to MP4';
+  progressBar.style.display = 'none';
+  progressText.style.display = 'none';
+  isConverting = false;
+  lastOperation = "convert";
+  downloadBtn.textContent = "Download Converted Video"; // ✅ behåll bara denna
   }
 }
    document.addEventListener("keydown", (e) => {
