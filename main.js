@@ -11,6 +11,7 @@ let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
+let downloadBtn; // global variabel
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -509,7 +510,7 @@ function closeNoVideoPopup() {
   const progressBar = document.getElementById('progress-bar');
   const progressBarFilled = document.getElementById('progress-bar-filled');
   const progressText = document.getElementById('progress-text');
-  const downloadBtn = document.getElementById('download-btn');
+  downloadBtn = document.getElementById('download-btn');
   originalVolumeSlider = document.getElementById('original-volume');
   const video = document.getElementById('video-player');
   ['original-volume', 'corrupted-volume', 'music-volume', 'final-volume'].forEach(id => {
