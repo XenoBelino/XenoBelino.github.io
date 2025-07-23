@@ -572,6 +572,7 @@ video.addEventListener('volumechange', () => {
   }
 
   isConverting = true;
+  const convertBtn = document.getElementById('convert-btn'); // ✅ Flytta in här
 
   if (!fileInput.files.length) {
     alert('Vänligen välj en videofil först!');
