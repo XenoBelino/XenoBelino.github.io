@@ -588,7 +588,6 @@ video.addEventListener('volumechange', () => {
     downloadBtn.textContent = "Download Converted Video";
 downloadBtn.onclick = () => {
   const originalName = file.name.replace(/\.[^/.]+$/, "");
-  a.download = `${originalName}_converted.mp4`;
   const a = document.createElement('a');
   a.href = videoURL;
   a.download = `${originalName}_converted.mp4`;
