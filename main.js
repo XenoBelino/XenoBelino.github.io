@@ -432,9 +432,11 @@ async function startUpgradeProcess(resolution) {
   } finally {
     isUpgrading = false; // 🔚 Återställ flaggan oavsett om det gick bra eller ej
     lastOperation = "upgrade";
-    downloadBtn.textContent = "Download Upgraded Video";
-  }
+    if (downloadBtn) {
+  downloadBtn.textContent = "Download Upgraded Video";
 }
+
+ }
 
 function showProgressBar() {
   document.getElementById("progress-bar").style.display = "block";
