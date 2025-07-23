@@ -520,7 +520,6 @@ function closeNoVideoPopup() {
 }
    // Se till att allt detta ligger INUTI EN enda load-lyssnare:
   window.addEventListener("load", () => {
-  const convertBtn = document.getElementById('convert-btn');
   const fileInput = document.getElementById('file-input');
   const videoPlayer = document.getElementById('video-player');
   const progressBar = document.getElementById('progress-bar');
