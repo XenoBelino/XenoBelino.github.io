@@ -4,6 +4,7 @@ let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal, audioCont
 let uploadedFile = null;
 let isConverting = false;
 let isUpgrading = false;
+let originalVolumeSlider;
 let acceptedTerms = false;
 let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
