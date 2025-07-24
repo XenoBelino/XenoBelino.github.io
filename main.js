@@ -462,53 +462,65 @@ function showProgressBar() {
   document.getElementById("progress-text").style.display = "block";
 }
 
+let audioContext;
+let sourceNode;
+let gainNodeOriginal;
+let gainNodeMusic;
+let gainNodeCorrupted;
+let gainNodeFinal;
+
 function setupAudioGraph(videoElement) {
-  if (!window.audioContext) {
-    window.audioContext = new AudioContext();
+  if (!audioContext) {
+    audioContext = new AudioContext();
   }
 
-  const audioContext = window.audioContext;
-
-  // 🧹 Koppla bort och nolla tidigare ljudnoder
-  if (window.sourceNode) {
+  // Koppla bort tidigare källa om den finns
+  if (sourceNode) {
     try {
-      window.sourceNode.disconnect();
+      sourceNode.disconnect();
     } catch (e) {
       console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
     }
-    window.sourceNode = null;
+    sourceNode = null;
   }
 
-  // 🛡️ Försök skapa en ny källa från videoElement
+  // Skapa ny källa från videoelementet
   try {
-    window.sourceNode = audioContext.createMediaElementSource(videoElement);
+    sourceNode = audioContext.createMediaElementSource(videoElement);
   } catch (e) {
     console.warn("Kan inte skapa ny MediaElementSourceNode:", e);
-    return; // Hindra resten av funktionen från att köra
+    return;
   }
 
-  // 🎛️ Skapa gain-noder
-  window.gainNodeOriginal = audioContext.createGain();
-  window.gainNodeMusic = audioContext.createGain();
-  window.gainNodeCorrupted = audioContext.createGain();
-  window.gainNodeFinal = audioContext.createGain();
+  // Skapa gain-noder (skapa på nytt varje gång för att undvika gamla kopplingar)
+  gainNodeOriginal = audioContext.createGain();
+  gainNodeMusic = audioContext.createGain();
+  gainNodeCorrupted = audioContext.createGain();
+  gainNodeFinal = audioContext.createGain();
 
-  // 🔗 Koppla ljudflödet
-  window.sourceNode.connect(window.gainNodeOriginal);
-  window.sourceNode.connect(window.gainNodeMusic);
-  window.sourceNode.connect(window.gainNodeCorrupted);
+  // Sätt volymer till exempel (justera efter behov)
+  gainNodeOriginal.gain.value = 1.0;
+  gainNodeMusic.gain.value = 0.5;
+  gainNodeCorrupted.gain.value = 0.2;
+  gainNodeFinal.gain.value = 1.0;
 
-  window.gainNodeOriginal.connect(audioContext.destination);
-  window.gainNodeMusic.connect(audioContext.destination);
-  window.gainNodeCorrupted.connect(audioContext.destination);
+  // Koppla källa till de olika gain-noderna
+  sourceNode.connect(gainNodeOriginal);
+  sourceNode.connect(gainNodeMusic);
+  sourceNode.connect(gainNodeCorrupted);
 
-  window.gainNodeOriginal.connect(window.gainNodeFinal);
-  window.gainNodeMusic.connect(window.gainNodeFinal);
-  window.gainNodeCorrupted.connect(window.gainNodeFinal);
-  window.gainNodeFinal.connect(audioContext.destination);
+  // Koppla gain-noderna till slut-gain-node
+  gainNodeOriginal.connect(gainNodeFinal);
+  gainNodeMusic.connect(gainNodeFinal);
+  gainNodeCorrupted.connect(gainNodeFinal);
 
-  // 🟢 Starta ljud
-  audioContext.resume().catch(e => console.warn("AudioContext resume failed:", e));
+  // Koppla slut-gain-node till destination (högtalare)
+  gainNodeFinal.connect(audioContext.destination);
+
+  // Försök att "väcka" audioContext (viktigt i vissa browsers)
+  audioContext.resume().catch(e => {
+    console.warn("AudioContext resume failed:", e);
+  });
 }
 
 function stopArrowKeysFromAffectingVideo(sliderElement) {
