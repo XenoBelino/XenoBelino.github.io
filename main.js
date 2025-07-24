@@ -12,8 +12,6 @@ let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
-let audioContext;
-let sourceNode;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
