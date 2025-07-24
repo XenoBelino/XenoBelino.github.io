@@ -88,6 +88,7 @@ function handleFileSelect(event) {
     const originalSlider = document.getElementById("original-volume");
     if (originalSlider) {
       originalSlider.value = 50; // 0–100, inte 0.5
+      updateVolumePercentage("original"); // anropa bara om elementet finns
     }
 
     updateVolumePercentage("original");
