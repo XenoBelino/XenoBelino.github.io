@@ -12,6 +12,7 @@ let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
+let progressBarFilled;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -510,12 +511,15 @@ function closeNoVideoPopup() {
    
  window.addEventListener("load", () => {
   // Variabler
+  // Hämta och tilldela globala DOM-referenser
+originalVolumeSlider = document.getElementById("original-volume"); // global
+progressBarFilled = document.getElementById('progress-bar-filled'); // global
+downloadBtn = document.getElementById('download-btn'); // global
+
   const fileInput = document.getElementById('file-input');
   const videoPlayer = document.getElementById('video-player');
   const progressBar = document.getElementById('progress-bar');
-  const progressBarFilled = document.getElementById('progress-bar-filled');
   const progressText = document.getElementById('progress-text');
-  const downloadBtn = document.getElementById('download-btn');
   const video = videoPlayer;
 
   let isConverting = false;
