@@ -73,20 +73,29 @@ document.addEventListener("click", function (event) {
 function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
+
   uploadedFile = file;
+
   const video = document.getElementById("video-player");
   const source = document.getElementById("video-source");
   const url = URL.createObjectURL(file);
   source.src = url;
-  video.onloadedmetadata = () => {
-  video.volume = 0.5; // sätt startvolym
-  video.muted = false;
-  originalVolumeSlider.value = 50;
-  updateVolumePercentage("original");
-  video.play().catch(console.warn);
-};
 
-  video.load(); // Viktigt att detta ligger efter .onloadedmetadata
+  video.onloadedmetadata = () => {
+    video.volume = 0.5; // sätt volym till 50%
+    video.muted = false;
+
+    const originalSlider = document.getElementById("original-volume");
+    if (originalSlider) {
+      originalSlider.value = 50; // 0–100, inte 0.5
+    }
+
+    updateVolumePercentage("original");
+
+    video.play().catch(console.warn);
+  };
+
+  video.load(); // ladda in videon (måste göras efter onloadedmetadata)
 
   document.getElementById("file-name").textContent = file.name;
   acceptedTerms = false;
@@ -94,17 +103,17 @@ function handleFileSelect(event) {
   warningAccepted = false;
   userAcceptedTerms = false;
 
-  // Skapa ljudkedja
+  // Skapa ljudkedja (audio routing)
   setupAudioGraph(video);
-    
- // Simulera språkdetektion
-const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
-const robotVoiceIncluded = true;
 
-setTimeout(() => {
-  showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
-}, 1000);
-}    
+  // Simulera språkdetektion
+  const simulatedLanguages = ["Svenska", "Engelska"];
+  const robotVoiceIncluded = true;
+
+  setTimeout(() => {
+    showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
+  }, 1000);
+} 
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
     if (languagePopupShown) return;
