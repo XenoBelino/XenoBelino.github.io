@@ -361,10 +361,20 @@ async function startUpgradeProcess(resolution) {
       progressBar.style.display = "block";
       progressText.style.display = "block";
 
+    let startTime = Date.now();
+    
     ffmpeg.setProgress(({ ratio }) => {
-    const percent = Math.min(Math.round(ratio * 100), 100);
+    const percent = Math.round(ratio * 100);
+    const elapsed = (Date.now() - startTime) / 1000;
+    const estimatedTotal = elapsed / (ratio || 0.01);
+    const remaining = estimatedTotal - elapsed;
+
+    const minutes = Math.floor(remaining / 60);
+    const seconds = Math.floor(remaining % 60);
+    const timeLeft = `${minutes}m ${seconds}s`;
+
     document.getElementById("progress-bar-filled").style.width = `${percent}%`;
-    document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade`;
+    document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade – approx. ${timeLeft} remaining`;
 });
 
       const resolutionMap = {
