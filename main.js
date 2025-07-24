@@ -338,11 +338,16 @@ async function startUpgradeProcess(resolution) {
       const progressText = document.getElementById("progress-text");
       progressBar.style.display = "block";
       progressText.style.display = "block";
+    let startTime = Date.now();
 
-    ffmpeg.setProgress(({ ratio }) => {
-    const percent = Math.min(Math.round(ratio * 100), 100);
-    document.getElementById("progress-bar-filled").style.width = `${percent}%`;
-    document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade`;
+ffmpeg.setProgress(({ ratio }) => {
+  const percent = Math.min(Math.round(ratio * 100), 100);
+  const elapsed = (Date.now() - startTime) / 1000;
+  const estimatedTotal = elapsed / (ratio || 0.0001); // skydda mot div/0
+  const remaining = Math.max(0, estimatedTotal - elapsed).toFixed(1);
+
+  progressBarFilled.style.width = `${percent}%`;
+  progressText.textContent = `${percent}% av 100% klart (${remaining}s kvar)`;
 });
 
       const resolutionMap = {
@@ -553,67 +558,74 @@ function closeNoVideoPopup() {
 
   // Funktion: Konvertera video till MP4 med ffmpeg
   async function convertToMP4() {
-    if (isConverting) {
-      alert("Konvertering pågår redan. Vänta tills den är klar.");
-      return;
-    }
-
-    if (!fileInput.files.length) {
-      alert('Vänligen välj en videofil först!');
-      return;
-    }
-
-    isConverting = true;
-    const convertBtn = document.getElementById('convert-btn');
-    convertBtn.disabled = true;
-    convertBtn.textContent = 'Konverterar...';
-
-    progressBar.style.display = 'block';
-    progressBarFilled.style.width = '0%';
-    progressText.style.display = 'block';
-    progressText.textContent = '0% av 100% klart';
-
-    try {
-      await loadFFmpeg();
-
-      const file = fileInput.files[0];
-      ffmpeg.FS('writeFile', file.name, await fetchFile(file));
-
-      let startTime = Date.now();
-
-ffmpeg.setProgress(({ ratio }) => {
-  const percent = Math.min(Math.round(ratio * 100), 100);
-  const elapsed = (Date.now() - startTime) / 1000;
-  const estimatedTotal = elapsed / (ratio || 0.0001); // skydda mot div/0
-  const remaining = Math.max(0, estimatedTotal - elapsed).toFixed(1);
-
-  progressBarFilled.style.width = `${percent}%`;
-  progressText.textContent = `${percent}% av 100% klart (${remaining}s kvar)`;
-});
-
-      await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
-
-      const data = ffmpeg.FS('readFile', 'output.mp4');
-      const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-      const videoURL = URL.createObjectURL(videoBlob);
-
-      videoPlayer.src = videoURL;
-
-      downloadBtn.style.display = 'inline-block';
-      downloadBtn.textContent = "Download Converted Video";
-
-      lastOperation = "convert";
-
-    } catch (e) {
-      alert('Fel vid konvertering: ' + e.message);
-    } finally {
-      convertBtn.disabled = false;
-      convertBtn.textContent = 'Convert to MP4';
-      progressBar.style.display = 'none';
-      progressText.style.display = 'none';
-      isConverting = false;
-    }
+  if (isConverting) {
+    alert("Konvertering pågår redan. Vänta tills den är klar.");
+    return;
   }
+
+  if (!fileInput.files.length) {
+    alert('Vänligen välj en videofil först!');
+    return;
+  }
+
+  const convertBtn = document.getElementById('convert-btn');
+  const file = fileInput.files[0];
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'mp4') {
+    alert('Videon är redan i MP4-format – ingen konvertering behövs.');
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Convert to MP4';
+    return;
+  }
+
+  isConverting = true;
+  convertBtn.disabled = true;
+  convertBtn.textContent = 'Konverterar...';
+
+  progressBar.style.display = 'block';
+  progressBarFilled.style.width = '0%';
+  progressText.style.display = 'block';
+  progressText.textContent = '0% av 100% klart';
+
+  try {
+    await loadFFmpeg();
+    ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+
+    let startTime = Date.now();
+
+    ffmpeg.setProgress(({ ratio }) => {
+      const percent = Math.min(Math.round(ratio * 100), 100);
+      const elapsed = (Date.now() - startTime) / 1000;
+      const estimatedTotal = elapsed / (ratio || 0.0001);
+      const remaining = Math.max(0, estimatedTotal - elapsed).toFixed(1);
+
+      progressBarFilled.style.width = `${percent}%`;
+      progressText.textContent = `${percent}% klart (${remaining}s kvar)`;
+    });
+
+    await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
+
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+    const videoURL = URL.createObjectURL(videoBlob);
+
+    videoPlayer.src = videoURL;
+    downloadBtn.style.display = 'inline-block';
+    downloadBtn.textContent = "Download Converted Video";
+
+    lastOperation = "convert";
+
+  } catch (e) {
+    alert('Fel vid konvertering: ' + e.message);
+  } finally {
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Convert to MP4';
+    progressBar.style.display = 'none';
+    progressText.style.display = 'none';
+    isConverting = false;
+  }
+}
 
   // Download-knappens klick-händelse
   downloadBtn.onclick = () => {
