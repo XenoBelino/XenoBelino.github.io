@@ -419,7 +419,31 @@ ffmpeg.setProgress(({ ratio }) => {
 
  }
 }
-    
+
+function showLanguageDetectionPopup(languages, robotVoiceIncluded) {
+  const popup = document.getElementById("popup-language-detection");
+  const langList = document.getElementById("language-list");
+
+  if (!popup || !langList) return;
+
+  langList.innerHTML = ""; // töm listan först
+
+  languages.forEach(lang => {
+    const btn = document.createElement("button");
+    btn.textContent = lang;
+    btn.onclick = () => assignLanguageToCorrupted(lang);
+    langList.appendChild(btn);
+  });
+
+  if (robotVoiceIncluded) {
+    const info = document.createElement("p");
+    info.textContent = "🧠 Robotröst upptäckt i ljudet.";
+    langList.appendChild(info);
+  }
+
+  popup.style.display = "block";
+}
+
 function showProgressBar() {
   document.getElementById("progress-bar").style.display = "block";
   document.getElementById("progress-text").style.display = "block";
