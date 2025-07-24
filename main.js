@@ -76,27 +76,18 @@ function handleFileSelect(event) {
 
   uploadedFile = file;
 
-  // Försök hitta befintlig video
-  let video = document.getElementById("video-player");
+  // Video finns redan i DOM
+  const video = document.getElementById("video-player");
 
-  if (!video) {
-    // Skapa video om den inte finns
-    video = document.createElement("video");
-    video.controls = true;
-    video.id = "video-player";
-    document.getElementById("video-container").appendChild(video);
-  } else {
-    // Om video redan finns, pausa och nollställ src för att undvika dubbla videor
-    video.pause();
-    video.removeAttribute("src");
-    video.load();
-  }
+  // Pausa och nollställ källa
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
 
-  // Uppdatera videons källa med den valda filen
+  // Sätt ny källa
   video.src = URL.createObjectURL(file);
   window.currentVideo = video;
 
-  // Sätt upp ljudkedjan (om du har en funktion för det)
   setupAudioGraph(video);
 
   video.onloadedmetadata = () => {
@@ -119,7 +110,6 @@ function handleFileSelect(event) {
   warningAccepted = false;
   userAcceptedTerms = false;
 
-  // Här kan du köra eventuell språkigenkänning osv.
   const simulatedLanguages = ["Svenska", "Engelska"];
   const robotVoiceIncluded = true;
 
