@@ -466,15 +466,16 @@ function setupAudioGraph(videoElement) {
   }
 
   const audioContext = window.audioContext;
-
-  // Koppla bort gammal källa om den finns
+    
   if (window.sourceNode) {
-    try {
-      window.sourceNode.disconnect();
-    } catch (e) {
-      console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
-    }
+  try {
+    window.sourceNode.disconnect();
+    window.sourceNode.mediaElement = null; // Viktigt: ta bort kopplingen
+  } catch (e) {
+    console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
   }
+  window.sourceNode = null;
+}
 
   // Koppla bort tidigare gainNodes om de finns
   if (window.gainNodeOriginal) window.gainNodeOriginal.disconnect();
