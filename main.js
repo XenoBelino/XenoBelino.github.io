@@ -14,6 +14,7 @@ let languagePopupShown = false;
 let downloadBtn; // global variabel
 let progressBarFilled;
 let mediaElementSource = null;
+let mediaSourceNode;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
