@@ -422,24 +422,24 @@ ffmpeg.setProgress(({ ratio }) => {
 
 function showLanguageDetectionPopup(languages, robotVoiceIncluded) {
   const popup = document.getElementById("popup-language-detection");
-  const langList = document.getElementById("language-list");
+  const message = document.getElementById("language-detection-message");
 
-  if (!popup || !langList) return;
+  if (!popup || !message) return;
 
-  langList.innerHTML = ""; // töm listan först
+  // Visa text beroende på robotröst
+  message.textContent = robotVoiceIncluded
+    ? "Vi upptäckte följande språk samt en roboströst:"
+    : "Vi upptäckte följande språk:";
 
-  languages.forEach(lang => {
-    const btn = document.createElement("button");
-    btn.textContent = lang;
-    btn.onclick = () => assignLanguageToCorrupted(lang);
-    langList.appendChild(btn);
+  // Hantera upp till tre språk
+  languages.slice(0, 3).forEach((lang, index) => {
+    const btn = document.getElementById(`lang-btn-${index + 1}`);
+    if (btn) {
+      btn.textContent = lang;
+      btn.style.display = "inline-block";
+      btn.onclick = () => assignLanguageToCorrupted(lang);
+    }
   });
-
-  if (robotVoiceIncluded) {
-    const info = document.createElement("p");
-    info.textContent = "🧠 Robotröst upptäckt i ljudet.";
-    langList.appendChild(info);
-  }
 
   popup.style.display = "block";
 }
