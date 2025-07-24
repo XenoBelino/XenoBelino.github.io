@@ -586,6 +586,14 @@ function closeNoVideoPopup() {
       return;
     }
 
+    const file = fileInput.files[0];
+    const ext = file.name.split('.').pop().toLowerCase();
+
+    if (ext === 'mp4') {
+    alert("Den här videofilen är redan i MP4-format. Ingen konvertering behövs.");
+    return;
+}
+  
     isConverting = true;
     const convertBtn = document.getElementById('convert-btn');
     convertBtn.disabled = true;
@@ -602,11 +610,21 @@ function closeNoVideoPopup() {
       const file = fileInput.files[0];
       ffmpeg.FS('writeFile', file.name, await fetchFile(file));
 
+      let startTime = Date.now();
+  
       ffmpeg.setProgress(({ ratio }) => {
-        const percent = Math.round(ratio * 100);
-        progressBarFilled.style.width = percent + '%';
-        progressText.textContent = `${percent}% av 100% klart`;
-      });
+  const percent = Math.round(ratio * 100);
+  const elapsed = (Date.now() - startTime) / 1000; // sekunder
+  const estimatedTotal = elapsed / (ratio || 0.01); // undvik div/0
+  const remaining = estimatedTotal - elapsed;
+
+  const minutes = Math.floor(remaining / 60);
+  const seconds = Math.floor(remaining % 60);
+  const timeLeft = `${minutes}m ${seconds}s`;
+
+  progressBarFilled.style.width = percent + '%';
+  progressText.textContent = `${percent}% av 100% klart – ca ${timeLeft} kvar`;
+});
 
       await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
 
