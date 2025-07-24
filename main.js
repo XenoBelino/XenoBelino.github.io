@@ -579,11 +579,17 @@ function closeNoVideoPopup() {
       const file = fileInput.files[0];
       ffmpeg.FS('writeFile', file.name, await fetchFile(file));
 
-      ffmpeg.setProgress(({ ratio }) => {
-        const percent = Math.round(ratio * 100);
-        progressBarFilled.style.width = percent + '%';
-        progressText.textContent = `${percent}% av 100% klart`;
-      });
+      let startTime = Date.now();
+
+ffmpeg.setProgress(({ ratio }) => {
+  const percent = Math.min(Math.round(ratio * 100), 100);
+  const elapsed = (Date.now() - startTime) / 1000;
+  const estimatedTotal = elapsed / (ratio || 0.0001); // skydda mot div/0
+  const remaining = Math.max(0, estimatedTotal - elapsed).toFixed(1);
+
+  progressBarFilled.style.width = `${percent}%`;
+  progressText.textContent = `${percent}% av 100% klart (${remaining}s kvar)`;
+});
 
       await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
 
