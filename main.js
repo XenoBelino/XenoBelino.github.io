@@ -12,9 +12,6 @@ let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
-let progressBarFilled;
-let mediaElementSource = null;
-let mediaSourceNode;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -76,54 +73,76 @@ document.addEventListener("click", function (event) {
 function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
-
   uploadedFile = file;
-
   const video = document.getElementById("video-player");
   const source = document.getElementById("video-source");
   const url = URL.createObjectURL(file);
   source.src = url;
-
-  // Sätt volymreglage och uppdatera
-  originalVolumeSlider = document.getElementById("original-volume");
+  video.onloadedmetadata = () => {
+  video.volume = 0.5; // sätt startvolym
+  video.muted = false;
   originalVolumeSlider.value = 50;
   updateVolumePercentage("original");
+  video.play().catch(console.warn);
+};
 
-  // När metadata laddats (då vet vi duration och kan spela upp)
-  video.onloadedmetadata = () => {
-    video.volume = 0.5;
-    video.muted = false;
-    video.play().catch(console.warn);
-  };
+  video.load(); // Viktigt att detta ligger efter .onloadedmetadata
 
-  video.load(); // Viktigt – laddar ny src
-
-  // 🧹 Nollställ GUI när ny fil laddas
-  document.getElementById("download-btn").style.display = "none";
-  document.getElementById("progress-bar").style.display = "none";
-  document.getElementById("progress-text").style.display = "none";
-  document.getElementById("progress-bar-filled").style.width = "0%";
-
-  // Uppdatera visning av filnamn
   document.getElementById("file-name").textContent = file.name;
-
-  // Återställ interna flaggor
   acceptedTerms = false;
   selectedUpgradeResolution = null;
   warningAccepted = false;
   userAcceptedTerms = false;
-  languagePopupShown = false;
 
-  // Starta ljudkedjan
+  // Skapa ljudkedja
   setupAudioGraph(video);
+    
+ // Simulera språkdetektion
+const simulatedLanguages = ["Svenska", "Engelska"]; // <-- ändra som du vill
+const robotVoiceIncluded = true;
 
-  // Simulera språkdetektion
-  const simulatedLanguages = ["Svenska", "Engelska"];
-  const robotVoiceIncluded = true;
+setTimeout(() => {
+  showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
+}, 1000);
+}    
 
-  setTimeout(() => {
-    showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
-  }, 1000);
+function showLanguageDetectionPopup(languages, hasRobotVoice) {
+    if (languagePopupShown) return;
+    languagePopupShown = true;
+
+    const popup = document.getElementById("popup-language-detection");
+    const message = document.getElementById("language-detection-message");
+
+    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+
+
+    const anchor = document.getElementById("language-popup-anchor");
+    if (!anchor.contains(popup)) {
+  anchor.appendChild(popup);
+}
+    popup.style.display = "block";
+
+    // Visa knappar
+    const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
+    [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
+
+    if (languages[0]) {
+        btn1.textContent = `Move ${languages[0]}`;
+        btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
+        btn1.style.display = "inline-block";
+    }
+
+    if (languages[1]) {
+        btn2.textContent = `Move ${languages[1]}`;
+        btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
+        btn2.style.display = "inline-block";
+    }
+
+    if (hasRobotVoice) {
+        btn3.textContent = "Move Robotic Voice";
+        btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
+        btn3.style.display = "inline-block";
+    }
 }
 
     // Visa popup
@@ -341,16 +360,11 @@ async function startUpgradeProcess(resolution) {
       const progressText = document.getElementById("progress-text");
       progressBar.style.display = "block";
       progressText.style.display = "block";
-    let startTime = Date.now();
 
-ffmpeg.setProgress(({ ratio }) => {
-  const percent = Math.min(Math.round(ratio * 100), 100);
-  const elapsed = (Date.now() - startTime) / 1000;
-  const estimatedTotal = elapsed / (ratio || 0.0001); // skydda mot div/0
-  const remaining = Math.max(0, estimatedTotal - elapsed).toFixed(1);
-
-  progressBarFilled.style.width = `${percent}%`;
-  progressText.textContent = `${percent}% av 100% klart (${remaining}s kvar)`;
+    ffmpeg.setProgress(({ ratio }) => {
+    const percent = Math.min(Math.round(ratio * 100), 100);
+    document.getElementById("progress-bar-filled").style.width = `${percent}%`;
+    document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade`;
 });
 
       const resolutionMap = {
@@ -420,78 +434,38 @@ ffmpeg.setProgress(({ ratio }) => {
 
  }
 }
-
-function showLanguageDetectionPopup(languages, robotVoiceIncluded) {
-  const popup = document.getElementById("popup-language-detection");
-  const message = document.getElementById("language-detection-message");
-
-  if (!popup || !message) return;
-
-  // Visa text beroende på robotröst
-  message.textContent = robotVoiceIncluded
-    ? "Vi upptäckte följande språk samt en roboströst:"
-    : "Vi upptäckte följande språk:";
-
-  // Hantera upp till tre språk
-  languages.slice(0, 3).forEach((lang, index) => {
-    const btn = document.getElementById(`lang-btn-${index + 1}`);
-    if (btn) {
-      btn.textContent = lang;
-      btn.style.display = "inline-block";
-      btn.onclick = () => assignLanguageToCorrupted(lang);
-    }
-  });
-
-  popup.style.display = "block";
-}
-
+    
 function showProgressBar() {
   document.getElementById("progress-bar").style.display = "block";
   document.getElementById("progress-text").style.display = "block";
 }
 
 function setupAudioGraph(videoElement) {
-  // Initiera AudioContext om det inte redan finns
   if (!audioContext) {
     audioContext = new AudioContext();
   }
+  sourceNode = audioContext.createMediaElementSource(videoElement);
 
-  // Koppla bort tidigare mediaElementSource om den finns (för att undvika dubbelkoppling)
-  if (mediaElementSource) {
-    try {
-      mediaElementSource.disconnect();
-    } catch (e) {
-      console.warn("Kunde inte koppla bort tidigare mediaElementSource:", e);
-    }
-  }
-
-  // Skapa ny mediaElementSource och spara som både mediaElementSource och sourceNode
-  mediaElementSource = audioContext.createMediaElementSource(videoElement);
-  sourceNode = mediaElementSource; // används globalt på andra ställen
-
-  // Skapa gain-noder
   gainNodeOriginal = audioContext.createGain();
   gainNodeMusic = audioContext.createGain();
   gainNodeCorrupted = audioContext.createGain();
   gainNodeFinal = audioContext.createGain();
 
-  // Koppla videon parallellt till respektive volymkanal
-  mediaElementSource.connect(gainNodeOriginal);
-  mediaElementSource.connect(gainNodeMusic);
-  mediaElementSource.connect(gainNodeCorrupted);
+  // Parallell koppling:
+  sourceNode.connect(gainNodeOriginal);
+  sourceNode.connect(gainNodeMusic);
+  sourceNode.connect(gainNodeCorrupted);
 
-  // Koppla varje volymkanal till högtalarna direkt
   gainNodeOriginal.connect(audioContext.destination);
   gainNodeMusic.connect(audioContext.destination);
   gainNodeCorrupted.connect(audioContext.destination);
 
-  // Koppla alla tre även till en slutlig mixad gainNode (gainNodeFinal)
+  // Om du vill mixa allting, koppla till en final:
   gainNodeOriginal.connect(gainNodeFinal);
   gainNodeMusic.connect(gainNodeFinal);
   gainNodeCorrupted.connect(gainNodeFinal);
   gainNodeFinal.connect(audioContext.destination);
 
-  // Starta upp ljudkedjan (ibland krävs det för att väcka ljud i browser)
   audioContext.resume().catch(e => console.warn("AudioContext resume failed:", e));
 }
 
@@ -550,18 +524,16 @@ function closeNoVideoPopup() {
   musicSource.start();
   corruptedSource.start();
 }
-  
+   
  window.addEventListener("load", () => {
   // Variabler
-  // Hämta och tilldela globala DOM-referenser
-originalVolumeSlider = document.getElementById("original-volume"); // global
-progressBarFilled = document.getElementById('progress-bar-filled'); // global
-downloadBtn = document.getElementById('download-btn'); // global
-
   const fileInput = document.getElementById('file-input');
   const videoPlayer = document.getElementById('video-player');
   const progressBar = document.getElementById('progress-bar');
+  const progressBarFilled = document.getElementById('progress-bar-filled');
   const progressText = document.getElementById('progress-text');
+  const downloadBtn = document.getElementById('download-btn');
+  const originalVolumeSlider = document.getElementById('original-volume');
   const video = videoPlayer;
 
   let isConverting = false;
@@ -604,74 +576,61 @@ downloadBtn = document.getElementById('download-btn'); // global
 
   // Funktion: Konvertera video till MP4 med ffmpeg
   async function convertToMP4() {
-  if (isConverting) {
-    alert("Konvertering pågår redan. Vänta tills den är klar.");
-    return;
+    if (isConverting) {
+      alert("Konvertering pågår redan. Vänta tills den är klar.");
+      return;
+    }
+
+    if (!fileInput.files.length) {
+      alert('Vänligen välj en videofil först!');
+      return;
+    }
+
+    isConverting = true;
+    const convertBtn = document.getElementById('convert-btn');
+    convertBtn.disabled = true;
+    convertBtn.textContent = 'Konverterar...';
+
+    progressBar.style.display = 'block';
+    progressBarFilled.style.width = '0%';
+    progressText.style.display = 'block';
+    progressText.textContent = '0% av 100% klart';
+
+    try {
+      await loadFFmpeg();
+
+      const file = fileInput.files[0];
+      ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+
+      ffmpeg.setProgress(({ ratio }) => {
+        const percent = Math.round(ratio * 100);
+        progressBarFilled.style.width = percent + '%';
+        progressText.textContent = `${percent}% av 100% klart`;
+      });
+
+      await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
+
+      const data = ffmpeg.FS('readFile', 'output.mp4');
+      const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+      const videoURL = URL.createObjectURL(videoBlob);
+
+      videoPlayer.src = videoURL;
+
+      downloadBtn.style.display = 'inline-block';
+      downloadBtn.textContent = "Download Converted Video";
+
+      lastOperation = "convert";
+
+    } catch (e) {
+      alert('Fel vid konvertering: ' + e.message);
+    } finally {
+      convertBtn.disabled = false;
+      convertBtn.textContent = 'Convert to MP4';
+      progressBar.style.display = 'none';
+      progressText.style.display = 'none';
+      isConverting = false;
+    }
   }
-
-  if (!fileInput.files.length) {
-    alert('Vänligen välj en videofil först!');
-    return;
-  }
-
-  const convertBtn = document.getElementById('convert-btn');
-  const file = fileInput.files[0];
-  const ext = file.name.split('.').pop().toLowerCase();
-
-  if (ext === 'mp4') {
-    alert('Videon är redan i MP4-format – ingen konvertering behövs.');
-    convertBtn.disabled = false;
-    convertBtn.textContent = 'Convert to MP4';
-    return;
-  }
-
-  isConverting = true;
-  convertBtn.disabled = true;
-  convertBtn.textContent = 'Konverterar...';
-
-  progressBar.style.display = 'block';
-  progressBarFilled.style.width = '0%';
-  progressText.style.display = 'block';
-  progressText.textContent = '0% av 100% klart';
-
-  try {
-    await loadFFmpeg();
-    ffmpeg.FS('writeFile', file.name, await fetchFile(file));
-
-    let startTime = Date.now();
-
-    ffmpeg.setProgress(({ ratio }) => {
-      const percent = Math.min(Math.round(ratio * 100), 100);
-      const elapsed = (Date.now() - startTime) / 1000;
-      const estimatedTotal = elapsed / (ratio || 0.0001);
-      const remaining = Math.max(0, estimatedTotal - elapsed).toFixed(1);
-
-      progressBarFilled.style.width = `${percent}%`;
-      progressText.textContent = `${percent}% klart (${remaining}s kvar)`;
-    });
-
-    await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
-
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-    const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-    const videoURL = URL.createObjectURL(videoBlob);
-
-    videoPlayer.src = videoURL;
-    downloadBtn.style.display = 'inline-block';
-    downloadBtn.textContent = "Download Converted Video";
-
-    lastOperation = "convert";
-
-  } catch (e) {
-    alert('Fel vid konvertering: ' + e.message);
-  } finally {
-    convertBtn.disabled = false;
-    convertBtn.textContent = 'Convert to MP4';
-    progressBar.style.display = 'none';
-    progressText.style.display = 'none';
-    isConverting = false;
-  }
-}
 
   // Download-knappens klick-händelse
   downloadBtn.onclick = () => {
