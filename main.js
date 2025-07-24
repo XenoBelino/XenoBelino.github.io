@@ -459,11 +459,6 @@ function showProgressBar() {
   document.getElementById("progress-text").style.display = "block";
 }
 
-function showProgressBar() {
-  document.getElementById("progress-bar").style.display = "block";
-  document.getElementById("progress-text").style.display = "block";
-}
-
 function setupAudioGraph(videoElement) {
   // 🛡️ Kontrollera och rensa tidigare AudioContext-noder
   if (!window.audioContext) {
