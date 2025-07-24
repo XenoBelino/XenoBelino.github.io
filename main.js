@@ -470,7 +470,6 @@ function setupAudioGraph(videoElement) {
   if (window.sourceNode) {
     try {
       window.sourceNode.disconnect();
-      window.sourceNode.mediaElement = null;
     } catch (e) {
       console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
     }
