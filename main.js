@@ -74,6 +74,8 @@ function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
 
+  uploadedFile = file;  // redan global variabel
+
   let video = document.getElementById("video-player");
 
   if (!video) {
@@ -90,7 +92,6 @@ function handleFileSelect(event) {
   video.src = URL.createObjectURL(file);
   window.currentVideo = video;
 
-  // Anropa setupAudioGraph — det kommer bara skapa sourceNode första gången
   setupAudioGraph(video);
 
   video.onloadedmetadata = () => {
@@ -100,7 +101,11 @@ function handleFileSelect(event) {
   };
 
   video.load();
+
+  // Uppdatera texten med filnamnet
+  document.getElementById("file-name").textContent = uploadedFile.name;
 }
+
 
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
