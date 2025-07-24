@@ -459,31 +459,54 @@ function showProgressBar() {
   document.getElementById("progress-text").style.display = "block";
 }
 
+function showProgressBar() {
+  document.getElementById("progress-bar").style.display = "block";
+  document.getElementById("progress-text").style.display = "block";
+}
+
 function setupAudioGraph(videoElement) {
-  if (!audioContext) {
-    audioContext = new AudioContext();
+  // 🛡️ Kontrollera och rensa tidigare AudioContext-noder
+  if (!window.audioContext) {
+    window.audioContext = new AudioContext();
   }
-  sourceNode = audioContext.createMediaElementSource(videoElement);
 
-  gainNodeOriginal = audioContext.createGain();
-  gainNodeMusic = audioContext.createGain();
-  gainNodeCorrupted = audioContext.createGain();
-  gainNodeFinal = audioContext.createGain();
+  const audioContext = window.audioContext;
 
-  // Parallell koppling:
-  sourceNode.connect(gainNodeOriginal);
-  sourceNode.connect(gainNodeMusic);
-  sourceNode.connect(gainNodeCorrupted);
+  // Koppla bort gammal källa om den finns
+  if (window.sourceNode) {
+    try {
+      window.sourceNode.disconnect();
+    } catch (e) {
+      console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
+    }
+  }
 
-  gainNodeOriginal.connect(audioContext.destination);
-  gainNodeMusic.connect(audioContext.destination);
-  gainNodeCorrupted.connect(audioContext.destination);
+  // Koppla bort tidigare gainNodes om de finns
+  if (window.gainNodeOriginal) window.gainNodeOriginal.disconnect();
+  if (window.gainNodeMusic) window.gainNodeMusic.disconnect();
+  if (window.gainNodeCorrupted) window.gainNodeCorrupted.disconnect();
+  if (window.gainNodeFinal) window.gainNodeFinal.disconnect();
 
-  // Om du vill mixa allting, koppla till en final:
-  gainNodeOriginal.connect(gainNodeFinal);
-  gainNodeMusic.connect(gainNodeFinal);
-  gainNodeCorrupted.connect(gainNodeFinal);
-  gainNodeFinal.connect(audioContext.destination);
+  // 🔁 Skapa om alla noder
+  window.sourceNode = audioContext.createMediaElementSource(videoElement);
+  window.gainNodeOriginal = audioContext.createGain();
+  window.gainNodeMusic = audioContext.createGain();
+  window.gainNodeCorrupted = audioContext.createGain();
+  window.gainNodeFinal = audioContext.createGain();
+
+  // 🎧 Kopplingar
+  window.sourceNode.connect(window.gainNodeOriginal);
+  window.sourceNode.connect(window.gainNodeMusic);
+  window.sourceNode.connect(window.gainNodeCorrupted);
+
+  window.gainNodeOriginal.connect(audioContext.destination);
+  window.gainNodeMusic.connect(audioContext.destination);
+  window.gainNodeCorrupted.connect(audioContext.destination);
+
+  window.gainNodeOriginal.connect(window.gainNodeFinal);
+  window.gainNodeMusic.connect(window.gainNodeFinal);
+  window.gainNodeCorrupted.connect(window.gainNodeFinal);
+  window.gainNodeFinal.connect(audioContext.destination);
 
   audioContext.resume().catch(e => console.warn("AudioContext resume failed:", e));
 }
