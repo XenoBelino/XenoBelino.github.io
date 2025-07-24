@@ -12,6 +12,8 @@ let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
+let audioContext;
+let sourceNode;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -464,13 +466,6 @@ function showProgressBar() {
   document.getElementById("progress-bar").style.display = "block";
   document.getElementById("progress-text").style.display = "block";
 }
-
-let audioContext;
-let sourceNode;
-let gainNodeOriginal;
-let gainNodeMusic;
-let gainNodeCorrupted;
-let gainNodeFinal;
 
 function setupAudioGraph(videoElement) {
   if (!audioContext) {
