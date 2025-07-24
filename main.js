@@ -759,3 +759,4 @@ window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 
 console.log("main.js loaded successfully!");
+});
