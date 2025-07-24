@@ -742,21 +742,20 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Gör funktioner globala
-window.handleResolutionClick = handleResolutionClick;
+// Gör funktioner tillgängliga globalt så HTML kan anropa dem
+window.triggerFileInput = triggerFileInput;
+window.toggleBackgroundOptions = toggleBackgroundOptions;
 window.updateVolumePercentage = updateVolumePercentage;
 window.onUpgradeClick = onUpgradeClick;
 window.acceptTerms = acceptTerms;
 window.denyTerms = denyTerms;
-window.setLightMode = setLightMode;
-window.setDarkMode = setDarkMode;
-window.triggerFileInput = triggerFileInput;
-window.downloadUpgradedVideo = downloadUpgradedVideo;
-window.handleFileSelect = handleFileSelect;
-window.convertToMP4 = convertToMP4;
-window.toggleBackgroundOptions = toggleBackgroundOptions;
-window.closePopup = closePopup;
 window.proceedToResolution = proceedToResolution;
 window.startUpgradeProcess = startUpgradeProcess;
+window.handleResolutionClick = handleResolutionClick;
+window.downloadUpgradedVideo = downloadUpgradedVideo;
+window.closePopup = closePopup;
+window.handleFileSelect = handleFileSelect;
+window.setupAudioGraph = setupAudioGraph;
+window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 
 console.log("main.js loaded successfully!");
