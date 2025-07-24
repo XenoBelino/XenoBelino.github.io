@@ -76,50 +76,50 @@ function handleFileSelect(event) {
 
   uploadedFile = file;
 
-  // 🧹 Ta bort tidigare video-element om det finns
-  if (window.currentVideo) {
-    window.currentVideo.pause();
-    window.currentVideo.remove();
+  // Försök hitta befintlig video
+  let video = document.getElementById("video-player");
+
+  if (!video) {
+    // Skapa video om den inte finns
+    video = document.createElement("video");
+    video.controls = true;
+    video.id = "video-player";
+    document.getElementById("video-container").appendChild(video);
+  } else {
+    // Om video redan finns, pausa och nollställ src för att undvika dubbla videor
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
   }
 
-  // 🎥 Skapa nytt video-element
-  const video = document.createElement("video");
-  video.controls = true;
-  video.id = "video-player"; // Om du använder det i CSS eller andra funktioner
+  // Uppdatera videons källa med den valda filen
   video.src = URL.createObjectURL(file);
-  document.getElementById("video-container").appendChild(video);
-
-  // 🔄 Spara referens till senare
   window.currentVideo = video;
 
-  // 🛠️ Ljudkedja
+  // Sätt upp ljudkedjan (om du har en funktion för det)
   setupAudioGraph(video);
 
-  // 🔉 Initiera volym och slider
   video.onloadedmetadata = () => {
     const originalSlider = document.getElementById("original-volume");
-
     video.volume = 0.5;
     video.muted = false;
-
     if (originalSlider) {
       originalSlider.value = 50;
       updateVolumePercentage("original");
     }
-
     video.play().catch(console.warn);
   };
 
   video.load();
 
-  // 📝 UI och tillstånd
+  // Uppdatera UI
   document.getElementById("file-name").textContent = file.name;
   acceptedTerms = false;
   selectedUpgradeResolution = null;
   warningAccepted = false;
   userAcceptedTerms = false;
 
-  // 🧠 Simulerad språkigenkänning
+  // Här kan du köra eventuell språkigenkänning osv.
   const simulatedLanguages = ["Svenska", "Engelska"];
   const robotVoiceIncluded = true;
 
