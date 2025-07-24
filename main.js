@@ -74,9 +74,8 @@ function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  uploadedFile = file;
-
   let video = document.getElementById("video-player");
+
   if (!video) {
     video = document.createElement("video");
     video.id = "video-player";
@@ -91,35 +90,18 @@ function handleFileSelect(event) {
   video.src = URL.createObjectURL(file);
   window.currentVideo = video;
 
+  // Anropa setupAudioGraph — det kommer bara skapa sourceNode första gången
   setupAudioGraph(video);
 
   video.onloadedmetadata = () => {
-    const originalSlider = document.getElementById("original-volume");
     video.volume = 0.5;
     video.muted = false;
-    if (originalSlider) {
-      originalSlider.value = 50;
-      updateVolumePercentage("original");
-    }
     video.play().catch(console.warn);
   };
 
   video.load();
-
-  // Uppdatera UI
-  document.getElementById("file-name").textContent = file.name;
-  acceptedTerms = false;
-  selectedUpgradeResolution = null;
-  warningAccepted = false;
-  userAcceptedTerms = false;
-
-  const simulatedLanguages = ["Svenska", "Engelska"];
-  const robotVoiceIncluded = true;
-
-  setTimeout(() => {
-    showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
-  }, 1000);
 }
+
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
     if (languagePopupShown) return;
