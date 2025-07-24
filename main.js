@@ -13,6 +13,7 @@ let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
 let progressBarFilled;
+let mediaElementSource = null;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -425,31 +426,47 @@ function showProgressBar() {
 }
 
 function setupAudioGraph(videoElement) {
+  // Initiera AudioContext om det inte redan finns
   if (!audioContext) {
     audioContext = new AudioContext();
   }
-  sourceNode = audioContext.createMediaElementSource(videoElement);
 
+  // Koppla bort tidigare mediaElementSource om den finns (för att undvika dubbelkoppling)
+  if (mediaElementSource) {
+    try {
+      mediaElementSource.disconnect();
+    } catch (e) {
+      console.warn("Kunde inte koppla bort tidigare mediaElementSource:", e);
+    }
+  }
+
+  // Skapa ny mediaElementSource och spara som både mediaElementSource och sourceNode
+  mediaElementSource = audioContext.createMediaElementSource(videoElement);
+  sourceNode = mediaElementSource; // används globalt på andra ställen
+
+  // Skapa gain-noder
   gainNodeOriginal = audioContext.createGain();
   gainNodeMusic = audioContext.createGain();
   gainNodeCorrupted = audioContext.createGain();
   gainNodeFinal = audioContext.createGain();
 
-  // Parallell koppling:
-  sourceNode.connect(gainNodeOriginal);
-  sourceNode.connect(gainNodeMusic);
-  sourceNode.connect(gainNodeCorrupted);
+  // Koppla videon parallellt till respektive volymkanal
+  mediaElementSource.connect(gainNodeOriginal);
+  mediaElementSource.connect(gainNodeMusic);
+  mediaElementSource.connect(gainNodeCorrupted);
 
+  // Koppla varje volymkanal till högtalarna direkt
   gainNodeOriginal.connect(audioContext.destination);
   gainNodeMusic.connect(audioContext.destination);
   gainNodeCorrupted.connect(audioContext.destination);
 
-  // Om du vill mixa allting, koppla till en final:
+  // Koppla alla tre även till en slutlig mixad gainNode (gainNodeFinal)
   gainNodeOriginal.connect(gainNodeFinal);
   gainNodeMusic.connect(gainNodeFinal);
   gainNodeCorrupted.connect(gainNodeFinal);
   gainNodeFinal.connect(audioContext.destination);
 
+  // Starta upp ljudkedjan (ibland krävs det för att väcka ljud i browser)
   audioContext.resume().catch(e => console.warn("AudioContext resume failed:", e));
 }
 
@@ -508,7 +525,7 @@ function closeNoVideoPopup() {
   musicSource.start();
   corruptedSource.start();
 }
-   
+  
  window.addEventListener("load", () => {
   // Variabler
   // Hämta och tilldela globala DOM-referenser
