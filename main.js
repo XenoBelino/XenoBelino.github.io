@@ -452,54 +452,41 @@ function setupAudioGraph(videoElement) {
     audioContext = new AudioContext();
   }
 
-  // Koppla bort tidigare källa om den finns
-  if (sourceNode) {
+  if (!sourceNode) {
     try {
-      sourceNode.disconnect();
+      sourceNode = audioContext.createMediaElementSource(videoElement);
     } catch (e) {
-      console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
+      console.warn("Kan inte skapa MediaElementSourceNode:", e);
+      return;
     }
-    sourceNode = null;
+
+    gainNodeOriginal = audioContext.createGain();
+    gainNodeMusic = audioContext.createGain();
+    gainNodeCorrupted = audioContext.createGain();
+    gainNodeFinal = audioContext.createGain();
+
+    gainNodeOriginal.gain.value = 1.0;
+    gainNodeMusic.gain.value = 0.5;
+    gainNodeCorrupted.gain.value = 0.2;
+    gainNodeFinal.gain.value = 1.0;
+
+    sourceNode.connect(gainNodeOriginal);
+    sourceNode.connect(gainNodeMusic);
+    sourceNode.connect(gainNodeCorrupted);
+
+    gainNodeOriginal.connect(gainNodeFinal);
+    gainNodeMusic.connect(gainNodeFinal);
+    gainNodeCorrupted.connect(gainNodeFinal);
+
+    gainNodeFinal.connect(audioContext.destination);
+
+    audioContext.resume().catch(e => {
+      console.warn("AudioContext resume failed:", e);
+    });
   }
-
-  // Skapa ny källa från videoelementet
-  try {
-    sourceNode = audioContext.createMediaElementSource(videoElement);
-  } catch (e) {
-    console.warn("Kan inte skapa ny MediaElementSourceNode:", e);
-    return;
-  }
-
-  // Skapa gain-noder (skapa på nytt varje gång för att undvika gamla kopplingar)
-  gainNodeOriginal = audioContext.createGain();
-  gainNodeMusic = audioContext.createGain();
-  gainNodeCorrupted = audioContext.createGain();
-  gainNodeFinal = audioContext.createGain();
-
-  // Sätt volymer till exempel (justera efter behov)
-  gainNodeOriginal.gain.value = 1.0;
-  gainNodeMusic.gain.value = 0.5;
-  gainNodeCorrupted.gain.value = 0.2;
-  gainNodeFinal.gain.value = 1.0;
-
-  // Koppla källa till de olika gain-noderna
-  sourceNode.connect(gainNodeOriginal);
-  sourceNode.connect(gainNodeMusic);
-  sourceNode.connect(gainNodeCorrupted);
-
-  // Koppla gain-noderna till slut-gain-node
-  gainNodeOriginal.connect(gainNodeFinal);
-  gainNodeMusic.connect(gainNodeFinal);
-  gainNodeCorrupted.connect(gainNodeFinal);
-
-  // Koppla slut-gain-node till destination (högtalare)
-  gainNodeFinal.connect(audioContext.destination);
-
-  // Försök att "väcka" audioContext (viktigt i vissa browsers)
-  audioContext.resume().catch(e => {
-    console.warn("AudioContext resume failed:", e);
-  });
+  // Om sourceNode redan finns — gör inget mer här
 }
+
 
 function stopArrowKeysFromAffectingVideo(sliderElement) {
   sliderElement.addEventListener('keydown', (e) => {
