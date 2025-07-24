@@ -76,15 +76,18 @@ function handleFileSelect(event) {
 
   uploadedFile = file;
 
-  // Video finns redan i DOM
-  const video = document.getElementById("video-player");
+  let video = document.getElementById("video-player");
+  if (!video) {
+    video = document.createElement("video");
+    video.id = "video-player";
+    video.controls = true;
+    document.getElementById("video-container").appendChild(video);
+  } else {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+  }
 
-  // Pausa och nollställ källa
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
-
-  // Sätt ny källa
   video.src = URL.createObjectURL(file);
   window.currentVideo = video;
 
