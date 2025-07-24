@@ -460,37 +460,38 @@ function showProgressBar() {
 }
 
 function setupAudioGraph(videoElement) {
-  // 🛡️ Kontrollera och rensa tidigare AudioContext-noder
   if (!window.audioContext) {
     window.audioContext = new AudioContext();
   }
 
   const audioContext = window.audioContext;
-    
+
+  // 🧹 Koppla bort och nolla tidigare ljudnoder
   if (window.sourceNode) {
-  try {
-    window.sourceNode.disconnect();
-    window.sourceNode.mediaElement = null; // Viktigt: ta bort kopplingen
-  } catch (e) {
-    console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
+    try {
+      window.sourceNode.disconnect();
+      window.sourceNode.mediaElement = null;
+    } catch (e) {
+      console.warn("Kunde inte koppla bort tidigare sourceNode:", e);
+    }
+    window.sourceNode = null;
   }
-  window.sourceNode = null;
-}
 
-  // Koppla bort tidigare gainNodes om de finns
-  if (window.gainNodeOriginal) window.gainNodeOriginal.disconnect();
-  if (window.gainNodeMusic) window.gainNodeMusic.disconnect();
-  if (window.gainNodeCorrupted) window.gainNodeCorrupted.disconnect();
-  if (window.gainNodeFinal) window.gainNodeFinal.disconnect();
+  // 🛡️ Försök skapa en ny källa från videoElement
+  try {
+    window.sourceNode = audioContext.createMediaElementSource(videoElement);
+  } catch (e) {
+    console.warn("Kan inte skapa ny MediaElementSourceNode:", e);
+    return; // Hindra resten av funktionen från att köra
+  }
 
-  // 🔁 Skapa om alla noder
-  window.sourceNode = audioContext.createMediaElementSource(videoElement);
+  // 🎛️ Skapa gain-noder
   window.gainNodeOriginal = audioContext.createGain();
   window.gainNodeMusic = audioContext.createGain();
   window.gainNodeCorrupted = audioContext.createGain();
   window.gainNodeFinal = audioContext.createGain();
 
-  // 🎧 Kopplingar
+  // 🔗 Koppla ljudflödet
   window.sourceNode.connect(window.gainNodeOriginal);
   window.sourceNode.connect(window.gainNodeMusic);
   window.sourceNode.connect(window.gainNodeCorrupted);
@@ -504,6 +505,7 @@ function setupAudioGraph(videoElement) {
   window.gainNodeCorrupted.connect(window.gainNodeFinal);
   window.gainNodeFinal.connect(audioContext.destination);
 
+  // 🟢 Starta ljud
   audioContext.resume().catch(e => console.warn("AudioContext resume failed:", e));
 }
 
