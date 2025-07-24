@@ -82,21 +82,20 @@ function handleFileSelect(event) {
   source.src = url;
 
   video.onloadedmetadata = () => {
-    video.volume = 0.5; // sätt volym till 50%
-    video.muted = false;
-
     const originalSlider = document.getElementById("original-volume");
-    if (originalSlider) {
-      originalSlider.value = 50; // 0–100, inte 0.5
-      updateVolumePercentage("original"); // anropa bara om elementet finns
-    }
 
-    updateVolumePercentage("original");
+    video.volume = 0.5;      // Sätt videons volym till 50%
+    video.muted = false;     // Avaktivera mute
+
+    if (originalSlider) {
+      originalSlider.value = 50; // Uppdatera slider till 50%
+      updateVolumePercentage("original");
+    }
 
     video.play().catch(console.warn);
   };
 
-  video.load(); // ladda in videon (måste göras efter onloadedmetadata)
+  video.load(); // Ladda in videon
 
   document.getElementById("file-name").textContent = file.name;
   acceptedTerms = false;
@@ -114,7 +113,7 @@ function handleFileSelect(event) {
   setTimeout(() => {
     showLanguageDetectionPopup(simulatedLanguages, robotVoiceIncluded);
   }, 1000);
-} 
+}
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
     if (languagePopupShown) return;
@@ -571,10 +570,6 @@ function closeNoVideoPopup() {
     const slider = document.getElementById(id);
     if (slider) stopArrowKeysFromAffectingVideo(slider);
   });
-
-  // Initiera volym-slider med video.volym
-  originalVolumeSlider.value = video.volume * 100;
-  updateVolumePercentage("original");
 
   // Lyssnare: när original-volume slider ändras → uppdatera videons volym
   originalVolumeSlider.addEventListener('input', () => {
