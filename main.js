@@ -365,18 +365,20 @@ async function startUpgradeProcess(resolution) {
       let startTime = Date.now();
 
       ffmpeg.setProgress(({ ratio }) => {
-        const percent = Math.round(ratio * 100);
-        const elapsed = (Date.now() - startTime) / 1000;
-        const estimatedTotal = elapsed / (ratio || 0.01);
-        const remaining = estimatedTotal - elapsed;
+  const percent = Math.round(ratio * 100);
+  const elapsed = (Date.now() - startTime) / 1000;
+  const estimatedTotal = elapsed / (ratio || 0.01);
+  const remaining = estimatedTotal - elapsed;
 
-        const minutes = Math.floor(remaining / 60);
-        const seconds = Math.floor(remaining % 60);
-        const timeLeft = `${minutes}m ${seconds}s`;
+  const hours = Math.floor(remaining / 3600);
+  const minutes = Math.floor((remaining % 3600) / 60);
+  const seconds = Math.floor(remaining % 60);
 
-        document.getElementById("progress-bar-filled").style.width = `${percent}%`;
-        progressText.textContent = `${percent}% of 100% to complete upgrade – approx. ${timeLeft} remaining`;
-      });
+  const timeLeft = `${hours}h ${minutes}m ${seconds}s`;
+
+  document.getElementById("progress-bar-filled").style.width = `${percent}%`;
+  progressText.textContent = `${percent}% of 100% to complete upgrade – approx. ${timeLeft} remaining`;
+});
 
       const resolutionMap = {
         '480p': '854x480',
