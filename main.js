@@ -417,6 +417,7 @@ if (uploadedFile) {
   fileName = `${originalName}_upgraded_to_${resolution}.mp4`;
 }
 
+const downloadBtn = document.getElementById("download-btn");        
 downloadBtn.href = url;
 downloadBtn.download = fileName;
 downloadBtn.style.display = "inline-block";
