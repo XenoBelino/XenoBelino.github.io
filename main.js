@@ -628,18 +628,22 @@ async function convertToMP4() {
     let startTime = Date.now();
 
     ffmpeg.setProgress(({ ratio }) => {
-      const percent = Math.round(ratio * 100);
-      const elapsed = (Date.now() - startTime) / 1000; // sekunder
-      const estimatedTotal = elapsed / (ratio || 0.01); // undvik div/0
-      const remaining = estimatedTotal - elapsed;
+  const percent = Math.round(ratio * 100);
+  const elapsed = (Date.now() - startTime) / 1000; // sekunder
+  const estimatedTotal = elapsed / (ratio || 0.01); // undvik div/0
+  const remaining = estimatedTotal - elapsed;
 
-      const minutes = Math.floor(remaining / 60);
-      const seconds = Math.floor(remaining % 60);
-      const timeLeft = `${minutes}m ${seconds}s`;
+  // Beräkna timmar, minuter, sekunder
+  const hours = Math.floor(remaining / 3600);
+  const minutes = Math.floor((remaining % 3600) / 60);
+  const seconds = Math.floor(remaining % 60);
 
-      progressBarFilled.style.width = percent + '%';
-      progressText.textContent = `${percent}% av 100% klart – ca ${timeLeft} kvar`;
-    });
+  // Formatera tid som "0h 21m 15s"
+  const timeLeft = `${hours}h ${minutes}m ${seconds}s`;
+
+  progressBarFilled.style.width = percent + '%';
+  progressText.textContent = `${percent}% av 100% to complete conversion – approx. ${timeLeft} kvar`;
+});
 
     await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
 
