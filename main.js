@@ -337,21 +337,22 @@ async function startUpgradeProcess(resolution) {
     return;
   }
 
-  isUpgrading = true; // 🟢 Blockera nya körningar tills denna är klar
+  isUpgrading = true;
 
-  try {
-    console.log("Resolution selected:", resolution);
-    showProgressBar();
+  console.log("Resolution selected:", resolution);
+  showProgressBar();
 
-    const videoFile = uploadedFile;
+  const videoFile = uploadedFile;
+  if (!videoFile) {
+    showPopup("popup-no-video");
+    isUpgrading = false;
+    return;
+  }
 
-    if (!videoFile) {
-      showPopup("popup-no-video");
-      return;
-    }
+  const reader = new FileReader();
 
-    const reader = new FileReader();
-    reader.onload = async () => {
+  reader.onload = async () => {
+    try {
       if (!ffmpeg.isLoaded()) {
         await ffmpeg.load();
       }
@@ -360,24 +361,22 @@ async function startUpgradeProcess(resolution) {
 
       const progressBar = document.getElementById("progress-bar");
       const progressText = document.getElementById("progress-text");
-      progressBar.style.display = "block";
-      progressText.style.display = "block";
 
-    let startTime = Date.now();
-    
-    ffmpeg.setProgress(({ ratio }) => {
-    const percent = Math.round(ratio * 100);
-    const elapsed = (Date.now() - startTime) / 1000;
-    const estimatedTotal = elapsed / (ratio || 0.01);
-    const remaining = estimatedTotal - elapsed;
+      let startTime = Date.now();
 
-    const minutes = Math.floor(remaining / 60);
-    const seconds = Math.floor(remaining % 60);
-    const timeLeft = `${minutes}m ${seconds}s`;
+      ffmpeg.setProgress(({ ratio }) => {
+        const percent = Math.round(ratio * 100);
+        const elapsed = (Date.now() - startTime) / 1000;
+        const estimatedTotal = elapsed / (ratio || 0.01);
+        const remaining = estimatedTotal - elapsed;
 
-    document.getElementById("progress-bar-filled").style.width = `${percent}%`;
-    document.getElementById("progress-text").textContent = `${percent}% of 100% to complete upgrade – approx. ${timeLeft} remaining`;
-});
+        const minutes = Math.floor(remaining / 60);
+        const seconds = Math.floor(remaining % 60);
+        const timeLeft = `${minutes}m ${seconds}s`;
+
+        document.getElementById("progress-bar-filled").style.width = `${percent}%`;
+        progressText.textContent = `${percent}% of 100% to complete upgrade – approx. ${timeLeft} remaining`;
+      });
 
       const resolutionMap = {
         '480p': '854x480',
@@ -389,50 +388,58 @@ async function startUpgradeProcess(resolution) {
       const size = resolutionMap[resolution] || '1280x720';
 
       await ffmpeg.run(
-      '-i', 'input.mp4',
-      '-vf', `scale=${size}:flags=lanczos`, // 🔍 bättre uppskalning
-      '-c:v', 'libx264',
-      '-preset', 'slow', // 🔄 kvalitetsoptimering
-      '-crf', '18',       // 🎥 visuell kvalitet (lägre = bättre)
-      '-c:a', 'copy',
-      'output.mp4'
-);
+        '-i', 'input.mp4',
+        '-vf', `scale=${size}:flags=lanczos`,
+        '-c:v', 'libx264',
+        '-preset', 'slow',
+        '-crf', '18',
+        '-c:a', 'copy',
+        'output.mp4'
+      );
 
-      document.getElementById("progress-bar-filled").style.width = "100%";
-      document.getElementById("progress-text").textContent = "100% of 100% to complete upgrade";
-
+      // Läs och visa videon
       const data = ffmpeg.FS('readFile', 'output.mp4');
-      const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+      const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+      const url = URL.createObjectURL(videoBlob);
 
       const video = document.getElementById("video-player");
-video.pause();
-video.removeAttribute("src");
-video.src = url;
-video.load();
-video.play().catch((e) => console.warn("Autoplay error:", e));
+      video.pause();
+      video.removeAttribute("src");
+      video.src = url;
+      video.load();
+      video.play().catch((e) => console.warn("Autoplay error:", e));
 
-let fileName = "upgraded_video.mp4";
-if (uploadedFile) {
-  const originalName = uploadedFile.name.replace(/\.[^/.]+$/, "");
-  fileName = `${originalName}_upgraded_to_${resolution}.mp4`;
+      // Sätt upp nedladdning
+      let fileName = "upgraded_video.mp4";
+      if (uploadedFile) {
+        const originalName = uploadedFile.name.replace(/\.[^/.]+$/, "");
+        fileName = `${originalName}_upgraded_to_${resolution}.mp4`;
+      }
+
+      const downloadBtn = document.getElementById("download-btn");
+      downloadBtn.href = url;
+      downloadBtn.download = fileName;
+      downloadBtn.style.display = "inline-block";
+      downloadBtn.textContent = "Download Upgraded Video";
+
+      setTimeout(() => {
+        progressBar.style.display = "none";
+        progressText.textContent = "Upgrade complete!";
+      }, 1500);
+
+      lastOperation = "upgrade";
+
+    } catch (err) {
+      console.error("Fel vid uppgradering:", err);
+      alert("Ett fel uppstod under videouppgraderingen.");
+    } finally {
+      isUpgrading = false;
+    }
+  };
+
+  // 🔁 Viktigt: detta kallas sist
+  reader.readAsArrayBuffer(videoFile);
 }
-
-const downloadBtn = document.getElementById("download-btn");        
-downloadBtn.href = url;
-downloadBtn.download = fileName;
-downloadBtn.style.display = "inline-block";
-downloadBtn.textContent = "Download Upgraded Video";
-
-setTimeout(() => {
-  progressBar.style.display = "none";
-  progressText.textContent = "Upgrade complete!";
-}, 1500);
-
-lastOperation = "upgrade";
-
-
-    // ✅ Korrekt plats: kör reader först efter definierad `onload`
-    reader.readAsArrayBuffer(videoFile);
 
   } catch (err) {
     console.error("Fel vid uppgradering:", err);
