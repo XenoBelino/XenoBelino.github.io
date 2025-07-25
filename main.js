@@ -404,32 +404,31 @@ async function startUpgradeProcess(resolution) {
       const data = ffmpeg.FS('readFile', 'output.mp4');
       const url = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
 
-      const source = document.getElementById("video-source");
       const video = document.getElementById("video-player");
-      source.src = url;
-      video.load();
-      let fileName = "upgraded_video.mp4";
-      if (uploadedFile) {
-      const originalName = uploadedFile.name.replace(/\.[^/.]+$/, ""); // Tar bort filändelsen
-      fileName = `${originalName}_upgraded_to_${resolution}.mp4`;
+video.pause();
+video.removeAttribute("src");
+video.src = url;
+video.load();
+video.play().catch((e) => console.warn("Autoplay error:", e));
+
+let fileName = "upgraded_video.mp4";
+if (uploadedFile) {
+  const originalName = uploadedFile.name.replace(/\.[^/.]+$/, "");
+  fileName = `${originalName}_upgraded_to_${resolution}.mp4`;
 }
 
-       const link = document.createElement("a");
-       link.href = url;
-       link.download = fileName;
-       document.body.appendChild(link);
-       link.click();
-       document.body.removeChild(link);
-       video.onloadeddata = () => {
-       video.play().catch((e) => console.warn("Autoplay error:", e));
-       document.getElementById("download-btn").style.display = "block";
+downloadBtn.href = url;
+downloadBtn.download = fileName;
+downloadBtn.style.display = "inline-block";
+downloadBtn.textContent = "Download Upgraded Video";
 
-        setTimeout(() => {
-          progressBar.style.display = "none";
-          progressText.textContent = "Upgrade complete!";
-        }, 1500);
-      };
-    };
+setTimeout(() => {
+  progressBar.style.display = "none";
+  progressText.textContent = "Upgrade complete!";
+}, 1500);
+
+lastOperation = "upgrade";
+
 
     // ✅ Korrekt plats: kör reader först efter definierad `onload`
     reader.readAsArrayBuffer(videoFile);
