@@ -364,7 +364,7 @@ async function startUpgradeProcess(resolution) {
 
       let startTime = Date.now();
 
-      ffmpeg.setProgress(({ ratio }) => {
+    ffmpeg.setProgress(({ ratio }) => {
   const percent = Math.round(ratio * 100);
   const elapsed = (Date.now() - startTime) / 1000;
   const estimatedTotal = elapsed / (ratio || 0.01);
@@ -374,11 +374,15 @@ async function startUpgradeProcess(resolution) {
   const minutes = Math.floor((remaining % 3600) / 60);
   const seconds = Math.floor(remaining % 60);
 
-  const timeLeft = `${hours}h ${minutes}m ${seconds}s`;
+  const timeLeft =
+    hours > 0
+      ? `${hours}h ${minutes}m ${seconds}s`
+      : `${minutes}m ${seconds}s`;
 
   document.getElementById("progress-bar-filled").style.width = `${percent}%`;
   progressText.textContent = `${percent}% of 100% to complete upgrade – approx. ${timeLeft} remaining`;
 });
+
 
       const resolutionMap = {
         '480p': '854x480',
@@ -629,7 +633,7 @@ async function convertToMP4() {
 
     let startTime = Date.now();
 
-    ffmpeg.setProgress(({ ratio }) => {
+   ffmpeg.setProgress(({ ratio }) => {
   const percent = Math.round(ratio * 100);
   const elapsed = (Date.now() - startTime) / 1000; // sekunder
   const estimatedTotal = elapsed / (ratio || 0.01); // undvik div/0
@@ -640,8 +644,11 @@ async function convertToMP4() {
   const minutes = Math.floor((remaining % 3600) / 60);
   const seconds = Math.floor(remaining % 60);
 
-  // Formatera tid som "0h 21m 15s"
-  const timeLeft = `${hours}h ${minutes}m ${seconds}s`;
+  // Formatera tid: dölj "0h" om onödigt
+  const timeLeft =
+    hours > 0
+      ? `${hours}h ${minutes}m ${seconds}s`
+      : `${minutes}m ${seconds}s`;
 
   progressBarFilled.style.width = percent + '%';
   progressText.textContent = `${percent}% av 100% to complete conversion – approx. ${timeLeft} kvar`;
