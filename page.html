@@ -506,6 +506,30 @@ body.dark-mode #corrupted-selected-language {
         <button class="option-button" onclick="setLightMode()">Light Mode</button>
         <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
     </div>
-<script type="module" src="main.js"></script>
+
+<!-- Ladda externa bibliotek -->
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/onnxruntime-web.min.js"></script>
+
+<!-- Importera moduler och kör kod -->
+<script type="module">
+  import {
+    extractAudioFromVideo,
+    detectLanguagesFromAudio,
+    showLanguageSelectionPopup,
+    removeLanguagesFromAudio,
+    muxAudioWithVideo,
+    downloadFinalVideo
+  } from './ai-module.js';
+
+  const fileInput = document.getElementById('file-input');
+  fileInput.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const audio = await extractAudioFromVideo(file);
+    const languages = await detectLanguagesFromAudio(audio);
+    showLanguageSelectionPopup(languages);
+  });
+</script>
 </body> 
 </html> 
