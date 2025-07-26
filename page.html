@@ -512,7 +512,7 @@ body.dark-mode #corrupted-selected-language {
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/onnxruntime-web.min.js"></script>
 
 <!-- Importera moduler och kör kod -->
-<script type="module">
+<script>
   import {
     extractAudioFromVideo,
     detectLanguagesFromAudio,
@@ -522,14 +522,16 @@ body.dark-mode #corrupted-selected-language {
     downloadFinalVideo
   } from './ai-module.js';
 
-  const fileInput = document.getElementById('file-input');
-  fileInput.addEventListener('change', async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const audio = await extractAudioFromVideo(file);
-    const languages = await detectLanguagesFromAudio(audio);
-    showLanguageSelectionPopup(languages);
+  // Detta funkar inte utan bundler, så ändra till vanligt script istället, t.ex:
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('file-input');
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const audio = await extractAudioFromVideo(file);
+      const languages = await detectLanguagesFromAudio(audio);
+      showLanguageSelectionPopup(languages);
+    });
   });
 </script>
-</body> 
-</html> 
