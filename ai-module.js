@@ -1,85 +1,69 @@
-/**
- * ai-module.js
- * 
- * En modul för video-/ljudbearbetning och språkdetektering med Whisper ONNX-modellen.
- * Kräver: ffmpeg.min.js, onnxruntime-web.min.js, whisper-tiny.onnx (modellfil).
- * 
- * Exporterade funktioner:
- * - extractAudioFromVideo(file): extraherar ljud från videofil (File-objekt).
- * - detectLanguagesFromAudio(audioBlob): kör Whisper-modellen på ljud och returnerar språklistan.
- * - showLanguageSelectionPopup(languages): visar popup för språkval.
- * - removeLanguagesFromAudio(audioBlob, languagesToRemove): tar bort valda språk från ljud.
- * - muxAudioWithVideo(originalVideo, newAudio): sammanfogar nytt ljud med video.
- * - downloadFinalVideo(blob): triggar nedladdning av den slutgiltiga videon.
- * 
- * Användning: importera och kalla funktioner från din main.js eller inline script.
- */
+// ai-module.js
 
-import * as ort from 'onnxruntime-web';
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+// Använd den globala FFmpeg-variabeln från CDN
+const ffmpeg = FFmpeg.createFFmpeg({ log: true });
 
-const ffmpeg = createFFmpeg({ log: true });
-let ffmpegLoaded = false;
-
-async function loadFFmpeg() {
-  if (!ffmpegLoaded) {
-    await ffmpeg.load();
-    ffmpegLoaded = true;
-  }
-}
-
-// Extraherar ljud som Blob från video-fil (File-objekt)
 export async function extractAudioFromVideo(file) {
-  await loadFFmpeg();
-  ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
-  await ffmpeg.run('-i', 'input.mp4', '-q:a', '0', '-map', 'a', 'audio.wav');
-  const data = ffmpeg.FS('readFile', 'audio.wav');
-  return new Blob([data.buffer], { type: 'audio/wav' });
-}
-
-// Initiera ONNX-runtime session för Whisper Tiny-modellen
-let session;
-
-async function getSession() {
-  if (!session) {
-    session = await ort.InferenceSession.create('tiny.en-encoder.int8.onnx');
-    console.log('Whisper Tiny modell laddad!');
+  if (!ffmpeg.isLoaded()) {
+    await ffmpeg.load();
   }
-  return session;
+
+  // Skriv filen till FFmpeg:s filsystem
+  ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
+
+  // Kör ffmpeg-kommando för att extrahera ljud
+  await ffmpeg.run('-i', 'input.mp4', '-q:a', '0', '-map', 'a', 'output.mp3');
+
+  // Läs ut den extraherade ljudfilen
+  const data = ffmpeg.FS('readFile', 'output.mp3');
+
+  // Returnera som Blob (audio/mpeg)
+  return new Blob([data.buffer], { type: 'audio/mpeg' });
 }
 
-
-// Kör språkdetektering på ljudfil (Blob) med Whisper Tiny
 export async function detectLanguagesFromAudio(audioBlob) {
-  // Här behövs en ljudpreprocessning & feature-extraktion som matchar Whisper (ex. MFCC)
-  // För demo: returnerar statisk lista — ersätt med riktig modellkod vid implementering.
-  return ['English', 'Swedish', 'French']; 
+  // Använd onnxruntime globalt som 'ort'
+  // Ladda modellen (se till att den finns på rätt plats)
+  const session = await ort.InferenceSession.create('modell.onnx');
+
+  // Exempel på hur du läser data från audioBlob och kör inferens
+  const arrayBuffer = await audioBlob.arrayBuffer();
+  const inputTensor = new ort.Tensor('float32', new Float32Array(arrayBuffer), [1, arrayBuffer.byteLength]);
+
+  const feeds = { input: inputTensor };
+  const results = await session.run(feeds);
+
+  // Returnera språk som array (exempel)
+  return results.output.data;
 }
 
-// Visar en enkel popup för språkval
 export function showLanguageSelectionPopup(languages) {
-  alert('Detected languages: ' + languages.join(', '));
-  // Du kan bygga en finare UI-popup i din app och kalla denna med språk-listan.
+  // Enkel funktion som visar popup för språkval (dummy)
+  alert('Languages detected: ' + languages.join(', '));
 }
 
-// Tar bort valda språk från ljudfil (placeholder, kräver komplex DSP eller AI)
 export async function removeLanguagesFromAudio(audioBlob, languagesToRemove) {
-  // Placeholder - ingen verklig borttagning
+  // Dummy funktion - implementera enligt behov
+  console.log('Removing languages:', languagesToRemove);
   return audioBlob;
 }
 
-// Sammanfogar ny audio (Blob) med originalvideo (File-objekt) och returnerar Blob video
-export async function muxAudioWithVideo(originalVideoFile, newAudioBlob) {
-  await loadFFmpeg();
-  ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(originalVideoFile));
-  ffmpeg.FS('writeFile', 'newaudio.wav', await fetchFile(newAudioBlob));
-  // Byt ljudspår och skapa ny video-fil
-  await ffmpeg.run('-i', 'input.mp4', '-i', 'newaudio.wav', '-c:v', 'copy', '-map', '0:v:0', '-map', '1:a:0', '-shortest', 'output.mp4');
+export async function muxAudioWithVideo(videoFile, audioBlob) {
+  if (!ffmpeg.isLoaded()) {
+    await ffmpeg.load();
+  }
+
+  ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
+  ffmpeg.FS('writeFile', 'audio.mp3', await fetchFile(audioBlob));
+
+  // Kör ffmpeg för att muxa video + nytt ljud
+  await ffmpeg.run('-i', 'input.mp4', '-i', 'audio.mp3', '-c:v', 'copy', '-c:a', 'aac', 'output.mp4');
+
   const data = ffmpeg.FS('readFile', 'output.mp4');
+
   return new Blob([data.buffer], { type: 'video/mp4' });
 }
 
-// Startar nedladdning av video Blob
 export function downloadFinalVideo(blob) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -88,8 +72,6 @@ export function downloadFinalVideo(blob) {
   a.download = 'upgraded-video.mp4';
   document.body.appendChild(a);
   a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 100);
+  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 }
