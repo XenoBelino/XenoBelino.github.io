@@ -549,7 +549,24 @@ function closeNoVideoPopup() {
   musicSource.start();
   corruptedSource.start();
 }
-   
+
+async function extractAudioFromVideo(file) {
+  const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+  if (!ffmpeg.isLoaded()) await ffmpeg.load();
+
+  ffmpeg.FS('writeFile', 'input.mp4', await FFmpeg.fetchFile(file));
+  await ffmpeg.run('-i', 'input.mp4', '-q:a', '0', '-map', 'a', 'output.mp3');
+  const data = ffmpeg.FS('readFile', 'output.mp3');
+  return new Blob([data.buffer], { type: 'audio/mpeg' });
+}
+
+async function detectLanguagesFromAudio(audioBlob) {
+  const session = await ort.InferenceSession.create('modell.onnx');
+  const arrayBuffer = await audioBlob.arrayBuffer();
+  const inputTensor = new ort.Tensor('float32', new Float32Array(arrayBuffer), [1, arrayBuffer.byteLength]);
+  const results = await session.run({ input: inputTensor });
+  return results.output.data;
+}
  window.addEventListener("load", () => {
  // Variabler
 const fileInput = document.getElementById('file-input');
