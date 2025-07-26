@@ -43,6 +43,7 @@ let session;
 async function getSession() {
   if (!session) {
     session = await ort.InferenceSession.create('tiny.en-encoder.int8.onnx');
+    console.log('Whisper Tiny modell laddad!');
   }
   return session;
 }
