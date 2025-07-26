@@ -511,35 +511,6 @@ body.dark-mode #corrupted-selected-language {
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/onnxruntime-web.min.js"></script>
 
-<script>
-  // Definiera dina funktioner globalt här istället för import/export
-  async function extractAudioFromVideo(file) {
-    const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-    if (!ffmpeg.isLoaded()) await ffmpeg.load();
-
-    ffmpeg.FS('writeFile', 'input.mp4', await FFmpeg.fetchFile(file));
-    await ffmpeg.run('-i', 'input.mp4', '-q:a', '0', '-map', 'a', 'output.mp3');
-    const data = ffmpeg.FS('readFile', 'output.mp3');
-    return new Blob([data.buffer], { type: 'audio/mpeg' });
-  }
-
-  async function detectLanguagesFromAudio(audioBlob) {
-    const session = await ort.InferenceSession.create('modell.onnx');
-    const arrayBuffer = await audioBlob.arrayBuffer();
-    const inputTensor = new ort.Tensor('float32', new Float32Array(arrayBuffer), [1, arrayBuffer.byteLength]);
-    const results = await session.run({ input: inputTensor });
-    return results.output.data;
-  }
-
-  function showLanguageSelectionPopup(languages) {
-    alert('Languages detected: ' + languages.join(', '));
-  }
-
-  document.getElementById('file-input').addEventListener('change', async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const audio = await extractAudioFromVideo(file);
-    const languages = await detectLanguagesFromAudio(audio);
-    showLanguageSelectionPopup(languages);
-  });
-</script>
+script type="module" src="main.js"></script> 
+</body> 
+</html> 
