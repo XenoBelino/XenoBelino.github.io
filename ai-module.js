@@ -1,4 +1,5 @@
 // ai-module.js
+const fetchFile = FFmpeg.fetchFile;
 
 // Använd den globala FFmpeg-variabeln från CDN
 const ffmpeg = FFmpeg.createFFmpeg({ log: true });
