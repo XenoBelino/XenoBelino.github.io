@@ -70,14 +70,13 @@ document.addEventListener("click", function (event) {
         document.getElementById("file-input").click();
     }
 
-function handleFileSelect(event) {
+async function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  uploadedFile = file;  // redan global variabel
+  uploadedFile = file;
 
   let video = document.getElementById("video-player");
-
   if (!video) {
     video = document.createElement("video");
     video.id = "video-player";
@@ -102,10 +101,28 @@ function handleFileSelect(event) {
 
   video.load();
 
-  // Uppdatera texten med filnamnet
+  // Uppdatera filnamnet i UI
   document.getElementById("file-name").textContent = uploadedFile.name;
-}
 
+  // 👇 Lägg till språkdetektion
+  try {
+    const audio = await extractAudioFromVideo(file);
+    const languages = await detectLanguagesFromAudio(audio);
+
+    // Här bestämmer du om en "robotröst" ska flaggas – exempel:
+    const hasRobotVoice = languages.includes("robot") || languages.includes("synthetic");
+
+    // Ta bort 'robot' från listan om du visar separat knapp för det
+    const filteredLanguages = languages.filter(lang => lang !== "robot" && lang !== "synthetic");
+
+    // Visa popup för att välja vilket språk/röst som ska gå till Corrupted
+    showLanguageDetectionPopup(filteredLanguages, hasRobotVoice);
+
+  } catch (err) {
+    console.error("Fel vid ljudanalys:", err);
+    alert("Kunde inte analysera ljudspår för språk.");
+  }
+}
 
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
