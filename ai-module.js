@@ -39,12 +39,14 @@ export async function extractAudioFromVideo(file) {
 
 // Initiera ONNX-runtime session för Whisper Tiny-modellen
 let session;
+
 async function getSession() {
   if (!session) {
-    session = await ort.InferenceSession.create('whisper-tiny.onnx');
+    session = await ort.InferenceSession.create('tiny.en-encoder.int8.onnx');
   }
   return session;
 }
+
 
 // Kör språkdetektering på ljudfil (Blob) med Whisper Tiny
 export async function detectLanguagesFromAudio(audioBlob) {
