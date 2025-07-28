@@ -123,42 +123,41 @@ async function handleFileSelect(event) {
 }
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
-    if (languagePopupShown) return;
-    languagePopupShown = true;
+  if (languagePopupShown) return;
+  languagePopupShown = true;
 
-    const popup = document.getElementById("popup-language-detection");
-    const message = document.getElementById("language-detection-message");
+  const popup = document.getElementById("popup-language-detection");
+  const message = document.getElementById("language-detection-message");
 
-    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+  message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
 
+  const anchor = document.getElementById("language-popup-anchor");
+  if (!anchor.contains(popup)) {
+    anchor.appendChild(popup);
+  }
+  popup.style.display = "block";
 
-    const anchor = document.getElementById("language-popup-anchor");
-    if (!anchor.contains(popup)) {
-  anchor.appendChild(popup);
-}
-    popup.style.display = "block";
+  // Visa knappar
+  const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
+  [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
 
-    // Visa knappar
-    const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
-    [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
+  if (languages[0]) {
+    btn1.textContent = `Move ${languages[0]}`;
+    btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
+    btn1.style.display = "inline-block";
+  }
 
-    if (languages[0]) {
-        btn1.textContent = `Move ${languages[0]}`;
-        btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
-        btn1.style.display = "inline-block";
-    }
+  if (languages[1]) {
+    btn2.textContent = `Move ${languages[1]}`;
+    btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
+    btn2.style.display = "inline-block";
+  }
 
-    if (languages[1]) {
-        btn2.textContent = `Move ${languages[1]}`;
-        btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
-        btn2.style.display = "inline-block";
-    }
-
-    if (hasRobotVoice) {
-        btn3.textContent = "Move Robotic Voice";
-        btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
-        btn3.style.display = "inline-block";
-    }
+  if (hasRobotVoice) {
+    btn3.textContent = "Move Robotic Voice";
+    btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
+    btn3.style.display = "inline-block";
+  }
 }
 
     // Visa popup
