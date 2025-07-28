@@ -70,13 +70,14 @@ document.addEventListener("click", function (event) {
         document.getElementById("file-input").click();
     }
 
-async function handleFileSelect(event) {
+function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  uploadedFile = file;
+  uploadedFile = file;  // redan global variabel
 
   let video = document.getElementById("video-player");
+
   if (!video) {
     video = document.createElement("video");
     video.id = "video-player";
@@ -99,65 +100,51 @@ async function handleFileSelect(event) {
     video.play().catch(console.warn);
   };
 
-  // Uppdatera filnamnet i UI
+  video.load();
+
+  // Uppdatera texten med filnamnet
   document.getElementById("file-name").textContent = uploadedFile.name;
-
-  // 👇 Lägg till språkdetektion
-  try {
-    const audio = await extractAudioFromVideo(file);
-    const languages = await detectLanguagesFromAudio(audio);
-
-    // Här bestämmer du om en "robotröst" ska flaggas – exempel:
-    const hasRobotVoice = languages.includes("robot") || languages.includes("synthetic");
-
-    // Ta bort 'robot' från listan om du visar separat knapp för det
-    const filteredLanguages = languages.filter(lang => lang !== "robot" && lang !== "synthetic");
-
-    // Visa popup för att välja vilket språk/röst som ska gå till Corrupted
-    showLanguageDetectionPopup(filteredLanguages, hasRobotVoice);
-
-  } catch (err) {
-    console.error("Fel vid ljudanalys:", err);
-    alert("Kunde inte analysera ljudspår för språk.");
-  }
 }
 
+
+
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
-  if (languagePopupShown) return;
-  languagePopupShown = true;
+    if (languagePopupShown) return;
+    languagePopupShown = true;
 
-  const popup = document.getElementById("popup-language-detection");
-  const message = document.getElementById("language-detection-message");
+    const popup = document.getElementById("popup-language-detection");
+    const message = document.getElementById("language-detection-message");
 
-  message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
 
-  const anchor = document.getElementById("language-popup-anchor");
-  if (!anchor.contains(popup)) {
-    anchor.appendChild(popup);
-  }
-  popup.style.display = "block";
 
-  // Visa knappar
-  const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
-  [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
+    const anchor = document.getElementById("language-popup-anchor");
+    if (!anchor.contains(popup)) {
+  anchor.appendChild(popup);
+}
+    popup.style.display = "block";
 
-  if (languages[0]) {
-    btn1.textContent = `Move ${languages[0]}`;
-    btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
-    btn1.style.display = "inline-block";
-  }
+    // Visa knappar
+    const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
+    [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
 
-  if (languages[1]) {
-    btn2.textContent = `Move ${languages[1]}`;
-    btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
-    btn2.style.display = "inline-block";
-  }
+    if (languages[0]) {
+        btn1.textContent = `Move ${languages[0]}`;
+        btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
+        btn1.style.display = "inline-block";
+    }
 
-  if (hasRobotVoice) {
-    btn3.textContent = "Move Robotic Voice";
-    btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
-    btn3.style.display = "inline-block";
-  }
+    if (languages[1]) {
+        btn2.textContent = `Move ${languages[1]}`;
+        btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
+        btn2.style.display = "inline-block";
+    }
+
+    if (hasRobotVoice) {
+        btn3.textContent = "Move Robotic Voice";
+        btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
+        btn3.style.display = "inline-block";
+    }
 }
 
     // Visa popup
@@ -562,49 +549,7 @@ function closeNoVideoPopup() {
   musicSource.start();
   corruptedSource.start();
 }
-
-async function extractAudioFromVideo(file) {
-  const ffmpeg = FFmpeg.createFFmpeg({ log: true });
-  if (!ffmpeg.isLoaded()) await ffmpeg.load();
-
-  ffmpeg.FS('writeFile', 'input.mp4', await FFmpeg.fetchFile(file));
-  await ffmpeg.run('-i', 'input.mp4', '-q:a', '0', '-map', 'a', 'output.mp3');
-  const data = ffmpeg.FS('readFile', 'output.mp3');
-  return new Blob([data.buffer], { type: 'audio/mpeg' });
-}
-
-async function detectLanguageWithBackend(file) {
-  try {
-    const response = await fetch("/detect-languages", {
-      method: "POST",
-      body: file
-    });
-    const languages = await response.json();
-
-    // Skapa popup med språkval
-    const popup = document.createElement("div");
-    popup.innerHTML = `
-      <div>Multiple languages detected:</div>
-      <ul>
-        ${languages.map(lang => `<li><button onclick="handleLanguageSelection('${lang}')">${lang}</button></li>`).join('')}
-      </ul>
-      <button onclick="deleteLanguage()">Delete Language</button>
-    `;
-    document.body.appendChild(popup);
-  } catch (error) {
-    alert("Fel vid språkdetektion: " + error);
-  }
-}
-
-function handleLanguageSelection(language) {
-  console.log(`Selected language: ${language}`);
-  // Hantera att lägga till ljudspår till "corrupted audio"
-}
-
-function deleteLanguage() {
-  // Hantera borttagning av språk
-}
-
+   
  window.addEventListener("load", () => {
  // Variabler
 const fileInput = document.getElementById('file-input');
@@ -756,24 +701,9 @@ document.getElementById("final-volume").addEventListener("input", () => updateVo
 fileInput.addEventListener('change', handleFileSelect);
 document.getElementById('convert-btn').addEventListener('click', convertToMP4);
 document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
-document.getElementById("browse-btn").addEventListener("click", triggerFileInput);
-document.getElementById("change-background-btn").addEventListener("click", toggleBackgroundOptions);
+
 document.getElementById("corrupted-selected-language").textContent = "";
 document.getElementById("corrupted-selected-language").style.display = "none";
-document.getElementById('detect-language-btn').addEventListener('click', async () => {
-  const file = fileInput.files[0];
-  if (!file) {
-    alert("Välj en videofil först!");
-    return;
-  }
-
-  try {
-    await detectLanguageWithBackend(file);
-  } catch (err) {
-    console.error("Fel vid språkdetektion:", err);
-    alert("Det gick inte att detektera språk.");
-  }
-});
 
 document.addEventListener("keydown", (e) => {
   if (!video) return;
