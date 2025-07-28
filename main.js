@@ -107,8 +107,6 @@ function handleFileSelect(event) {
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
 
-let languagePopupShown = false;
-
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
   if (languagePopupShown) return;
   languagePopupShown = true;
