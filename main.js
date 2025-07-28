@@ -12,6 +12,7 @@ let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
+let languagePopupShown = false;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -106,43 +107,43 @@ function handleFileSelect(event) {
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
 
+let languagePopupShown = false;
+
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
-    if (languagePopupShown) return;
-    languagePopupShown = true;
+  if (languagePopupShown) return;
+  languagePopupShown = true;
 
-    const popup = document.getElementById("popup-language-detection");
-    const message = document.getElementById("language-detection-message");
+  const popup = document.getElementById("popup-language-detection");
+  const message = document.getElementById("language-detection-message");
+  const optionsContainer = document.getElementById("language-options");
 
-    message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+  // Visa info
+  message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
 
+  // Rensa gamla knappar
+  optionsContainer.innerHTML = "";
 
-    const anchor = document.getElementById("language-popup-anchor");
-    if (!anchor.contains(popup)) {
-  anchor.appendChild(popup);
-}
-    popup.style.display = "block";
+  // Skapa en knapp för varje språk
+  languages.forEach(lang => {
+    const btn = document.createElement("button");
+    btn.textContent = `Move ${lang}`;
+    btn.dataset.lang = lang;
+    btn.classList.add("popup-button");
+    btn.addEventListener("click", () => assignLanguageToCorrupted(lang));
+    optionsContainer.appendChild(btn);
+  });
 
-    // Visa knappar
-    const [btn1, btn2, btn3] = [document.getElementById("lang-btn-1"), document.getElementById("lang-btn-2"), document.getElementById("lang-btn-3")];
-    [btn1, btn2, btn3].forEach(btn => btn.style.display = "none");
+  // Robotröst (om tillgänglig)
+  if (hasRobotVoice) {
+    const robotBtn = document.createElement("button");
+    robotBtn.textContent = "Move Robotic Voice";
+    robotBtn.classList.add("popup-button");
+    robotBtn.addEventListener("click", () => assignLanguageToCorrupted("Robotic voice"));
+    optionsContainer.appendChild(robotBtn);
+  }
 
-    if (languages[0]) {
-        btn1.textContent = `Move ${languages[0]}`;
-        btn1.onclick = () => assignLanguageToCorrupted(languages[0]);
-        btn1.style.display = "inline-block";
-    }
-
-    if (languages[1]) {
-        btn2.textContent = `Move ${languages[1]}`;
-        btn2.onclick = () => assignLanguageToCorrupted(languages[1]);
-        btn2.style.display = "inline-block";
-    }
-
-    if (hasRobotVoice) {
-        btn3.textContent = "Move Robotic Voice";
-        btn3.onclick = () => assignLanguageToCorrupted("Robotic voice");
-        btn3.style.display = "inline-block";
-    }
+  // Visa popup
+  popup.style.display = "block";
 }
 
     // Visa popup
