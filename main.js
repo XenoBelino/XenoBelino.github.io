@@ -99,7 +99,6 @@ async function handleFileSelect(event) {
     video.play().catch(console.warn);
   };
 
-  video.load();
 
   // Uppdatera filnamnet i UI
   document.getElementById("file-name").textContent = uploadedFile.name;
