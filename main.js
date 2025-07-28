@@ -99,7 +99,6 @@ async function handleFileSelect(event) {
     video.play().catch(console.warn);
   };
 
-
   // Uppdatera filnamnet i UI
   document.getElementById("file-name").textContent = uploadedFile.name;
 
@@ -122,7 +121,6 @@ async function handleFileSelect(event) {
     alert("Kunde inte analysera ljudspår för språk.");
   }
 }
-
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
     if (languagePopupShown) return;
