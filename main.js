@@ -101,8 +101,6 @@ function handleFileSelect(event) {
     video.play().catch(console.warn);
   };
 
-  video.load();
-
   // Uppdatera texten med filnamnet
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
