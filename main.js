@@ -756,7 +756,8 @@ document.getElementById("final-volume").addEventListener("input", () => updateVo
 fileInput.addEventListener('change', handleFileSelect);
 document.getElementById('convert-btn').addEventListener('click', convertToMP4);
 document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
-
+document.getElementById("browse-btn").addEventListener("click", triggerFileInput);
+document.getElementById("change-background-btn").addEventListener("click", toggleBackgroundOptions);
 document.getElementById("corrupted-selected-language").textContent = "";
 document.getElementById("corrupted-selected-language").style.display = "none";
 document.getElementById('detect-language-btn').addEventListener('click', async () => {
