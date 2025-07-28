@@ -549,7 +549,9 @@ function closeNoVideoPopup() {
   musicSource.start();
   corruptedSource.start();
 }
-   
+
+ window.setLightMode = setLightMode;
+ window.setDarkMode = setDarkMode; 
  window.addEventListener("load", () => {
  // Variabler
 const fileInput = document.getElementById('file-input');
@@ -752,8 +754,6 @@ window.closePopup = closePopup;
 window.handleFileSelect = handleFileSelect;
 window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
-window.setLightMode = setLightMode;
-window.setDarkMode = setDarkMode;
 
 console.log("main.js loaded successfully!");
 });
