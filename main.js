@@ -582,27 +582,35 @@ async function detectLanguagesFromAudio(audioBlob) {
 }
 
 async function detectLanguageWithBackend(file) {
-  // 1. Extrahera audio från video
-  const audioBlob = await extractAudioFromVideo(file);
+  try {
+    const response = await fetch("/detect-languages", {
+      method: "POST",
+      body: file
+    });
+    const languages = await response.json();
 
-  // 2. Skicka audio till Colab API
-  const formData = new FormData();
-  formData.append('audio', audioBlob, 'audio.mp3');
-
-  // Ange din Colab URL här:
-  const colabUrl = 'https://32eeccc6d175b077a2.gradio.live';
-
-  const response = await fetch(colabUrl, {
-    method: 'POST',
-    body: formData
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to detect language');
+    // Skapa popup med språkval
+    const popup = document.createElement("div");
+    popup.innerHTML = `
+      <div>Multiple languages detected:</div>
+      <ul>
+        ${languages.map(lang => `<li><button onclick="handleLanguageSelection('${lang}')">${lang}</button></li>`).join('')}
+      </ul>
+      <button onclick="deleteLanguage()">Delete Language</button>
+    `;
+    document.body.appendChild(popup);
+  } catch (error) {
+    alert("Fel vid språkdetektion: " + error);
   }
+}
 
-  const text = await response.text();
-  alert(text);
+function handleLanguageSelection(language) {
+  console.log(`Selected language: ${language}`);
+  // Hantera att lägga till ljudspår till "corrupted audio"
+}
+
+function deleteLanguage() {
+  // Hantera borttagning av språk
 }
 
  window.addEventListener("load", () => {
