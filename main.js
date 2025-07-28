@@ -752,6 +752,8 @@ window.closePopup = closePopup;
 window.handleFileSelect = handleFileSelect;
 window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
+window.setDarkMode = setDarkMode;
+window.setLightMode = setLightMode;
 
 console.log("main.js loaded successfully!");
 });
