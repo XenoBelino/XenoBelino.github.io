@@ -584,6 +584,31 @@ async function detectLanguagesFromAudio(audioBlob) {
   const results = await session.run({ input: inputTensor });
   return results.output.data;
 }
+
+async function detectLanguageWithBackend(file) {
+  // 1. Extrahera audio från video
+  const audioBlob = await extractAudioFromVideo(file);
+
+  // 2. Skicka audio till Colab API
+  const formData = new FormData();
+  formData.append('audio', audioBlob, 'audio.mp3');
+
+  // Ange din Colab URL här:
+  const colabUrl = 'https://32eeccc6d175b077a2.gradio.live';
+
+  const response = await fetch(colabUrl, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to detect language');
+  }
+
+  const text = await response.text();
+  alert(text);
+}
+
  window.addEventListener("load", () => {
  // Variabler
 const fileInput = document.getElementById('file-input');
