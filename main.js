@@ -763,6 +763,20 @@ document.getElementById("upgrade-video-btn").addEventListener("click", onUpgrade
 
 document.getElementById("corrupted-selected-language").textContent = "";
 document.getElementById("corrupted-selected-language").style.display = "none";
+document.getElementById('detect-language-btn').addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) {
+    alert("Välj en videofil först!");
+    return;
+  }
+
+  try {
+    await detectLanguageWithBackend(file);
+  } catch (err) {
+    console.error("Fel vid språkdetektion:", err);
+    alert("Det gick inte att detektera språk.");
+  }
+});
 
 document.addEventListener("keydown", (e) => {
   if (!video) return;
