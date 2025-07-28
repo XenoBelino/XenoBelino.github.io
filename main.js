@@ -105,6 +105,18 @@ function handleFileSelect(event) {
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
 
+const fakeData = {
+  languages: ["Swedish", "Arabic"],
+  hasRobotVoice: false,
+  segments: [
+    { start: 0, end: 5, text: "Hej", language: "sv" },
+    { start: 5, end: 10, text: "مرحبا", language: "ar" }
+  ]
+};
+
+showLanguageDetectionPopup(fakeData.languages, fakeData.hasRobotVoice);
+
+
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
   if (languagePopupShown) return;
   languagePopupShown = true;
