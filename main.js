@@ -573,14 +573,6 @@ async function extractAudioFromVideo(file) {
   return new Blob([data.buffer], { type: 'audio/mpeg' });
 }
 
-async function detectLanguagesFromAudio(audioBlob) {
-  const session = await ort.InferenceSession.create('modell.onnx');
-  const arrayBuffer = await audioBlob.arrayBuffer();
-  const inputTensor = new ort.Tensor('float32', new Float32Array(arrayBuffer), [1, arrayBuffer.byteLength]);
-  const results = await session.run({ input: inputTensor });
-  return results.output.data;
-}
-
 async function detectLanguageWithBackend(file) {
   try {
     const response = await fetch("/detect-languages", {
