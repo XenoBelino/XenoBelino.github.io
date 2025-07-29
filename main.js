@@ -144,6 +144,30 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
     robotBtn.addEventListener("click", () => assignLanguageToCorrupted("Robotic voice"));
     optionsContainer.appendChild(robotBtn);
   }
+    
+  // Om mer än ett språk, lägg till en knapp för att ta bort ett av dem
+  if (languages.length > 1) {
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete a Language";
+    deleteBtn.classList.add("popup-button");
+
+    deleteBtn.addEventListener("click", () => {
+      optionsContainer.innerHTML = "";
+      message.innerHTML = "Which language do you want to delete from the video?";
+
+      languages.forEach(lang => {
+        const langDeleteBtn = document.createElement("button");
+        langDeleteBtn.textContent = `Delete ${lang}`;
+        langDeleteBtn.classList.add("popup-button");
+        langDeleteBtn.addEventListener("click", () => {
+          handleLanguageDeletion(lang, languages);
+        });
+        optionsContainer.appendChild(langDeleteBtn);
+      });
+    });
+
+    optionsContainer.appendChild(deleteBtn);
+  }
 
   // Visa popup
   popup.style.display = "block";
