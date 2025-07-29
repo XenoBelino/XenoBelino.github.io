@@ -565,16 +565,6 @@ function assignLanguageToCorrupted(language) {
   }
 }
 
-  // Simulerar borttagning av ljudspåret
-  const remaining = allLanguages.filter(l => l !== langToDelete);
-  console.log("Remaining language(s):", remaining);
-
-  closePopup("popup-language-detection");
-
-  // Här kan du senare lägga till logik för att exportera ny videofil
-}
-
-
 function closeResolutionPopup() {
     document.getElementById('upgrade-options').style.display = 'none';
 }
