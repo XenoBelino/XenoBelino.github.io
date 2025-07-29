@@ -101,9 +101,9 @@ function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  // 🔁 Skicka filen till Gradio/Whisper via FormData
+  // Skicka filen till Gradio/Whisper via FormData
   const formData = new FormData();
-  formData.append("data", file); // 👈 viktigt
+  formData.append("data", file);
 
   fetch("https://32eeccc6d175b077a2.gradio.live/", {
     method: "POST",
