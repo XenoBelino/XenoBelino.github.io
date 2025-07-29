@@ -179,7 +179,6 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
   // Visa popup
   popup.style.display = "block";
 }
-}
 
 function offerDownloadOfEditedFile(blob, languageKept) {
   const url = URL.createObjectURL(blob);
