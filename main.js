@@ -489,6 +489,43 @@ async function startUpgradeProcess(resolution) {
   reader.readAsArrayBuffer(videoFile);
 }
 
+async function removeLanguageFromVideo(languageToDelete, languageKept) {
+  if (!uploadedFile) {
+    alert("No uploaded file found.");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = async () => {
+    try {
+      if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+      }
+
+      ffmpeg.FS('writeFile', 'input.mp4', new Uint8Array(reader.result));
+
+      // 🔊 Här redigerar vi ljudet — detta exempel tar bort höger kanal (kan vara "Arabic")
+      await ffmpeg.run(
+        '-i', 'input.mp4',
+        '-af', 'pan=stereo|c0=c0|c1=0', // ← detta "mutar" höger kanal
+        '-c:v', 'copy',
+        'output.mp4'
+      );
+
+      const data = ffmpeg.FS('readFile', 'output.mp4');
+      const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+
+      offerDownloadOfEditedFile(videoBlob, languageKept);
+
+    } catch (err) {
+      console.error("Error while removing language:", err);
+      alert("An error occurred during language removal.");
+    }
+  };
+
+  reader.readAsArrayBuffer(uploadedFile);
+}
     
 function showProgressBar() {
   document.getElementById("progress-bar").style.display = "block";
