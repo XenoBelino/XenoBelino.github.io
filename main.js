@@ -101,16 +101,23 @@ function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  const fakeData = {
-    languages: ["Swedish", "Arabic"],
-    hasRobotVoice: false,
-    segments: [
-      { start: 0, end: 5, text: "Hej", language: "sv" },
-      { start: 5, end: 10, text: "مرحبا", language: "ar" }
-    ]
-  };
+  // 🔁 Skicka filen till Gradio/Whisper via FormData
+  const formData = new FormData();
+  formData.append("data", file); // 👈 viktigt
 
-  showLanguageDetectionPopup(fakeData.languages, fakeData.hasRobotVoice);
+  fetch("http://127.0.0.1:7860/", {
+    method: "POST",
+    body: formData
+  })
+    .then(res => res.json())
+    .then(result => {
+      const whisperData = result.data[0];
+      showLanguageDetectionPopup(whisperData.languages, whisperData.hasRobotVoice);
+    })
+    .catch(err => {
+      console.error("Whisper detection failed:", err);
+    });
+}
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
   if (languagePopupShown) return;
