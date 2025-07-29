@@ -593,19 +593,14 @@ function assignLanguageToCorrupted(language) {
   messageDiv.textContent = `${langToDelete} has been deleted from the video.`;
   messageDiv.style.display = "block";
 
-  // Simulerar borttagning av ljudspåret
   const remaining = allLanguages.filter(l => l !== langToDelete);
   console.log("Remaining language(s):", remaining);
 
-  // ⚠️ Erbjud nedladdning baserat på vad som finns kvar
+  // ⚙️ Kör riktig FFmpeg-baserad borttagning om bara ett språk kvar
   if (remaining.length === 1) {
-  // 👇 Här skapar du en dummy/video-blob – i verklig kod ersätts detta med FFmpeg-output
-const dummyBuffer = new Uint8Array([0]); // <--- tillfällig plats
-const videoBlob = new Blob([dummyBuffer], { type: 'video/mp4' });
-offerDownloadOfEditedFile(videoBlob, remaining[0]);
+    removeLanguageFromVideo(langToDelete, remaining[0]); // Anropa den nya funktionen
   }
 
-  // ⬅️ Flyttad hit
   closePopup("popup-language-detection");
 }
 
