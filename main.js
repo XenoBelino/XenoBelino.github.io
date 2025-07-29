@@ -105,7 +105,7 @@ function handleFileSelect(event) {
   const formData = new FormData();
   formData.append("data", file); // 👈 viktigt
 
-  fetch(https://32eeccc6d175b077a2.gradio.live, {
+  fetch("https://32eeccc6d175b077a2.gradio.live/", {
     method: "POST",
     body: formData
   })
