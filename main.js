@@ -102,7 +102,6 @@ function handleFileSelect(event) {
 
   // Uppdatera texten med filnamnet
   document.getElementById("file-name").textContent = uploadedFile.name;
-}
 
 const fakeData = {
   languages: ["Swedish", "Arabic"],
