@@ -74,10 +74,9 @@ function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  uploadedFile = file;  // redan global variabel
+  uploadedFile = file;
 
   let video = document.getElementById("video-player");
-
   if (!video) {
     video = document.createElement("video");
     video.id = "video-player";
@@ -100,20 +99,19 @@ function handleFileSelect(event) {
     video.play().catch(console.warn);
   };
 
-  // Uppdatera texten med filnamnet
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-const fakeData = {
-  languages: ["Swedish", "Arabic"],
-  hasRobotVoice: false,
-  segments: [
-    { start: 0, end: 5, text: "Hej", language: "sv" },
-    { start: 5, end: 10, text: "مرحبا", language: "ar" }
-  ]
-};
+  const fakeData = {
+    languages: ["Swedish", "Arabic"],
+    hasRobotVoice: false,
+    segments: [
+      { start: 0, end: 5, text: "Hej", language: "sv" },
+      { start: 5, end: 10, text: "مرحبا", language: "ar" }
+    ]
+  };
 
-showLanguageDetectionPopup(fakeData.languages, fakeData.hasRobotVoice);
-
+  showLanguageDetectionPopup(fakeData.languages, fakeData.hasRobotVoice);
+} 
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
   if (languagePopupShown) return;
