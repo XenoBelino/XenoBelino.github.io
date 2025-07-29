@@ -559,6 +559,18 @@ function assignLanguageToCorrupted(language) {
 
   closePopup("popup-language-detection");
 
+  // ⚠️ Erbjud nedladdning baserat på vad som finns kvar
+  if (remaining.length === 1) {
+    offerDownloadOfEditedFile(remaining[0]);
+  }
+}
+
+  // Simulerar borttagning av ljudspåret
+  const remaining = allLanguages.filter(l => l !== langToDelete);
+  console.log("Remaining language(s):", remaining);
+
+  closePopup("popup-language-detection");
+
   // Här kan du senare lägga till logik för att exportera ny videofil
 }
 
