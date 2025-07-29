@@ -172,7 +172,7 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
   // Visa popup
   popup.style.display = "block";
 }
-
+}
     // Visa popup
     function showPopup(id) {
     const popup = document.getElementById(id);
