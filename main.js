@@ -111,7 +111,6 @@ function handleFileSelect(event) {
   };
 
   showLanguageDetectionPopup(fakeData.languages, fakeData.hasRobotVoice);
-} 
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
   if (languagePopupShown) return;
