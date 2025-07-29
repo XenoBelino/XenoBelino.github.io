@@ -174,28 +174,19 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
 }
 }
 
-function offerDownloadOfEditedFile(languageKept) {
-  console.log("offerDownloadOfEditedFile körs med:", languageKept);
-  const btnContainer = document.getElementById("download-link-container");
-  if (!btnContainer) {
-    console.error("download-link-container saknas i DOM.");
-    return;
-  }
-  btnContainer.innerHTML = ""; // rensa ev. tidigare länk
+function offerDownloadOfEditedFile(blob, languageKept) {
+  const url = URL.createObjectURL(blob);
+  const container = document.getElementById("download-link-container");
+  if (!container) return;
+  container.innerHTML = "";
 
   const link = document.createElement("a");
-  link.href = "#"; // TODO: byt till riktig blob-URL senare
+  link.href = url;
   link.download = `video_with_only_${languageKept}.mp4`;
   link.textContent = "Download new video";
-  link.style.display = "inline-block";
-  link.style.margin = "10px 0";
-  link.style.padding = "8px 12px";
-  link.style.backgroundColor = "#6a0dad";
-  link.style.color = "#fff";
-  link.style.borderRadius = "4px";
-  link.style.textDecoration = "none";
+  link.className = "button"; // 👈 Detta ger samma stil som dina andra knappar
 
-  btnContainer.appendChild(link);
+  container.appendChild(link);
 }
 
     // Visa popup
