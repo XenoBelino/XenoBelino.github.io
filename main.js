@@ -562,7 +562,10 @@ function assignLanguageToCorrupted(language) {
 
   // ⚠️ Erbjud nedladdning baserat på vad som finns kvar
   if (remaining.length === 1) {
-    offerDownloadOfEditedFile(remaining[0]);
+  // 👇 Här skapar du en dummy/video-blob – i verklig kod ersätts detta med FFmpeg-output
+const dummyBuffer = new Uint8Array([0]); // <--- tillfällig plats
+const videoBlob = new Blob([dummyBuffer], { type: 'video/mp4' });
+offerDownloadOfEditedFile(videoBlob, remaining[0]);
   }
 
   // ⬅️ Flyttad hit
