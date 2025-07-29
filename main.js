@@ -173,6 +173,19 @@ function showLanguageDetectionPopup(languages, hasRobotVoice) {
   popup.style.display = "block";
 }
 }
+
+function offerDownloadOfEditedFile(languageKept) {
+  const link = document.createElement("a");
+  link.href = "#"; // TODO: byt till riktig blob-URL
+  link.download = `video_with_only_${languageKept}.mp4`;
+  link.textContent = "Download new video";
+  link.style.display = "block";
+  link.style.marginTop = "10px";
+
+  const btnContainer = document.querySelector("#language-options");
+  btnContainer.appendChild(link);
+}
+
     // Visa popup
     function showPopup(id) {
     const popup = document.getElementById(id);
