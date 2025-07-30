@@ -105,7 +105,7 @@ function handleFileSelect(event) {
   const formData = new FormData();
   formData.append("audio", file);
 
-  fetch("https://e2c641d18d08ff1817.gradio.live/api/predict", {
+  fetch("https://d396f70f068d3955de.gradio.live/api/predict", {
     method: "POST",
     body: formData
   })
