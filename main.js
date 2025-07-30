@@ -103,9 +103,9 @@ function handleFileSelect(event) {
 
   // Skicka filen till Gradio/Whisper via FormData
   const formData = new FormData();
-  formData.append("data", file);
+  formData.append("audio", file);
 
-  fetch("https://32eeccc6d175b077a2.gradio.live/", {
+  fetch("https://32eeccc6d175b077a2.gradio.live/api/predict", {
     method: "POST",
     body: formData
   })
