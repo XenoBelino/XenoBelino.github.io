@@ -105,7 +105,7 @@ function handleFileSelect(event) {
   const formData = new FormData();
   formData.append("audio", file);
 
-  fetch("https://1b9632c58e94a4449e.gradio.live/api/predict", {
+  fetch("https://72f2d3961ef0a8138c.gradio.live/api/predict", {
     method: "POST",
     body: formData
   })
@@ -231,8 +231,8 @@ function closePopup(id) {
 
     // Kontroll om video är vald (ej sample.mp4)
     function isVideoSelected() {
-    const videoSource = document.getElementById("video-source");
-    return videoSource && videoSource.src && videoSource.src !== "";
+  const video = document.getElementById("video-player");
+  return video && video.src && !video.src.includes("blob:null");
 }
 
     // När "Upgrade" klickas
