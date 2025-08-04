@@ -120,63 +120,57 @@ function handleFileSelect(event) {
     });
 }
 
-function showLanguageDetectionPopup(languages, hasRobotVoice) {
-  languagePopupShown = true;
-
+function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
-  const message = document.getElementById("language-detection-message");
-  const optionsContainer = document.getElementById("language-options");
+  const popupContent = document.getElementById("popup-language-detection-content");
+  popupContent.innerHTML = "";
 
-  // Visa info
-  message.innerHTML = `Multiple audio tracks detected: ${languages.join(" and ")}${hasRobotVoice ? " and Robotic voice" : ""}.<br>Which one should be moved to <strong>Corrupted Volume</strong>?`;
+  const heading = document.createElement("h2");
+  heading.textContent = "Språkdetektering";
+  popupContent.appendChild(heading);
 
-  // Rensa gamla knappar
-  optionsContainer.innerHTML = "";
+  const info = document.createElement("p");
+  info.textContent = "Vi har upptäckt flera språk i videons ljud. Välj ett språk att ta bort.";
+  popupContent.appendChild(info);
 
-  // Skapa en knapp för varje språk
-  languages.forEach(lang => {
-    const btn = document.createElement("button");
-    btn.textContent = `Move ${lang}`;
-    btn.dataset.lang = lang;
-    btn.classList.add("popup-button");
-    btn.addEventListener("click", () => assignLanguageToCorrupted(lang));
-    optionsContainer.appendChild(btn);
+  const languageList = document.createElement("ul");
+  languages.forEach((lang) => {
+    const item = document.createElement("li");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = `Ta bort ${lang}`;
+    deleteBtn.onclick = async () => {
+      const remaining = languages.filter(l => l !== lang);
+      
+      closePopup("popup-language-detection");
+
+      let languageKept;
+
+      if (remaining.length === 1) {
+        languageKept = remaining[0];
+      } else if (remaining.length > 1) {
+        languageKept = prompt(`Vilket språk vill du behålla? (${remaining.join(", ")})`, remaining[0]);
+        if (!languageKept || !remaining.includes(languageKept)) {
+          alert("Ogiltigt val – avbryter.");
+          return;
+        }
+      } else {
+        alert("Inget språk kvar att behålla. Åtgärd avbruten.");
+        return;
+      }
+
+      // Kör borttagning av valt språk
+      try {
+        const resultBlob = await combineAudioWithoutLanguage(lang, languageKept);
+        offerDownloadOfEditedFile(resultBlob, languageKept);
+      } catch (e) {
+        alert("Fel vid borttagning av språk: " + e.message);
+      }
+    };
+    item.appendChild(deleteBtn);
+    languageList.appendChild(item);
   });
 
-  // Robotröst (om tillgänglig)
-  if (hasRobotVoice) {
-    const robotBtn = document.createElement("button");
-    robotBtn.textContent = "Move Robotic Voice";
-    robotBtn.classList.add("popup-button");
-    robotBtn.addEventListener("click", () => assignLanguageToCorrupted("Robotic voice"));
-    optionsContainer.appendChild(robotBtn);
-  }
-    
-  // Om mer än ett språk, lägg till en knapp för att ta bort ett av dem
-  if (languages.length > 1) {
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete a Language";
-    deleteBtn.classList.add("popup-button");
-
-    deleteBtn.addEventListener("click", () => {
-      optionsContainer.innerHTML = "";
-      message.innerHTML = "Which language do you want to delete from the video?";
-
-      languages.forEach(lang => {
-        const langDeleteBtn = document.createElement("button");
-        langDeleteBtn.textContent = `Delete ${lang}`;
-        langDeleteBtn.classList.add("popup-button");
-        langDeleteBtn.addEventListener("click", () => {
-          handleLanguageDeletion(lang, languages);
-        });
-        optionsContainer.appendChild(langDeleteBtn);
-      });
-    });
-
-    optionsContainer.appendChild(deleteBtn);
-  }
-
-  // Visa popup
+  popupContent.appendChild(languageList);
   popup.style.display = "block";
 }
 
@@ -190,7 +184,7 @@ function offerDownloadOfEditedFile(blob, languageKept) {
   link.href = url;
   link.download = `video_with_only_${languageKept}.mp4`;
   link.textContent = "Download new video";
-  link.className = "button"; // 👈 Detta ger samma stil som dina andra knappar
+  link.className = "button"; // 👈 samma stil som övriga knappar
 
   container.appendChild(link);
 }
