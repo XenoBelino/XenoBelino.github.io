@@ -71,6 +71,7 @@ document.addEventListener("click", function (event) {
     }
 
 function handleFileSelect(event) {
+  languagePopupShown = false;
   const file = event.target.files[0];
   if (!file) return;
 
@@ -120,7 +121,6 @@ function handleFileSelect(event) {
 }
 
 function showLanguageDetectionPopup(languages, hasRobotVoice) {
-  if (languagePopupShown) return;
   languagePopupShown = true;
 
   const popup = document.getElementById("popup-language-detection");
