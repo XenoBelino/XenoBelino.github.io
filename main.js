@@ -168,7 +168,7 @@ function offerDownloadOfEditedFile(blob, languageKept) {
 
   const link = document.createElement("a");
   link.href = url;
-  link.download = `video_with_only_${languageKept}.mp4`;
+  link.download = `edited_video.mp4`;
   link.textContent = "Download new video";
   link.className = "button"; // 👈 samma stil som övriga knappar
 
