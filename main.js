@@ -140,25 +140,10 @@ function showLanguageDetectionPopup(languages, originalBlob) {
     deleteBtn.textContent = `Ta bort ${lang}`;
     deleteBtn.onclick = async () => {
       const remaining = languages.filter(l => l !== lang);
-      
       closePopup("popup-language-detection");
 
-      let languageKept;
+      const languageKept = remaining[0] || "unknown"; // fallback om inget kvar
 
-      if (remaining.length === 1) {
-        languageKept = remaining[0];
-      } else if (remaining.length > 1) {
-        languageKept = prompt(`Vilket språk vill du behålla? (${remaining.join(", ")})`, remaining[0]);
-        if (!languageKept || !remaining.includes(languageKept)) {
-          alert("Ogiltigt val – avbryter.");
-          return;
-        }
-      } else {
-        alert("Inget språk kvar att behålla. Åtgärd avbruten.");
-        return;
-      }
-
-      // Kör borttagning av valt språk
       try {
         const resultBlob = await combineAudioWithoutLanguage(lang, languageKept);
         offerDownloadOfEditedFile(resultBlob, languageKept);
@@ -173,6 +158,7 @@ function showLanguageDetectionPopup(languages, originalBlob) {
   popupContent.appendChild(languageList);
   popup.style.display = "block";
 }
+
 
 function offerDownloadOfEditedFile(blob, languageKept) {
   const url = URL.createObjectURL(blob);
