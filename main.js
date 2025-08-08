@@ -129,6 +129,7 @@ reader.onload = function () {
 };
 
 reader.readAsDataURL(file);
+}
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
