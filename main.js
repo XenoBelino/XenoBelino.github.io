@@ -103,27 +103,32 @@ function handleFileSelect(event) {
   document.getElementById("file-name").textContent = uploadedFile.name;
 
   // ⬇️ Skicka ljudfilen till din Hugging Face Space via API
-  const formData = new FormData();
-  formData.append("data", file); // Rätt nyckel för Gradio API
+ const reader = new FileReader();
+reader.onload = function () {
+  const base64Audio = reader.result.split(",")[1];  // Ta bort "data:audio/wav;base64,"
 
   fetch("https://huggingface.co/spaces/XenoBelino/91837/api/predict/", {
     method: "POST",
-    body: formData
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      data: [base64Audio]
+    })
   })
     .then(response => response.json())
     .then(result => {
-      console.log("Svar från Whisper API:", result);
-
-      // Anpassa detta efter vad din Space returnerar
-      // T.ex. om du får tillbaka en lista av segment:
-      if (result && Array.isArray(result)) {
-        showLanguageDetectionPopup(result); // eller anpassa till din funktion
-      }
+      console.log("Svar från API:", result);
+      const whisperData = result.data;
+      // Här kan du anropa popup: t.ex.
+      showLanguageDetectionPopup(whisperData);
     })
     .catch(error => {
       console.error("Fel vid API-anrop:", error);
     });
-}
+};
+
+reader.readAsDataURL(file);
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
