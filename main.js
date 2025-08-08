@@ -77,6 +77,7 @@ function handleFileSelect(event) {
 
   uploadedFile = file;
 
+  // Skapa/förbered videospelare
   let video = document.getElementById("video-player");
   if (!video) {
     video = document.createElement("video");
@@ -102,22 +103,34 @@ function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  // ⬇️ Skicka filen till din Node.js backend istället för direkt till Hugging Face
+  // ⬇️ SKICKA FILEN TILL BACKEND
   const formData = new FormData();
   formData.append("file", file);
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 sek timeout
+
   fetch("http://localhost:3000/api/predict", {
     method: "POST",
-    body: formData
+    body: formData,
+    signal: controller.signal
   })
-  .then(res => res.json())
-  .then(data => {
-    console.log("Svar från Hugging Face:", data);
-    showLanguageDetectionPopup(data.data); // Anpassa efter ditt UI
-  })
-  .catch(err => {
-    console.error("Fel vid API-anrop:", err);
-  });
+    .then(res => {
+      clearTimeout(timeoutId);
+      if (!res.ok) throw new Error(`Fel: ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      console.log("✅ Svar från servern:", data);
+      showLanguageDetectionPopup(data.data); // Anpassa detta till ditt projekt
+    })
+    .catch(err => {
+      if (err.name === "AbortError") {
+        console.error("⏱ Timeout: request tog för lång tid och avbröts");
+      } else {
+        console.error("❌ Fel vid fetch:", err);
+      }
+    });
 }
 
 function showLanguageDetectionPopup(languages, originalBlob) {
