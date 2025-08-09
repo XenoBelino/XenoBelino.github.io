@@ -103,12 +103,14 @@ function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  // ⬇️ SKICKA FILEN TILL BACKEND
+  // ⬇️ Skicka fil till backend
   const formData = new FormData();
   formData.append("file", file);
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 sek timeout
+
+  console.log("📤 → Skickar fil via fetch...");
 
   fetch("http://localhost:3000/api/predict", {
     method: "POST",
@@ -122,7 +124,7 @@ function handleFileSelect(event) {
     })
     .then(data => {
       console.log("✅ Svar från servern:", data);
-      showLanguageDetectionPopup(data.data); // Anpassa detta till ditt projekt
+      showLanguageDetectionPopup(data.data); // Anpassa detta vid behov
     })
     .catch(err => {
       if (err.name === "AbortError") {
@@ -130,6 +132,9 @@ function handleFileSelect(event) {
       } else {
         console.error("❌ Fel vid fetch:", err);
       }
+    })
+    .finally(() => {
+      console.log("📥 → Fetch avslutad");
     });
 }
 
