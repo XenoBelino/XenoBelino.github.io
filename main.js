@@ -103,16 +103,16 @@ function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  // ⬇️ Skicka fil till backend
+  // ⬇️ Skicka fil till Netlify Function
   const formData = new FormData();
   formData.append("file", file);
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 sek timeout
 
-  console.log("📤 → Skickar fil via fetch...");
+  console.log("📤 → Skickar fil via Netlify Function...");
 
-  fetch("http://localhost:3000/api/predict", {
+  fetch("/.netlify/functions/predict", {
     method: "POST",
     body: formData,
     signal: controller.signal
@@ -124,7 +124,7 @@ function handleFileSelect(event) {
     })
     .then(data => {
       console.log("✅ Svar från servern:", data);
-      showLanguageDetectionPopup(data.data); // Anpassa detta vid behov
+      showLanguageDetectionPopup(data.data); // Anpassa detta beroende på vad Hugging Face returnerar
     })
     .catch(err => {
       if (err.name === "AbortError") {
