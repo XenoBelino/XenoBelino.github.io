@@ -1,0 +1,19 @@
+# Node.js dependencies
+node_modules/
+
+# Python virtual environment
+venv/
+bin/
+lib/
+__pycache__/
+
+# Loggar och systemfiler
+*.log
+.DS_Store
+
+# Hugging Face / stora datafiler (om du har mappar för dem)
+hf_xet/
+huggingface_hub/
+
+# Andra tillfälliga filer
+*.save
