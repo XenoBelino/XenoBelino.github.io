@@ -428,7 +428,6 @@ async function startUpgradeProcess(resolution) {
   progressText.textContent = `${percent}% of 100% to complete upgrade – approx. ${timeLeft} remaining`;
 });
 
-
       const resolutionMap = {
         '480p': '854x480',
         '720p': '1280x720',
