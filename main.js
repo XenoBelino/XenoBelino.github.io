@@ -124,7 +124,7 @@ function handleFileSelect(event) {
     })
     .then(data => {
       console.log("✅ Svar från servern:", data);
-      showLanguageDetectionPopup(data.data); // Anpassa detta beroende på vad Hugging Face returnerar
+      showLanguageDetectionPopup(data.data); // Anpassa detta beroende på vad Hugging Face svarar med
     })
     .catch(err => {
       if (err.name === "AbortError") {
@@ -136,7 +136,6 @@ function handleFileSelect(event) {
     .finally(() => {
       console.log("📥 → Fetch avslutad");
     });
-}
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");

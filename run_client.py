@@ -1,0 +1,28 @@
+import sys
+import os
+from gradio_client import Client, handle_file
+
+video_path = sys.argv[1]
+print(f"DEBUG: Mottagen sökväg: {video_path}")
+print(f"DEBUG: Finns filen? {os.path.exists(video_path)}")
+
+if not os.path.exists(video_path):
+    print("❌ Filen existerar inte!")
+    sys.exit(1)
+
+try:
+    client = Client("XenoBelino/91837")
+    print("✅ Gradio-klient ansluten!")
+
+    result = client.predict(
+        video_file={"video": handle_file(video_path)},
+        api_name="/predict"
+    )
+
+    print("✅ Resultat mottaget:")
+    print(result)
+
+except Exception as e:
+    print("❌ Ett fel inträffade i Python:")
+    print(e)
+    sys.exit(1)
