@@ -105,37 +105,48 @@ function handleFileSelect(event) {
 
   // ⬇️ Skicka fil till Netlify Function
   const formData = new FormData();
-  formData.append("file", file);
+formData.append("file", file);
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 sek timeout
+const controller = new AbortController();
+const timeoutMs = 30000; // 30 sekunder timeout
+const timeoutId = setTimeout(() => {
+  controller.abort();
+  console.warn("⏱ Timeout: fetch-anrop avbröts efter 30 sek");
+}, timeoutMs);
 
-  console.log("📤 → Skickar fil via Netlify Function...");
+console.log("📤 → Skickar fil via Netlify Function...");
 
-  fetch("/.netlify/functions/predict", {
-    method: "POST",
-    body: formData,
-    signal: controller.signal
+fetch("/.netlify/functions/predict", {
+  method: "POST",
+  body: formData,
+  signal: controller.signal,
+})
+  .then((res) => {
+    clearTimeout(timeoutId);
+    console.log("⬇️ Fetch svar mottaget, status:", res.status);
+    if (!res.ok) {
+      throw new Error(`Fel från servern: ${res.status} ${res.statusText}`);
+    }
+    return res.json();
   })
-    .then(res => {
-      clearTimeout(timeoutId);
-      if (!res.ok) throw new Error(`Fel: ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      console.log("✅ Svar från servern:", data);
-      showLanguageDetectionPopup(data.data); // Anpassa detta beroende på vad Hugging Face svarar med
-    })
-    .catch(err => {
-      if (err.name === "AbortError") {
-        console.error("⏱ Timeout: request tog för lång tid och avbröts");
-      } else {
-        console.error("❌ Fel vid fetch:", err);
-      }
-    })
-    .finally(() => {
-      console.log("📥 → Fetch avslutad");
-    });
+  .then((data) => {
+    console.log("✅ Svar från servern (parsed JSON):", data);
+    if (data && data.data) {
+      showLanguageDetectionPopup(data.data);
+    } else {
+      console.warn("⚠️ Svar innehåller ej förväntad data:", data);
+    }
+  })
+  .catch((err) => {
+    if (err.name === "AbortError") {
+      console.error("⏱ Timeout: request tog för lång tid och avbröts");
+    } else {
+      console.error("❌ Fel vid fetch eller bearbetning:", err);
+    }
+  })
+  .finally(() => {
+    console.log("📥 → Fetch avslutad");
+  });
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
