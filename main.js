@@ -146,7 +146,8 @@ fetch("/.netlify/functions/predict", {
   })
   .finally(() => {
     console.log("📥 → Fetch avslutad");
-  });
+      });
+  }
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
