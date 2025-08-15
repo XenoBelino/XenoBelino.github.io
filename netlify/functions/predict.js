@@ -53,7 +53,12 @@ export const handler = async (event, context) => {
         });
       }
     });
+    console.log('REQUEST HEADERS:', event.headers);
+console.log('BODY LENGTH (base64):', event.body.length);
 
     busboy.end(Buffer.from(event.body, "base64"));
+    console.log(`mottagen fil – namn: ${filename}, typ: ${mimetype}`);
+console.log('storlek:', fileBuffer.length);
+
   });
 };
