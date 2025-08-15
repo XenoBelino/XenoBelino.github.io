@@ -30,7 +30,7 @@ export const handler = async (event, context) => {
       form.append("file", fileBuffer, { filename: "upload.webm" });
 
       try {
-        const hfRes = await fetch("https://YOUR-SPACE-NAME.hf.space/run/predict", {
+        const hfRes = await fetch("https://XenoBelino-91837.hf.space/run/predict", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${process.env.HUGGINGFACE_TOKEN}`,
