@@ -64,6 +64,7 @@ export const handler = async (event, context) => {
     });
 
     // Viktigt: kör busboy på inkommande body
-    busboy.end(Buffer.from(event.body, "base64"));
+   const rawBody = Buffer.from(event.body, "base64");
+   busboy.end(rawBody);
   });
 };
