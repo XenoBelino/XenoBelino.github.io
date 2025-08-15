@@ -10,6 +10,9 @@ export const handler = async (event, context) => {
     };
   }
 
+  console.log("📥 → Request headers:", event.headers);
+  console.log("📏 → BODY LENGTH (base64):", event.body.length);
+
   return new Promise((resolve, reject) => {
     const busboy = new Busboy({
       headers: {
@@ -18,16 +21,22 @@ export const handler = async (event, context) => {
     });
 
     let fileBuffer = Buffer.alloc(0);
+    let fileInfo = { filename: "", mimetype: "" };
 
     busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+      fileInfo = { filename, mimetype };
+      console.log(`📄 Mottagen fil – namn: ${filename}, typ: ${mimetype}`);
+
       file.on("data", (data) => {
         fileBuffer = Buffer.concat([fileBuffer, data]);
       });
     });
 
     busboy.on("finish", async () => {
+      console.log("📦 Filstorlek (bytes):", fileBuffer.length);
+
       const form = new FormData();
-      form.append("file", fileBuffer, { filename: "upload.webm" });
+      form.append("file", fileBuffer, { filename: fileInfo.filename || "upload.webm" });
 
       try {
         const hfRes = await fetch("https://XenoBelino-91837.hf.space/run/predict", {
@@ -46,19 +55,15 @@ export const handler = async (event, context) => {
           body: JSON.stringify({ data })
         });
       } catch (err) {
-        console.error("Fel i HuggingFace-anrop:", err);
+        console.error("❌ Fel i HuggingFace-anrop:", err);
         resolve({
           statusCode: 500,
           body: JSON.stringify({ error: "Fel vid anrop till Hugging Face" })
         });
       }
     });
-    console.log('REQUEST HEADERS:', event.headers);
-console.log('BODY LENGTH (base64):', event.body.length);
 
+    // Viktigt: kör busboy på inkommande body
     busboy.end(Buffer.from(event.body, "base64"));
-    console.log(`mottagen fil – namn: ${filename}, typ: ${mimetype}`);
-console.log('storlek:', fileBuffer.length);
-
   });
 };
