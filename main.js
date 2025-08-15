@@ -70,14 +70,14 @@ document.addEventListener("click", function (event) {
         document.getElementById("file-input").click();
     }
 
-function handleFileSelect(event) {
+async function handleFileSelect(event) {
   languagePopupShown = false;
   const file = event.target.files[0];
   if (!file) return;
 
   uploadedFile = file;
 
-  // Skapa/förbered videospelare
+  // Skapa/förbered videospelare (din kod som du redan har)
   let video = document.getElementById("video-player");
   if (!video) {
     video = document.createElement("video");
@@ -103,51 +103,46 @@ function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  // ⬇️ Skicka fil till Netlify Function
+  // Här börjar nya uppladdningsdelen
   const formData = new FormData();
-formData.append("file", file);
+  formData.append("file", file);
 
-const controller = new AbortController();
-const timeoutMs = 30000; // 30 sekunder timeout
-const timeoutId = setTimeout(() => {
-  controller.abort();
-  console.warn("⏱ Timeout: fetch-anrop avbröts efter 30 sek");
-}, timeoutMs);
+  try {
+    console.log("📤 → Skickar fil via Netlify upload-funktion...");
+    const uploadRes = await fetch("/.netlify/functions/upload", {
+      method: "POST",
+      body: formData,
+    });
 
-console.log("📤 → Skickar fil via Netlify Function...");
+    if (!uploadRes.ok) throw new Error(`Fel vid uppladdning: ${uploadRes.status}`);
 
-fetch("/.netlify/functions/predict", {
-  method: "POST",
-  body: formData,
-  signal: controller.signal,
-})
-  .then((res) => {
-    clearTimeout(timeoutId);
-    console.log("⬇️ Fetch svar mottaget, status:", res.status);
-    if (!res.ok) {
-      throw new Error(`Fel från servern: ${res.status} ${res.statusText}`);
-    }
-    return res.json();
-  })
-  .then((data) => {
-    console.log("✅ Svar från servern (parsed JSON):", data);
-    if (data && data.data) {
-      showLanguageDetectionPopup(data.data);
+    const uploadData = await uploadRes.json();
+    console.log("✅ Fil uppladdad, key:", uploadData.key);
+
+    // Anropa predict med nyckeln
+    const predictRes = await fetch("/.netlify/functions/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ key: uploadData.key }),
+    });
+
+    if (!predictRes.ok) throw new Error(`Fel från predict-funktionen: ${predictRes.status}`);
+
+    const predictData = await predictRes.json();
+    console.log("✅ Predict-resultat:", predictData);
+
+    if (predictData && predictData.data) {
+      showLanguageDetectionPopup(predictData.data);
     } else {
-      console.warn("⚠️ Svar innehåller ej förväntad data:", data);
+      console.warn("⚠️ Predict-svar innehåller ej förväntad data:", predictData);
     }
-  })
-  .catch((err) => {
-    if (err.name === "AbortError") {
-      console.error("⏱ Timeout: request tog för lång tid och avbröts");
-    } else {
-      console.error("❌ Fel vid fetch eller bearbetning:", err);
-    }
-  })
-  .finally(() => {
-    console.log("📥 → Fetch avslutad");
-      });
+
+  } catch (err) {
+    console.error("❌ Fel i upload eller predict:", err);
   }
+}
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
