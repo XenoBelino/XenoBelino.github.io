@@ -5,7 +5,7 @@ import os from 'os';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 
-export const handler = async (event, context) => {
+export const handler = async (event) => {
   console.log("🚀 predict.js startar");
   console.log("HTTP Method:", event.httpMethod);
   console.log("Headers:", event.headers);
@@ -19,19 +19,31 @@ export const handler = async (event, context) => {
     };
   }
 
-  // Busboy kräver råa headers
-  const headers = event.headers;
-  // Om Netlify event är Base64-kodat, måste vi dekoda det till buffer
+  // Fixa headers till busboy — de måste vara case-sensitive enligt Busboys krav
+  // Netlify kan ge headers med små bokstäver, men Busboy vill ha det korrekt.
+  // Därför mappa om 'content-type' till 'Content-Type' om den finns
+  const headers = {};
+  for (const [key, value] of Object.entries(event.headers)) {
+    if (key.toLowerCase() === 'content-type') {
+      headers['content-type'] = value;
+      headers['Content-Type'] = value;
+    } else {
+      headers[key] = value;
+    }
+  }
+
+  // Dekoda event.body till Buffer
   const buffer = event.isBase64Encoded
     ? Buffer.from(event.body, 'base64')
     : Buffer.from(event.body, 'utf-8');
 
-  // Wrapper för att parsa med Busboy
   function parseMultipart() {
     return new Promise((resolve, reject) => {
       const busboy = new Busboy({ headers });
       const fields = {};
       const files = [];
+
+      let filesWriting = 0;  // Räknare för aktiva skrivningar
 
       busboy.on('field', (fieldname, val) => {
         fields[fieldname] = val;
@@ -40,28 +52,37 @@ export const handler = async (event, context) => {
       busboy.on('file', (fieldname, fileStream, info) => {
         const { filename, mimeType } = info;
         const tmpFilePath = path.join(os.tmpdir(), filename);
+        filesWriting++;
+
         const writeStream = fs.createWriteStream(tmpFilePath);
         fileStream.pipe(writeStream);
 
-        writeStream.on('close', () => {
+        writeStream.on('finish', () => {
           files.push({
             fieldname,
             filename,
             mimeType,
             filepath: tmpFilePath,
           });
+          filesWriting--;
+          // Om busboy är färdig och inga skrivningar kvar — resolve
+          if (filesWriting === 0 && busboyFinished) {
+            resolve({ fields, files });
+          }
         });
 
-        writeStream.on('error', (err) => {
-          reject(err);
-        });
+        writeStream.on('error', (err) => reject(err));
+      });
+
+      let busboyFinished = false;
+      busboy.on('finish', () => {
+        busboyFinished = true;
+        if (filesWriting === 0) {
+          resolve({ fields, files });
+        }
       });
 
       busboy.on('error', (err) => reject(err));
-
-      busboy.on('finish', () => {
-        resolve({ fields, files });
-      });
 
       busboy.end(buffer);
     });
