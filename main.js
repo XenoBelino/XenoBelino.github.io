@@ -110,7 +110,7 @@ async function handleFileSelect(event) {
   try {
     console.log("📤 Skickar fil till /.netlify/edge-functions/predict...");
 
-    const predictRes = await fetch("/.netlify/edge-functions/predict", {
+    const predictRes = await fetch("/.netlify/functions/predict", {
       method: "POST",
       body: formData,
     });
