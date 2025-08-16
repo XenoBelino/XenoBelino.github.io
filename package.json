@@ -2,7 +2,7 @@
   "name": "xenobelino.github.io",
   "version": "1.0.0",
   "type": "module",
-  "description": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">     <title>Video Player with Settings</title>     <style>         /* Stilar för att centrera texten och knappen */         body {             display: flex;             justify-content: center;             align-items: center;             height: 100vh;             margin: 0;             font-family: Arial, sans-serif;             background-color: #f4f4f4;         }",
+  "description": "En enkel videospelar-sida med uppladdning.",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
