@@ -71,78 +71,21 @@ document.addEventListener("click", function (event) {
     }
 
 async function handleFileSelect(event) {
-  languagePopupShown = false;
   const file = event.target.files[0];
   if (!file) return;
 
-  uploadedFile = file;
-
-  // Skapa/förbered videospelare (din kod som du redan har)
-  let video = document.getElementById("video-player");
-  if (!video) {
-    video = document.createElement("video");
-    video.id = "video-player";
-    video.controls = true;
-    document.getElementById("video-container").appendChild(video);
-  } else {
-    video.pause();
-    video.removeAttribute("src");
-    video.load();
-  }
-
-  video.src = URL.createObjectURL(file);
-  window.currentVideo = video;
-
-  setupAudioGraph(video);
-
-  video.onloadedmetadata = () => {
-    video.volume = 0.5;
-    video.muted = false;
-    video.play().catch(console.warn);
-  };
-
-  document.getElementById("file-name").textContent = uploadedFile.name;
-
-  // Här börjar nya uppladdningsdelen
   const formData = new FormData();
   formData.append("file", file);
 
-  try {
-    console.log("📤 → Skickar fil via Netlify upload-funktion...");
-    const uploadRes = await fetch("/.netlify/functions/upload", {
-      method: "POST",
-      body: formData,
-    });
+  const response = await fetch("/.netlify/functions/predict", {
+    method: "POST",
+    body: formData
+  });
 
-    if (!uploadRes.ok) throw new Error(`Fel vid uppladdning: ${uploadRes.status}`);
-
-    const uploadData = await uploadRes.json();
-    console.log("✅ Fil uppladdad, key:", uploadData.key);
-
-    // Anropa predict med nyckeln
-    const predictRes = await fetch("/.netlify/functions/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ key: uploadData.key }),
-    });
-
-    if (!predictRes.ok) throw new Error(`Fel från predict-funktionen: ${predictRes.status}`);
-
-    const predictData = await predictRes.json();
-    console.log("✅ Predict-resultat:", predictData);
-
-    if (predictData && predictData.data) {
-      showLanguageDetectionPopup(predictData.data);
-    } else {
-      console.warn("⚠️ Predict-svar innehåller ej förväntad data:", predictData);
-    }
-
-  } catch (err) {
-    console.error("❌ Fel i upload eller predict:", err);
-  }
+  const result = await response.json();
+  console.log("✅ Transkribering:", result);
 }
+
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
@@ -182,7 +125,6 @@ function showLanguageDetectionPopup(languages, originalBlob) {
   popupContent.appendChild(languageList);
   popup.style.display = "block";
 }
-
 
 function offerDownloadOfEditedFile(blob, languageKept) {
   const url = URL.createObjectURL(blob);
