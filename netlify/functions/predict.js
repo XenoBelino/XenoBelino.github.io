@@ -1,70 +1,62 @@
-import fetch from "node-fetch";
-import FormData from "form-data";
-import Busboy from "busboy";
+import fetch from 'node-fetch';
+import formidable from 'formidable';
+import { Readable } from 'stream';
 
-export const handler = async (event, context) => {
-  if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      body: "Method Not Allowed",
-    };
+export const config = {
+  bodyParser: false,
+};
+
+export async function handler(event) {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Endast POST tillåtet' };
   }
 
-  console.log("📥 → Request headers:", event.headers);
-  console.log("📏 → BODY LENGTH (base64):", event.body.length);
+  const form = formidable({ multiples: false });
 
   return new Promise((resolve, reject) => {
-    const busboy = new Busboy({
-      headers: {
-        "content-type": event.headers["content-type"] || event.headers["Content-Type"]
+    form.parse(event, async (err, fields, files) => {
+      if (err) {
+        return resolve({
+          statusCode: 500,
+          body: JSON.stringify({ error: 'Kunde inte läsa filen' }),
+        });
       }
-    });
 
-    let fileBuffer = Buffer.alloc(0);
-    let fileInfo = { filename: "", mimetype: "" };
+      const file = files.file;
 
-    busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-      fileInfo = { filename, mimetype };
-      console.log(`📄 Mottagen fil – namn: ${filename}, typ: ${mimetype}`);
+      if (!file) {
+        return resolve({
+          statusCode: 400,
+          body: JSON.stringify({ error: 'Ingen fil hittades' }),
+        });
+      }
 
-      file.on("data", (data) => {
-        fileBuffer = Buffer.concat([fileBuffer, data]);
-      });
-    });
+      const stream = Readable.from(file._readStream);
 
-    busboy.on("finish", async () => {
-      console.log("📦 Filstorlek (bytes):", fileBuffer.length);
-
-      const form = new FormData();
-      form.append("file", fileBuffer, { filename: fileInfo.filename || "upload.webm" });
+      const formData = new FormData();
+      formData.append('file', stream, file.originalFilename);
 
       try {
-        const hfRes = await fetch("https://XenoBelino-91837.hf.space/run/predict", {
+        const hfRes = await fetch("https://xenobelino-91837.hf.space/api/predict", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${process.env.HUGGINGFACE_TOKEN}`,
-            ...form.getHeaders()
+            Authorization: `Bearer ${process.env.HF_TOKEN}`,
           },
-          body: form
+          body: formData,
         });
 
-        const data = await hfRes.json();
+        const result = await hfRes.json();
 
         resolve({
           statusCode: 200,
-          body: JSON.stringify({ data })
+          body: JSON.stringify(result),
         });
       } catch (err) {
-        console.error("❌ Fel i HuggingFace-anrop:", err);
         resolve({
           statusCode: 500,
-          body: JSON.stringify({ error: "Fel vid anrop till Hugging Face" })
+          body: JSON.stringify({ error: err.message }),
         });
       }
     });
-
-    // Viktigt: kör busboy på inkommande body
-   const rawBody = Buffer.from(event.body, "base64");
-   busboy.end(rawBody);
   });
-};
+}
