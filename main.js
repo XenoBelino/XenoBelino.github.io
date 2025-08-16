@@ -71,21 +71,64 @@ document.addEventListener("click", function (event) {
     }
 
 async function handleFileSelect(event) {
+  languagePopupShown = false;
+
   const file = event.target.files[0];
   if (!file) return;
+  uploadedFile = file;
 
+  // Skapa/förbered videospelare
+  let video = document.getElementById("video-player");
+  if (!video) {
+    video = document.createElement("video");
+    video.id = "video-player";
+    video.controls = true;
+    document.getElementById("video-container").appendChild(video);
+  } else {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+  }
+
+  video.src = URL.createObjectURL(file);
+  window.currentVideo = video;
+
+  setupAudioGraph(video);
+
+  video.onloadedmetadata = () => {
+    video.volume = 0.5;
+    video.muted = false;
+    video.play().catch(console.warn);
+  };
+
+  document.getElementById("file-name").textContent = uploadedFile.name;
+
+  // Skicka direkt till Edge Function /predict
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch("/.netlify/functions/predict", {
-    method: "POST",
-    body: formData
-  });
+  try {
+    console.log("📤 Skickar fil till /predict...");
+    
+    const predictRes = await fetch("/predict", {
+      method: "POST",
+      body: formData,
+    });
 
-  const result = await response.json();
-  console.log("✅ Transkribering:", result);
+    if (!predictRes.ok) throw new Error(`Fel från predict: ${predictRes.status}`);
+    
+    const predictData = await predictRes.json();
+    console.log("✅ Predict-resultat:", predictData);
+
+    if (predictData && predictData.data) {
+      showLanguageDetectionPopup(predictData.data);
+    } else {
+      console.warn("⚠️ Inget 'data'-fält i svaret:", predictData);
+    }
+  } catch (err) {
+    console.error("❌ Fel i predict-anrop:", err);
+  }
 }
-
 
 function showLanguageDetectionPopup(languages, originalBlob) {
   const popup = document.getElementById("popup-language-detection");
