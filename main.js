@@ -103,19 +103,23 @@ async function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  // Skicka direkt till Edge Function /predict
+  // 👇 FIX: FormData måste heta exakt 'file'
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("file", file); // 💡 viktigt att nyckeln är 'file'
 
   try {
-    console.log("📤 Skickar fil till /.netlify/edge-functions/predict...");
+    console.log("📤 Skickar fil till /.netlify/functions/predict...");
 
     const predictRes = await fetch("/.netlify/functions/predict", {
       method: "POST",
       body: formData,
     });
 
-    if (!predictRes.ok) throw new Error(`Fel från predict: ${predictRes.status}`);
+    if (!predictRes.ok) {
+      const text = await predictRes.text();
+      console.error("❌ Predict-svar (ej OK):", predictRes.status, text);
+      throw new Error(`Fel från predict: ${predictRes.status}`);
+    }
 
     const predictData = await predictRes.json();
     console.log("✅ Predict-resultat:", predictData);
@@ -123,7 +127,7 @@ async function handleFileSelect(event) {
     if (predictData && predictData.data) {
       showLanguageDetectionPopup(predictData.data);
     } else {
-      console.warn("⚠️ Inget 'data'-fält i svaret:", predictData);
+      console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
     }
   } catch (err) {
     console.error("❌ Fel i predict-anrop:", err);
