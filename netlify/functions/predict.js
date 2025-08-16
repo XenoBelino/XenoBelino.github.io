@@ -1,15 +1,15 @@
 // netlify/functions/predict.js
-import { IncomingForm } from 'formidable';
+import parser from 'lambda-multipart-parser';
 import fs from 'fs';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 
 export const handler = async (event, context) => {
-  console.log("🟡 Handler startad för /predict");
-  console.log("📥 HTTP Method:", event.httpMethod);
-  console.log("🔍 Event headers:", event.headers);
-  console.log("🔍 typeof event.body:", typeof event.body);
-  console.log("🔍 event.isBase64Encoded:", event.isBase64Encoded);
+  console.log("🚀 predict.js startar");
+  console.log("HTTP Method:", event.httpMethod);
+  console.log("Headers:", event.headers);
+  console.log("Body finns?", event.body ? "Ja" : "Nej");
+  console.log("Is Base64 Encoded?", event.isBase64Encoded);
 
   if (event.httpMethod !== 'POST') {
     return {
@@ -18,87 +18,72 @@ export const handler = async (event, context) => {
     };
   }
 
-  return new Promise((resolve, reject) => {
-    const form = new IncomingForm({ uploadDir: '/tmp', keepExtensions: true });
+  try {
+    // Parsar multipart/form-data
+    const result = await parser.parse(event);
 
-    // Workaround för Netlify + formidable
-    if (event.isBase64Encoded) {
-      event.body = Buffer.from(event.body, 'base64');
+    console.log("⚙️ Parsed form fields:", result.fields);
+    console.log("📁 Parsed files:", result.files);
+
+    if (!result.files || result.files.length === 0) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Ingen fil hittades i förfrågan' }),
+      };
     }
 
-    console.log("📤 Startar form.parse...");
+    const file = result.files[0];
+    console.log(`📥 Mottagen fil: ${file.filename}, typ: ${file.contentType}, storlek: ${file.content.length} bytes`);
 
-    form.parse(event, async (err, fields, files) => {
-      if (err) {
-        console.error('❌ Fel vid form.parse:', err);
-        return resolve({
-          statusCode: 500,
-          body: JSON.stringify({ error: 'Fel vid uppladdning', details: err.message }),
-        });
-      }
+    // Skapa en temporär fil (valfritt, för debugging / vidare användning)
+    const tempFilePath = `/tmp/${file.filename}`;
+    fs.writeFileSync(tempFilePath, file.content);
+    console.log(`💾 Fil sparad temporärt på: ${tempFilePath}`);
 
-      console.log("✅ form.parse klar.");
-      console.log("📄 Fält:", fields);
-      console.log("📂 Filer:", files);
+    // Förbered form-data att skicka till HuggingFace API
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(tempFilePath));
 
-      // Särskild debug: visa exakt vad som finns i `files`
-      if (!files.file) {
-        console.error('⚠️ Ingen "file" hittades i files-objektet:', JSON.stringify(files, null, 2));
-        return resolve({
-          statusCode: 400,
-          body: JSON.stringify({ error: 'Ingen fil skickades med' }),
-        });
-      }
+    const hfToken = process.env.HUGGINGFACE_TOKEN;
+    if (!hfToken) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Token saknas i miljövariabler' }),
+      };
+    }
 
-      try {
-        const uploadedFile = Array.isArray(files.file) ? files.file[0] : files.file;
-        console.log("📁 Uppladdad filväg:", uploadedFile.filepath);
-        console.log("📏 Filstorlek:", uploadedFile.size);
+    console.log("⏳ Skickar fil till HuggingFace API...");
 
-        const formData = new FormData();
-        formData.append('file', fs.createReadStream(uploadedFile.filepath));
-
-        const hfToken = process.env.HUGGINGFACE_TOKEN;
-        if (!hfToken) {
-          console.error("❌ Saknad HUGGINGFACE_TOKEN!");
-          return resolve({
-            statusCode: 500,
-            body: JSON.stringify({ error: 'Token saknas i miljövariabler' }),
-          });
-        }
-
-        console.log("🚀 Skickar förfrågan till HuggingFace Space...");
-
-        const response = await fetch('https://xenobelino-91837.hf.space/api/predict', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${hfToken}`,
-          },
-          body: formData,
-        });
-
-        const data = await response.json();
-        console.log("✅ HuggingFace svar:", data);
-
-        if (!response.ok) {
-          console.error('⚠️ HuggingFace ERROR:', data);
-          return resolve({
-            statusCode: 500,
-            body: JSON.stringify({ error: 'Fel från Hugging Face', details: data }),
-          });
-        }
-
-        return resolve({
-          statusCode: 200,
-          body: JSON.stringify({ data }),
-        });
-      } catch (err) {
-        console.error('❌ Undantag under begäran:', err);
-        return resolve({
-          statusCode: 500,
-          body: JSON.stringify({ error: 'Internt serverfel', details: err.message }),
-        });
-      }
+    const response = await fetch('https://xenobelino-91837.hf.space/api/predict', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${hfToken}`,
+      },
+      body: formData,
     });
-  });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('❗ Fel från HuggingFace API:', data);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Fel från HuggingFace API', details: data }),
+      };
+    }
+
+    console.log("✅ HuggingFace svar mottaget:", data);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ data }),
+    };
+
+  } catch (error) {
+    console.error('❌ Fel i predict-funktionen:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internt serverfel', details: error.message }),
+    };
+  }
 };
