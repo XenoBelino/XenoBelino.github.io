@@ -1,11 +1,14 @@
 // netlify/functions/predict.js
 import { IncomingForm } from 'formidable';
 import fs from 'fs';
-import { fileFromPath } from 'formdata-node/file-from-path';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 
 export const handler = async (event, context) => {
+  // Logga för felsökning
+  console.log("🔍 Event body type:", typeof event.body);
+  console.log("📦 Raw event.body:", event.body);
+
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -25,7 +28,9 @@ export const handler = async (event, context) => {
         });
       }
 
+      // Kontrollera att fil verkligen finns
       if (!files.file) {
+        console.error('⚠️ Ingen fil hittades i "files":', files);
         return resolve({
           statusCode: 400,
           body: JSON.stringify({ error: 'Ingen fil skickades med' }),
@@ -56,6 +61,7 @@ export const handler = async (event, context) => {
         const data = await response.json();
 
         if (!response.ok) {
+          console.error('⚠️ HuggingFace-fel:', data);
           return resolve({
             statusCode: 500,
             body: JSON.stringify({ error: 'Fel från Hugging Face', details: data }),
