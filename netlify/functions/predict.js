@@ -1,6 +1,7 @@
-// netlify/functions/predict.js
-import parser from 'lambda-multipart-parser';
+import Busboy from 'busboy';
 import fs from 'fs';
+import path from 'path';
+import os from 'os';
 import FormData from 'form-data';
 import fetch from 'node-fetch';
 
@@ -18,31 +19,73 @@ export const handler = async (event, context) => {
     };
   }
 
+  // Busboy kräver råa headers
+  const headers = event.headers;
+  // Om Netlify event är Base64-kodat, måste vi dekoda det till buffer
+  const buffer = event.isBase64Encoded
+    ? Buffer.from(event.body, 'base64')
+    : Buffer.from(event.body, 'utf-8');
+
+  // Wrapper för att parsa med Busboy
+  function parseMultipart() {
+    return new Promise((resolve, reject) => {
+      const busboy = new Busboy({ headers });
+      const fields = {};
+      const files = [];
+
+      busboy.on('field', (fieldname, val) => {
+        fields[fieldname] = val;
+      });
+
+      busboy.on('file', (fieldname, fileStream, info) => {
+        const { filename, mimeType } = info;
+        const tmpFilePath = path.join(os.tmpdir(), filename);
+        const writeStream = fs.createWriteStream(tmpFilePath);
+        fileStream.pipe(writeStream);
+
+        writeStream.on('close', () => {
+          files.push({
+            fieldname,
+            filename,
+            mimeType,
+            filepath: tmpFilePath,
+          });
+        });
+
+        writeStream.on('error', (err) => {
+          reject(err);
+        });
+      });
+
+      busboy.on('error', (err) => reject(err));
+
+      busboy.on('finish', () => {
+        resolve({ fields, files });
+      });
+
+      busboy.end(buffer);
+    });
+  }
+
   try {
-    // Parsar multipart/form-data
-    const result = await parser.parse(event);
+    const { fields, files } = await parseMultipart();
 
-    console.log("⚙️ Parsed form fields:", result.fields);
-    console.log("📁 Parsed files:", result.files);
+    console.log("⚙️ Parsed form fields:", fields);
+    console.log("📁 Parsed files:", files);
 
-    if (!result.files || result.files.length === 0) {
+    if (!files.length) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Ingen fil hittades i förfrågan' }),
       };
     }
 
-    const file = result.files[0];
-    console.log(`📥 Mottagen fil: ${file.filename}, typ: ${file.contentType}, storlek: ${file.content.length} bytes`);
+    const file = files[0];
+    console.log(`📥 Mottagen fil: ${file.filename}, typ: ${file.mimeType}`);
 
-    // Skapa en temporär fil (valfritt, för debugging / vidare användning)
-    const tempFilePath = `/tmp/${file.filename}`;
-    fs.writeFileSync(tempFilePath, file.content);
-    console.log(`💾 Fil sparad temporärt på: ${tempFilePath}`);
-
-    // Förbered form-data att skicka till HuggingFace API
+    // Skicka filen vidare till HuggingFace API
     const formData = new FormData();
-    formData.append('file', fs.createReadStream(tempFilePath));
+    formData.append('file', fs.createReadStream(file.filepath), file.filename);
 
     const hfToken = process.env.HUGGINGFACE_TOKEN;
     if (!hfToken) {
@@ -58,6 +101,7 @@ export const handler = async (event, context) => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${hfToken}`,
+        ...formData.getHeaders(),
       },
       body: formData,
     });
@@ -78,7 +122,6 @@ export const handler = async (event, context) => {
       statusCode: 200,
       body: JSON.stringify({ data }),
     };
-
   } catch (error) {
     console.error('❌ Fel i predict-funktionen:', error);
     return {
