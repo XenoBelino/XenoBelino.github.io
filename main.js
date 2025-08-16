@@ -108,15 +108,15 @@ async function handleFileSelect(event) {
   formData.append("file", file);
 
   try {
-    console.log("📤 Skickar fil till /predict...");
-    
-    const predictRes = await fetch("/predict", {
+    console.log("📤 Skickar fil till /.netlify/edge-functions/predict...");
+
+    const predictRes = await fetch("/.netlify/edge-functions/predict", {
       method: "POST",
       body: formData,
     });
 
     if (!predictRes.ok) throw new Error(`Fel från predict: ${predictRes.status}`);
-    
+
     const predictData = await predictRes.json();
     console.log("✅ Predict-resultat:", predictData);
 
