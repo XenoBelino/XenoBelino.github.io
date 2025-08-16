@@ -1,9 +1,9 @@
 [functions]
-  directory = "netlify/functions"
+directory = "netlify/functions"
 
 [edge_functions]
-  directory = "netlify/edge-functions"
+directory = "netlify/edge-functions"
 
-[blobs]
-  [blobs.stores]
-  uploads = "in-memory"
+[[edge_functions]]
+function = "predict"
+path = "/predict"
