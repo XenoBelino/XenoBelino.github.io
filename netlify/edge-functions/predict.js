@@ -14,13 +14,20 @@ export default async (req) => {
   }
 
   try {
+    const newForm = new FormData();
+    newForm.set("file", file);
+
     const hfRes = await fetch("https://xenobelino-91837.hf.space/api/predict", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.HF_TOKEN}`
+        Authorization: `Bearer ${import.meta.env.HF_TOKEN}`,
       },
-      body: file
+      body: newForm,
     });
+
+    if (!hfRes.ok) {
+      return new Response("Fel från Hugging Face API", { status: 500 });
+    }
 
     const data = await hfRes.json();
     return new Response(JSON.stringify(data), {
