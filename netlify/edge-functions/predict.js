@@ -20,7 +20,7 @@ export default async (req) => {
     const hfRes = await fetch("https://xenobelino-91837.hf.space/api/predict", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${import.meta.env.HF_TOKEN}`,
+        Authorization: `Bearer ${import.meta.env.HUGGINGFACE_TOKEN}`
       },
       body: newForm,
     });
