@@ -103,13 +103,14 @@ async function handleFileSelect(event) {
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 
-  // 👇 FIX: FormData måste heta exakt 'file'
+  // Skicka fil i formData med nyckeln 'file'
   const formData = new FormData();
-  formData.append("file", file); // 💡 viktigt att nyckeln är 'file'
+  formData.append("file", file);
+
+  console.log("📤 Skickar fil till /.netlify/functions/predict...");
+  console.log("FormData-nycklar:", [...formData.keys()]);
 
   try {
-    console.log("📤 Skickar fil till /.netlify/functions/predict...");
-
     const predictRes = await fetch("/.netlify/functions/predict", {
       method: "POST",
       body: formData,
