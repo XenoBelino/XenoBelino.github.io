@@ -5,9 +5,11 @@ import FormData from 'form-data';
 import fetch from 'node-fetch';
 
 export const handler = async (event, context) => {
-  // Logga för felsökning
-  console.log("🔍 Event body type:", typeof event.body);
-  console.log("📦 Raw event.body:", event.body);
+  console.log("🟡 Handler startad för /predict");
+  console.log("📥 HTTP Method:", event.httpMethod);
+  console.log("🔍 Event headers:", event.headers);
+  console.log("🔍 typeof event.body:", typeof event.body);
+  console.log("🔍 event.isBase64Encoded:", event.isBase64Encoded);
 
   if (event.httpMethod !== 'POST') {
     return {
@@ -19,18 +21,29 @@ export const handler = async (event, context) => {
   return new Promise((resolve, reject) => {
     const form = new IncomingForm({ uploadDir: '/tmp', keepExtensions: true });
 
+    // Workaround för Netlify + formidable
+    if (event.isBase64Encoded) {
+      event.body = Buffer.from(event.body, 'base64');
+    }
+
+    console.log("📤 Startar form.parse...");
+
     form.parse(event, async (err, fields, files) => {
       if (err) {
-        console.error('❌ Fel vid uppladdning:', err);
+        console.error('❌ Fel vid form.parse:', err);
         return resolve({
           statusCode: 500,
           body: JSON.stringify({ error: 'Fel vid uppladdning', details: err.message }),
         });
       }
 
-      // Kontrollera att fil verkligen finns
+      console.log("✅ form.parse klar.");
+      console.log("📄 Fält:", fields);
+      console.log("📂 Filer:", files);
+
+      // Särskild debug: visa exakt vad som finns i `files`
       if (!files.file) {
-        console.error('⚠️ Ingen fil hittades i "files":', files);
+        console.error('⚠️ Ingen "file" hittades i files-objektet:', JSON.stringify(files, null, 2));
         return resolve({
           statusCode: 400,
           body: JSON.stringify({ error: 'Ingen fil skickades med' }),
@@ -38,17 +51,23 @@ export const handler = async (event, context) => {
       }
 
       try {
-        const uploadedFilePath = files.file[0].filepath;
+        const uploadedFile = Array.isArray(files.file) ? files.file[0] : files.file;
+        console.log("📁 Uppladdad filväg:", uploadedFile.filepath);
+        console.log("📏 Filstorlek:", uploadedFile.size);
+
         const formData = new FormData();
-        formData.append('file', fs.createReadStream(uploadedFilePath));
+        formData.append('file', fs.createReadStream(uploadedFile.filepath));
 
         const hfToken = process.env.HUGGINGFACE_TOKEN;
         if (!hfToken) {
+          console.error("❌ Saknad HUGGINGFACE_TOKEN!");
           return resolve({
             statusCode: 500,
             body: JSON.stringify({ error: 'Token saknas i miljövariabler' }),
           });
         }
+
+        console.log("🚀 Skickar förfrågan till HuggingFace Space...");
 
         const response = await fetch('https://xenobelino-91837.hf.space/api/predict', {
           method: 'POST',
@@ -59,9 +78,10 @@ export const handler = async (event, context) => {
         });
 
         const data = await response.json();
+        console.log("✅ HuggingFace svar:", data);
 
         if (!response.ok) {
-          console.error('⚠️ HuggingFace-fel:', data);
+          console.error('⚠️ HuggingFace ERROR:', data);
           return resolve({
             statusCode: 500,
             body: JSON.stringify({ error: 'Fel från Hugging Face', details: data }),
@@ -73,7 +93,7 @@ export const handler = async (event, context) => {
           body: JSON.stringify({ data }),
         });
       } catch (err) {
-        console.error('❌ Undantag kastat:', err);
+        console.error('❌ Undantag under begäran:', err);
         return resolve({
           statusCode: 500,
           body: JSON.stringify({ error: 'Internt serverfel', details: err.message }),
