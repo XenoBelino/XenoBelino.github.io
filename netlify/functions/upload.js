@@ -1,13 +1,12 @@
 import { connectLambda, getStore } from '@netlify/blobs';
 
 export async function handler(event, context) {
-  connectLambda(event);
+  console.log("⏱ Upload function triggered"); // ✅ Detta loggar att funktionen ens körs
 
+  connectLambda(event);
   const store = getStore('uploads'); // namnet på din blob store
 
-  // event.request.formData() funkar i nya Netlify Runtime, annars kan du behöva annat sätt att parse FormData
-  // Om inte det fungerar, kan du använda busboy eller liknande för att läsa upp filen från event.body
-
+  // Försök hämta FormData från requesten
   const formData = await event.request.formData();
   const file = formData.get('file');
 
@@ -19,7 +18,6 @@ export async function handler(event, context) {
   }
 
   const key = `video-${Date.now()}`;
-
   await store.set(key, file);
 
   return {
