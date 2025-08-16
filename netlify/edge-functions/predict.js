@@ -4,37 +4,66 @@ export const config = {
 
 export default async (req) => {
   if (req.method !== "POST") {
-    return new Response("Endast POST tillåtet", { status: 405 });
-  }
-
-  const form = await req.formData();
-  const file = form.get("file");
-  if (!file) {
-    return new Response("Ingen fil skickades med", { status: 400 });
+    return new Response(JSON.stringify({ error: "Endast POST tillåtet" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   try {
+    const form = await req.formData();
+    const file = form.get("file");
+
+    if (!file) {
+      console.error("❌ Ingen fil mottagen");
+      return new Response(JSON.stringify({ error: "Ingen fil skickades med" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const newForm = new FormData();
-    newForm.set("file", file);
+    newForm.append("file", file); // ✅ OBS: använd append, inte set
+
+    const hfToken = import.meta.env.HUGGINGFACE_TOKEN;
+    if (!hfToken) {
+      console.error("❌ Token saknas i miljövariabler");
+      return new Response(JSON.stringify({ error: "Token saknas" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     const hfRes = await fetch("https://xenobelino-91837.hf.space/api/predict", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${import.meta.env.HUGGINGFACE_TOKEN}`
+        Authorization: `Bearer ${hfToken}`,
       },
       body: newForm,
     });
 
+    const data = await hfRes.json();
+
     if (!hfRes.ok) {
-      return new Response("Fel från Hugging Face API", { status: 500 });
+      console.error("❌ Fel från Hugging Face:", data);
+      return new Response(JSON.stringify({ error: "Fel från Hugging Face", details: data }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    const data = await hfRes.json();
-    return new Response(JSON.stringify(data), {
+    console.log("✅ Hugging Face response:", data);
+
+    return new Response(JSON.stringify({ data }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
+
   } catch (err) {
-    return new Response("Fel vid Hugging Face API", { status: 500 });
+    console.error("❌ Undantag kastat i Edge Function:", err);
+    return new Response(JSON.stringify({ error: "Internt serverfel", details: err.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 };
