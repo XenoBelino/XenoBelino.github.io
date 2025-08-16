@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/XenoBelino/XenoBelino.github.io#readme",
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "formidable": "^3.5.0"
   }
 }
