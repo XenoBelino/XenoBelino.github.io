@@ -111,7 +111,7 @@ async function handleFileSelect(event) {
   console.log("FormData-nycklar:", [...formData.keys()]);
 
   try {
-    const predictRes = await fetch("/.netlify/functions/predict", {
+    const predictRes = await fetch("/api/predict", {
       method: "POST",
       body: formData,
     });
