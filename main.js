@@ -1,12 +1,3 @@
-* ✅ Initierar `ffmpeg`
-* ✅ Importerar `fetchFile`
-* ✅ Fixar `stopArrowKeysFromAffectingVideo`
-* ✅ Har placeholder för `downloadUpgradedVideo`
-* ✅ Bevarar din funktionalitet
-
-> ⚠️ **OBS!** Denna version fungerar som **`type="module"`** – alltså precis som du har i `<script type="module" src="main.js">`.
-
-```js
 import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
 
 const ffmpeg = createFFmpeg({ log: true });
@@ -33,7 +24,6 @@ window.addEventListener("load", () => {
     }
   }
 
-  // Stoppar att piltangenter påverkar videon när du justerar sliders
   function stopArrowKeysFromAffectingVideo(slider) {
     slider.addEventListener('keydown', (e) => {
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
@@ -151,7 +141,6 @@ window.addEventListener("load", () => {
     }
   };
 
-  // Placeholder om funktionen inte är klar ännu
   function downloadUpgradedVideo() {
     alert("Upgraded video download is not implemented yet.");
   }
