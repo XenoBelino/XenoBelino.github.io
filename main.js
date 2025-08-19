@@ -95,44 +95,55 @@ async function handleFileSelect(event) {
 
   setupAudioGraph(video);
 
-  video.onloadedmetadata = () => {
+  // När videon laddat metadata
+  video.onloadedmetadata = async () => {
     video.volume = 0.5;
     video.muted = false;
-    video.play().catch(console.warn);
+
+    try {
+      await video.play();
+    } catch (err) {
+      console.warn("⚠️ Kunde inte spela upp video direkt:", err);
+    }
+
+    // Skicka metadata istället för filen
+    const metadata = {
+      fileName: file.name,
+      duration: video.duration,
+      // Du kan lägga till fler fält här om du vill t.ex. size, type osv.
+    };
+
+    console.log("📤 Skickar metadata till /api/predict:", metadata);
+
+    try {
+      const predictRes = await fetch("/api/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(metadata)
+      });
+
+      if (!predictRes.ok) {
+        const text = await predictRes.text();
+        console.error("❌ Predict-svar (ej OK):", predictRes.status, text);
+        throw new Error(`Fel från predict: ${predictRes.status}`);
+      }
+
+      const predictData = await predictRes.json();
+      console.log("✅ Predict-resultat:", predictData);
+
+      if (predictData && predictData.data) {
+        showLanguageDetectionPopup(predictData.data);
+      } else {
+        console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
+      }
+    } catch (err) {
+      console.error("❌ Fel i predict-anrop:", err);
+    }
   };
 
   document.getElementById("file-name").textContent = uploadedFile.name;
-
-  // Skicka fil i formData med nyckeln 'file'
-  const formData = new FormData();
-  formData.append("file", file);
-
-  console.log("📤 Skickar fil till /.netlify/functions/predict...");
-  console.log("FormData-nycklar:", [...formData.keys()]);
-
-  try {
-    const predictRes = await fetch("/api/predict", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!predictRes.ok) {
-      const text = await predictRes.text();
-      console.error("❌ Predict-svar (ej OK):", predictRes.status, text);
-      throw new Error(`Fel från predict: ${predictRes.status}`);
-    }
-
-    const predictData = await predictRes.json();
-    console.log("✅ Predict-resultat:", predictData);
-
-    if (predictData && predictData.data) {
-      showLanguageDetectionPopup(predictData.data);
-    } else {
-      console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
-    }
-  } catch (err) {
-    console.error("❌ Fel i predict-anrop:", err);
-  }
 }
 
 function showLanguageDetectionPopup(languages, originalBlob) {
