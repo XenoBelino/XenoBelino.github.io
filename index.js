@@ -1,19 +1,20 @@
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import predictRoute from './api/predict.js';
+
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Middleware för att kunna läsa JSON
 app.use(express.json());
+app.use(express.static(__dirname)); // visar t.ex. index.html om du vill
 
-// Statiska filer (för att visa t.ex. index.html om du vill köra allt via Render)
-app.use(express.static(path.join(__dirname)));
-
-// Importera och koppla din predict-route
-const predictRoute = require('./api/predict');
+// Anslut /api/predict
 app.use('/api/predict', predictRoute);
 
-// Starta servern
+// Starta server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Servern är igång på port ${PORT}`);
+  console.log(`✅ Servern är igång på http://localhost:${PORT}`);
 });
