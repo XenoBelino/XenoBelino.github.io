@@ -116,7 +116,7 @@ async function handleFileSelect(event) {
     console.log("📤 Skickar metadata till /api/predict:", metadata);
 
     try {
-      const predictRes = await fetch("https://my-backend-service.onrender.com/api/predict", {
+      const predictRes = await fetch("https://xenobelino-github-io.onrender.com/api/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
