@@ -153,16 +153,32 @@ function showLanguageDetectionPopup(languages, originalBlob) {
   popupContent.appendChild(heading);
 
   const info = document.createElement("p");
-  info.textContent = "Vi har upptäckt flera språk i videons ljud. Välj ett språk att ta bort.";
   popupContent.appendChild(info);
 
   const languageList = document.createElement("ul");
-  languages.forEach((lang) => {
+
+  // 🧠 Konvertera till array om det inte redan är det
+  const languageArray = Array.isArray(languages)
+    ? languages
+    : typeof languages === "string"
+      ? [languages]
+      : [];
+
+  // Anpassa infon
+  if (languageArray.length > 1) {
+    info.textContent = "Vi har upptäckt flera språk i videons ljud. Välj ett språk att ta bort.";
+  } else if (languageArray.length === 1) {
+    info.textContent = `Vi har upptäckt ett språk i videons ljud: ${languageArray[0]}`;
+  } else {
+    info.textContent = "Vi kunde inte identifiera några språk.";
+  }
+
+  languageArray.forEach((lang) => {
     const item = document.createElement("li");
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = `Ta bort ${lang}`;
     deleteBtn.onclick = async () => {
-      const remaining = languages.filter(l => l !== lang);
+      const remaining = languageArray.filter(l => l !== lang);
       closePopup("popup-language-detection");
 
       const languageKept = remaining[0] || "unknown"; // fallback om inget kvar
