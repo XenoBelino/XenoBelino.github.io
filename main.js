@@ -97,51 +97,48 @@ async function handleFileSelect(event) {
 
   // När videon laddat metadata
   video.onloadedmetadata = async () => {
-    video.volume = 0.5;
-    video.muted = false;
+  video.volume = 0.5;
+  video.muted = false;
 
-    try {
-      await video.play();
-    } catch (err) {
-      console.warn("⚠️ Kunde inte spela upp video direkt:", err);
-    }
+  try {
+    await video.play();
+  } catch (err) {
+    console.warn("⚠️ Kunde inte spela upp video direkt:", err);
+  }
 
-    // Skicka metadata istället för filen
-    const metadata = {
-      fileName: file.name,
-      duration: video.duration,
-      // Du kan lägga till fler fält här om du vill t.ex. size, type osv.
-    };
-
-    console.log("📤 Skickar metadata till /api/predict:", metadata);
-
-    try {
-      const predictRes = await fetch("https://xenobelino-backend.onrender.com/api/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(metadata)
-      });
-
-      if (!predictRes.ok) {
-        const text = await predictRes.text();
-        console.error("❌ Predict-svar (ej OK):", predictRes.status, text);
-        throw new Error(`Fel från predict: ${predictRes.status}`);
-      }
-
-      const predictData = await predictRes.json();
-      console.log("✅ Predict-resultat:", predictData);
-
-      if (predictData && predictData.data) {
-        showLanguageDetectionPopup(predictData.data);
-      } else {
-        console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
-      }
-    } catch (err) {
-      console.error("❌ Fel i predict-anrop:", err);
-    }
+  const metadata = {
+    fileUrl: "https://github.com/gradio-app/gradio/raw/main/test/test_files/sample_file.pdf"
   };
+
+  console.log("📤 Skickar metadata till /api/predict:", metadata);
+
+  try {
+    const predictRes = await fetch("https://xenobelino-backend.onrender.com/api/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(metadata)
+    });
+
+    if (!predictRes.ok) {
+      const text = await predictRes.text();
+      console.error("❌ Predict-svar (ej OK):", predictRes.status, text);
+      throw new Error(`Fel från predict: ${predictRes.status}`);
+    }
+
+    const predictData = await predictRes.json();
+    console.log("✅ Predict-resultat:", predictData);
+
+    if (predictData && predictData.data) {
+      showLanguageDetectionPopup(predictData.data);
+    } else {
+      console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
+    }
+  } catch (err) {
+    console.error("❌ Fel i predict-anrop:", err);
+  }
+};
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
