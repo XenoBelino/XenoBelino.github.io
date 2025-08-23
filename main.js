@@ -72,7 +72,8 @@ document.addEventListener("click", function (event) {
 
 async function handleFileSelect(event) {
   languagePopupShown = false;
-
+    
+  closePopup("popup-language-detection"); // Se till att popupen försvinner
   const file = event.target.files[0];
   if (!file) return;
   uploadedFile = file;
@@ -165,13 +166,13 @@ function showLanguageDetectionPopup(languages, originalBlob) {
       : [];
 
   // Anpassa infon
-  if (languageArray.length > 1) {
-    info.textContent = "Vi har upptäckt flera språk i videons ljud. Välj ett språk att ta bort.";
-  } else if (languageArray.length === 1) {
-    info.textContent = `Vi har upptäckt ett språk i videons ljud: ${languageArray[0]}`;
-  } else {
-    info.textContent = "Vi kunde inte identifiera några språk.";
-  }
+if (languageArray.length > 1) {
+  info.textContent = "We detected multiple languages in the audio. Choose one to remove.";
+} else if (languageArray.length === 1) {
+  info.textContent = `We detected the language: ${languageArray[0]}`;
+} else {
+  info.textContent = "Language detection failed: We couldn't identify any language.";
+}
 
   languageArray.forEach((lang) => {
     const item = document.createElement("li");
@@ -196,6 +197,14 @@ function showLanguageDetectionPopup(languages, originalBlob) {
 
   popupContent.appendChild(languageList);
   popup.style.display = "block";
+}
+if (languageArray.length === 0) {
+  const okBtn = document.createElement("button");
+  okBtn.textContent = "OK";
+  okBtn.onclick = () => {
+    closePopup("popup-language-detection");
+  };
+  popupContent.appendChild(okBtn);
 }
 
 function offerDownloadOfEditedFile(blob, languageKept) {
