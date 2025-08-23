@@ -72,13 +72,15 @@ document.addEventListener("click", function (event) {
 
 async function handleFileSelect(event) {
   languagePopupShown = false;
-    
-  closePopup("popup-language-detection"); // Se till att popupen försvinner
+
+  // Stäng popup om öppen
+  closePopup("popup-language-detection");
+
   const file = event.target.files[0];
   if (!file) return;
   uploadedFile = file;
 
-  // Skapa/förbered videospelare
+  // Skapa eller återanvänd videospelare
   let video = document.getElementById("video-player");
   if (!video) {
     video = document.createElement("video");
@@ -96,50 +98,47 @@ async function handleFileSelect(event) {
 
   setupAudioGraph(video);
 
-  // När videon laddat metadata
   video.onloadedmetadata = async () => {
-  video.volume = 0.5;
-  video.muted = false;
+    video.volume = 0.5;
+    video.muted = false;
 
-  try {
-    await video.play();
-  } catch (err) {
-    console.warn("⚠️ Kunde inte spela upp video direkt:", err);
-  }
+    try {
+      await video.play();
+    } catch (err) {
+      console.warn("⚠️ Kunde inte spela upp video direkt:", err);
+    }
 
-  const metadata = {
-    fileUrl: "https://github.com/gradio-app/gradio/raw/main/test/test_files/sample_file.pdf"
+    const metadata = {
+      fileUrl: "https://github.com/gradio-app/gradio/raw/main/test/test_files/sample_file.pdf"
+    };
+
+    console.log("📤 Skickar metadata till /api/predict:", metadata);
+
+    try {
+      const predictRes = await fetch("https://xenobelino-backend.onrender.com/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(metadata)
+      });
+
+      if (!predictRes.ok) {
+        const text = await predictRes.text();
+        console.error("❌ Predict-svar (ej OK):", predictRes.status, text);
+        throw new Error(`Fel från predict: ${predictRes.status}`);
+      }
+
+      const predictData = await predictRes.json();
+      console.log("✅ Predict-resultat:", predictData);
+
+      if (predictData && predictData.data) {
+        showLanguageDetectionPopup(predictData.data);
+      } else {
+        console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
+      }
+    } catch (err) {
+      console.error("❌ Fel i predict-anrop:", err);
+    }
   };
-
-  console.log("📤 Skickar metadata till /api/predict:", metadata);
-
-  try {
-    const predictRes = await fetch("https://xenobelino-backend.onrender.com/api/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(metadata)
-    });
-
-    if (!predictRes.ok) {
-      const text = await predictRes.text();
-      console.error("❌ Predict-svar (ej OK):", predictRes.status, text);
-      throw new Error(`Fel från predict: ${predictRes.status}`);
-    }
-
-    const predictData = await predictRes.json();
-    console.log("✅ Predict-resultat:", predictData);
-
-    if (predictData && predictData.data) {
-      showLanguageDetectionPopup(predictData.data);
-    } else {
-      console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
-    }
-  } catch (err) {
-    console.error("❌ Fel i predict-anrop:", err);
-  }
-};
 
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
@@ -158,21 +157,19 @@ function showLanguageDetectionPopup(languages, originalBlob) {
 
   const languageList = document.createElement("ul");
 
-  // 🧠 Konvertera till array om det inte redan är det
   const languageArray = Array.isArray(languages)
     ? languages
     : typeof languages === "string"
       ? [languages]
       : [];
 
-  // Anpassa infon
-if (languageArray.length > 1) {
-  info.textContent = "We detected multiple languages in the audio. Choose one to remove.";
-} else if (languageArray.length === 1) {
-  info.textContent = `We detected the language: ${languageArray[0]}`;
-} else {
-  info.textContent = "Language detection failed: We couldn't identify any language.";
-}
+  if (languageArray.length > 1) {
+    info.textContent = "We detected multiple languages in the audio. Choose one to remove.";
+  } else if (languageArray.length === 1) {
+    info.textContent = `We detected the language: ${languageArray[0]}`;
+  } else {
+    info.textContent = "Language detection failed: We couldn't identify any language.";
+  }
 
   languageArray.forEach((lang) => {
     const item = document.createElement("li");
@@ -182,7 +179,7 @@ if (languageArray.length > 1) {
       const remaining = languageArray.filter(l => l !== lang);
       closePopup("popup-language-detection");
 
-      const languageKept = remaining[0] || "unknown"; // fallback om inget kvar
+      const languageKept = remaining[0] || "unknown";
 
       try {
         const resultBlob = await combineAudioWithoutLanguage(lang, languageKept);
@@ -196,15 +193,15 @@ if (languageArray.length > 1) {
   });
 
   popupContent.appendChild(languageList);
+
+  if (languageArray.length === 0) {
+    const okBtn = document.createElement("button");
+    okBtn.textContent = "OK";
+    okBtn.onclick = () => closePopup("popup-language-detection");
+    popupContent.appendChild(okBtn);
+  }
+
   popup.style.display = "block";
-}
-if (languageArray.length === 0) {
-  const okBtn = document.createElement("button");
-  okBtn.textContent = "OK";
-  okBtn.onclick = () => {
-    closePopup("popup-language-detection");
-  };
-  popupContent.appendChild(okBtn);
 }
 
 function offerDownloadOfEditedFile(blob, languageKept) {
