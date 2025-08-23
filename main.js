@@ -203,6 +203,25 @@ function showLanguageDetectionPopup(languages, originalBlob) {
 
   popup.style.display = "block";
 }
+async function fetchPredictWithRetry(metadata, attempts = 3) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch("https://xenobelino-backend.onrender.com/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(metadata)
+      });
+
+      if (!res.ok) throw new Error("Svar ej OK");
+      return await res.json();
+
+    } catch (err) {
+      console.warn(`🔁 Försök ${i + 1} misslyckades:`, err);
+      if (i === attempts - 1) throw err;
+      await new Promise(r => setTimeout(r, 5000)); // Vänta 5 sek innan nästa försök
+    }
+  }
+}
 
 function offerDownloadOfEditedFile(blob, languageKept) {
   const url = URL.createObjectURL(blob);
