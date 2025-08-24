@@ -149,7 +149,7 @@ function showLanguageDetectionPopup(languages, originalBlob) {
   popupContent.innerHTML = "";
 
   const heading = document.createElement("h2");
-  heading.textContent = "Språkdetektering";
+  heading.textContent = "Language Detections";
   popupContent.appendChild(heading);
 
   const info = document.createElement("p");
