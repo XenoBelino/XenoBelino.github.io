@@ -177,6 +177,10 @@ async function handleFileSelect(event) {
 
         musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
       }
+         const videoBlob = new Blob([file], { type: file.type });
+        const musicBuffer = await extractMusicFromVideo(videoBlob);
+        enableMusicVolumeControl(musicBuffer);
+
 
     } catch (err) {
       console.error("❌ Fel i predict-anrop:", err);
