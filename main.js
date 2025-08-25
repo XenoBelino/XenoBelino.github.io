@@ -203,6 +203,67 @@ async function handleFileSelect(event) {
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
 
+function showLanguageDetectionPopup(languages) {
+  const popup = document.getElementById("popup-language-detection");
+  const popupContent = document.getElementById("popup-language-detection-content");
+  popupContent.innerHTML = "";
+
+  const heading = document.createElement("h2");
+  heading.textContent = "Language Detections";
+  popupContent.appendChild(heading);
+
+  const info = document.createElement("p");
+  popupContent.appendChild(info);
+
+  const languageList = document.createElement("ul");
+
+  const languageArray = Array.isArray(languages)
+    ? languages
+    : typeof languages === "string"
+      ? [languages]
+      : [];
+
+  if (languageArray.length > 1) {
+    info.textContent = "We detected multiple languages in the audio. Choose one to remove.";
+  } else if (languageArray.length === 1) {
+    info.textContent = `We detected the language: ${languageArray[0]}`;
+  } else {
+    info.textContent = "Language detection failed: We couldn't identify any language.";
+  }
+
+  languageArray.forEach((lang) => {
+    const item = document.createElement("li");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = `Ta bort ${lang}`;
+    deleteBtn.onclick = async () => {
+      const remaining = languageArray.filter(l => l !== lang);
+      closePopup("popup-language-detection");
+
+      const languageKept = remaining[0] || "unknown";
+
+      try {
+        const resultBlob = await combineAudioWithoutLanguage(lang, languageKept);
+        offerDownloadOfEditedFile(resultBlob, languageKept);
+      } catch (e) {
+        alert("Fel vid borttagning av språk: " + e.message);
+      }
+    };
+    item.appendChild(deleteBtn);
+    languageList.appendChild(item);
+  });
+
+  popupContent.appendChild(languageList);
+
+  if (languageArray.length === 0) {
+    const okBtn = document.createElement("button");
+    okBtn.textContent = "OK";
+    okBtn.onclick = () => closePopup("popup-language-detection");
+    popupContent.appendChild(okBtn);
+  }
+
+  popup.style.display = "block";
+}
+
 async function fetchPredictWithRetry(metadata, attempts = 3) {
   for (let i = 0; i < attempts; i++) {
     try {
