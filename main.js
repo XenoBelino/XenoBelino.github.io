@@ -96,19 +96,28 @@ async function handleFileSelect(event) {
   video.src = URL.createObjectURL(file);
   window.currentVideo = video;
 
-  // 🎧 Web Audio API – skapa ljudkontroll
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const musicGain = audioCtx.createGain();
-  const source = audioCtx.createMediaElementSource(video);
-  source.connect(musicGain);
-  musicGain.connect(audioCtx.destination);
+ // 🎧 Web Audio API – skapa ljudkontroll
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const musicGain = audioCtx.createGain();
+const source = audioCtx.createMediaElementSource(video);
+source.connect(musicGain);
+musicGain.connect(audioCtx.destination);
 
-  const slider = document.getElementById("music-volume");
-  slider.addEventListener("input", (e) => {
-    musicGain.gain.setValueAtTime(e.target.value, audioCtx.currentTime);
-  });
-  musicGain.gain.setValueAtTime(1, audioCtx.currentTime); // full volym från start
+// Koppla befintlig HTML-slider till GainNode
+const slider = document.getElementById("music-volume");
+slider.addEventListener("input", (e) => {
+  const sliderValue = parseInt(e.target.value);     // 0–100
+  const gainValue = sliderValue / 100;              // Konvertera till 0–1
+  musicGain.gain.setValueAtTime(gainValue, audioCtx.currentTime);
 
+  // Uppdatera procenttext visuellt
+  const percent = document.getElementById("music-volume-percent");
+  if (percent) percent.textContent = `${sliderValue}%`;
+});
+
+// Sätt initial gain (till 50%)
+musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    
   video.onloadedmetadata = async () => {
     video.volume = 0.5;
     video.muted = false;
