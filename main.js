@@ -72,8 +72,6 @@ document.addEventListener("click", function (event) {
 
 async function handleFileSelect(event) {
   languagePopupShown = false;
-
-  // Stäng popup om öppen
   closePopup("popup-language-detection");
 
   const file = event.target.files[0];
@@ -96,28 +94,6 @@ async function handleFileSelect(event) {
   video.src = URL.createObjectURL(file);
   window.currentVideo = video;
 
- // 🎧 Web Audio API – skapa ljudkontroll
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const musicGain = audioCtx.createGain();
-const source = audioCtx.createMediaElementSource(video);
-source.connect(musicGain);
-musicGain.connect(audioCtx.destination);
-
-// Koppla befintlig HTML-slider till GainNode
-const slider = document.getElementById("music-volume");
-slider.addEventListener("input", (e) => {
-  const sliderValue = parseInt(e.target.value);     // 0–100
-  const gainValue = sliderValue / 100;              // Konvertera till 0–1
-  musicGain.gain.setValueAtTime(gainValue, audioCtx.currentTime);
-
-  // Uppdatera procenttext visuellt
-  const percent = document.getElementById("music-volume-percent");
-  if (percent) percent.textContent = `${sliderValue}%`;
-});
-
-// Sätt initial gain (till 50%)
-musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-    
   video.onloadedmetadata = async () => {
     video.volume = 0.5;
     video.muted = false;
@@ -128,7 +104,7 @@ musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
       console.warn("⚠️ Kunde inte spela upp video direkt:", err);
     }
 
-    // 🔁 Exempel-URL – byt ut mot faktisk URL till din fil när du kopplat Smash eller annan host
+    // 👇 Skicka metadata till din backend
     const metadata = {
       fileUrl: "https://github.com/gradio-app/gradio/raw/main/test/test_files/sample_file.pdf"
     };
@@ -156,6 +132,51 @@ musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
       } else {
         console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
       }
+
+      // 🎵 Hantera separat musikfil (accompaniment)
+      if (predictData.music_url) {
+        let musicAudio = document.getElementById("music-audio");
+        if (!musicAudio) {
+          musicAudio = document.createElement("audio");
+          musicAudio.id = "music-audio";
+          musicAudio.hidden = true;
+          document.body.appendChild(musicAudio);
+        } else {
+          musicAudio.pause();
+          musicAudio.removeAttribute("src");
+          musicAudio.load();
+        }
+
+        musicAudio.src = predictData.music_url;
+        musicAudio.loop = true;
+        musicAudio.volume = 0.5;
+
+        try {
+          await musicAudio.play();
+        } catch (err) {
+          console.warn("⚠️ Kunde inte spela upp musik automatiskt:", err);
+        }
+
+        // 🎧 Web Audio API för musikvolym
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const musicGain = audioCtx.createGain();
+        const source = audioCtx.createMediaElementSource(musicAudio);
+        source.connect(musicGain);
+        musicGain.connect(audioCtx.destination);
+
+        const slider = document.getElementById("music-volume");
+        slider.addEventListener("input", (e) => {
+          const sliderValue = parseInt(e.target.value);
+          const gainValue = sliderValue / 100;
+          musicGain.gain.setValueAtTime(gainValue, audioCtx.currentTime);
+
+          const percent = document.getElementById("music-volume-percent");
+          if (percent) percent.textContent = `${sliderValue}%`;
+        });
+
+        musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      }
+
     } catch (err) {
       console.error("❌ Fel i predict-anrop:", err);
     }
