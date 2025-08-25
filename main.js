@@ -133,48 +133,53 @@ async function handleFileSelect(event) {
       }
 
       // 🎵 Hantera separat musikfil (accompaniment)
-      if (predictData.music_url) {
-        let musicAudio = document.getElementById("music-audio");
-        if (!musicAudio) {
-          musicAudio = document.createElement("audio");
-          musicAudio.id = "music-audio";
-          musicAudio.hidden = true;
-          document.body.appendChild(musicAudio);
-        } else {
-          musicAudio.pause();
-          musicAudio.removeAttribute("src");
-          musicAudio.load();
-        }
+     // 🎵 Hantera separat musikfil (accompaniment)
+if (predictData.music_url) {
+  let musicAudio = document.getElementById("music-audio");
+  if (!musicAudio) {
+    musicAudio = document.createElement("audio");
+    musicAudio.id = "music-audio";
+    musicAudio.hidden = true;
+    document.body.appendChild(musicAudio);
+  } else {
+    musicAudio.pause();
+    musicAudio.removeAttribute("src");
+    musicAudio.load();
+  }
 
-        musicAudio.src = predictData.music_url;
-        musicAudio.loop = true;
-        musicAudio.volume = 0.5;
+  musicAudio.src = predictData.music_url;
+  musicAudio.loop = true;
 
-        try {
-          await musicAudio.play();
-        } catch (err) {
-          console.warn("⚠️ Kunde inte spela upp musik automatiskt:", err);
-        }
+  // 🎧 Web Audio API för musikvolym
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const musicGain = audioCtx.createGain();
+  const source = audioCtx.createMediaElementSource(musicAudio);
+  source.connect(musicGain);
+  musicGain.connect(audioCtx.destination);
 
-        // 🎧 Web Audio API för musikvolym
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const musicGain = audioCtx.createGain();
-        const source = audioCtx.createMediaElementSource(musicAudio);
-        source.connect(musicGain);
-        musicGain.connect(audioCtx.destination);
+  const slider = document.getElementById("music-volume");
+  const percent = document.getElementById("music-volume-percent");
 
-        const slider = document.getElementById("music-volume");
-        slider.addEventListener("input", (e) => {
-          const sliderValue = parseInt(e.target.value);
-          const gainValue = sliderValue / 100;
-          musicGain.gain.setValueAtTime(gainValue, audioCtx.currentTime);
+  // Sätt initial volym
+  const defaultVolume = 0.5;
+  musicGain.gain.setValueAtTime(defaultVolume, audioCtx.currentTime);
+  slider.value = defaultVolume * 100;
+  if (percent) percent.textContent = `${slider.value}%`;
 
-          const percent = document.getElementById("music-volume-percent");
-          if (percent) percent.textContent = `${sliderValue}%`;
-        });
+  // Uppdatera volym när användaren rör på slidern
+  slider.oninput = (e) => {
+    const value = parseInt(e.target.value);
+    const gain = value / 100;
+    musicGain.gain.setValueAtTime(gain, audioCtx.currentTime);
+    if (percent) percent.textContent = `${value}%`;
+  };
 
-        musicGain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-      }
+  try {
+    await musicAudio.play();
+  } catch (err) {
+    console.warn("⚠️ Kunde inte spela upp musik:", err);
+  }
+}
 
     } catch (err) {
       console.error("❌ Fel i predict-anrop:", err);
