@@ -133,53 +133,67 @@ async function handleFileSelect(event) {
       }
 
       // 🎵 Hantera separat musikfil (accompaniment)
-     // 🎵 Hantera separat musikfil (accompaniment)
-if (predictData.music_url) {
-  let musicAudio = document.getElementById("music-audio");
-  if (!musicAudio) {
-    musicAudio = document.createElement("audio");
-    musicAudio.id = "music-audio";
-    musicAudio.hidden = true;
-    document.body.appendChild(musicAudio);
-  } else {
-    musicAudio.pause();
-    musicAudio.removeAttribute("src");
-    musicAudio.load();
-  }
+      if (predictData.music_url) {
+        console.log("🎵 Fick tillbaka musik-URL:", predictData.music_url);
 
-  musicAudio.src = predictData.music_url;
-  musicAudio.loop = true;
+        let musicAudio = document.getElementById("music-audio");
+        if (!musicAudio) {
+          musicAudio = document.createElement("audio");
+          musicAudio.id = "music-audio";
+          musicAudio.hidden = true;
+          document.body.appendChild(musicAudio);
+        } else {
+          musicAudio.pause();
+          musicAudio.removeAttribute("src");
+          musicAudio.load();
+        }
 
-  // 🎧 Web Audio API för musikvolym
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const musicGain = audioCtx.createGain();
-  const source = audioCtx.createMediaElementSource(musicAudio);
-  source.connect(musicGain);
-  musicGain.connect(audioCtx.destination);
+        musicAudio.src = predictData.music_url;
+        musicAudio.loop = true;
 
-  const slider = document.getElementById("music-volume");
-  const percent = document.getElementById("music-volume-percent");
+        // 🎧 Web Audio API för musikvolym
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") {
+          await audioCtx.resume();
+          console.log("🎧 AudioContext återupptagen (resumed)");
+        }
 
-  // Sätt initial volym
-  const defaultVolume = 0.5;
-  musicGain.gain.setValueAtTime(defaultVolume, audioCtx.currentTime);
-  slider.value = defaultVolume * 100;
-  if (percent) percent.textContent = `${slider.value}%`;
+        const musicGain = audioCtx.createGain();
+        const source = audioCtx.createMediaElementSource(musicAudio);
+        source.connect(musicGain);
+        musicGain.connect(audioCtx.destination);
 
-  // Uppdatera volym när användaren rör på slidern
-  slider.oninput = (e) => {
-    const value = parseInt(e.target.value);
-    const gain = value / 100;
-    musicGain.gain.setValueAtTime(gain, audioCtx.currentTime);
-    if (percent) percent.textContent = `${value}%`;
-  };
+        const slider = document.getElementById("music-volume");
+        const percent = document.getElementById("music-volume-percent");
 
-  try {
-    await musicAudio.play();
-  } catch (err) {
-    console.warn("⚠️ Kunde inte spela upp musik:", err);
-  }
-}
+        console.log("🎚️ Slider finns:", !!slider);
+        console.log("🎧 musicAudio finns:", !!musicAudio);
+
+        // Sätt initial volym
+        const defaultVolume = 0.5;
+        musicGain.gain.setValueAtTime(defaultVolume, audioCtx.currentTime);
+        slider.value = defaultVolume * 100;
+        if (percent) percent.textContent = `${slider.value}%`;
+
+        // Uppdatera volym när användaren rör på slidern
+        slider.oninput = (e) => {
+          const value = parseInt(e.target.value);
+          const gain = value / 100;
+          musicGain.gain.setValueAtTime(gain, audioCtx.currentTime);
+          console.log("🎚️ Slider ändrades till:", value);
+          console.log("🔊 gain satt till:", gain);
+          if (percent) percent.textContent = `${value}%`;
+        };
+
+        try {
+          await musicAudio.play();
+          console.log("▶️ Musik spelas upp");
+        } catch (err) {
+          console.warn("⚠️ Kunde inte spela upp musik:", err);
+        }
+      } else {
+        console.warn("⚠️ Ingen music_url i predictData");
+      }
 
     } catch (err) {
       console.error("❌ Fel i predict-anrop:", err);
@@ -189,66 +203,6 @@ if (predictData.music_url) {
   document.getElementById("file-name").textContent = uploadedFile.name;
 }
 
-function showLanguageDetectionPopup(languages, originalBlob) {
-  const popup = document.getElementById("popup-language-detection");
-  const popupContent = document.getElementById("popup-language-detection-content");
-  popupContent.innerHTML = "";
-
-  const heading = document.createElement("h2");
-  heading.textContent = "Language Detections";
-  popupContent.appendChild(heading);
-
-  const info = document.createElement("p");
-  popupContent.appendChild(info);
-
-  const languageList = document.createElement("ul");
-
-  const languageArray = Array.isArray(languages)
-    ? languages
-    : typeof languages === "string"
-      ? [languages]
-      : [];
-
-  if (languageArray.length > 1) {
-    info.textContent = "We detected multiple languages in the audio. Choose one to remove.";
-  } else if (languageArray.length === 1) {
-    info.textContent = `We detected the language: ${languageArray[0]}`;
-  } else {
-    info.textContent = "Language detection failed: We couldn't identify any language.";
-  }
-
-  languageArray.forEach((lang) => {
-    const item = document.createElement("li");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = `Ta bort ${lang}`;
-    deleteBtn.onclick = async () => {
-      const remaining = languageArray.filter(l => l !== lang);
-      closePopup("popup-language-detection");
-
-      const languageKept = remaining[0] || "unknown";
-
-      try {
-        const resultBlob = await combineAudioWithoutLanguage(lang, languageKept);
-        offerDownloadOfEditedFile(resultBlob, languageKept);
-      } catch (e) {
-        alert("Fel vid borttagning av språk: " + e.message);
-      }
-    };
-    item.appendChild(deleteBtn);
-    languageList.appendChild(item);
-  });
-
-  popupContent.appendChild(languageList);
-
-  if (languageArray.length === 0) {
-    const okBtn = document.createElement("button");
-    okBtn.textContent = "OK";
-    okBtn.onclick = () => closePopup("popup-language-detection");
-    popupContent.appendChild(okBtn);
-  }
-
-  popup.style.display = "block";
-}
 async function fetchPredictWithRetry(metadata, attempts = 3) {
   for (let i = 0; i < attempts; i++) {
     try {
