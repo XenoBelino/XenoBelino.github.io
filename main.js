@@ -96,7 +96,18 @@ async function handleFileSelect(event) {
   video.src = URL.createObjectURL(file);
   window.currentVideo = video;
 
-  setupAudioGraph(video);
+  // 🎧 Web Audio API – skapa ljudkontroll
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const musicGain = audioCtx.createGain();
+  const source = audioCtx.createMediaElementSource(video);
+  source.connect(musicGain);
+  musicGain.connect(audioCtx.destination);
+
+  const slider = document.getElementById("music-volume");
+  slider.addEventListener("input", (e) => {
+    musicGain.gain.setValueAtTime(e.target.value, audioCtx.currentTime);
+  });
+  musicGain.gain.setValueAtTime(1, audioCtx.currentTime); // full volym från start
 
   video.onloadedmetadata = async () => {
     video.volume = 0.5;
@@ -108,6 +119,7 @@ async function handleFileSelect(event) {
       console.warn("⚠️ Kunde inte spela upp video direkt:", err);
     }
 
+    // 🔁 Exempel-URL – byt ut mot faktisk URL till din fil när du kopplat Smash eller annan host
     const metadata = {
       fileUrl: "https://github.com/gradio-app/gradio/raw/main/test/test_files/sample_file.pdf"
     };
