@@ -105,18 +105,16 @@ async function handleFileSelect(event) {
       console.warn("⚠️ Kunde inte spela upp video direkt:", err);
     }
 
-    // 👇 Skicka metadata till din backend
-    const metadata = {
-      fileUrl: "https://github.com/gradio-app/gradio/raw/main/test/test_files/sample_file.pdf"
-    };
+    // 👇 Skicka fil till din backend som FormData
+    const formData = new FormData();
+    formData.append("file", uploadedFile);
 
-    console.log("📤 Skickar metadata till /api/predict:", metadata);
+    console.log("📤 Skickar fil till /api/predict");
 
     try {
       const predictRes = await fetch("https://xenobelino-backend.onrender.com/api/predict", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(metadata)
+        body: formData
       });
 
       if (!predictRes.ok) {
