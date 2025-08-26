@@ -324,9 +324,17 @@ function closePopup(id) {
 function saveProgress(videoId, progress) {
   localStorage.setItem(`progress_${videoId}`, progress);
 }
+
 function loadProgress(videoId) {
-  return localStorage.getItem(`progress_${videoId}`) || 0;
+  const progress = localStorage.getItem(`progress_${videoId}`);
+  const statusEl = document.getElementById("progress-status");
+  if (progress) {
+    statusEl.innerText = `Du har gjort ${progress}%`;
+  } else {
+    statusEl.innerText = `Ingen sparad progress`;
+  }
 }
+
 function clearProgress(videoId) {
   localStorage.removeItem(`progress_${videoId}`);
 }
@@ -976,6 +984,9 @@ window.handleFileSelect = handleFileSelect;
 window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
+window.saveProgress = saveProgress;
+window.loadProgress = loadProgress;
+window.clearProgress = clearProgress;
 window.onload = function () {
   loadProgress(); // 👈 Lägg till detta om det inte redan finns
 };
