@@ -339,16 +339,6 @@ function clearProgress(videoId) {
   localStorage.removeItem(`progress_${videoId}`);
 }
 
-// Eventlyssnare när användaren väljer fil
-fileInput.addEventListener('change', (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    loadProgress(file.name);  // Använd filnamnet som id
-  } else {
-    document.getElementById("progress-status").innerText = "Ingen sparad progress";
-  }
-});
-
     // Uppdatera volym
    function updateVolumePercentage(type) {
   const slider = document.getElementById(type + "-volume");
@@ -973,6 +963,16 @@ document.addEventListener("keydown", (e) => {
       originalVolumeSlider.value = video.volume * 100;
       updateVolumePercentage("original");
       break;
+  }
+});
+     
+// Eventlyssnare när användaren väljer fil
+fileInput.addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    loadProgress(file.name);  // Använd filnamnet som id
+  } else {
+    document.getElementById("progress-status").innerText = "Ingen sparad progress";
   }
 });
 
