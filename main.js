@@ -152,40 +152,43 @@ async function handleFileSelect(event) {
         musicAudio.src = predictData.music_url;
         musicAudio.loop = true;
 
-        // 🎧 Web Audio API för musikvolym
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === "suspended") {
-          await audioCtx.resume();
-          console.log("🎧 AudioContext återupptagen (resumed)");
-        }
+  await audioCtx.resume();
+  console.log("🎧 AudioContext återupptagen (resumed)");
+}
 
-        const musicGain = audioCtx.createGain();
-        const source = audioCtx.createMediaElementSource(musicAudio);
-        source.connect(musicGain);
-        musicGain.connect(audioCtx.destination);
+// Skapa musicGain om den inte finns
+if (!musicGain) {
+  musicGain = audioCtx.createGain();
+}
 
-        const slider = document.getElementById("music-volume");
-        const percent = document.getElementById("music-volume-percent");
+// Koppla musicAudio till musicGain om inte redan kopplad
+if (!musicAudio.source) {
+  musicAudio.source = audioCtx.createMediaElementSource(musicAudio);
+  musicAudio.source.connect(musicGain);
+  musicGain.connect(audioCtx.destination);
+}
 
-        console.log("🎚️ Slider finns:", !!slider);
-        console.log("🎧 musicAudio finns:", !!musicAudio);
+const slider = document.getElementById("music-volume");
+const percent = document.getElementById("music-volume-percent");
 
-        // Sätt initial volym
-        const defaultVolume = 0.5;
-        musicGain.gain.setValueAtTime(defaultVolume, audioCtx.currentTime);
-        slider.value = defaultVolume * 100;
-        if (percent) percent.textContent = `${slider.value}%`;
+// Sätt initial volym om gain är 1 (standard)
+if (musicGain.gain.value === 1) {
+  const defaultVolume = 0.5;
+  musicGain.gain.setValueAtTime(defaultVolume, audioCtx.currentTime);
+  slider.value = defaultVolume * 100;
+  if (percent) percent.textContent = `${slider.value}%`;
+}
 
-        // Uppdatera volym när användaren rör på slidern
-        slider.oninput = (e) => {
-          const value = parseInt(e.target.value);
-          const gain = value / 100;
-          musicGain.gain.setValueAtTime(gain, audioCtx.currentTime);
-          console.log("🎚️ Slider ändrades till:", value);
-          console.log("🔊 gain satt till:", gain);
-          if (percent) percent.textContent = `${value}%`;
-        };
-
+// Uppdatera volym när användaren rör på slidern
+slider.oninput = (e) => {
+  const value = parseInt(e.target.value);
+  const gain = value / 100;
+  musicGain.gain.setValueAtTime(gain, audioCtx.currentTime);
+  console.log("🎚️ Slider ändrades till:", value);
+  console.log("🔊 gain satt till:", gain);
+  if (percent) percent.textContent = `${value}%`;
+};
         try {
           await musicAudio.play();
           console.log("▶️ Musik spelas upp");
