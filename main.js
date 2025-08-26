@@ -321,6 +321,16 @@ function closePopup(id) {
     }
 }
 
+function saveProgress(videoId, progress) {
+  localStorage.setItem(`progress_${videoId}`, progress);
+}
+function loadProgress(videoId) {
+  return localStorage.getItem(`progress_${videoId}`) || 0;
+}
+function clearProgress(videoId) {
+  localStorage.removeItem(`progress_${videoId}`);
+}
+
     // Uppdatera volym
    function updateVolumePercentage(type) {
   const slider = document.getElementById(type + "-volume");
