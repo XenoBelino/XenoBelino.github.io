@@ -13,6 +13,7 @@ let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let musicGain = null;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
