@@ -127,7 +127,12 @@ async function handleFileSelect(event) {
       const predictData = await predictRes.json();
       console.log("✅ Predict-resultat:", predictData);
 
-      if (predictData && predictData.data) {
+      const predictData = await predictRes.json();
+      console.log("✅ Predict-resultat (hela):", predictData);
+      console.log("🔍 Data från predictData.data:", predictData.data);
+      console.log("🎼 music_url-värde:", predictData.data?.music_url);
+
+        if (predictData && predictData.data) {
         showLanguageDetectionPopup(predictData.data);
       } else {
         console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
