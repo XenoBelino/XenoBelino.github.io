@@ -134,8 +134,8 @@ async function handleFileSelect(event) {
       }
 
       // 🎵 Hantera separat musikfil (accompaniment)
-      if (predictData.music_url) {
-        console.log("🎵 Fick tillbaka musik-URL:", predictData.music_url);
+      if (predictData.data && predictData.data.music_url) {
+        console.log("🎵 Fick tillbaka musik-URL:", predictData.data.music_url);
 
         let musicAudio = document.getElementById("music-audio");
         if (!musicAudio) {
@@ -149,7 +149,7 @@ async function handleFileSelect(event) {
           musicAudio.load();
         }
 
-        musicAudio.src = predictData.music_url;
+        musicAudio.src = predictData.data.music_url;
         musicAudio.loop = true;
 
         if (audioCtx.state === "suspended") {
@@ -195,9 +195,10 @@ slider.oninput = (e) => {
         } catch (err) {
           console.warn("⚠️ Kunde inte spela upp musik:", err);
         }
-      } else {
-        console.warn("⚠️ Ingen music_url i predictData");
-      }
+       
+       } else {
+  console.warn("⚠️ Ingen music_url i predictData.data");
+}
 
     } catch (err) {
       console.error("❌ Fel i predict-anrop:", err);
