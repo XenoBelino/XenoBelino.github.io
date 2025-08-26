@@ -976,6 +976,9 @@ window.handleFileSelect = handleFileSelect;
 window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
+window.onload = function () {
+  loadProgress(); // 👈 Lägg till detta om det inte redan finns
+};
 
 console.log("main.js loaded successfully!");
 });
