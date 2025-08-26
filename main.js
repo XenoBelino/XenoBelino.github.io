@@ -481,7 +481,6 @@ fileInput.addEventListener('change', (event) => {
     document.getElementById("progress-text").style.display = "none";
 }
 
-
     // Dummy-metod: få aktuell videoupplösning
     function getVideoResolution() {
   const video = document.getElementById("video-player");
@@ -715,7 +714,6 @@ function setupAudioGraph(videoElement) {
   }
   // Om sourceNode redan finns — gör inget mer här
 }
-
 
 function stopArrowKeysFromAffectingVideo(sliderElement) {
   sliderElement.addEventListener('keydown', (e) => {
