@@ -288,23 +288,6 @@ async function fetchPredictWithRetry(metadata, attempts = 3) {
   }
 }
 
-function enableMusicVolumeControl(audioBuffer) {
-    const musicSlider = document.getElementById("music-volume");
-    const gainNode = audioCtx.createGain();
-
-    gainNode.gain.value = musicSlider.value / 100;
-
-    musicSlider.oninput = () => {
-        gainNode.gain.value = musicSlider.value / 100;
-        document.getElementById("music-volume-percent").textContent = `${musicSlider.value}%`;
-    };
-
-    const musicSource = audioCtx.createBufferSource();
-    musicSource.buffer = audioBuffer;
-    musicSource.connect(gainNode).connect(audioCtx.destination);
-    musicSource.start();
-}
-
 function offerDownloadOfEditedFile(blob, languageKept) {
   const url = URL.createObjectURL(blob);
   const container = document.getElementById("download-link-container");
