@@ -125,9 +125,6 @@ async function handleFileSelect(event) {
       }
 
       const predictData = await predictRes.json();
-      console.log("✅ Predict-resultat:", predictData);
-
-      const predictData = await predictRes.json();
       console.log("✅ Predict-resultat (hela):", predictData);
       console.log("🔍 Data från predictData.data:", predictData.data);
       console.log("🎼 music_url-värde:", predictData.data?.music_url);
