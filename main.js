@@ -126,9 +126,38 @@ async function handleFileSelect(event) {
       }
 
       const predictData = await predictRes.json();
-      console.log("✅ Predict-resultat (hela):", predictData);
-      console.log("🔍 Data från predictData.data:", predictData.data);
-      console.log("🎼 music_url-värde:", predictData.data?.music_url);
+console.log("✅ Predict-resultat (hela):", predictData);
+console.log("🔍 Data från predictData.data:", predictData.data);
+console.log("🎼 music_url-värde:", predictData.data?.music_url);
+
+// 🔽 LÄGG TILL KODEN HÄR 🔽
+try {
+ const uploadFormData = new FormData();
+uploadFormData.append("file", uploadedFile);
+
+const uploadRes = await fetch("/upload", {
+  method: "POST",
+  body: uploadFormData
+});
+
+  if (!uploadRes.ok) {
+    throw new Error("Uppladdning till /upload misslyckades");
+  }
+
+  const uploadData = await uploadRes.json();
+  console.log("📎 Tillfällig nedladdningslänk:", uploadData.downloadUrl);
+
+  const container = document.getElementById("download-link-container");
+  container.innerHTML = "";
+  const a = document.createElement("a");
+  a.href = uploadData.downloadUrl;
+  a.textContent = "🔗 Ladda ner konverterad fil senare";
+  a.className = "button";
+  container.appendChild(a);
+
+} catch (err) {
+  console.error("❌ Kunde inte ladda upp till lokal server:", err);
+}
 
         if (predictData && predictData.data) {
         showLanguageDetectionPopup(predictData.data);
