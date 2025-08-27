@@ -72,20 +72,6 @@ document.addEventListener("click", function (event) {
         document.getElementById("file-input").click();
     }
 
-  function loadProgress(videoFileName) {
-  const savedProgress = localStorage.getItem(`progress_${videoFileName}`);
-  if (savedProgress) {
-    const { time } = JSON.parse(savedProgress);
-    const video = window.currentVideo || document.getElementById("video-player");
-    if (video) {
-      video.currentTime = time;
-      document.getElementById("progress-status").innerText = `⏪ Återupptar från ${Math.floor(time)} sekunder`;
-    }
-  } else {
-    document.getElementById("progress-status").innerText = "Ingen sparad progress";
-  }
-}
-
 async function handleFileSelect(event) {
   languagePopupShown = false;
   closePopup("popup-language-detection");
@@ -340,13 +326,17 @@ function saveProgress(videoId, progress) {
   localStorage.setItem(`progress_${videoId}`, progress);
 }
 
-function loadProgress(videoId) {
-  const progress = localStorage.getItem(`progress_${videoId}`);
-  const statusEl = document.getElementById("progress-status");
-  if (progress) {
-    statusEl.innerText = `Du har gjort ${progress}%`;
+function loadProgress(videoFileName) {
+  const savedProgress = localStorage.getItem(`progress_${videoFileName}`);
+  if (savedProgress) {
+    const { time } = JSON.parse(savedProgress);
+    const video = window.currentVideo || document.getElementById("video-player");
+    if (video) {
+      video.currentTime = time;
+      document.getElementById("progress-status").innerText = `⏪ Återupptar från ${Math.floor(time)} sekunder`;
+    }
   } else {
-    statusEl.innerText = `Ingen sparad progress`;
+    document.getElementById("progress-status").innerText = "Ingen sparad progress";
   }
 }
 
