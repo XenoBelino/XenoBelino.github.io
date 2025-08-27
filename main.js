@@ -934,9 +934,7 @@ window.handleFileSelect = handleFileSelect;
 window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
-window.saveProgress = saveProgress;
-window.loadProgress = loadProgress;
-window.clearProgress = clearProgress;
+
 
 console.log("main.js loaded successfully!");
 });
