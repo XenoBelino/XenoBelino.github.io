@@ -260,6 +260,9 @@ function offerDownloadOfEditedFile(blob, languageKept) {
   link.className = "button"; // 👈 samma stil som övriga knappar
 
   container.appendChild(link);
+ localStorage.removeItem("last_uploaded_file");
+ localStorage.removeItem(`conversion_${window.currentVideo?.name || "unknown"}`);
+
 }
 
     // Visa popup
