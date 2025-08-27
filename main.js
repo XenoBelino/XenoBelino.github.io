@@ -276,26 +276,24 @@ function closePopup(id) {
     }
 }
 
-function saveProgress(videoId, progress) {
-  localStorage.setItem(`progress_${videoId}`, progress);
-}
-
-function loadProgress(videoFileName) {
-  const savedProgress = localStorage.getItem(`progress_${videoFileName}`);
-  if (savedProgress) {
-    const { time } = JSON.parse(savedProgress);
-    const video = window.currentVideo || document.getElementById("video-player");
-    if (video) {
-      video.currentTime = time;
-      document.getElementById("progress-status").innerText = `⏪ Återupptar från ${Math.floor(time)} sekunder`;
-    }
-  } else {
-    document.getElementById("progress-status").innerText = "Ingen sparad progress";
+function resumeConversionIfExists(fileName) {
+  const data = localStorage.getItem(`conversion_${fileName}`);
+  if (!data) {
+    console.log("🚫 Ingen sparad konvertering hittades.");
+    return;
   }
-}
 
-function clearProgress(videoId) {
-  localStorage.removeItem(`progress_${videoId}`);
+  const process = JSON.parse(data);
+  console.log("🔁 Återupptar tidigare process:", process);
+
+  if (process.status === "completed") {
+    alert(`✅ Filen "${fileName}" konverterades redan till ${process.targetFormat}.`);
+  } else if (process.status === "error") {
+    alert(`⚠️ Ett fel uppstod vid konvertering av "${fileName}": ${process.errorMessage}`);
+  } else {
+    alert(`⏳ Återupptar konvertering av "${fileName}"...`);
+    // Du kan lägga till kod här om du vill trigga om processen
+  }
 }
 
     // Uppdatera volym
@@ -865,21 +863,6 @@ async function convertToMP4() {
     isConverting = false;
   }
 }
-
-// Download-knappens klick-händelse
-downloadBtn.onclick = () => {
-  if (lastOperation === "convert") {
-    const file = fileInput.files[0];
-    if (!file) return;
-    const originalName = file.name.replace(/\.[^/.]+$/, "");
-    const a = document.createElement("a");
-    a.href = videoPlayer.src;
-    a.download = `${originalName}_converted.mp4`;
-    a.click();
-  } else if (lastOperation === "upgrade") {
-    downloadUpgradedVideo();
-  }
-};
 
 // Övriga event-lyssnare
 document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
