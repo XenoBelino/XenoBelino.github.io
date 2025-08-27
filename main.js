@@ -79,6 +79,7 @@ async function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
   uploadedFile = file;
+  localStorage.setItem("last_uploaded_file", uploadedFile.name);
 
   const fileName = uploadedFile.name;
   const format = fileName.split('.').pop();
@@ -917,6 +918,23 @@ fileInput.addEventListener('change', (event) => {
     document.getElementById("progress-status").innerText = "Ingen sparad progress";
   }
 });
+     
+window.addEventListener("DOMContentLoaded", () => {
+  const lastFile = localStorage.getItem("last_uploaded_file");
+  if (lastFile) {
+    resumeConversionIfExists(lastFile);
+  }
+});
+const resumeBtn = document.getElementById("resume-btn");
+resumeBtn.addEventListener("click", () => {
+  const lastFile = localStorage.getItem("last_uploaded_file");
+  if (lastFile) {
+    resumeConversionIfExists(lastFile);
+  } else {
+    alert("Ingen tidigare konvertering hittades.");
+  }
+});
+
 
 // Gör funktioner tillgängliga globalt så HTML kan anropa dem
 window.triggerFileInput = triggerFileInput;
