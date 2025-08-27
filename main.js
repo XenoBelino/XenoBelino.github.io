@@ -80,6 +80,9 @@ async function handleFileSelect(event) {
   if (!file) return;
   uploadedFile = file;
 
+  const fileName = uploadedFile.name;
+  const format = fileName.split('.').pop();
+
   // Skapa eller återanvänd videospelare
   let video = document.getElementById("video-player");
   if (!video) {
@@ -99,19 +102,31 @@ async function handleFileSelect(event) {
   video.onloadedmetadata = async () => {
     video.volume = 0.5;
     video.muted = false;
+
     loadProgress(uploadedFile.name);
-      
+
     try {
       await video.play();
     } catch (err) {
       console.warn("⚠️ Kunde inte spela upp video direkt:", err);
     }
 
-    // 👇 Skicka fil till din backend som FormData
+    // 🔄 Skapa konverteringsdata att spara lokalt
+    const processInfo = {
+      fileName,
+      originalFormat: format,
+      targetFormat: "mp4", // Exempel: konvertera till mp4
+      status: "started",
+      startedAt: new Date().toISOString()
+    };
+
+    // 💾 Spara processen i localStorage
+    localStorage.setItem(`conversion_${fileName}`, JSON.stringify(processInfo));
+    console.log("💾 Process sparad:", processInfo);
+
+    // Skicka fil till backend för analys/konvertering
     const formData = new FormData();
     formData.append("file", uploadedFile);
-
-    console.log("📤 Skickar fil till /api/predict");
 
     try {
       const predictRes = await fetch("https://xenobelino-backend.onrender.com/api/predict", {
@@ -126,114 +141,24 @@ async function handleFileSelect(event) {
       }
 
       const predictData = await predictRes.json();
-console.log("✅ Predict-resultat (hela):", predictData);
-console.log("🔍 Data från predictData.data:", predictData.data);
-console.log("🎼 music_url-värde:", predictData.data?.music_url);
+      console.log("✅ Predict-resultat:", predictData);
 
-// 🔽 LÄGG TILL KODEN HÄR 🔽
-try {
- const uploadFormData = new FormData();
-uploadFormData.append("file", uploadedFile);
+      // 🔁 Uppdatera process-status
+      processInfo.status = "completed";
+      processInfo.completedAt = new Date().toISOString();
+      localStorage.setItem(`conversion_${fileName}`, JSON.stringify(processInfo));
+      console.log("✅ Process uppdaterad som klar");
 
-const uploadRes = await fetch("/upload", {
-  method: "POST",
-  body: uploadFormData
-});
-
-  if (!uploadRes.ok) {
-    throw new Error("Uppladdning till /upload misslyckades");
-  }
-
-  const uploadData = await uploadRes.json();
-  console.log("📎 Tillfällig nedladdningslänk:", uploadData.downloadUrl);
-
-  const container = document.getElementById("download-link-container");
-  container.innerHTML = "";
-  const a = document.createElement("a");
-  a.href = uploadData.downloadUrl;
-  a.textContent = "🔗 Ladda ner konverterad fil senare";
-  a.className = "button";
-  container.appendChild(a);
-
-} catch (err) {
-  console.error("❌ Kunde inte ladda upp till lokal server:", err);
-}
-
-        if (predictData && predictData.data) {
+      if (predictData && predictData.data) {
         showLanguageDetectionPopup(predictData.data);
-      } else {
-        console.warn("⚠️ Inget 'data'-fält i predict-svaret:", predictData);
       }
-
-      // 🎵 Hantera separat musikfil (accompaniment)
-      if (predictData.data && predictData.data.music_url) {
-        console.log("🎵 Fick tillbaka musik-URL:", predictData.data.music_url);
-
-        let musicAudio = document.getElementById("music-audio");
-        if (!musicAudio) {
-          musicAudio = document.createElement("audio");
-          musicAudio.id = "music-audio";
-          musicAudio.hidden = true;
-          document.body.appendChild(musicAudio);
-        } else {
-          musicAudio.pause();
-          musicAudio.removeAttribute("src");
-          musicAudio.load();
-        }
-
-        musicAudio.src = predictData.data.music_url;
-        musicAudio.loop = true;
-
-        if (audioCtx.state === "suspended") {
-  await audioCtx.resume();
-  console.log("🎧 AudioContext återupptagen (resumed)");
-}
-
-// Skapa musicGain om den inte finns
-if (!musicGain) {
-  musicGain = audioCtx.createGain();
-}
-
-// Koppla musicAudio till musicGain om inte redan kopplad
-if (!musicAudio.source) {
-  musicAudio.source = audioCtx.createMediaElementSource(musicAudio);
-  musicAudio.source.connect(musicGain);
-  musicGain.connect(audioCtx.destination);
-}
-
-const slider = document.getElementById("music-volume");
-const percent = document.getElementById("music-volume-percent");
-
-// Sätt initial volym om gain är 1 (standard)
-if (musicGain.gain.value === 1) {
-  const defaultVolume = 0.5;
-  musicGain.gain.setValueAtTime(defaultVolume, audioCtx.currentTime);
-  slider.value = defaultVolume * 100;
-  if (percent) percent.textContent = `${slider.value}%`;
-}
-
-// Uppdatera volym när användaren rör på slidern
-slider.oninput = (e) => {
-  const value = parseInt(e.target.value);
-  const gain = value / 100;
-  musicGain.gain.setValueAtTime(gain, audioCtx.currentTime);
-  console.log("🎚️ Slider ändrades till:", value);
-  console.log("🔊 gain satt till:", gain);
-  if (percent) percent.textContent = `${value}%`;
-};
-        try {
-          await musicAudio.play();
-          console.log("▶️ Musik spelas upp");
-        } catch (err) {
-          console.warn("⚠️ Kunde inte spela upp musik:", err);
-        }
-       
-       } else {
-  console.warn("⚠️ Ingen music_url i predictData.data");
-}
 
     } catch (err) {
       console.error("❌ Fel i predict-anrop:", err);
+      // 🛑 Spara felstatus
+      processInfo.status = "error";
+      processInfo.errorMessage = err.message;
+      localStorage.setItem(`conversion_${fileName}`, JSON.stringify(processInfo));
     }
   };
 
