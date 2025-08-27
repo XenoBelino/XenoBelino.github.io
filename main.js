@@ -72,6 +72,20 @@ document.addEventListener("click", function (event) {
         document.getElementById("file-input").click();
     }
 
+  function loadProgress(videoFileName) {
+  const savedProgress = localStorage.getItem(`progress_${videoFileName}`);
+  if (savedProgress) {
+    const { time } = JSON.parse(savedProgress);
+    const video = window.currentVideo || document.getElementById("video-player");
+    if (video) {
+      video.currentTime = time;
+      document.getElementById("progress-status").innerText = `⏪ Återupptar från ${Math.floor(time)} sekunder`;
+    }
+  } else {
+    document.getElementById("progress-status").innerText = "Ingen sparad progress";
+  }
+}
+
 async function handleFileSelect(event) {
   languagePopupShown = false;
   closePopup("popup-language-detection");
@@ -99,7 +113,8 @@ async function handleFileSelect(event) {
   video.onloadedmetadata = async () => {
     video.volume = 0.5;
     video.muted = false;
-
+    loadProgress(uploadedFile.name);
+      
     try {
       await video.play();
     } catch (err) {
