@@ -928,16 +928,6 @@ window.addEventListener("DOMContentLoaded", () => {
     resumeConversionIfExists(lastFile);
   }
 });
-const resumeBtn = document.getElementById("resume-btn");
-resumeBtn.addEventListener("click", () => {
-  const lastFile = localStorage.getItem("last_uploaded_file");
-  if (lastFile) {
-    resumeConversionIfExists(lastFile);
-  } else {
-    alert("Ingen tidigare konvertering hittades.");
-  }
-});
-
 
 // Gör funktioner tillgängliga globalt så HTML kan anropa dem
 window.triggerFileInput = triggerFileInput;
