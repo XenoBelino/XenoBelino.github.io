@@ -16,18 +16,45 @@
       --toggle-right: 20px;
     }
 
-    body { margin: 0; font-family: Arial, sans-serif; position: relative; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      position: relative;
+      background-color: white;
+      color: black;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
     header {
       padding: 40px 20px 20px;
       text-align: center;
       background-color: #f9f9f9;
       position: relative;
+      transition: background-color 0.3s, color 0.3s;
     }
-    header h1 { font-size: 2.5em; margin-bottom: 10px; }
-    header p { font-size: 1em; color: #555; max-width: 600px; margin: auto; }
 
-    .video-preview { margin: 0 auto; max-width: 720px; }
-    video { width: 100%; border-radius: 10px; }
+    header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1em;
+      color: #555;
+      max-width: 600px;
+      margin: auto;
+      transition: color 0.3s;
+    }
+
+    .video-preview {
+      margin: 0 auto;
+      max-width: 720px;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+    }
 
     .nav-button {
       margin-top: 20px;
@@ -38,6 +65,11 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .nav-button:hover {
+      background: #0056b3;
     }
 
     /* Change Background button */
@@ -54,11 +86,13 @@
       cursor: pointer;
       transition: background 0.3s;
     }
+
     .change-bg-btn:hover {
       background: var(--btn-hover);
     }
 
-    .bg-options {
+    /* Popup options */
+    #background-options {
       display: none;
       position: absolute;
       top: calc(var(--toggle-top) + 40px);
@@ -67,8 +101,10 @@
       padding: 10px;
       border-radius: var(--btn-radius);
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
     }
-    .bg-options button {
+
+    #background-options button {
       width: 100%;
       margin: 5px 0;
       padding: 8px;
@@ -78,10 +114,52 @@
       border-radius: var(--btn-radius);
       font-size: 1em;
       cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
     }
-    .bg-options button:hover {
+
+    #background-options button:hover {
       background: var(--btn-text);
       color: var(--btn-bg);
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode header {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+    }
+
+    body.dark-mode header p {
+      color: #ccc;
+    }
+
+    body.dark-mode .change-bg-btn {
+      background-color: #444;
+      color: #ddd;
+    }
+
+    body.dark-mode .change-bg-btn:hover {
+      background-color: #666;
+    }
+
+    body.dark-mode #background-options {
+      background-color: #333;
+      color: #ddd;
+      border-color: #ddd;
+    }
+
+    body.dark-mode #background-options button {
+      border-color: #ddd;
+      color: #ddd;
+    }
+
+    body.dark-mode #background-options button:hover {
+      background-color: #ddd;
+      color: #333;
     }
   </style>
 </head>
@@ -94,7 +172,7 @@
     <button class="change-bg-btn" onclick="toggleBackgroundOptions()">Change Background</button>
 
     <!-- Popup options -->
-    <div class="bg-options" id="background-options">
+    <div id="background-options">
       <button onclick="setLightMode()">Light Mode</button>
       <button onclick="setDarkMode()">Dark Mode</button>
     </div>
@@ -114,18 +192,26 @@
       const el = document.getElementById("background-options");
       el.style.display = el.style.display === "block" ? "none" : "block";
     }
+
     function setLightMode() {
       document.body.classList.remove("dark-mode");
       localStorage.setItem("theme", "light");
       toggleBackgroundOptions();
     }
+
     function setDarkMode() {
       document.body.classList.add("dark-mode");
       localStorage.setItem("theme", "dark");
       toggleBackgroundOptions();
     }
+
     window.onload = () => {
-      document.body.classList[this.getItem ? localStorage.getItem("theme")==="dark" ? "add":"remove" : "remove"]("dark-mode");
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        document.body.classList.add("dark-mode");
+      } else {
+        document.body.classList.remove("dark-mode");
+      }
     };
   </script>
 </body>
