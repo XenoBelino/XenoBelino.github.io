@@ -1064,6 +1064,5 @@ window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
 
-
 console.log("main.js loaded successfully!");
 });
