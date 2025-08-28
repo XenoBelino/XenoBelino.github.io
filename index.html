@@ -1,95 +1,156 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XenoVideo AI Editor</title>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Video Player with Settings</title>
+
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+    /* Light/Dark mode */
+    body.light-mode {
       background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    header h1 {
-      font-size: 2.5em;
       color: #333;
     }
 
-    header p {
-      font-size: 1.1em;
-      color: #555;
-      max-width: 700px;
-      margin: 10px auto 0;
+    body.dark-mode {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
     }
 
-    .video-preview {
-      width: 100%;
-      max-width: 720px;
-      border-radius: 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
+    /* Theme toggle buttons */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
     }
 
-    video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .nav-button {
-      margin-top: 40px;
-      background-color: #007bff;
-      color: white;
-      padding: 14px 28px;
-      font-size: 1.1em;
+    .theme-toggle button {
+      padding: 8px 12px;
+      font-size: 14px;
       border: none;
-      border-radius: 6px;
-      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #ccc;
       transition: background-color 0.3s;
     }
 
-    .nav-button:hover {
+    .theme-toggle button:hover {
+      background-color: #aaa;
+    }
+
+    /* Page layout */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .editor-content {
+      text-align: center;
+      padding: 20px;
+      background-color: inherit;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      color: white;
+      background-color: #007bff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
       background-color: #0056b3;
+    }
+
+    /* Visitor IP Info */
+    #visitor-info {
+      margin-top: 20px;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>XenoVideo – AI-driven video editor</h1>
-    <p>
-      Ladda upp videor och använd AI för att identifiera språk, rensa bakgrundsmusik,
-      justera ljudvolym och exportera videon i förbättrad kvalitet. Inget behov av installation –
-      allt sker direkt i webbläsaren!
-    </p>
-  </header>
-
-  <div class="video-preview">
-    <!-- Autoplaying looped video -->
-    <video autoplay loop muted playsinline>
-      <source src="videos/demo.mp4" type="video/mp4" />
-      Din webbläsare stödjer inte videouppspelning.
-    </video>
+  <!-- 🔘 Light/Dark Toggle -->
+  <div class="theme-toggle">
+    <button onclick="setLightMode()">☀️ Light</button>
+    <button onclick="setDarkMode()">🌙 Dark</button>
   </div>
 
-  <!-- Knapp till editorn -->
-  <a href="page.html" class="nav-button">Starta videoredigering</a>
+  <!-- 📦 Page Content -->
+  <div class="editor-content">
+    <h1>This Page is undergoing construction!</h1>
 
+    <div>
+      <a href="page.html" class="button">Go to Page</a>
+    </div>
+
+    <div id="visitor-info">
+      <p>Visitor IP Address: <span id="visitor-ip">Loading...</span></p>
+    </div>
+  </div>
+
+  <!-- 🔒 Disable right-click and copy -->
   <script>
-    // Förhindra högerklick & kopiering
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
-    document.addEventListener("keydown", (e) => {
-      if (e.ctrlKey && (e.key === "c" || e.key === "u")) e.preventDefault();
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
     });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.ctrlKey && (e.key === 'c' || e.key === 'u')) {
+        e.preventDefault();
+      }
+    });
+
+    // 🌐 Fetch IP
+    fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('visitor-ip').textContent = data.ip;
+      })
+      .catch(error => {
+        document.getElementById('visitor-ip').textContent = 'Unable to retrieve IP';
+        console.error('Error fetching IP:', error);
+      });
+
+    // 💡 Load saved theme
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.add("light-mode");
+    }
+
+    // 🌞 Theme switchers
+    function setLightMode() {
+      document.body.classList.remove("dark-mode");
+      document.body.classList.add("light-mode");
+      localStorage.setItem("theme", "light");
+    }
+
+    function setDarkMode() {
+      document.body.classList.remove("light-mode");
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+    }
   </script>
 </body>
 </html>
