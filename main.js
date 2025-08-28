@@ -300,6 +300,37 @@ function resumeConversionIfExists(fileName) {
   }
 }
 
+function resumeProgressIfExists() {
+  const step = localStorage.getItem("progressStep");
+  if (!step) {
+    console.log("📭 Ingen sparad progress");
+    return;
+  }
+
+  const fileName = localStorage.getItem("originalFileName");
+  const percent = localStorage.getItem("progressPercent");
+  const timeLeft = localStorage.getItem("estimatedTimeLeft");
+  const resolution = localStorage.getItem("resolution");
+
+  console.log("🔁 Återupptar progress:", { step, fileName, percent, timeLeft, resolution });
+
+  if (document.getElementById("progress-info")) {
+    document.getElementById("progress-info").innerText =
+      `${percent}% av 100% – approx. ${timeLeft} kvar`;
+  }
+
+  if (document.getElementById("resolution-label")) {
+    document.getElementById("resolution-label").innerText =
+      `Resolution selected: ${resolution}`;
+  }
+
+  if (step === "converting" || step === "upgrading") {
+    document.getElementById("status-label").innerText = `🔧 Fortsätter: ${step}...`;
+  } else if (step === "completed") {
+    document.getElementById("status-label").innerText = "✅ Klar!";
+  }
+}
+
 function saveProgress({ fileName, progressStep, progressPercent, estimatedTimeLeft, resolution }) {
   localStorage.setItem("originalFileName", fileName);
   localStorage.setItem("progressStep", progressStep);
