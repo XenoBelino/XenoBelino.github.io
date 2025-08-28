@@ -147,20 +147,22 @@
 </div>
 
 <!-- Knappar för bakgrund -->
-<button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Byt Bakgrund</button>
-<button id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">Gå till startsidan</button>
+<button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Byt bakgrund</button>
+<button id="back-to-home-btn" class="button" onclick="window.location.href='page.html'">Gå till startsidan</button>
 
 <!-- Bakgrundsalternativ -->
 <div id="background-options">
-    <h3>Välj Tema</h3>
+    <h3>Välj tema</h3>
     <button class="option-button" onclick="setLightMode()">Ljusläge</button>
     <button class="option-button" onclick="setDarkMode()">Mörkerläge</button>
 </div>
 
 <script>
+    const bgOptions = document.getElementById('background-options');
+    const changeBgBtn = document.getElementById('change-background-btn');
+
     // Visa / Dölj bakgrundsalternativ
     function toggleBackgroundOptions() {
-        const bgOptions = document.getElementById('background-options');
         if (bgOptions.style.display === 'block') {
             bgOptions.style.display = 'none';
         } else {
@@ -168,34 +170,35 @@
         }
     }
 
+    // Stäng popup när man klickar utanför den
+    document.addEventListener('click', function(event) {
+        const isClickInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
+        if (!isClickInside) {
+            bgOptions.style.display = 'none';
+        }
+    });
+
     // Sätt ljusläge
     function setLightMode() {
         document.body.classList.remove('dark-mode');
-        document.getElementById('background-options').style.display = 'none';
+        bgOptions.style.display = 'none';
+        localStorage.setItem('theme', 'light');
     }
 
     // Sätt mörkerläge
     function setDarkMode() {
         document.body.classList.add('dark-mode');
-        document.getElementById('background-options').style.display = 'none';
+        bgOptions.style.display = 'none';
+        localStorage.setItem('theme', 'dark');
     }
 
-    // Spara val i localStorage (valfritt, kan tas bort)
+    // Ladda tema från localStorage vid start
     document.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('theme') === 'dark') {
             setDarkMode();
         } else {
             setLightMode();
         }
-    });
-
-    // Spara inställning när tema byts
-    const bgButtons = document.querySelectorAll('.option-button');
-    bgButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const darkModeActive = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', darkModeActive ? 'dark' : 'light');
-        });
     });
 </script>
 
