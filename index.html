@@ -10,6 +10,14 @@
       --light-text: #333;
       --dark-bg: #1e1e1e;
       --dark-text: #eee;
+      --btn-bg: #6a0dad;    /* Exempel: matcha din purple från page.html */
+      --btn-hover: #5c0b8a;
+      --btn-text: white;
+      --btn-font-size: 16px;
+      --btn-padding: 10px 20px;
+      --btn-radius: 5px;
+      --bg-toggle-top: 20px;
+      --bg-toggle-right: 20px;
     }
 
     body {
@@ -17,108 +25,67 @@
       font-family: Arial, sans-serif;
       background-color: var(--light-bg);
       color: var(--light-text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
+      position: relative;
+      /* För positionering av knapp */
+      min-height: 100vh;
       transition: background-color 0.3s, color 0.3s;
     }
-
     body.dark-mode {
       background-color: var(--dark-bg);
       color: var(--dark-text);
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    header h1 {
-      font-size: 2.5em;
-      margin: 0;
-    }
-
-    header p {
-      font-size: 1.1em;
-      max-width: 700px;
-      margin: 10px auto 0;
-    }
-
-    .video-preview {
-      width: 100%;
-      max-width: 720px;
-      border-radius: 10px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
-    }
-
-    video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .nav-button, .bg-toggle {
-      margin-top: 20px;
-      background-color: #007bff;
-      color: white;
-      padding: 14px 28px;
-      font-size: 1.1em;
+    .change-bg-btn {
+      position: absolute;
+      top: var(--bg-toggle-top);
+      right: var(--bg-toggle-right);
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      padding: var(--btn-padding);
+      font-size: var(--btn-font-size);
       border: none;
-      border-radius: 6px;
-      text-decoration: none;
+      border-radius: var(--btn-radius);
       cursor: pointer;
       transition: background-color 0.3s;
+      z-index: 1000;
     }
-
-    .nav-button:hover,
-    .bg-toggle:hover {
-      background-color: #0056b3;
+    .change-bg-btn:hover {
+      background-color: var(--btn-hover);
     }
 
     .bg-options {
       display: none;
-      margin-top: 10px;
+      position: absolute;
+      top: calc(var(--bg-toggle-top) + 100%);
+      right: var(--bg-toggle-right);
+      background: var(--btn-bg);
+      padding: 10px;
+      border-radius: var(--btn-radius);
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      z-index: 999;
     }
-
     .bg-options button {
-      margin: 5px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #444;
-      color: white;
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      background: none;
+      color: var(--btn-text);
+      border: 1px solid var(--btn-text);
+      padding: 8px;
+      border-radius: var(--btn-radius);
       cursor: pointer;
     }
-
     .bg-options button:hover {
-      background-color: #222;
+      background-color: var(--btn-text);
+      color: var(--btn-bg);
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>XenoVideo – AI-driven video editor</h1>
-    <p>
-      Ladda upp videor och använd AI för att identifiera språk, rensa bakgrundsmusik,
-      justera ljudvolym och exportera videon i förbättrad kvalitet. Inget behov av installation –
-      allt sker direkt i webbläsaren!
-    </p>
-  </header>
+  <!-- Din innehåll här... -->
 
-  <div class="video-preview">
-    <video autoplay loop muted playsinline>
-      <source src="videos/demo.mp4" type="video/mp4" />
-      Din webbläsare stödjer inte videouppspelning.
-    </video>
-  </div>
-
-  <!-- Redigeringsknapp -->
-  <a href="page.html" class="nav-button">Starta videoredigering</a>
-
-  <!-- Växla bakgrund -->
-  <button onclick="toggleBackgroundOptions()" class="bg-toggle">Change Background</button>
+  <!-- Change Background-knapp -->
+  <button class="change-bg-btn" onclick="toggleBackgroundOptions()">Change Background</button>
   <div class="bg-options" id="background-options">
     <button onclick="setLightMode()">Light Mode</button>
     <button onclick="setDarkMode()">Dark Mode</button>
@@ -126,33 +93,24 @@
 
   <script>
     function toggleBackgroundOptions() {
-      const opt = document.getElementById("background-options");
-      opt.style.display = opt.style.display === "block" ? "none" : "block";
+      const el = document.getElementById("background-options");
+      el.style.display = el.style.display === "block" ? "none" : "block";
     }
-
     function setLightMode() {
       document.body.classList.remove("dark-mode");
       localStorage.setItem("theme", "light");
+      document.getElementById("background-options").style.display = "none";
     }
-
     function setDarkMode() {
       document.body.classList.add("dark-mode");
       localStorage.setItem("theme", "dark");
+      document.getElementById("background-options").style.display = "none";
     }
-
-    function applySavedTheme() {
-      const saved = localStorage.getItem("theme");
-      if (saved === "dark") setDarkMode();
-      else setLightMode(); // default
+    window.onload = function() {
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+      }
     }
-
-    applySavedTheme();
-
-    // Förhindra högerklick & kopiering
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
-    document.addEventListener("keydown", (e) => {
-      if (e.ctrlKey && (e.key === "c" || e.key === "u")) e.preventDefault();
-    });
   </script>
 </body>
 </html>
