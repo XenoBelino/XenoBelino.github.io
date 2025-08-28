@@ -969,14 +969,6 @@ fileInput.addEventListener('change', (event) => {
   }
 });
      
-window.addEventListener("DOMContentLoaded", () => {
-  const lastFile = localStorage.getItem("last_uploaded_file");
-  if (lastFile) {
-    resumeConversionIfExists(lastFile);
-  }
-});
-window.addEventListener("DOMContentLoaded", resumeProgressIfExists);
-
 // Gör funktioner tillgängliga globalt så HTML kan anropa dem
 window.triggerFileInput = triggerFileInput;
 window.toggleBackgroundOptions = toggleBackgroundOptions;
