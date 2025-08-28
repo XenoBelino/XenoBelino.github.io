@@ -1,186 +1,133 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>XenoVideo AI Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Video Player with Theme Switcher</title>
   <style>
-    :root {
-      --btn-bg: #6a0dad;
-      --btn-hover: #5c0b8a;
-      --btn-text: white;
-      --btn-padding: 10px 20px;
-      --btn-font-size: 16px;
-      --btn-radius: 5px;
-      --toggle-top: 20px;
-      --toggle-right: 20px;
+    /* Grundläggande stilar */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: black;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    body { 
-      margin: 0; 
-      font-family: Arial, sans-serif; 
-      position: relative; 
-      transition: background-color 0.3s, color 0.3s;
-    }
     body.dark-mode {
-      background-color: #121212;
-      color: #e0e0e0;
+      background-color: #333;
+      color: white;
     }
-    header {
-      padding: 40px 20px 20px;
+
+    /* Knappar */
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background-color: #6a0dad;
+      color: white;
+      transition: background-color 0.3s;
+      margin: 5px;
+    }
+
+    .button:hover {
+      background-color: #5c0b8a;
+    }
+
+    /* Positionering av fasta knappar */
+    #change-background-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    /* Popup bakgrundsalternativ */
+    #background-options {
+      display: none;
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      text-align: left;
+      width: 150px;
+    }
+
+    #background-options h3 {
+      color: black;
       text-align: center;
-      background-color: #f9f9f9;
-      position: relative;
-    }
-    body.dark-mode header {
-      background-color: #1e1e1e;
-    }
-    header h1 { font-size: 2.5em; margin-bottom: 10px; }
-    header p { font-size: 1em; color: #555; max-width: 600px; margin: auto; }
-    body.dark-mode header p {
-      color: #bbb;
+      margin-top: 0;
+      margin-bottom: 10px;
     }
 
-    .video-preview { margin: 0 auto; max-width: 720px; }
-    video { width: 100%; border-radius: 10px; }
-
-    .nav-button {
-      margin: 20px auto;
-      display: block;
-      padding: 14px 28px;
-      font-size: 1.1em;
-      background: #007bff;
+    .option-button {
+      padding: 10px 20px;
+      background-color: #6a0dad;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
-      max-width: 220px;
-      transition: background-color 0.3s;
-    }
-    .nav-button:hover {
-      background: #0056b3;
-    }
-
-    /* Change Background button */
-    .change-bg-btn {
-      position: absolute;
-      top: var(--toggle-top);
-      right: var(--toggle-right);
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      padding: var(--btn-padding);
-      font-size: var(--btn-font-size);
-      border: none;
-      border-radius: var(--btn-radius);
-      cursor: pointer;
-      transition: background 0.3s;
-      z-index: 1100;
-    }
-    .change-bg-btn:hover {
-      background: var(--btn-hover);
-    }
-
-    .bg-options {
-      display: none;
-      position: absolute;
-      top: calc(var(--toggle-top) + 45px);
-      right: var(--toggle-right);
-      background: var(--btn-bg);
-      padding: 15px 20px;
-      border-radius: var(--btn-radius);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-      z-index: 1000;
-      width: 160px;
-      color: var(--btn-text);
-    }
-
-    .bg-options h3 {
-      margin: 0 0 10px;
-      font-size: 1.1em;
-      border-bottom: 1px solid var(--btn-text);
-      padding-bottom: 5px;
-    }
-
-    .bg-options button {
       width: 100%;
-      margin: 6px 0;
-      padding: 10px 0;
-      background: none;
-      border: 1px solid var(--btn-text);
-      border-radius: var(--btn-radius);
-      color: var(--btn-text);
-      font-size: 1em;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
+      margin-bottom: 10px;
     }
 
-    .bg-options button:hover {
-      background: var(--btn-text);
-      color: var(--btn-bg);
+    .option-button:hover {
+      background-color: #5c0b8a;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>XenoVideo – AI-driven video editor</h1>
-    <p>Kunna ladda upp videor, identifiera språk, justera ljud och exportera - direkt i webbläsaren.</p>
+  <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
 
-    <!-- Change Background button -->
-    <button class="change-bg-btn" onclick="toggleBackgroundOptions()">Change Background</button>
-
-    <!-- Popup options -->
-    <div class="bg-options" id="background-options">
-      <h3>Choose Theme</h3>
-      <button onclick="setLightMode()">Light Mode</button>
-      <button onclick="setDarkMode()">Dark Mode</button>
-    </div>
-  </header>
-
-  <div class="video-preview">
-    <video autoplay loop muted playsinline>
-      <source src="videos/demo.mp4" type="video/mp4" />
-      Din webbläsare stödjer inte video.
-    </video>
+  <div id="background-options">
+    <h3>Choose Theme</h3>
+    <button class="option-button" onclick="setLightMode()">Light Mode</button>
+    <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
   </div>
-
-  <button class="nav-button" onclick="location.href='page.html'">Starta videoredigering</button>
 
   <script>
     function toggleBackgroundOptions() {
-      const options = document.getElementById("background-options");
-      options.style.display = (options.style.display === "block") ? "none" : "block";
+      const popup = document.getElementById('background-options');
+      popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
     }
 
-    function setLightMode() {
-      document.body.classList.remove("dark-mode");
-      localStorage.setItem("theme", "light");
-      toggleBackgroundOptions();
-    }
-
-    function setDarkMode() {
-      document.body.classList.add("dark-mode");
-      localStorage.setItem("theme", "dark");
-      toggleBackgroundOptions();
-    }
-
-    // Stäng popup om klick utanför
-    document.addEventListener("click", function(event) {
-      const options = document.getElementById("background-options");
-      const button = document.querySelector(".change-bg-btn");
-
-      if (options.style.display === "block") {
-        if (!options.contains(event.target) && !button.contains(event.target)) {
-          options.style.display = "none";
-        }
+    // Stäng popup om man klickar utanför
+    window.addEventListener('click', function(event) {
+      const popup = document.getElementById('background-options');
+      const button = document.getElementById('change-background-btn');
+      if (
+        popup.style.display === 'block' &&
+        !popup.contains(event.target) &&
+        event.target !== button
+      ) {
+        popup.style.display = 'none';
       }
     });
 
-    // Ladda tema från localStorage
+    function setLightMode() {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+      document.getElementById('background-options').style.display = 'none';
+    }
+
+    function setDarkMode() {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+      document.getElementById('background-options').style.display = 'none';
+    }
+
     window.onload = () => {
-      if (localStorage.getItem("theme") === "dark") {
-        document.body.classList.add("dark-mode");
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
       } else {
-        document.body.classList.remove("dark-mode");
+        document.body.classList.remove('dark-mode');
       }
     };
   </script>
