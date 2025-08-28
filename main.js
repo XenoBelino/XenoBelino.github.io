@@ -343,6 +343,8 @@ function saveProgress({ fileName, progressStep, progressPercent, estimatedTimeLe
 
 function startFakeProgress(fileName) {
   let progress = 0;
+    
+console.log('Sparar progress:', progress, '%');
 
   const interval = setInterval(() => {
     progress += 1;
