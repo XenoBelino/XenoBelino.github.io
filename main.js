@@ -280,11 +280,6 @@ function closePopup(id) {
     }
 }
 
-function toggleBackgroundOptions() {
-  const opt = document.getElementById("background-options");
-  opt.style.display = opt.style.display === "block" ? "none" : "block";
-}
-
 function resumeConversionIfExists(fileName) {
   const data = localStorage.getItem(`conversion_${fileName}`);
   if (!data) {
