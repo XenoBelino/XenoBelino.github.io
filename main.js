@@ -112,8 +112,6 @@ async function handleFileSelect(event) {
       console.warn("⚠️ Kunde inte spela upp video direkt:", err);
     }
 
-      startFakeProgress(fileName);
-
     // 🔄 Skapa konverteringsdata att spara lokalt
     const processInfo = {
       fileName,
@@ -302,80 +300,12 @@ function resumeConversionIfExists(fileName) {
   }
 }
 
-function resumeProgressIfExists() {
-  const step = localStorage.getItem("progressStep");
-  if (!step) {
-    console.log("📭 Ingen sparad progress");
-    return;
-  }
-
-  const fileName = localStorage.getItem("originalFileName");
-  const percent = localStorage.getItem("progressPercent");
-  const timeLeft = localStorage.getItem("estimatedTimeLeft");
-  const resolution = localStorage.getItem("resolution");
-
-  console.log("🔁 Återupptar progress:", { step, fileName, percent, timeLeft, resolution });
-
-  if (document.getElementById("progress-info")) {
-    document.getElementById("progress-info").innerText =
-      `${percent}% av 100% – approx. ${timeLeft} kvar`;
-  }
-
-  if (document.getElementById("resolution-label")) {
-    document.getElementById("resolution-label").innerText =
-      `Resolution selected: ${resolution}`;
-  }
-
-  if (step === "converting" || step === "upgrading") {
-    document.getElementById("status-label").innerText = `🔧 Fortsätter: ${step}...`;
-  } else if (step === "completed") {
-    document.getElementById("status-label").innerText = "✅ Klar!";
-  }
-}
-
 function saveProgress({ fileName, progressStep, progressPercent, estimatedTimeLeft, resolution }) {
   localStorage.setItem("originalFileName", fileName);
   localStorage.setItem("progressStep", progressStep);
   localStorage.setItem("progressPercent", progressPercent.toFixed(1));
   localStorage.setItem("estimatedTimeLeft", estimatedTimeLeft);
   localStorage.setItem("resolution", resolution);
-}
-
-function startFakeProgress(fileName) {
-  let progress = 0;
-    
-console.log('Sparar progress:', progress, '%');
-
-  const interval = setInterval(() => {
-    progress += 1;
-
-    const estimatedTime = `${Math.max(0, 100 - progress)}s`;
-
-    saveProgress({
-      fileName,
-      progressStep: "converting",
-      progressPercent: progress,
-      estimatedTimeLeft: estimatedTime,
-      resolution: "720p"
-    });
-
-    if (document.getElementById("progress-info")) {
-      document.getElementById("progress-info").innerText =
-        `${progress.toFixed(1)}% av 100% – approx. ${estimatedTime} kvar`;
-    }
-
-    if (progress >= 100) {
-      clearInterval(interval);
-      localStorage.setItem("progressStep", "completed");
-
-      if (document.getElementById("status-label")) {
-        document.getElementById("status-label").innerText = "✅ Klar!";
-      }
-
-      // Rensa automatiskt om du vill, eller vänta tills användaren laddar ner videon
-      clearSavedProgress();
-    }
-  }, 1000); // 1% per sekund
 }
 
 function clearSavedProgress() {
