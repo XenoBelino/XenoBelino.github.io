@@ -384,6 +384,37 @@ function clearSavedProgress() {
   localStorage.removeItem("resolution");
 }
 
+function loadProgress(fileName) {
+  const savedFile = localStorage.getItem("originalFileName");
+  if (savedFile !== fileName) {
+    console.log("🎬 Ingen matchande progress för denna fil.");
+    return;
+  }
+
+  const step = localStorage.getItem("progressStep");
+  const percent = localStorage.getItem("progressPercent");
+  const timeLeft = localStorage.getItem("estimatedTimeLeft");
+  const resolution = localStorage.getItem("resolution");
+
+  console.log("🔁 Laddad progress:", { step, percent, timeLeft, resolution });
+
+  if (document.getElementById("progress-info")) {
+    document.getElementById("progress-info").innerText =
+      `${percent}% av 100% – approx. ${timeLeft} kvar`;
+  }
+
+  if (document.getElementById("resolution-label")) {
+    document.getElementById("resolution-label").innerText =
+      `Resolution selected: ${resolution}`;
+  }
+
+  if (step === "converting" || step === "upgrading") {
+    document.getElementById("status-label").innerText = `🔧 Fortsätter: ${step}...`;
+  } else if (step === "completed") {
+    document.getElementById("status-label").innerText = "✅ Klar!";
+  }
+}
+
     // Uppdatera volym
    function updateVolumePercentage(type) {
   const slider = document.getElementById(type + "-volume");
