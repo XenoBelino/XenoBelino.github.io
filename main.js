@@ -112,6 +112,8 @@ async function handleFileSelect(event) {
       console.warn("⚠️ Kunde inte spela upp video direkt:", err);
     }
 
+      startFakeProgress(fileName);
+
     // 🔄 Skapa konverteringsdata att spara lokalt
     const processInfo = {
       fileName,
@@ -337,6 +339,41 @@ function saveProgress({ fileName, progressStep, progressPercent, estimatedTimeLe
   localStorage.setItem("progressPercent", progressPercent.toFixed(1));
   localStorage.setItem("estimatedTimeLeft", estimatedTimeLeft);
   localStorage.setItem("resolution", resolution);
+}
+
+function startFakeProgress(fileName) {
+  let progress = 0;
+
+  const interval = setInterval(() => {
+    progress += 1;
+
+    const estimatedTime = `${Math.max(0, 100 - progress)}s`;
+
+    saveProgress({
+      fileName,
+      progressStep: "converting",
+      progressPercent: progress,
+      estimatedTimeLeft: estimatedTime,
+      resolution: "720p"
+    });
+
+    if (document.getElementById("progress-info")) {
+      document.getElementById("progress-info").innerText =
+        `${progress.toFixed(1)}% av 100% – approx. ${estimatedTime} kvar`;
+    }
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      localStorage.setItem("progressStep", "completed");
+
+      if (document.getElementById("status-label")) {
+        document.getElementById("status-label").innerText = "✅ Klar!";
+      }
+
+      // Rensa automatiskt om du vill, eller vänta tills användaren laddar ner videon
+      clearSavedProgress();
+    }
+  }, 1000); // 1% per sekund
 }
 
 function clearSavedProgress() {
