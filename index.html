@@ -6,90 +6,108 @@
   <title>XenoVideo AI Editor</title>
   <style>
     :root {
-      --light-bg: #f9f9f9;
-      --light-text: #333;
-      --dark-bg: #1e1e1e;
-      --dark-text: #eee;
-      --btn-bg: #6a0dad;    /* Exempel: matcha din purple från page.html */
+      --btn-bg: #6a0dad;
       --btn-hover: #5c0b8a;
       --btn-text: white;
-      --btn-font-size: 16px;
       --btn-padding: 10px 20px;
+      --btn-font-size: 16px;
       --btn-radius: 5px;
-      --bg-toggle-top: 20px;
-      --bg-toggle-right: 20px;
+      --toggle-top: 20px;
+      --toggle-right: 20px;
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: var(--light-bg);
-      color: var(--light-text);
+    body { margin: 0; font-family: Arial, sans-serif; position: relative; }
+    header {
+      padding: 40px 20px 20px;
+      text-align: center;
+      background-color: #f9f9f9;
       position: relative;
-      /* För positionering av knapp */
-      min-height: 100vh;
-      transition: background-color 0.3s, color 0.3s;
     }
-    body.dark-mode {
-      background-color: var(--dark-bg);
-      color: var(--dark-text);
+    header h1 { font-size: 2.5em; margin-bottom: 10px; }
+    header p { font-size: 1em; color: #555; max-width: 600px; margin: auto; }
+
+    .video-preview { margin: 0 auto; max-width: 720px; }
+    video { width: 100%; border-radius: 10px; }
+
+    .nav-button {
+      margin-top: 20px;
+      padding: 14px 28px;
+      font-size: 1.1em;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
+    /* Change Background button */
     .change-bg-btn {
       position: absolute;
-      top: var(--bg-toggle-top);
-      right: var(--bg-toggle-right);
-      background-color: var(--btn-bg);
+      top: var(--toggle-top);
+      right: var(--toggle-right);
+      background: var(--btn-bg);
       color: var(--btn-text);
       padding: var(--btn-padding);
       font-size: var(--btn-font-size);
       border: none;
       border-radius: var(--btn-radius);
       cursor: pointer;
-      transition: background-color 0.3s;
-      z-index: 1000;
+      transition: background 0.3s;
     }
     .change-bg-btn:hover {
-      background-color: var(--btn-hover);
+      background: var(--btn-hover);
     }
 
     .bg-options {
       display: none;
       position: absolute;
-      top: calc(var(--bg-toggle-top) + 100%);
-      right: var(--bg-toggle-right);
+      top: calc(var(--toggle-top) + 40px);
+      right: var(--toggle-right);
       background: var(--btn-bg);
       padding: 10px;
       border-radius: var(--btn-radius);
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 999;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     .bg-options button {
-      display: block;
       width: 100%;
       margin: 5px 0;
+      padding: 8px;
       background: none;
       color: var(--btn-text);
       border: 1px solid var(--btn-text);
-      padding: 8px;
       border-radius: var(--btn-radius);
+      font-size: 1em;
       cursor: pointer;
     }
     .bg-options button:hover {
-      background-color: var(--btn-text);
+      background: var(--btn-text);
       color: var(--btn-bg);
     }
   </style>
 </head>
 <body>
-  <!-- Din innehåll här... -->
+  <header>
+    <h1>XenoVideo – AI-driven video editor</h1>
+    <p>Kunna ladda upp videor, identifiera språk, justera ljud och exportera - direkt i webbläsaren.</p>
 
-  <!-- Change Background-knapp -->
-  <button class="change-bg-btn" onclick="toggleBackgroundOptions()">Change Background</button>
-  <div class="bg-options" id="background-options">
-    <button onclick="setLightMode()">Light Mode</button>
-    <button onclick="setDarkMode()">Dark Mode</button>
+    <!-- Change Background button -->
+    <button class="change-bg-btn" onclick="toggleBackgroundOptions()">Change Background</button>
+
+    <!-- Popup options -->
+    <div class="bg-options" id="background-options">
+      <button onclick="setLightMode()">Light Mode</button>
+      <button onclick="setDarkMode()">Dark Mode</button>
+    </div>
+  </header>
+
+  <div class="video-preview">
+    <video autoplay loop muted playsinline>
+      <source src="videos/demo.mp4" type="video/mp4" />
+      Din webbläsare stödjer inte video.
+    </video>
   </div>
+
+  <button class="nav-button" onclick="location.href='page.html'">Starta videoredigering</button>
 
   <script>
     function toggleBackgroundOptions() {
@@ -99,18 +117,16 @@
     function setLightMode() {
       document.body.classList.remove("dark-mode");
       localStorage.setItem("theme", "light");
-      document.getElementById("background-options").style.display = "none";
+      toggleBackgroundOptions();
     }
     function setDarkMode() {
       document.body.classList.add("dark-mode");
       localStorage.setItem("theme", "dark");
-      document.getElementById("background-options").style.display = "none";
+      toggleBackgroundOptions();
     }
-    window.onload = function() {
-      if (localStorage.getItem("theme") === "dark") {
-        document.body.classList.add("dark-mode");
-      }
-    }
+    window.onload = () => {
+      document.body.classList[this.getItem ? localStorage.getItem("theme")==="dark" ? "add":"remove" : "remove"]("dark-mode");
+    };
   </script>
 </body>
 </html>
