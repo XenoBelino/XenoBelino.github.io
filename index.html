@@ -16,48 +16,37 @@
       --toggle-right: 20px;
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      position: relative;
-      background-color: white;
-      color: black;
+    body { 
+      margin: 0; 
+      font-family: Arial, sans-serif; 
+      position: relative; 
       transition: background-color 0.3s, color 0.3s;
     }
-
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
     header {
       padding: 40px 20px 20px;
       text-align: center;
       background-color: #f9f9f9;
       position: relative;
-      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark-mode header {
+      background-color: #1e1e1e;
+    }
+    header h1 { font-size: 2.5em; margin-bottom: 10px; }
+    header p { font-size: 1em; color: #555; max-width: 600px; margin: auto; }
+    body.dark-mode header p {
+      color: #bbb;
     }
 
-    header h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-
-    header p {
-      font-size: 1em;
-      color: #555;
-      max-width: 600px;
-      margin: auto;
-      transition: color 0.3s;
-    }
-
-    .video-preview {
-      margin: 0 auto;
-      max-width: 720px;
-    }
-
-    video {
-      width: 100%;
-      border-radius: 10px;
-    }
+    .video-preview { margin: 0 auto; max-width: 720px; }
+    video { width: 100%; border-radius: 10px; }
 
     .nav-button {
-      margin-top: 20px;
+      margin: 20px auto;
+      display: block;
       padding: 14px 28px;
       font-size: 1.1em;
       background: #007bff;
@@ -65,9 +54,9 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      max-width: 220px;
       transition: background-color 0.3s;
     }
-
     .nav-button:hover {
       background: #0056b3;
     }
@@ -85,81 +74,49 @@
       border-radius: var(--btn-radius);
       cursor: pointer;
       transition: background 0.3s;
+      z-index: 1100;
     }
-
     .change-bg-btn:hover {
       background: var(--btn-hover);
     }
 
-    /* Popup options */
-    #background-options {
+    .bg-options {
       display: none;
       position: absolute;
-      top: calc(var(--toggle-top) + 40px);
+      top: calc(var(--toggle-top) + 45px);
       right: var(--toggle-right);
       background: var(--btn-bg);
-      padding: 10px;
+      padding: 15px 20px;
       border-radius: var(--btn-radius);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
       z-index: 1000;
+      width: 160px;
+      color: var(--btn-text);
     }
 
-    #background-options button {
+    .bg-options h3 {
+      margin: 0 0 10px;
+      font-size: 1.1em;
+      border-bottom: 1px solid var(--btn-text);
+      padding-bottom: 5px;
+    }
+
+    .bg-options button {
       width: 100%;
-      margin: 5px 0;
-      padding: 8px;
+      margin: 6px 0;
+      padding: 10px 0;
       background: none;
-      color: var(--btn-text);
       border: 1px solid var(--btn-text);
       border-radius: var(--btn-radius);
+      color: var(--btn-text);
       font-size: 1em;
       cursor: pointer;
       transition: background-color 0.3s, color 0.3s;
     }
 
-    #background-options button:hover {
+    .bg-options button:hover {
       background: var(--btn-text);
       color: var(--btn-bg);
-    }
-
-    /* Dark mode styles */
-    body.dark-mode {
-      background-color: #121212;
-      color: #f0f0f0;
-    }
-
-    body.dark-mode header {
-      background-color: #1e1e1e;
-      color: #f0f0f0;
-    }
-
-    body.dark-mode header p {
-      color: #ccc;
-    }
-
-    body.dark-mode .change-bg-btn {
-      background-color: #444;
-      color: #ddd;
-    }
-
-    body.dark-mode .change-bg-btn:hover {
-      background-color: #666;
-    }
-
-    body.dark-mode #background-options {
-      background-color: #333;
-      color: #ddd;
-      border-color: #ddd;
-    }
-
-    body.dark-mode #background-options button {
-      border-color: #ddd;
-      color: #ddd;
-    }
-
-    body.dark-mode #background-options button:hover {
-      background-color: #ddd;
-      color: #333;
     }
   </style>
 </head>
@@ -172,7 +129,8 @@
     <button class="change-bg-btn" onclick="toggleBackgroundOptions()">Change Background</button>
 
     <!-- Popup options -->
-    <div id="background-options">
+    <div class="bg-options" id="background-options">
+      <h3>Choose Theme</h3>
       <button onclick="setLightMode()">Light Mode</button>
       <button onclick="setDarkMode()">Dark Mode</button>
     </div>
@@ -189,8 +147,8 @@
 
   <script>
     function toggleBackgroundOptions() {
-      const el = document.getElementById("background-options");
-      el.style.display = el.style.display === "block" ? "none" : "block";
+      const options = document.getElementById("background-options");
+      options.style.display = (options.style.display === "block") ? "none" : "block";
     }
 
     function setLightMode() {
@@ -205,9 +163,21 @@
       toggleBackgroundOptions();
     }
 
+    // Stäng popup om klick utanför
+    document.addEventListener("click", function(event) {
+      const options = document.getElementById("background-options");
+      const button = document.querySelector(".change-bg-btn");
+
+      if (options.style.display === "block") {
+        if (!options.contains(event.target) && !button.contains(event.target)) {
+          options.style.display = "none";
+        }
+      }
+    });
+
+    // Ladda tema från localStorage
     window.onload = () => {
-      const theme = localStorage.getItem("theme");
-      if (theme === "dark") {
+      if (localStorage.getItem("theme") === "dark") {
         document.body.classList.add("dark-mode");
       } else {
         document.body.classList.remove("dark-mode");
