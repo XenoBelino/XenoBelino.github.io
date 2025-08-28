@@ -1,205 +1,242 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Loopande Videospelare med Bakgrundsbyte</title>
-
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loopande Videospelare med Info</title>
+  <style>
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        color: black;
-        margin: 0;
-        padding: 0;
-        transition: background-color 0.3s ease, color 0.3s ease;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: black;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     body.dark-mode {
-        background-color: #333;
-        color: #fff;
+      background-color: #333;
+      color: #fff;
     }
 
     .editor-content {
-        text-align: center;
-        padding: 20px;
-        max-width: 900px;
-        margin: auto;
-        position: relative;
+      text-align: center;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      position: relative;
     }
 
-    /* Knappar */
     .button {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 5px;
-        border: none;
-        background-color: #6a0dad;
-        color: white;
-        transition: background-color 0.3s;
-        margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background-color: #6a0dad;
+      color: white;
+      transition: background-color 0.3s;
+      margin: 5px;
     }
 
     .button:hover {
-        background-color: #5c0b8a;
+      background-color: #5c0b8a;
     }
 
-    /* Positionering av fasta knappar */
     #change-background-btn {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
     }
 
     #back-to-home-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1000;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
     }
 
-    /* Video container */
     .video-container {
-        margin-top: 60px;
-        display: flex;
-        justify-content: center;
+      margin-top: 60px;
+      display: flex;
+      justify-content: center;
     }
 
     #video-player {
-        width: 100%;
-        max-width: 740px;
-        height: auto;
-        aspect-ratio: 16 / 9;
-        background: black;
-        display: block;
-        border-radius: 15px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 740px;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: black;
+      display: block;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Bakgrundsalternativ */
     #background-options {
-        display: none;
-        position: fixed;
-        top: 60px;
-        right: 20px;
-        padding: 15px;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        z-index: 9999;
-        text-align: left;
-        width: 150px;
+      display: none;
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      text-align: left;
+      width: 150px;
     }
 
     #background-options h3 {
-        color: black !important;
-        text-align: center;
-        margin-top: 0;
+      color: black !important;
+      text-align: center;
+      margin-top: 0;
     }
 
     .option-button {
-        padding: 10px 20px;
-        background-color: #6a0dad;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        width: 100%;
-        margin-bottom: 10px;
+      padding: 10px 20px;
+      background-color: #6a0dad;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 10px;
     }
 
     .option-button:hover {
-        background-color: #5c0b8a;
+      background-color: #5c0b8a;
     }
 
-    /* Anpassa färger i dark mode för background options */
     body.dark-mode #background-options {
-        background-color: #444;
-        color: white;
+      background-color: #444;
+      color: white;
     }
 
     body.dark-mode .option-button {
-        background-color: #5c0b8a;
+      background-color: #5c0b8a;
     }
 
     body.dark-mode .option-button:hover {
-        background-color: #4a076e;
+      background-color: #4a076e;
     }
-</style>
+
+    /* Ny sektion för info längst ner */
+    .info-section {
+      margin-top: 60px;
+      padding: 40px 20px;
+      background-color: #eee;
+      border-top: 1px solid #ccc;
+    }
+
+    body.dark-mode .info-section {
+      background-color: #222;
+      border-top: 1px solid #555;
+    }
+
+    .info-section h2 {
+      margin-top: 0;
+    }
+
+    .info-section p {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+    }
+  </style>
 </head>
 <body>
 
 <div class="editor-content" id="editor-content">
-    <div class="intro-section">
-        <h1>Välkommen till Videospelaren!</h1>
-        <p>Här spelas en loopande video med möjlighet att byta tema (ljus/mörk).</p>
-    </div>
+  <div class="intro-section">
+    <h1>Välkommen till Videospelaren!</h1>
+    <p>Här spelas en loopande video med möjlighet att byta tema (ljus/mörk).</p>
+    <p><strong>Tryck M för att mjuta/avmjuta. Tryck F för att gå i fullskärm.</strong></p>
+  </div>
 
-    <div class="video-container">
-        <video id="video-player" loop muted autoplay playsinline>
-            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm" />
-            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
-            Din webbläsare stödjer inte video-taggen.
-        </video>
-    </div>
+  <div class="video-container">
+    <video id="video-player" loop autoplay controls playsinline>
+      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+      Din webbläsare stödjer inte video-taggen.
+    </video>
+  </div>
 </div>
 
-<!-- Knappar för bakgrund -->
+<!-- Knappar -->
 <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Byt bakgrund</button>
 <button id="back-to-home-btn" class="button" onclick="window.location.href='page.html'">Gå till startsidan</button>
 
-<!-- Bakgrundsalternativ -->
+<!-- Popup för tema -->
 <div id="background-options">
-    <h3>Välj tema</h3>
-    <button class="option-button" onclick="setLightMode()">Ljusläge</button>
-    <button class="option-button" onclick="setDarkMode()">Mörkerläge</button>
+  <h3>Välj tema</h3>
+  <button class="option-button" onclick="setLightMode()">Ljusläge</button>
+  <button class="option-button" onclick="setDarkMode()">Mörkerläge</button>
+</div>
+
+<!-- Info-sektion längst ner -->
+<div class="info-section">
+  <h2>Om oss</h2>
+  <p>Denna hemsida skapades för att visa upp möjligheten att spela video med enkla kontroller och moderna funktioner. Vårt mål var att skapa en lättanvänd videospelare som fungerar direkt i webbläsaren.</p>
+
+  <p>Sidan är byggd med HTML, CSS och JavaScript – utan att använda några tunga ramverk eller servrar. Allt körs direkt i din webbläsare.</p>
+
+  <p>Utvecklad av [Ditt Namn eller Projektgruppens Namn].</p>
+
+  <p>Har du feedback eller idéer? Kontakta oss gärna!</p>
 </div>
 
 <script>
-    const bgOptions = document.getElementById('background-options');
-    const changeBgBtn = document.getElementById('change-background-btn');
+  const video = document.getElementById('video-player');
+  const bgOptions = document.getElementById('background-options');
+  const changeBgBtn = document.getElementById('change-background-btn');
 
-    // Visa / Dölj bakgrundsalternativ
-    function toggleBackgroundOptions() {
-        if (bgOptions.style.display === 'block') {
-            bgOptions.style.display = 'none';
-        } else {
-            bgOptions.style.display = 'block';
-        }
+  function toggleBackgroundOptions() {
+    bgOptions.style.display = bgOptions.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Klick utanför popup = stäng den
+  document.addEventListener('click', function (event) {
+    const clickedInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
+    if (!clickedInside) {
+      bgOptions.style.display = 'none';
+    }
+  });
+
+  function setLightMode() {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
+    bgOptions.style.display = 'none';
+  }
+
+  function setDarkMode() {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('theme', 'dark');
+    bgOptions.style.display = 'none';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('theme') === 'dark') {
+      setDarkMode();
+    } else {
+      setLightMode();
+    }
+  });
+
+  // Tangentbordsgenvägar: M för mute, F för fullscreen
+  document.addEventListener('keydown', function (event) {
+    if (event.key.toLowerCase() === 'm') {
+      video.muted = !video.muted;
     }
 
-    // Stäng popup när man klickar utanför den
-    document.addEventListener('click', function(event) {
-        const isClickInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
-        if (!isClickInside) {
-            bgOptions.style.display = 'none';
-        }
-    });
-
-    // Sätt ljusläge
-    function setLightMode() {
-        document.body.classList.remove('dark-mode');
-        bgOptions.style.display = 'none';
-        localStorage.setItem('theme', 'light');
+    if (event.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) {
+        video.requestFullscreen().catch(err => console.log(err));
+      } else {
+        document.exitFullscreen();
+      }
     }
-
-    // Sätt mörkerläge
-    function setDarkMode() {
-        document.body.classList.add('dark-mode');
-        bgOptions.style.display = 'none';
-        localStorage.setItem('theme', 'dark');
-    }
-
-    // Ladda tema från localStorage vid start
-    document.addEventListener('DOMContentLoaded', () => {
-        if(localStorage.getItem('theme') === 'dark') {
-            setDarkMode();
-        } else {
-            setLightMode();
-        }
-    });
+  });
 </script>
 
 </body>
