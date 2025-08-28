@@ -300,6 +300,22 @@ function resumeConversionIfExists(fileName) {
   }
 }
 
+function saveProgress({ fileName, progressStep, progressPercent, estimatedTimeLeft, resolution }) {
+  localStorage.setItem("originalFileName", fileName);
+  localStorage.setItem("progressStep", progressStep);
+  localStorage.setItem("progressPercent", progressPercent.toFixed(1));
+  localStorage.setItem("estimatedTimeLeft", estimatedTimeLeft);
+  localStorage.setItem("resolution", resolution);
+}
+
+function clearSavedProgress() {
+  localStorage.removeItem("originalFileName");
+  localStorage.removeItem("progressStep");
+  localStorage.removeItem("progressPercent");
+  localStorage.removeItem("estimatedTimeLeft");
+  localStorage.removeItem("resolution");
+}
+
     // Uppdatera volym
    function updateVolumePercentage(type) {
   const slider = document.getElementById(type + "-volume");
@@ -928,6 +944,7 @@ window.addEventListener("DOMContentLoaded", () => {
     resumeConversionIfExists(lastFile);
   }
 });
+window.addEventListener("DOMContentLoaded", resumeProgressIfExists);
 
 // Gör funktioner tillgängliga globalt så HTML kan anropa dem
 window.triggerFileInput = triggerFileInput;
