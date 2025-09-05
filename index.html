@@ -43,8 +43,9 @@
       background-color: #5c0b8a;
     }
 
+    /* Change background button */
     #change-background-btn {
-      position: fixed;
+      position: relative; /* Changed to relative positioning */
       top: 20px;
       right: 20px;
       z-index: 1000;
@@ -74,13 +75,13 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Background options popup under the button */
+    /* Background options popup under the Change Background button */
     #background-options {
       display: none;
       position: absolute;
-      top: 100%; /* Position the popup directly below the button */
-      left: 50%;
-      transform: translateX(-50%); /* Center the popup horizontally */
+      top: 100%; /* Position it directly below the button */
+      left: 50%; /* Position it in the middle */
+      transform: translateX(-50%); /* Center it horizontally */
       padding: 15px;
       background-color: white;
       border-radius: 10px;
