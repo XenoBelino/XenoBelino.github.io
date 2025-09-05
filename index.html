@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Loopande Videospelare med Info</title>
+  <title>Looping Video Player with Info</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -122,7 +122,7 @@
       background-color: #4a076e;
     }
 
-    /* Ny sektion för info längst ner */
+    /* New section for info at the bottom */
     .info-section {
       margin-top: 60px;
       padding: 40px 20px;
@@ -150,38 +150,37 @@
 
 <div class="editor-content" id="editor-content">
   <div class="intro-section">
-    <h1>Welcom to XenoVideo – AI-driven video editor!</h1>
+    <h1>Welcome to XenoVideo – AI-driven video editor!</h1>
     <p>Be able to upload videos, identify languages, adjust audio and export - directly in the browser.</p>
   </div>
 
   <div class="video-container">
     <video id="video-player" loop autoplay controls playsinline>
       <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
-      Din webbläsare stödjer inte video-taggen.
+      Your browser does not support the video tag.
     </video>
   </div>
 </div>
 
-<!-- Knappar -->
-<button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Byt bakgrund</button>
-<button id="back-to-home-btn" class="button" onclick="window.location.href='page.html'">Gå till startsidan</button>
+<!-- Buttons -->
+<button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+<button id="back-to-home-btn" class="button" onclick="window.location.href='page.html'">GO Get Started</button>
 
-<!-- Popup för tema -->
+<!-- Theme popup -->
 <div id="background-options">
-  <h3>Välj tema</h3>
-  <button class="option-button" onclick="setLightMode()">Ljusläge</button>
-  <button class="option-button" onclick="setDarkMode()">Mörkerläge</button>
+  <h3>Choose Theme</h3>
+  <button class="option-button" onclick="setLightMode()">Light Mode</button>
+  <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
 </div>
 
-<!-- Info-sektion längst ner -->
+<!-- Info section at the bottom -->
 <div class="info-section">
   <h2>About us</h2>
-  <p>Denna hemsida skapades för att visa upp möjligheten att spela video med enkla kontroller och moderna funktioner. Vårt mål var att skapa en lättanvänd videospelare som fungerar direkt i webbläsaren.</p>
+  <p>This website was created to showcase the ability to play video with simple controls and modern features. Our goal was to create an easy-to-use video player that works directly in the browser.</p>
 
-  <p>The site is built with HTML, CSS, JavaScript and AI models – without using any heavy frameworks or servers. Everything runs directly in your browser.</p>
+  <p>The site is built with HTML, CSS, JavaScript, and AI models – without using any heavy frameworks or servers. Everything runs directly in your browser.</p>
 
   <p>Developed by [XenoBelino].</p>
-
 </div>
 
 <script>
@@ -193,7 +192,7 @@
     bgOptions.style.display = bgOptions.style.display === 'block' ? 'none' : 'block';
   }
 
-  // Klick utanför popup = stäng den
+  // Click outside popup to close it
   document.addEventListener('click', function (event) {
     const clickedInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
     if (!clickedInside) {
@@ -221,7 +220,7 @@
     }
   });
 
-  // Tangentbordsgenvägar: M för mute, F för fullscreen
+  // Keyboard shortcuts: M for mute, F for fullscreen
   document.addEventListener('keydown', function (event) {
     if (event.key.toLowerCase() === 'm') {
       video.muted = !video.muted;
