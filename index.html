@@ -1,239 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Looping Video Player with Info</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: black;
-      margin: 0;
-      padding: 0;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Video Player with Settings</title>
 
-    body.dark-mode {
-      background-color: #333;
-      color: #fff;
-    }
+    <style>
+        /* Grundläggande stilar */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: black;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-    .editor-content {
-      text-align: center;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-      position: relative;
-    }
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
 
-    .button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      border: none;
-      background-color: #6a0dad;
-      color: white;
-      transition: background-color 0.3s;
-      margin: 5px;
-    }
+        .editor-content {
+            text-align: center;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+            position: relative;
+        }
 
-    .button:hover {
-      background-color: #5c0b8a;
-    }
+        /* Popup-stilar */
+        .popup {
+            display: none;
+            position: fixed;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            z-index: 10000;
+            width: 300px;
+            font-size: 14px; /* Passande fontstorlek för popup */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            line-height: 1.4;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 100px;
+        }
 
-    #change-background-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
+        .popup.dark-mode {
+            background-color: #333;
+            color: white;
+        }
 
-    #back-to-home-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-    }
+        .popup-buttons {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
 
-    .video-container {
-      margin-top: 60px;
-      display: flex;
-      justify-content: center;
-    }
+        .popup-buttons button {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 13px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+        }
 
-    #video-player {
-      width: 100%;
-      max-width: 740px;
-      height: auto;
-      aspect-ratio: 16 / 9;
-      background: black;
-      display: block;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
+        .popup-buttons button:hover {
+            background-color: #5c0b8a;
+        }
 
-    #background-options {
-      display: none;
-      position: fixed;
-      top: 60px;
-      right: 20px;
-      padding: 15px;
-      background-color: white;  /* Håll bakgrunden vit */
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      text-align: left;
-      width: 150px;
-    }
+        /* Övriga stilar */
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #6a0dad;
+            color: white;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
 
-    #background-options h3 {
-      color: black !important;
-      text-align: center;
-      margin-top: 0;
-    }
+        .button:hover {
+            background-color: #5c0b8a;
+        }
 
-    .option-button {
-      padding: 10px 20px;
-      background-color: #6a0dad;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 10px;
-    }
+        /* Progress bar */
+        #progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ccc;
+            margin-top: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    .option-button:hover {
-      background-color: #5c0b8a;
-    }
+        #progress-bar-filled {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            transition: width 0.3s ease;
+            border-radius: 10px 0 0 10px;
+        }
 
-    body.dark-mode #background-options {
-      color: black; /* Ändra textfärgen till svart för dark mode */
-    }
-
-    body.dark-mode .option-button {
-      background-color: #5c0b8a;
-    }
-
-    body.dark-mode .option-button:hover {
-      background-color: #4a076e;
-    }
-
-    /* New section for info at the bottom */
-    .info-section {
-      margin-top: 60px;
-      padding: 40px 20px;
-      background-color: #eee;
-      border-top: 1px solid #ccc;
-    }
-
-    body.dark-mode .info-section {
-      background-color: #222;
-      border-top: 1px solid #555;
-    }
-
-    .info-section h2 {
-      margin-top: 0;
-    }
-
-    .info-section p {
-      max-width: 800px;
-      margin: 0 auto 20px;
-      line-height: 1.6;
-    }
-  </style>
+        #progress-text {
+            font-size: 18px;
+            margin-top: 5px;
+            text-align: center;
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="editor-content" id="editor-content">
 
-<div class="editor-content" id="editor-content">
-  <div class="intro-section">
-    <h1>Welcome to XenoVideo – AI-driven video editor!</h1>
-    <p>Be able to upload videos, identify languages, adjust audio and export - directly in the browser.</p>
-  </div>
+        <!-- Videospelare -->
+        <div id="video-container" class="video-container">
+            <video id="video-player" controls></video>
+        </div>
 
-  <div class="video-container">
-    <video id="video-player" loop autoplay controls playsinline>
-      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-</div>
+        <button id="convert-btn" class="button">Convert to MP4</button>
+        <div class="upgrade-popup-wrapper">
+            <button id="upgrade-video-btn" class="button">Upgrade Your Video</button>
 
-<!-- Buttons -->
-<button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
-<button id="back-to-home-btn" class="button" onclick="window.location.href='page.html'">GO Get Started</button>
+            <!-- Popup 1: Ingen video vald -->
+            <div id="popup-no-video" class="popup">
+                <p>Apply a video before upgrading.</p>
+                <div class="popup-buttons">
+                    <button onclick="closePopup('popup-no-video')">OK</button>
+                </div>
+            </div>
 
-<!-- Theme popup -->
-<div id="background-options">
-  <h3>Choose Theme</h3>
-  <button class="option-button" onclick="setLightMode()">Light Mode</button>
-  <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
-</div>
+            <!-- Popup 2: Varning -->
+            <div id="popup-warning" class="popup">
+                <p>⚠️ This upgrade does not use a server. It may stress your device. Proceed with caution.</p>
+                <div class="popup-buttons">
+                    <button onclick="proceedToResolution()">OK</button>
+                    <button onclick="closePopup('popup-warning')">Cancel</button>
+                </div>
+            </div>
 
-<!-- Info section at the bottom -->
-<div class="info-section">
-  <h2>About us</h2>
-  <p>This website was created to showcase the ability to play video with simple controls and modern features. Our goal was to create an easy-to-use video player that works directly in the browser.</p>
+            <!-- Popup 3: Acceptera villkor -->
+            <div id="popup-terms" class="popup">
+                <p id="terms-text">Are you sure you want to upgrade your video?</p>
+                <div class="popup-buttons">
+                    <button onclick="acceptTerms()">Accept the Terms</button>
+                    <button onclick="denyTerms()">Deny</button>
+                </div>
+            </div>
 
-  <p>The site is built with HTML, CSS, JavaScript, and AI models – without using any heavy frameworks or servers. Everything runs directly in your browser.</p>
+            <!-- Popup 4: Video tillräcklig -->
+            <div id="popup-sufficient" class="popup">
+                <p id="sufficient-text">Your video is already sufficient.</p>
+                <div class="popup-buttons">
+                    <button onclick="closePopup('popup-sufficient')">OK</button>
+                </div>
+            </div>
 
-  <p>Developed by [XenoBelino].</p>
-</div>
+            <!-- Popup: Upgraderingsval -->
+            <div id="upgrade-options">
+                <h3>Select Resolution</h3>
+                <button class="resolution-btn" onclick="handleResolutionClick('720p')">720p</button>
+                <button class="resolution-btn" onclick="handleResolutionClick('1080p')">1080p</button>
+                <button class="resolution-btn" onclick="handleResolutionClick('1440p')">1440p</button>
+                <button class="resolution-btn" onclick="handleResolutionClick('2160p')">2160p</button>
+            </div>
+        </div>
 
-<script>
-  const video = document.getElementById('video-player');
-  const bgOptions = document.getElementById('background-options');
-  const changeBgBtn = document.getElementById('change-background-btn');
+        <!-- Progress bar -->
+        <div id="progress-bar" style="display: none;">
+            <div id="progress-bar-filled"></div>
+        </div>
+        <div id="progress-text" style="display: none;">0% of 100% to complete upgrade</div>
+        <button id="download-btn" class="button" style="display: none;" onclick="downloadUpgradedVideo()">Download Upgraded Video</button>
 
-  function toggleBackgroundOptions() {
-    bgOptions.style.display = bgOptions.style.display === 'block' ? 'none' : 'block';
-  }
+        <!-- Fasta knappar -->
+        <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+        <button id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">Go to Homepage</button>
+    </div>
 
-  // Click outside popup to close it
-  document.addEventListener('click', function (event) {
-    const clickedInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
-    if (!clickedInside) {
-      bgOptions.style.display = 'none';
-    }
-  });
+    <!-- Ladda externa bibliotek -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+    <script type="module" src="main.js"></script>
 
-  function setLightMode() {
-    document.body.classList.remove('dark-mode');
-    localStorage.setItem('theme', 'light');
-    bgOptions.style.display = 'none';
-  }
+    <script>
+        // Popup-funktioner
+        function openPopup(id) {
+            document.getElementById(id).style.display = 'block';
+        }
 
-  function setDarkMode() {
-    document.body.classList.add('dark-mode');
-    localStorage.setItem('theme', 'dark');
-    bgOptions.style.display = 'none';
-  }
+        function closePopup(id) {
+            document.getElementById(id).style.display = 'none';
+        }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('theme') === 'dark') {
-      setDarkMode();
-    } else {
-      setLightMode();
-    }
-  });
+        function proceedToResolution() {
+            closePopup('popup-warning');
+            openPopup('popup-terms');
+        }
 
-  // Keyboard shortcuts: M for mute, F for fullscreen
-  document.addEventListener('keydown', function (event) {
-    if (event.key.toLowerCase() === 'm') {
-      video.muted = !video.muted;
-    }
+        function acceptTerms() {
+            closePopup('popup-terms');
+            openPopup('popup-sufficient');
+        }
 
-    if (event.key.toLowerCase() === 'f') {
-      if (!document.fullscreenElement) {
-        video.requestFullscreen().catch(err => console.log(err));
-      } else {
-        document.exitFullscreen();
-      }
-    }
-  });
-</script>
-
+        function denyTerms() {
+            closePopup('popup-terms');
+        }
+    </script>
 </body>
 </html>
