@@ -78,7 +78,7 @@
       display: none;
       position: fixed;
       top: 60px;
-      right: 20px;
+      right: calc(50% - 75px); /* Center the popup horizontally relative to the button */
       padding: 15px;
       background-color: white;
       border-radius: 10px;
@@ -110,8 +110,9 @@
     }
 
     body.dark-mode #background-options {
-      background-color: #444;
-      color: white;
+      /* Keep the popup background white in dark mode */
+      background-color: white;
+      color: black;
     }
 
     body.dark-mode .option-button {
