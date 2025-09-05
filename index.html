@@ -44,9 +44,7 @@
     }
 
     #change-background-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
+      position: relative; /* Gör så att popupen kan relateras till denna position */
       z-index: 1000;
     }
 
@@ -74,11 +72,13 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
+    /* Ändrad CSS för popup */
     #background-options {
       display: none;
-      position: fixed;
-      top: 60px;
-      right: 20px;
+      position: absolute;
+      top: 100%; /* Placerar popupen direkt under knappen */
+      left: 50%; /* Centrerar popupen horisontellt */
+      transform: translateX(-50%); /* Finjusterar för att verkligen centrera */
       padding: 15px;
       background-color: white;
       border-radius: 10px;
@@ -110,8 +110,8 @@
     }
 
     body.dark-mode #background-options {
-      background-color: #444;
-      color: white;
+      background-color: white;
+      color: black;
     }
 
     body.dark-mode .option-button {
@@ -122,7 +122,6 @@
       background-color: #4a076e;
     }
 
-    /* New section for info at the bottom */
     .info-section {
       margin-top: 60px;
       padding: 40px 20px;
@@ -212,7 +211,7 @@
     bgOptions.style.display = 'none';
   }
 
- document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('theme') === 'dark') {
       setDarkMode();
     } else {
