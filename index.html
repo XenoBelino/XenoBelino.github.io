@@ -43,9 +43,9 @@
       background-color: #5c0b8a;
     }
 
-    /* Change background button (remains in its original position) */
+    /* Button position remains the same */
     #change-background-btn {
-      position: relative; /* Relative to keep its position intact */
+      position: relative;
       z-index: 1000;
     }
 
@@ -73,13 +73,13 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Background options popup positioned right below the button */
+    /* Popup position adjustments */
     #background-options {
       display: none;
       position: absolute;
-      top: 100%; /* Position it just below the button */
-      left: 50%; /* Center it horizontally */
-      transform: translateX(-50%); /* Center horizontally with respect to the button */
+      top: 100%; /* This will place it right below the button */
+      left: 50%; /* Center it horizontally relative to the button */
+      transform: translateX(-50%); /* Precisely center the popup */
       padding: 15px;
       background-color: white;
       border-radius: 10px;
