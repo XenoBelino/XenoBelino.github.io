@@ -74,11 +74,13 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
+    /* Adjusted background options popup to be centered under the button */
     #background-options {
       display: none;
-      position: fixed;
-      top: 60px;
-      right: calc(50% - 75px); /* Center the popup horizontally relative to the button */
+      position: absolute;
+      top: 55px; /* Set the distance to be right below the button */
+      left: 50%;
+      transform: translateX(-50%); /* Center it horizontally relative to the button */
       padding: 15px;
       background-color: white;
       border-radius: 10px;
