@@ -43,9 +43,10 @@
       background-color: #5c0b8a;
     }
 
-    /* Button position remains the same */
     #change-background-btn {
-      position: relative;
+      position: fixed;
+      top: 20px;
+      right: 20px;
       z-index: 1000;
     }
 
@@ -73,13 +74,11 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* Popup position adjustments */
     #background-options {
       display: none;
-      position: absolute;
-      top: 100%; /* This will place it right below the button */
-      left: 50%; /* Center it horizontally relative to the button */
-      transform: translateX(-50%); /* Precisely center the popup */
+      position: fixed;
+      top: 60px;
+      right: 20px;
       padding: 15px;
       background-color: white;
       border-radius: 10px;
@@ -111,8 +110,8 @@
     }
 
     body.dark-mode #background-options {
-      background-color: white;
-      color: black;
+      background-color: #444;
+      color: white;
     }
 
     body.dark-mode .option-button {
@@ -213,7 +212,7 @@
     bgOptions.style.display = 'none';
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('theme') === 'dark') {
       setDarkMode();
     } else {
