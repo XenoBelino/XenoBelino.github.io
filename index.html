@@ -268,20 +268,23 @@
   });
 
   // 👇 Toggle About us + scroll into view
-  document.getElementById('toggle-about').addEventListener('click', function () {
-    const content = document.getElementById('about-content');
-    const arrow = document.getElementById('arrow');
-    const heading = document.getElementById('toggle-about');
+document.getElementById('toggle-about').addEventListener('click', function () {
+  const content = document.getElementById('about-content');
+  const arrow = document.getElementById('arrow');
+  const heading = document.getElementById('toggle-about');
 
-    const isVisible = content.classList.contains('show');
-    content.classList.toggle('show');
-    arrow.classList.toggle('rotate');
+  const isVisible = content.classList.contains('show');
+  content.classList.toggle('show');
+  arrow.classList.toggle('rotate');
 
-    if (!isVisible) {
-      // 💡 Scrolla ner till rubriken "About us"
+  if (!isVisible) {
+    // 💡 Vänta innan vi scrollar så att innehållet hinner expandera
+    setTimeout(() => {
       heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+    }, 300);
+  }
+});
+
 </script>
 </body>
 </html>
