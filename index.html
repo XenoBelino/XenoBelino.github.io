@@ -217,67 +217,71 @@
     </div>
   </div>
 
-  <!-- JavaScript -->
-  <script>
-    const video = document.getElementById('video-player');
-    const bgOptions = document.getElementById('background-options');
-    const changeBgBtn = document.getElementById('change-background-btn');
+<script>
+  const video = document.getElementById('video-player');
+  const bgOptions = document.getElementById('background-options');
+  const changeBgBtn = document.getElementById('change-background-btn');
 
-    function toggleBackgroundOptions() {
-      bgOptions.style.display = bgOptions.style.display === 'block' ? 'none' : 'block';
-    }
+  function toggleBackgroundOptions() {
+    bgOptions.style.display = bgOptions.style.display === 'block' ? 'none' : 'block';
+  }
 
-    // Click outside popup to close it
-    document.addEventListener('click', function (event) {
-      const clickedInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
-      if (!clickedInside) {
-        bgOptions.style.display = 'none';
-      }
-    });
-
-    function setLightMode() {
-      document.body.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
+  document.addEventListener('click', function (event) {
+    const clickedInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
+    if (!clickedInside) {
       bgOptions.style.display = 'none';
     }
+  });
 
-    function setDarkMode() {
-      document.body.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-      bgOptions.style.display = 'none';
+  function setLightMode() {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
+    bgOptions.style.display = 'none';
+  }
+
+  function setDarkMode() {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('theme', 'dark');
+    bgOptions.style.display = 'none';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('theme') === 'dark') {
+      setDarkMode();
+    } else {
+      setLightMode();
     }
+  });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('theme') === 'dark') {
-        setDarkMode();
+  // 🎬 Keyboard shortcuts
+  document.addEventListener('keydown', function (event) {
+    if (event.key.toLowerCase() === 'm') {
+      video.muted = !video.muted;
+    }
+    if (event.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) {
+        video.requestFullscreen().catch(err => console.log(err));
       } else {
-        setLightMode();
+        document.exitFullscreen();
       }
-    });
+    }
+  });
 
-    // Keyboard shortcuts: M = mute, F = fullscreen
-    document.addEventListener('keydown', function (event) {
-      if (event.key.toLowerCase() === 'm') {
-        video.muted = !video.muted;
-      }
+  // 👇 Toggle About us + scroll into view
+  document.getElementById('toggle-about').addEventListener('click', function () {
+    const content = document.getElementById('about-content');
+    const arrow = document.getElementById('arrow');
+    const heading = document.getElementById('toggle-about');
 
-      if (event.key.toLowerCase() === 'f') {
-        if (!document.fullscreenElement) {
-          video.requestFullscreen().catch(err => console.log(err));
-        } else {
-          document.exitFullscreen();
-        }
-      }
-    });
+    const isVisible = content.classList.contains('show');
+    content.classList.toggle('show');
+    arrow.classList.toggle('rotate');
 
-    // Toggle About us section with slide effect
-    document.getElementById('toggle-about').addEventListener('click', function () {
-      const content = document.getElementById('about-content');
-      const arrow = document.getElementById('arrow');
-
-      content.classList.toggle('show');
-      arrow.classList.toggle('rotate');
-    });
-  </script>
+    if (!isVisible) {
+      // 💡 Scrolla ner till rubriken "About us"
+      heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+</script>
 </body>
 </html>
