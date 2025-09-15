@@ -152,6 +152,17 @@
       line-height: 1.6;
     }
 
+    /* Slide effect */
+    #about-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease;
+    }
+
+    #about-content.show {
+      max-height: 2000px; /* stort nog för innehållet */
+    }
+
     #arrow {
       font-size: 16px;
       transition: transform 0.3s ease;
@@ -159,11 +170,6 @@
 
     #arrow.rotate {
       transform: rotate(180deg);
-    }
-
-    #about-content {
-      display: none;
-      transition: max-height 0.4s ease;
     }
   </style>
 </head>
@@ -196,7 +202,7 @@
     <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
   </div>
 
-  <!-- Info Section (with toggleable About Us) -->
+  <!-- Info Section (About us with slide) -->
   <div class="info-section">
     <h2 id="toggle-about">
       About us <span id="arrow">&#9660;</span>
@@ -211,6 +217,7 @@
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
     const video = document.getElementById('video-player');
     const bgOptions = document.getElementById('background-options');
@@ -248,7 +255,7 @@
       }
     });
 
-    // Keyboard shortcuts: M for mute, F for fullscreen
+    // Keyboard shortcuts: M = mute, F = fullscreen
     document.addEventListener('keydown', function (event) {
       if (event.key.toLowerCase() === 'm') {
         video.muted = !video.muted;
@@ -263,18 +270,13 @@
       }
     });
 
-    // Toggle About us section
+    // Toggle About us section with slide effect
     document.getElementById('toggle-about').addEventListener('click', function () {
       const content = document.getElementById('about-content');
       const arrow = document.getElementById('arrow');
 
-      if (content.style.display === 'none' || content.style.display === '') {
-        content.style.display = 'block';
-        arrow.classList.add('rotate');
-      } else {
-        content.style.display = 'none';
-        arrow.classList.remove('rotate');
-      }
+      content.classList.toggle('show');
+      arrow.classList.toggle('rotate');
     });
   </script>
 </body>
