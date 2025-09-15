@@ -74,20 +74,19 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-   #background-options {
-    display: none;
-    position: fixed;
-    top: 60px;
-    right: 28px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    z-index: 9999;
-    text-align: left;
-    width: 150px;
+    #background-options {
+      display: none;
+      position: fixed;
+      top: 60px;
+      right: 28px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      text-align: left;
+      width: 150px;
     }
-  
 
     #background-options h3 {
       color: black !important;
@@ -111,7 +110,7 @@
     }
 
     body.dark-mode #background-options {
-      color: black; /* Ändra textfärgen till svart för dark mode */
+      color: black;
     }
 
     body.dark-mode .option-button {
@@ -122,12 +121,15 @@
       background-color: #4a076e;
     }
 
-    /* New section for info at the bottom */
+    /* Info section */
     .info-section {
       margin-top: 60px;
       padding: 40px 20px;
       background-color: #eee;
       border-top: 1px solid #ccc;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     body.dark-mode .info-section {
@@ -137,6 +139,11 @@
 
     .info-section h2 {
       margin-top: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
     }
 
     .info-section p {
@@ -144,109 +151,131 @@
       margin: 0 auto 20px;
       line-height: 1.6;
     }
+
+    #arrow {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+
+    #arrow.rotate {
+      transform: rotate(180deg);
+    }
+
+    #about-content {
+      display: none;
+      transition: max-height 0.4s ease;
+    }
   </style>
 </head>
 <body>
 
-<div class="editor-content" id="editor-content">
-<div class="editor-content" id="editor-content">
-  <div class="intro-section">
-    <h1>Welcome to XenoVideo – Smart AI for Audio Cleanup and Language Detection</h1>
-    <p>
-  XenoVideo helps you clean up messy audio by detecting overlapping languages and reducing excess background noise using AI. Easily isolate language tracks, adjust volumes, or remove entire language tracks detected by the AI to create a clearer, more professional video.  – all directly in your browser.
-    </p>
+  <div class="editor-content" id="editor-content">
+    <div class="intro-section">
+      <h1>Welcome to XenoVideo – Smart AI for Audio Cleanup and Language Detection</h1>
+      <p>
+        XenoVideo helps you clean up messy audio by detecting overlapping languages and reducing excess background noise using AI. Easily isolate language tracks, adjust volumes, or remove entire language tracks detected by the AI to create a clearer, more professional video – all directly in your browser.
+      </p>
+    </div>
+
+    <div class="video-container">
+      <video id="video-player" loop autoplay controls playsinline>
+        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
   </div>
-</div>
 
-  <div class="video-container">
-    <video id="video-player" loop autoplay controls playsinline>
-      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+  <!-- Buttons -->
+  <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+  <button id="back-to-home-btn" class="button" onclick="window.location.href='page.html'">GO Get Started</button>
+
+  <!-- Theme popup -->
+  <div id="background-options">
+    <h3>Choose Theme</h3>
+    <button class="option-button" onclick="setLightMode()">Light Mode</button>
+    <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
   </div>
-</div>
 
-<!-- Buttons -->
-<button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
-<button id="back-to-home-btn" class="button" onclick="window.location.href='page.html'">GO Get Started</button>
+  <!-- Info Section (with toggleable About Us) -->
+  <div class="info-section">
+    <h2 id="toggle-about">
+      About us <span id="arrow">&#9660;</span>
+    </h2>
+    <div id="about-content">
+      <p>This website is designed to enable the conversion of various file formats to MP4 and to upgrade videos to HD quality, ranging from 780p to 4K. It also provides the option to adjust, increase, decrease, or mute the audio volume of the selected video. One of the key focuses of this website is to repair videos that may have been corrupted. With the first ever website to detect multiple languages within a video, the AI will identify them and present a pop-up window offering you the following options:</p>
+      <p><strong>Add To Audio Track:</strong> If the AI detects a specific language, you can choose to add it as an audio track and adjust the volume using a Corrupted Volume slider. This slider allows you to raise, lower, or completely mute the volume for the selected language track.</p>
+      <p><strong>Remove Languages:</strong> If you wish to remove a particular language, you can select to delete it entirely from the video. Once this option is chosen, you will receive a new version of the video containing only the languages you wish to keep.</p>
+      <p>These features provide users with full control over the video and audio experience, ensuring that videos can be repaired and customized according to desired quality and language preferences.</p>
+      <p>The site is built with HTML, CSS, JavaScript, and AI models – without using any heavy frameworks or servers. Everything runs directly in your browser.</p>
+      <p>Developed by [XenoBelino].</p>
+    </div>
+  </div>
 
-<!-- Theme popup -->
-<div id="background-options">
-  <h3>Choose Theme</h3>
-  <button class="option-button" onclick="setLightMode()">Light Mode</button>
-  <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
-</div>
+  <script>
+    const video = document.getElementById('video-player');
+    const bgOptions = document.getElementById('background-options');
+    const changeBgBtn = document.getElementById('change-background-btn');
 
-<!-- Info section at the bottom -->
-<div class="info-section">
-  <h2>About us</h2>
-  <p>This website is designed to enable the conversion of various file formats to MP4 and to upgrade videos to HD quality, ranging from 780p to 4K. It also provides the option to adjust, increase, decrease, or mute the audio volume of the selected video. One of the key focuses of this website is to repair videos that may have been corrupted.With the first ever website to detect multiple languages within a video. If a video contains different languages, the AI will identify them and present a pop-up window offering you the following options:
-Add To Audio Track: If the AI detects a specific language, you can choose to add it as an audio track and adjust the volume using a Corrupted Volume slider. This slider allows you to raise, lower, or completely mute the volume for the selected language track.
+    function toggleBackgroundOptions() {
+      bgOptions.style.display = bgOptions.style.display === 'block' ? 'none' : 'block';
+    }
 
+    // Click outside popup to close it
+    document.addEventListener('click', function (event) {
+      const clickedInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
+      if (!clickedInside) {
+        bgOptions.style.display = 'none';
+      }
+    });
 
-Remove Languages: If you wish to remove a particular language, you can select to delete it entirely from the video. Once this option is chosen, you will receive a new version of the video containing only the languages you wish to keep.
-
-
-These features provide users with full control over the video and audio experience, ensuring that videos can be repaired and customized according to desired quality and language preferences.
-</p>
-
-  <p>The site is built with HTML, CSS, JavaScript, and AI models – without using any heavy frameworks or servers. Everything runs directly in your browser.</p>
-
-  <p>Developed by [XenoBelino].</p>
-</div>
-
-<script>
-  const video = document.getElementById('video-player');
-  const bgOptions = document.getElementById('background-options');
-  const changeBgBtn = document.getElementById('change-background-btn');
-
-  function toggleBackgroundOptions() {
-    bgOptions.style.display = bgOptions.style.display === 'block' ? 'none' : 'block';
-  }
-
-  // Click outside popup to close it
-  document.addEventListener('click', function (event) {
-    const clickedInside = bgOptions.contains(event.target) || changeBgBtn.contains(event.target);
-    if (!clickedInside) {
+    function setLightMode() {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
       bgOptions.style.display = 'none';
     }
-  });
 
-  function setLightMode() {
-    document.body.classList.remove('dark-mode');
-    localStorage.setItem('theme', 'light');
-    bgOptions.style.display = 'none';
-  }
-
-  function setDarkMode() {
-    document.body.classList.add('dark-mode');
-    localStorage.setItem('theme', 'dark');
-    bgOptions.style.display = 'none';
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('theme') === 'dark') {
-      setDarkMode();
-    } else {
-      setLightMode();
-    }
-  });
-
-  // Keyboard shortcuts: M for mute, F for fullscreen
-  document.addEventListener('keydown', function (event) {
-    if (event.key.toLowerCase() === 'm') {
-      video.muted = !video.muted;
+    function setDarkMode() {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+      bgOptions.style.display = 'none';
     }
 
-    if (event.key.toLowerCase() === 'f') {
-      if (!document.fullscreenElement) {
-        video.requestFullscreen().catch(err => console.log(err));
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('theme') === 'dark') {
+        setDarkMode();
       } else {
-        document.exitFullscreen();
+        setLightMode();
       }
-    }
-  });
-</script>
+    });
 
+    // Keyboard shortcuts: M for mute, F for fullscreen
+    document.addEventListener('keydown', function (event) {
+      if (event.key.toLowerCase() === 'm') {
+        video.muted = !video.muted;
+      }
+
+      if (event.key.toLowerCase() === 'f') {
+        if (!document.fullscreenElement) {
+          video.requestFullscreen().catch(err => console.log(err));
+        } else {
+          document.exitFullscreen();
+        }
+      }
+    });
+
+    // Toggle About us section
+    document.getElementById('toggle-about').addEventListener('click', function () {
+      const content = document.getElementById('about-content');
+      const arrow = document.getElementById('arrow');
+
+      if (content.style.display === 'none' || content.style.display === '') {
+        content.style.display = 'block';
+        arrow.classList.add('rotate');
+      } else {
+        content.style.display = 'none';
+        arrow.classList.remove('rotate');
+      }
+    });
+  </script>
 </body>
 </html>
