@@ -536,5 +536,34 @@ body.dark-mode #corrupted-selected-language {
 <!-- Ladda externa bibliotek -->
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 <script type="module" src="main.js"></script>
+<script>
+  const video = document.getElementById('video-player');
+  const noiseBtn = document.getElementById('noise-cancel-btn');
+
+  let audioContext, source, filter;
+
+  noiseBtn.addEventListener('click', () => {
+    if (!video.src) {
+      alert('Please load a video first.');
+      return;
+    }
+
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      source = audioContext.createMediaElementSource(video);
+
+      // High-shelf filter för att reducera statiskt brus (högfrekvens)
+      filter = audioContext.createBiquadFilter();
+      filter.type = 'highshelf';
+      filter.frequency.value = 3000; // Frekvens över 3kHz
+      filter.gain.value = -12; // Reducera 12dB
+
+      source.connect(filter);
+      filter.connect(audioContext.destination);
+    }
+
+    alert('Noise Canceling applied! High-frequency static should be reduced.');
+  });
+</script>
 </body>
 </html>
