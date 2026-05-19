@@ -789,36 +789,165 @@ function closeNoVideoPopup() {
 // Noise Cancel
 // ==========================
 function setupNoiseCancel() {
-  let audioContext;
-  let source;
-  let filter;
 
   const video = document.getElementById("video-player");
-  const noiseBtn = document.getElementById("noise-cancel-btn");
 
-  if (!noiseBtn) return;
+  if (!video || !video.src) {
+    alert("Please load a video first.");
+    return;
+  }
 
-  noiseBtn.addEventListener("click", () => {
-    if (!video || !video.src) {
-      alert("Please load a video first.");
-      return;
-    }
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
 
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      source = audioContext.createMediaElementSource(video);
+  if (!sourceNode) {
 
-      filter = audioContext.createBiquadFilter();
-      filter.type = "highshelf";
-      filter.frequency.value = 3000;
-      filter.gain.value = -12;
+    sourceNode =
+      audioContext.createMediaElementSource(video);
 
-      source.connect(filter);
-      filter.connect(audioContext.destination);
-    }
+    const filter =
+      audioContext.createBiquadFilter();
 
-    alert("Noise Canceling applied!");
+    filter.type = "highshelf";
+
+    filter.frequency.value = 3000;
+
+    filter.gain.value = -12;
+
+    sourceNode.connect(filter);
+
+    filter.connect(audioContext.destination);
+  }
+
+  alert("Live Noise Canceling applied!");
+}
+function showNoisePopup() {
+
+  const popup =
+    document.getElementById("noise-popup");
+
+  popup.style.display = "block";
+
+  document.getElementById("live-noise-btn").onclick = () => {
+
+    setupNoiseCancel();
+
+    popup.style.display = "none";
+  };
+
+  document.getElementById("download-noise-btn").onclick = async () => {
+
+    popup.style.display = "none";
+
+    await generateNoiseReducedVersion();
+  };
+}
+async function generateNoiseReducedVersion() {
+
+  if (!uploadedFile) {
+    alert("Please upload a video first.");
+    return;
+  }
+
+  const progressContainer =
+    document.getElementById("noise-progress-container");
+
+  const progressBar =
+    document.getElementById("noise-progress-bar");
+
+  const progressText =
+    document.getElementById("noise-progress-text");
+
+  const videoPlayer =
+    document.getElementById("video-player");
+
+  progressContainer.style.display = "block";
+
+  progressBar.style.width = "0%";
+
+  progressText.textContent = "0%";
+
+  await loadFFmpeg();
+
+  ffmpeg.FS(
+    "writeFile",
+    uploadedFile.name,
+    await fetchFile(uploadedFile)
+  );
+
+  let startTime = Date.now();
+
+  ffmpeg.setProgress(({ ratio }) => {
+
+    const percent = Math.round(ratio * 100);
+
+    progressBar.style.width = percent + "%";
+
+    const elapsed =
+      (Date.now() - startTime) / 1000;
+
+    const estimatedTotal =
+      elapsed / (ratio || 0.01);
+
+    const remaining =
+      estimatedTotal - elapsed;
+
+    const minutes =
+      Math.floor(remaining / 60);
+
+    const seconds =
+      Math.floor(remaining % 60);
+
+    progressText.textContent =
+      `${percent}% – approx ${minutes}m ${seconds}s kvar`;
   });
+
+  await ffmpeg.run(
+    "-i",
+    uploadedFile.name,
+    "-af",
+    "afftdn",
+    "-c:v",
+    "copy",
+    "output-noise.mp4"
+  );
+
+  const data =
+    ffmpeg.FS("readFile", "output-noise.mp4");
+
+  const videoBlob =
+    new Blob([data.buffer], {
+      type: "video/mp4"
+    });
+
+  const videoURL =
+    URL.createObjectURL(videoBlob);
+
+  videoPlayer.src = videoURL;
+
+  const downloadBtn =
+    document.getElementById("download-btn");
+
+  downloadBtn.style.display = "inline-block";
+
+  downloadBtn.textContent =
+    "Download Noise-Reduced Video";
+
+  downloadBtn.onclick = () => {
+
+    const a = document.createElement("a");
+
+    a.href = videoURL;
+
+    a.download = "noise-reduced-video.mp4";
+
+    a.click();
+  };
+
+  progressContainer.style.display = "none";
+
+  alert("Noise-Reduced version ready!");
 }
 
 // ==========================
@@ -865,8 +994,12 @@ window.addEventListener("load", () => {
 
   let isConverting = false;
 
-  // Setup Noise Cancel
-  setupNoiseCancel();
+  // ==========================
+  // Setup Noise Cancel button
+  // ==========================
+  document
+    .getElementById("noise-cancel-btn")
+    ?.addEventListener("click", showNoisePopup);
 
   // ==========================
   // Volume control
