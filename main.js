@@ -15,7 +15,132 @@ let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
-let downloadBtn; // global variabel
+let downloadBtn;
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let musicGain = null;
+let noiseFilter = null;
+let noiseEnabled = false;
+import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/+esm';
+
+const ffmpeg = createFFmpeg({ log: true });
+
+// --------------------- Filuppladdning ---------------------
+function triggerFileInput() {
+    document.getElementById("file-input").click();
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        uploadedFile = file;
+        document.getElementById("file-name").textContent = file.name;
+        const videoPlayer = document.getElementById("video-player");
+        videoPlayer.src = URL.createObjectURL(file);
+    }
+}
+
+// --------------------- Volymsliders ---------------------
+function updateVolumePercentage(sliderId) {
+    const slider = document.getElementById(sliderId + "-volume");
+    const percent = slider.value;
+    document.getElementById(sliderId + "-volume-percent").textContent = percent + "%";
+
+    // Koppla till AudioContext gainNodes om de finns
+    if (audioCtx) {
+        switch(sliderId) {
+            case "original":
+                if (gainNodeOriginal) gainNodeOriginal.gain.value = percent / 100;
+                break;
+            case "music":
+                if (gainNodeMusic) gainNodeMusic.gain.value = percent / 100;
+                break;
+            case "corrupted":
+                if (gainNodeCorrupted) gainNodeCorrupted.gain.value = percent / 100;
+                break;
+            case "final":
+                if (gainNodeFinal) gainNodeFinal.gain.value = percent / 100;
+                break;
+        }
+    }
+}
+
+// --------------------- Dark / Light Mode ---------------------
+function setDarkMode() {
+    document.body.classList.add("dark-mode");
+}
+
+function setLightMode() {
+    document.body.classList.remove("dark-mode");
+}
+
+// --------------------- Bakgrundsalternativ ---------------------
+function toggleBackgroundOptions() {
+    const options = document.getElementById("background-options");
+    options.style.display = options.style.display === "block" ? "none" : "block";
+}
+
+// --------------------- Villkor-popup ---------------------
+function acceptTerms() {
+    userAcceptedTerms = true;
+    closePopup("popup-terms");
+    document.getElementById("upgrade-options").style.display = "block"; // Visa resolutions-popup
+}
+
+function denyTerms() {
+    userAcceptedTerms = false;
+    closePopup("popup-terms");
+}
+
+function closePopup(popupId) {
+    document.getElementById(popupId).style.display = "none";
+}
+
+// --------------------- Upgrade-popup ---------------------
+function handleResolutionClick(res) {
+    selectedUpgradeResolution = res;
+    console.log("Resolution selected:", res);
+    // Här startar du uppgraderingslogik, t.ex. med FFmpeg
+    closePopup("upgrade-options"); // Dölj popupen efter val
+}
+
+// --------------------- Upgrade-knapp ---------------------
+document.getElementById("upgrade-video-btn").addEventListener("click", () => {
+    if (!uploadedFile) {
+        document.getElementById("popup-no-video").style.display = "block";
+        return;
+    }
+    document.getElementById("popup-warning").style.display = "block";
+});
+
+// --------------------- Noise Cancel Popup ---------------------
+document.getElementById("noise-cancel-btn").addEventListener("click", () => {
+    document.getElementById("noise-popup").style.display = "block";
+});
+
+document.querySelector("#noise-popup .popup-close").addEventListener("click", () => {
+    document.getElementById("noise-popup").style.display = "none";
+});
+
+document.getElementById("live-noise-btn").addEventListener("click", () => {
+    noiseEnabled = true;
+    console.log("Live Noise Canceling activated");
+    document.getElementById("noise-popup").style.display = "none";
+});
+
+document.getElementById("download-noise-btn").addEventListener("click", () => {
+    console.log("Download noise-reduced version triggered");
+    document.getElementById("noise-popup").style.display = "none";
+});
+
+// --------------------- Konvertera till MP4 (exempel) ---------------------
+document.getElementById("convert-btn").addEventListener("click", () => {
+    if (!uploadedFile) {
+        alert("Please select a video first");
+        return;
+    }
+    console.log("Convert to MP4 started");
+    // här kan du lägga in FFmpeg-konvertering
+});
 
 // Audio
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)(); // används överallt
