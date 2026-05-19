@@ -480,7 +480,19 @@ body.dark-mode #corrupted-selected-language {
     <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
     <span id="original-volume-percent" class="volume-percentage">50%</span>
   </div>
-
+    
+<!-- Popup för Noise Cancel -->
+<div id="noise-popup" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); 
+    background:white; border:1px solid #ccc; padding:20px; z-index:1000;">
+  <p>Choose how you want to apply Noise Canceling:</p>
+  <button id="live-noise-btn">Live Noise Canceling</button>
+  <button id="download-noise-btn">Download Noise-Reduced Version</button>
+  <div id="noise-progress-container" style="display:none; margin-top:10px;">
+    <div id="noise-progress-bar" style="width:0%; background:green; height:20px;"></div>
+    <span id="noise-progress-text"></span>
+  </div>
+</div>
+    
   <div class="volume-row" id="corrupted-volume-container">
     <label>Corrupted Volume:</label>
     <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
