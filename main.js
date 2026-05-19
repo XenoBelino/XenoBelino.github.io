@@ -748,6 +748,37 @@ function closeResolutionPopup() {
     document.getElementById('upgrade-options').style.display = 'none';
 }
 
+function setupNoiseCancel() {
+  const video = document.getElementById('video-player');
+  const noiseBtn = document.getElementById('noise-cancel-btn');
+
+  let audioContext;
+  let source;
+  let filter;
+
+  noiseBtn.addEventListener('click', () => {
+    if (!video || !video.src) {
+      alert('Please load a video first.');
+      return;
+    }
+
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      source = audioContext.createMediaElementSource(video);
+
+      filter = audioContext.createBiquadFilter();
+      filter.type = 'highshelf';
+      filter.frequency.value = 3000;
+      filter.gain.value = -12;
+
+      source.connect(filter);
+      filter.connect(audioContext.destination);
+    }
+
+    alert('Noise Canceling applied!');
+  });
+}
+
 function onUpgradeComplete() {
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('download-btn').style.display = 'block';
@@ -787,7 +818,6 @@ function closeNoVideoPopup() {
 
  window.setLightMode = setLightMode;
  window.setDarkMode = setDarkMode; 
- window.addEventListener("load", () => {
  // Variabler
 const fileInput = document.getElementById('file-input');
 const videoPlayer = document.getElementById('video-player');
@@ -985,37 +1015,7 @@ window.handleFileSelect = handleFileSelect;
 window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
-
-console.log("main.js loaded successfully!");
-
-// ------------------------
-// Noise Canceling Button
-// ------------------------
-const video = document.getElementById('video-player');
-const noiseBtn = document.getElementById('noise-cancel-btn');
-
-if (noiseBtn) {
-  let audioContext, source, filter;
-
-  noiseBtn.addEventListener('click', () => {
-    if (!video.src) {
-      alert('Please load a video first.');
-      return;
-    }
-
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      source = audioContext.createMediaElementSource(video);
-
-      filter = audioContext.createBiquadFilter();
-      filter.type = 'highshelf';
-      filter.frequency.value = 3000;
-      filter.gain.value = -12;
-
-      source.connect(filter);
-      filter.connect(audioContext.destination);
-    }
-
-    alert('Noise Canceling applied! High-frequency static should be reduced.');
-  });
-}
+window.addEventListener("load", () => {
+  setupNoiseCancel();
+  console.log("main.js loaded successfully!");
+});
