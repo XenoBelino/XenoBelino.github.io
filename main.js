@@ -1,6 +1,10 @@
 import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/+esm';
 const ffmpeg = createFFmpeg({ log: true });
-let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal, audioContext, sourceNode;
+
+// ==========================
+// Globala variabler
+// ==========================
+let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal;
 let uploadedFile = null;
 let isConverting = false;
 let isUpgrading = false;
@@ -12,8 +16,14 @@ let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
 let downloadBtn; // global variabel
-let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+// Audio
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)(); // används överallt
 let musicGain = null;
+let sourceNode = null; // video source node
+let noiseFilter = null; // filter för noise cancel
+let noiseEnabled = false; // status för live noise cancel
+let noiseEnabled = false;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -788,121 +798,102 @@ function closeNoVideoPopup() {
 // ==========================
 // Noise Cancel
 // ==========================
+
 function setupNoiseCancel() {
-
   const video = document.getElementById("video-player");
-
   if (!video || !video.src) {
-    alert("Please load a video first.");
-    return;
+    return alert("Please load a video first.");
   }
 
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
   if (!sourceNode) {
-
-    sourceNode =
-      audioContext.createMediaElementSource(video);
-
-    const filter =
-      audioContext.createBiquadFilter();
-
-    filter.type = "highshelf";
-
-    filter.frequency.value = 3000;
-
-    filter.gain.value = -12;
-
-    sourceNode.connect(filter);
-
-    filter.connect(audioContext.destination);
+    sourceNode = audioCtx.createMediaElementSource(video);
+    // koppla direkt till destination som standard
+    sourceNode.connect(audioCtx.destination);
   }
 
-  alert("Live Noise Canceling applied!");
-}
-function showNoisePopup() {
+  if (!noiseEnabled) {
+    // skapa filter om det inte redan finns
+    if (!noiseFilter) {
+      noiseFilter = audioCtx.createBiquadFilter();
+      noiseFilter.type = "highshelf";
+      noiseFilter.frequency.value = 3000;
+      noiseFilter.gain.value = -12;
+    }
 
-  const popup =
-    document.getElementById("noise-popup");
+    sourceNode.disconnect();
+    sourceNode.connect(noiseFilter);
+    noiseFilter.connect(audioCtx.destination);
+
+    noiseEnabled = true;
+    alert("Noise Cancel ON");
+  } else {
+    // stäng av noise cancel
+    sourceNode.disconnect();
+    sourceNode.connect(audioCtx.destination);
+
+    noiseEnabled = false;
+    alert("Noise Cancel OFF");
+  }
+}
+
+function showNoisePopup() {
+  const popup = document.getElementById("noise-popup");
+  if (!popup) return;
+
+  // toggle popup
+  if (popup.style.display === "block") {
+    popup.style.display = "none";
+    return;
+  }
 
   popup.style.display = "block";
 
+  // Live noise cancel knapp
   document.getElementById("live-noise-btn").onclick = () => {
-
     setupNoiseCancel();
-
-    popup.style.display = "none";
   };
 
+  // Download noise-reduced video knapp
   document.getElementById("download-noise-btn").onclick = async () => {
-
     popup.style.display = "none";
-
     await generateNoiseReducedVersion();
   };
 }
+
 async function generateNoiseReducedVersion() {
+  if (!uploadedFile) return alert("Please upload a video first.");
 
-  if (!uploadedFile) {
-    alert("Please upload a video first.");
-    return;
-  }
-
-  const progressContainer =
-    document.getElementById("noise-progress-container");
-
-  const progressBar =
-    document.getElementById("noise-progress-bar");
-
-  const progressText =
-    document.getElementById("noise-progress-text");
-
-  const videoPlayer =
-    document.getElementById("video-player");
+  const progressContainer = document.getElementById("noise-progress-container");
+  const progressBar = document.getElementById("noise-progress-bar");
+  const progressText = document.getElementById("noise-progress-text");
+  const videoPlayer = document.getElementById("video-player");
 
   progressContainer.style.display = "block";
-
   progressBar.style.width = "0%";
-
   progressText.textContent = "0%";
 
   await loadFFmpeg();
 
-  ffmpeg.FS(
-    "writeFile",
-    uploadedFile.name,
-    await fetchFile(uploadedFile)
-  );
+  ffmpeg.FS("writeFile", uploadedFile.name, await fetchFile(uploadedFile));
 
-  let startTime = Date.now();
+  const startTime = Date.now();
 
   ffmpeg.setProgress(({ ratio }) => {
-
     const percent = Math.round(ratio * 100);
-
     progressBar.style.width = percent + "%";
 
-    const elapsed =
-      (Date.now() - startTime) / 1000;
+    const elapsed = (Date.now() - startTime) / 1000;
+    const estimatedTotal = elapsed / (ratio || 0.01);
+    const remaining = estimatedTotal - elapsed;
+    const minutes = Math.floor(remaining / 60);
+    const seconds = Math.floor(remaining % 60);
 
-    const estimatedTotal =
-      elapsed / (ratio || 0.01);
-
-    const remaining =
-      estimatedTotal - elapsed;
-
-    const minutes =
-      Math.floor(remaining / 60);
-
-    const seconds =
-      Math.floor(remaining % 60);
-
-    progressText.textContent =
-      `${percent}% – approx ${minutes}m ${seconds}s kvar`;
+    progressText.textContent = `${percent}% – approx ${minutes}m ${seconds}s kvar`;
   });
 
+  // använd FFmpeg afftdn filter för noise reduction
   await ffmpeg.run(
     "-i",
     uploadedFile.name,
@@ -913,40 +904,23 @@ async function generateNoiseReducedVersion() {
     "output-noise.mp4"
   );
 
-  const data =
-    ffmpeg.FS("readFile", "output-noise.mp4");
-
-  const videoBlob =
-    new Blob([data.buffer], {
-      type: "video/mp4"
-    });
-
-  const videoURL =
-    URL.createObjectURL(videoBlob);
+  const data = ffmpeg.FS("readFile", "output-noise.mp4");
+  const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
+  const videoURL = URL.createObjectURL(videoBlob);
 
   videoPlayer.src = videoURL;
 
-  const downloadBtn =
-    document.getElementById("download-btn");
-
+  if (!downloadBtn) downloadBtn = document.getElementById("download-btn");
   downloadBtn.style.display = "inline-block";
-
-  downloadBtn.textContent =
-    "Download Noise-Reduced Video";
-
+  downloadBtn.textContent = "Download Noise-Reduced Video";
   downloadBtn.onclick = () => {
-
     const a = document.createElement("a");
-
     a.href = videoURL;
-
     a.download = "noise-reduced-video.mp4";
-
     a.click();
   };
 
   progressContainer.style.display = "none";
-
   alert("Noise-Reduced version ready!");
 }
 
