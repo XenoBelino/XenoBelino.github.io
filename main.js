@@ -987,4 +987,43 @@ window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
 
 console.log("main.js loaded successfully!");
+
+// ------------------------
+// Noise Canceling Button
+// ------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  const video = document.getElementById('video-player');
+  const noiseBtn = document.getElementById('noise-cancel-btn');
+
+  if (!noiseBtn) {
+    console.warn("Noise Canceling button not found in DOM!");
+    return;
+  }
+
+  let audioContext, source, filter;
+
+  noiseBtn.addEventListener('click', () => {
+    if (!video.src) {
+      alert('Please load a video first.');
+      return;
+    }
+
+    // Om audioContext inte redan finns, skapa den
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      source = audioContext.createMediaElementSource(video);
+
+      // High-shelf filter för att reducera högfrekvent statiskt brus
+      filter = audioContext.createBiquadFilter();
+      filter.type = 'highshelf';
+      filter.frequency.value = 3000; // Reducerar frekvenser över 3kHz
+      filter.gain.value = -12;       // Sänker med 12dB
+
+      // Koppla ihop källan med filtret och filtret till högtalarna
+      source.connect(filter);
+      filter.connect(audioContext.destination);
+    }
+
+    alert('Noise Canceling applied! High-frequency static should be reduced.');
+  });
 });
