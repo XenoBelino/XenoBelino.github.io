@@ -748,37 +748,6 @@ function closeResolutionPopup() {
     document.getElementById('upgrade-options').style.display = 'none';
 }
 
-function setupNoiseCancel() {
-  const video = document.getElementById('video-player');
-  const noiseBtn = document.getElementById('noise-cancel-btn');
-
-  let audioContext;
-  let source;
-  let filter;
-
-  noiseBtn.addEventListener('click', () => {
-    if (!video || !video.src) {
-      alert('Please load a video first.');
-      return;
-    }
-
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      source = audioContext.createMediaElementSource(video);
-
-      filter = audioContext.createBiquadFilter();
-      filter.type = 'highshelf';
-      filter.frequency.value = 3000;
-      filter.gain.value = -12;
-
-      source.connect(filter);
-      filter.connect(audioContext.destination);
-    }
-
-    alert('Noise Canceling applied!');
-  });
-}
-
 function onUpgradeComplete() {
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('download-btn').style.display = 'block';
@@ -816,190 +785,56 @@ function closeNoVideoPopup() {
   corruptedSource.start();
 }
 
- window.setLightMode = setLightMode;
- window.setDarkMode = setDarkMode; 
- // Variabler
-const fileInput = document.getElementById('file-input');
-const videoPlayer = document.getElementById('video-player');
-const progressBar = document.getElementById('progress-bar');
-const progressBarFilled = document.getElementById('progress-bar-filled');
-const progressText = document.getElementById('progress-text');
-const downloadBtn = document.getElementById('download-btn');
-const originalVolumeSlider = document.getElementById('original-volume');
-const video = videoPlayer;
+// ==========================
+// Noise Cancel
+// ==========================
+function setupNoiseCancel() {
+  let audioContext;
+  let source;
+  let filter;
 
-let isConverting = false;
-let lastOperation = null;
+  const video = document.getElementById("video-player");
+  const noiseBtn = document.getElementById("noise-cancel-btn");
 
-// Hjälpfunktion för att ladda ffmpeg vid behov
+  if (!noiseBtn) return;
+
+  noiseBtn.addEventListener("click", () => {
+    if (!video || !video.src) {
+      alert("Please load a video first.");
+      return;
+    }
+
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      source = audioContext.createMediaElementSource(video);
+
+      filter = audioContext.createBiquadFilter();
+      filter.type = "highshelf";
+      filter.frequency.value = 3000;
+      filter.gain.value = -12;
+
+      source.connect(filter);
+      filter.connect(audioContext.destination);
+    }
+
+    alert("Noise Canceling applied!");
+  });
+}
+
+// ==========================
+// Load FFmpeg helper
+// ==========================
 async function loadFFmpeg() {
   if (!ffmpeg.isLoaded()) {
     await ffmpeg.load();
   }
 }
 
-// Stoppa pil-tangenter från att påverka video-volym på sliders (om sådan funktion finns)
-['original-volume', 'corrupted-volume', 'music-volume', 'final-volume'].forEach(id => {
-  const slider = document.getElementById(id);
-  if (slider) stopArrowKeysFromAffectingVideo(slider);
-});
-
-// Lyssnare: när original-volume slider ändras → uppdatera videons volym
-originalVolumeSlider.addEventListener('input', () => {
-  const volumeValue = originalVolumeSlider.value / 100;
-  video.volume = volumeValue;
-  video.muted = volumeValue === 0;
-  updateVolumePercentage("original");
-});
-
-// Lyssnare: när video volym eller mute ändras (t.ex. med 'm' tangent)
-video.addEventListener('volumechange', () => {
-  if (video.muted) {
-    originalVolumeSlider.value = 0;
-  } else {
-    originalVolumeSlider.value = video.volume * 100;
-  }
-  updateVolumePercentage("original");
-});
-
-// Funktion: Konvertera video till MP4 med ffmpeg
-async function convertToMP4() {
-  if (isConverting) {
-    alert("Konvertering pågår redan. Vänta tills den är klar.");
-    return;
-  }
-
-  if (!fileInput.files.length) {
-    alert('Vänligen välj en videofil först!');
-    return;
-  }
-
-  const file = fileInput.files[0];
-  const ext = file.name.split('.').pop().toLowerCase();
-
-  if (ext === 'mp4') {
-    alert("Den här videofilen är redan i MP4-format. Ingen konvertering behövs.");
-    return;
-  }
-
-  isConverting = true;
-  const convertBtn = document.getElementById('convert-btn');
-  convertBtn.disabled = true;
-  convertBtn.textContent = 'Konverterar...';
-
-  progressBar.style.display = 'block';
-  progressBarFilled.style.width = '0%';
-  progressText.style.display = 'block';
-  progressText.textContent = '0% av 100% klart';
-
-  try {
-    await loadFFmpeg();
-
-    const file = fileInput.files[0];
-    ffmpeg.FS('writeFile', file.name, await fetchFile(file));
-
-    let startTime = Date.now();
-
-   ffmpeg.setProgress(({ ratio }) => {
-  const percent = Math.round(ratio * 100);
-  const elapsed = (Date.now() - startTime) / 1000; // sekunder
-  const estimatedTotal = elapsed / (ratio || 0.01); // undvik div/0
-  const remaining = estimatedTotal - elapsed;
-
-  // Beräkna timmar, minuter, sekunder
-  const hours = Math.floor(remaining / 3600);
-  const minutes = Math.floor((remaining % 3600) / 60);
-  const seconds = Math.floor(remaining % 60);
-
-  // Formatera tid: dölj "0h" om onödigt
-  const timeLeft =
-    hours > 0
-      ? `${hours}h ${minutes}m ${seconds}s`
-      : `${minutes}m ${seconds}s`;
-
-  progressBarFilled.style.width = percent + '%';
-  progressText.textContent = `${percent}% av 100% to complete conversion – approx. ${timeLeft} kvar`;
-});
-
-    await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
-
-    const data = ffmpeg.FS('readFile', 'output.mp4');
-    const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-    const videoURL = URL.createObjectURL(videoBlob);
-
-    videoPlayer.src = videoURL;
-
-    downloadBtn.style.display = 'inline-block';
-    downloadBtn.textContent = "Download Converted Video";
-
-    lastOperation = "convert";
-
-  } catch (e) {
-    alert('Fel vid konvertering: ' + e.message);
-  } finally {
-    convertBtn.disabled = false;
-    convertBtn.textContent = 'Convert to MP4';
-    progressBar.style.display = 'none';
-    progressText.style.display = 'none';
-    isConverting = false;
-  }
-}
-
-// Övriga event-lyssnare
-document.getElementById("original-volume").addEventListener("input", () => updateVolumePercentage("original"));
-document.getElementById("corrupted-volume").addEventListener("input", () => updateVolumePercentage("corrupted"));
-document.getElementById("music-volume").addEventListener("input", () => updateVolumePercentage("music"));
-document.getElementById("final-volume").addEventListener("input", () => updateVolumePercentage("final"));
-fileInput.addEventListener('change', handleFileSelect);
-document.getElementById('convert-btn').addEventListener('click', convertToMP4);
-document.getElementById("upgrade-video-btn").addEventListener("click", onUpgradeClick);
-
-document.getElementById("corrupted-selected-language").textContent = "";
-document.getElementById("corrupted-selected-language").style.display = "none";
-
-document.addEventListener("keydown", (e) => {
-  if (!video) return;
-  switch (e.key) {
-    case "f":
-      if (!document.fullscreenElement) {
-        video.requestFullscreen().catch(err => console.warn("Fullscreen error:", err));
-      } else {
-        document.exitFullscreen();
-      }
-      break;
-    case "m":
-      video.muted = !video.muted;
-      break;
-    case "ArrowLeft":
-      video.currentTime = Math.max(0, video.currentTime - 5);
-      break;
-    case "ArrowRight":
-      video.currentTime = Math.min(video.duration, video.currentTime + 5);
-      break;
-    case "ArrowUp":
-      video.volume = Math.min(1, video.volume + 0.05);
-      originalVolumeSlider.value = video.volume * 100;
-      updateVolumePercentage("original");
-      break;
-    case "ArrowDown":
-      video.volume = Math.max(0, video.volume - 0.05);
-      originalVolumeSlider.value = video.volume * 100;
-      updateVolumePercentage("original");
-      break;
-  }
-});
-     
-// Eventlyssnare när användaren väljer fil
-fileInput.addEventListener('change', (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    loadProgress(file.name);  // Använd filnamnet som id
-  } else {
-    document.getElementById("progress-status").innerText = "Ingen sparad progress";
-  }
-});
-     
-// Gör funktioner tillgängliga globalt så HTML kan anropa dem
+// ==========================
+// Global functions for HTML
+// ==========================
+window.setLightMode = setLightMode;
+window.setDarkMode = setDarkMode;
 window.triggerFileInput = triggerFileInput;
 window.toggleBackgroundOptions = toggleBackgroundOptions;
 window.updateVolumePercentage = updateVolumePercentage;
@@ -1015,7 +850,165 @@ window.handleFileSelect = handleFileSelect;
 window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
+
+// ==========================
+// Main load event
+// ==========================
 window.addEventListener("load", () => {
+  const fileInput = document.getElementById("file-input");
+  const video = document.getElementById("video-player");
+  const progressBar = document.getElementById("progress-bar");
+  const progressBarFilled = document.getElementById("progress-bar-filled");
+  const progressText = document.getElementById("progress-text");
+  const downloadBtn = document.getElementById("download-btn");
+  const originalVolumeSlider = document.getElementById("original-volume");
+
+  let isConverting = false;
+
+  // Setup Noise Cancel
   setupNoiseCancel();
+
+  // ==========================
+  // Volume control
+  // ==========================
+  originalVolumeSlider?.addEventListener("input", () => {
+    video.volume = originalVolumeSlider.value / 100;
+    updateVolumePercentage("original");
+  });
+
+  video?.addEventListener("volumechange", () => {
+    originalVolumeSlider.value = video.volume * 100;
+    updateVolumePercentage("original");
+  });
+
+  // ==========================
+  // Button events
+  // ==========================
+  document.getElementById("convert-btn")?.addEventListener("click", convertToMP4);
+  document.getElementById("upgrade-video-btn")?.addEventListener("click", onUpgradeClick);
+
+  fileInput?.addEventListener("change", handleFileSelect);
+
+  // ==========================
+  // Other volume sliders
+  // ==========================
+  ["corrupted-volume", "music-volume", "final-volume"].forEach(id => {
+    const slider = document.getElementById(id);
+    slider?.addEventListener("input", () => updateVolumePercentage(id.replace("-volume", "")));
+  });
+
+  // ==========================
+  // Fullscreen, mute, arrow keys
+  // ==========================
+  document.addEventListener("keydown", (e) => {
+    if (!video) return;
+
+    switch (e.key) {
+      case "f":
+        if (!document.fullscreenElement) video.requestFullscreen().catch(err => console.warn(err));
+        else document.exitFullscreen();
+        break;
+      case "m":
+        video.muted = !video.muted;
+        break;
+      case "ArrowLeft":
+        video.currentTime = Math.max(0, video.currentTime - 5);
+        break;
+      case "ArrowRight":
+        video.currentTime = Math.min(video.duration, video.currentTime + 5);
+        break;
+      case "ArrowUp":
+        video.volume = Math.min(1, video.volume + 0.05);
+        originalVolumeSlider.value = video.volume * 100;
+        updateVolumePercentage("original");
+        break;
+      case "ArrowDown":
+        video.volume = Math.max(0, video.volume - 0.05);
+        originalVolumeSlider.value = video.volume * 100;
+        updateVolumePercentage("original");
+        break;
+    }
+  });
+
+  // ==========================
+  // File progress
+  // ==========================
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) loadProgress(file.name);
+    else document.getElementById("progress-status").innerText = "Ingen sparad progress";
+  });
+
   console.log("main.js loaded successfully!");
 });
+
+// ==========================
+// Convert video to MP4
+// ==========================
+async function convertToMP4() {
+  if (isConverting) return alert("Konvertering pågår redan.");
+
+  const fileInput = document.getElementById("file-input");
+  const progressBar = document.getElementById("progress-bar");
+  const progressBarFilled = document.getElementById("progress-bar-filled");
+  const progressText = document.getElementById("progress-text");
+  const downloadBtn = document.getElementById("download-btn");
+  const videoPlayer = document.getElementById("video-player");
+
+  if (!fileInput.files.length) return alert("Vänligen välj en videofil först!");
+
+  const file = fileInput.files[0];
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'mp4') return alert("Videon är redan MP4.");
+
+  isConverting = true;
+  const convertBtn = document.getElementById('convert-btn');
+  convertBtn.disabled = true;
+  convertBtn.textContent = 'Konverterar...';
+
+  progressBar.style.display = 'block';
+  progressBarFilled.style.width = '0%';
+  progressText.style.display = 'block';
+  progressText.textContent = '0% av 100% klart';
+
+  try {
+    await loadFFmpeg();
+    ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+
+    const startTime = Date.now();
+
+    ffmpeg.setProgress(({ ratio }) => {
+      const percent = Math.round(ratio * 100);
+      const elapsed = (Date.now() - startTime) / 1000;
+      const estimatedTotal = elapsed / (ratio || 0.01);
+      const remaining = estimatedTotal - elapsed;
+
+      const hours = Math.floor(remaining / 3600);
+      const minutes = Math.floor((remaining % 3600) / 60);
+      const seconds = Math.floor(remaining % 60);
+      const timeLeft = hours > 0 ? `${hours}h ${minutes}m ${seconds}s` : `${minutes}m ${seconds}s`;
+
+      progressBarFilled.style.width = percent + '%';
+      progressText.textContent = `${percent}% – approx. ${timeLeft} kvar`;
+    });
+
+    await ffmpeg.run('-i', file.name, '-c:v', 'libx264', '-c:a', 'aac', 'output.mp4');
+
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+    const videoURL = URL.createObjectURL(videoBlob);
+    videoPlayer.src = videoURL;
+
+    downloadBtn.style.display = 'inline-block';
+    downloadBtn.textContent = "Download Converted Video";
+
+  } catch (e) {
+    alert('Fel vid konvertering: ' + e.message);
+  } finally {
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Convert to MP4';
+    progressBar.style.display = 'none';
+    progressText.style.display = 'none';
+    isConverting = false;
+  }
+}
