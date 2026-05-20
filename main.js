@@ -1012,3 +1012,22 @@ async function convertToMP4() {
     isConverting = false;
   }
 }
+// Detta kopplar popup-knapparna till dina befintliga funktioner
+function setupNoiseCancelPopupButtons() {
+    document.getElementById('live-noise-btn').onclick = () => {
+        closePopup('popup-noise-cancel');
+        LiveNoiseCanceling(); // din befintliga funktion
+    };
+
+    document.getElementById('download-noise-btn').onclick = () => {
+        closePopup('popup-noise-cancel');
+        offerDownloadOfEditedFile(); // din befintliga funktion
+    };
+
+    document.getElementById('cancel-noise-btn').onclick = () => {
+        closePopup('popup-noise-cancel');
+    };
+}
+
+// Kör denna när sidan laddas eller när popupen initieras
+setupNoiseCancelPopupButtons();
