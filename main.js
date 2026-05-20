@@ -850,114 +850,78 @@ async function loadFFmpeg() {
 // ==========================
 // Global functions for HTML
 // ==========================
-window.setLightMode = setLightMode;
-window.setDarkMode = setDarkMode;
 window.triggerFileInput = triggerFileInput;
+window.handleFileSelect = handleFileSelect;
+window.convertToMP4 = convertToMP4;
+window.onUpgradeClick = onUpgradeClick;
 window.toggleBackgroundOptions = toggleBackgroundOptions;
 window.updateVolumePercentage = updateVolumePercentage;
-window.onUpgradeClick = onUpgradeClick;
+window.handleResolutionClick = handleResolutionClick;
 window.acceptTerms = acceptTerms;
 window.denyTerms = denyTerms;
 window.proceedToResolution = proceedToResolution;
-window.startUpgradeProcess = startUpgradeProcess;
-window.handleResolutionClick = handleResolutionClick;
-window.downloadUpgradedVideo = downloadUpgradedVideo;
 window.closePopup = closePopup;
-window.handleFileSelect = handleFileSelect;
-window.setupAudioGraph = setupAudioGraph;
-window.assignLanguageToCorrupted = assignLanguageToCorrupted;
-window.showLanguageDetectionPopup = showLanguageDetectionPopup;
+window.downloadUpgradedVideo = downloadUpgradedVideo;
 
-// Lägg till dina Noise Cancel funktioner här också
-window.LiveNoiseCanceling = LiveNoiseCanceling;
-window.offerDownloadOfEditedFile = offerDownloadOfEditedFile;
-window.showPopup = showPopup;
+// Noise Cancel
+window.startLiveNoiseCanceling = startLiveNoiseCanceling;
+window.downloadNoiseReducedVersion = downloadNoiseReducedVersion;
+
+// Dark/Light Mode
+window.setLightMode = setLightMode;
+window.setDarkMode = setDarkMode;
+
 // ==========================
-// Main load event
+// Säkerställ att DOM är laddad innan event listeners
 // ==========================
 window.addEventListener("load", () => {
-  const fileInput = document.getElementById("file-input");
-  const video = document.getElementById("video-player");
-  const progressBar = document.getElementById("progress-bar");
-  const progressBarFilled = document.getElementById("progress-bar-filled");
-  const progressText = document.getElementById("progress-text");
-  const downloadBtn = document.getElementById("download-btn");
-  const originalVolumeSlider = document.getElementById("original-volume");
-  setupNoiseCancel();
-  setupNoiseCancelPopupButtons();
+    const fileInput = document.getElementById("file-input");
+    const video = document.getElementById("video-player");
+    const originalVolumeSlider = document.getElementById("original-volume");
 
-  // ==========================
-  // Volume control
-  // ==========================
-  originalVolumeSlider?.addEventListener("input", () => {
-    video.volume = originalVolumeSlider.value / 100;
-    updateVolumePercentage("original");
-  });
+    // Noise cancel setup
+    setupNoiseCancel();
+    setupNoiseCancelPopupButtons();
 
-  video?.addEventListener("volumechange", () => {
-    originalVolumeSlider.value = video.volume * 100;
-    updateVolumePercentage("original");
-  });
+    // ==========================
+    // Event listeners för knappar
+    // ==========================
+    document.getElementById("browse-btn")?.addEventListener("click", triggerFileInput);
+    document.getElementById("convert-btn")?.addEventListener("click", convertToMP4);
+    document.getElementById("upgrade-video-btn")?.addEventListener("click", onUpgradeClick);
+    document.getElementById("change-background-btn")?.addEventListener("click", toggleBackgroundOptions);
 
-  // ==========================
-  // Button events
-  // ==========================
-  document.getElementById("convert-btn")?.addEventListener("click", convertToMP4);
-  document.getElementById("upgrade-video-btn")?.addEventListener("click", onUpgradeClick);
+    // ==========================
+    // Volymkontroller
+    // ==========================
+    originalVolumeSlider?.addEventListener("input", () => {
+        if (!video) return;
+        video.volume = originalVolumeSlider.value / 100;
+        updateVolumePercentage("original");
+    });
 
-  fileInput?.addEventListener("change", handleFileSelect);
-
-  // ==========================
-  // Other volume sliders
-  // ==========================
-  ["corrupted-volume", "music-volume", "final-volume"].forEach(id => {
-    const slider = document.getElementById(id);
-    slider?.addEventListener("input", () => updateVolumePercentage(id.replace("-volume", "")));
-  });
-
-  // ==========================
-  // Fullscreen, mute, arrow keys
-  // ==========================
-  document.addEventListener("keydown", (e) => {
-    if (!video) return;
-
-    switch (e.key) {
-      case "f":
-        if (!document.fullscreenElement) video.requestFullscreen().catch(err => console.warn(err));
-        else document.exitFullscreen();
-        break;
-      case "m":
-        video.muted = !video.muted;
-        break;
-      case "ArrowLeft":
-        video.currentTime = Math.max(0, video.currentTime - 5);
-        break;
-      case "ArrowRight":
-        video.currentTime = Math.min(video.duration, video.currentTime + 5);
-        break;
-      case "ArrowUp":
-        video.volume = Math.min(1, video.volume + 0.05);
+    video?.addEventListener("volumechange", () => {
+        if (!originalVolumeSlider) return;
         originalVolumeSlider.value = video.volume * 100;
         updateVolumePercentage("original");
-        break;
-      case "ArrowDown":
-        video.volume = Math.max(0, video.volume - 0.05);
-        originalVolumeSlider.value = video.volume * 100;
-        updateVolumePercentage("original");
-        break;
-    }
-  });
+    });
 
-  // ==========================
-  // File progress
-  // ==========================
-  fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) loadProgress(file.name);
-    else document.getElementById("progress-status").innerText = "Ingen sparad progress";
-  });
+    // Andra sliders (corrupted, music, final)
+    ["corrupted-volume", "music-volume", "final-volume"].forEach(id => {
+        const slider = document.getElementById(id);
+        slider?.addEventListener("input", () => updateVolumePercentage(id.replace("-volume", "")));
+    });
 
-  console.log("main.js loaded successfully!");
+    // ==========================
+    // File progress
+    // ==========================
+    fileInput?.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) loadProgress(file.name);
+        else document.getElementById("progress-status").innerText = "Ingen sparad progress";
+    });
+
+    console.log("main.js loaded successfully! Alla funktioner kopplade till window.");
 });
 
 // ==========================
