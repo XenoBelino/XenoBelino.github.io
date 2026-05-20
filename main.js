@@ -14,6 +14,7 @@ let languagePopupShown = false;
 let downloadBtn; // global variabel
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let musicGain = null;
+let isConverting = false;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -821,6 +822,23 @@ function setupNoiseCancel() {
   });
 }
 
+// Detta kopplar popup-knapparna till dina befintliga funktioner
+function setupNoiseCancelPopupButtons() {
+    document.getElementById('live-noise-btn').onclick = () => {
+        closePopup('popup-noise-cancel');
+        LiveNoiseCanceling(); // din befintliga funktion
+    };
+
+    document.getElementById('download-noise-btn').onclick = () => {
+        closePopup('popup-noise-cancel');
+        offerDownloadOfEditedFile(); // din befintliga funktion
+    };
+
+    document.getElementById('cancel-noise-btn').onclick = () => {
+        closePopup('popup-noise-cancel');
+    };
+}
+
 // ==========================
 // Load FFmpeg helper
 // ==========================
@@ -851,6 +869,10 @@ window.setupAudioGraph = setupAudioGraph;
 window.assignLanguageToCorrupted = assignLanguageToCorrupted;
 window.showLanguageDetectionPopup = showLanguageDetectionPopup;
 
+// Lägg till dina Noise Cancel funktioner här också
+window.LiveNoiseCanceling = LiveNoiseCanceling;
+window.offerDownloadOfEditedFile = offerDownloadOfEditedFile;
+window.showPopup = showPopup;
 // ==========================
 // Main load event
 // ==========================
@@ -862,11 +884,8 @@ window.addEventListener("load", () => {
   const progressText = document.getElementById("progress-text");
   const downloadBtn = document.getElementById("download-btn");
   const originalVolumeSlider = document.getElementById("original-volume");
-
-  let isConverting = false;
-
-  // Setup Noise Cancel
   setupNoiseCancel();
+  setupNoiseCancelPopupButtons();
 
   // ==========================
   // Volume control
@@ -1012,22 +1031,3 @@ async function convertToMP4() {
     isConverting = false;
   }
 }
-// Detta kopplar popup-knapparna till dina befintliga funktioner
-function setupNoiseCancelPopupButtons() {
-    document.getElementById('live-noise-btn').onclick = () => {
-        closePopup('popup-noise-cancel');
-        LiveNoiseCanceling(); // din befintliga funktion
-    };
-
-    document.getElementById('download-noise-btn').onclick = () => {
-        closePopup('popup-noise-cancel');
-        offerDownloadOfEditedFile(); // din befintliga funktion
-    };
-
-    document.getElementById('cancel-noise-btn').onclick = () => {
-        closePopup('popup-noise-cancel');
-    };
-}
-
-// Kör denna när sidan laddas eller när popupen initieras
-setupNoiseCancelPopupButtons();
