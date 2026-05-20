@@ -20,9 +20,11 @@ let noiseFilter;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
+    const homeBtn = document.getElementById("back-to-home-btn");
+    if (homeBtn.contains(event.target)) return; // 🔹 ignorera home-knappen
+
     const upgradeButton = document.getElementById("upgrade-video-btn");
     const popups = document.querySelectorAll("#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options");
-
     const isClickInsidePopup = [...popups].some(popup => popup.contains(event.target)) || upgradeButton.contains(event.target);
 
     if (!isClickInsidePopup) {
@@ -37,7 +39,6 @@ document.addEventListener("click", function (event) {
         bgOptions.style.display = "none";
     }
 });
-
  // Visa eller dölj bakgrundsalternativ
     function toggleBackgroundOptions() {
         const bgOpts = document.getElementById("background-options");
