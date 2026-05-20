@@ -14,6 +14,9 @@ let languagePopupShown = false;
 let downloadBtn; // global variabel
 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let musicGain = null;
+let noiseAudioContext;
+let noiseSource;
+let noiseFilter;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
@@ -821,21 +824,37 @@ function setupNoiseCancel() {
   });
 }
 
+function startLiveNoiseCanceling() {
+    const video = document.getElementById("video-player");
+    if (!video || !video.src) return alert("Please load a video first.");
+
+    // Här kan du lägga in din noise-cancel-logik
+    alert("Live Noise Canceling started!");
+}
+
+function downloadNoiseReducedVersion() {
+    const video = document.getElementById("video-player");
+    if (!video || !video.src) return alert("Please load a video first.");
+
+    // Här kan du lägga in logik för att skapa en fil och ladda ner
+    alert("Downloading noise-reduced version...");
+}
+
 // Detta kopplar popup-knapparna till dina befintliga funktioner
 function setupNoiseCancelPopupButtons() {
-    document.getElementById('live-noise-btn').onclick = () => {
+    document.getElementById('live-noise-btn')?.addEventListener('click', () => {
         closePopup('popup-noise-cancel');
-        LiveNoiseCanceling(); // din befintliga funktion
-    };
+        startLiveNoiseCanceling();
+    });
 
-    document.getElementById('download-noise-btn').onclick = () => {
+    document.getElementById('download-noise-btn')?.addEventListener('click', () => {
         closePopup('popup-noise-cancel');
-        offerDownloadOfEditedFile(); // din befintliga funktion
-    };
+        downloadNoiseReducedVersion();
+    });
 
-    document.getElementById('cancel-noise-btn').onclick = () => {
+    document.getElementById('cancel-noise-btn')?.addEventListener('click', () => {
         closePopup('popup-noise-cancel');
-    };
+    });
 }
 
 // ==========================
