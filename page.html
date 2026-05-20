@@ -217,6 +217,16 @@ body.dark-mode {
                 <button onclick="closePopup('popup-sufficient')">OK</button>
             </div>
         </div>
+        
+        <!-- Noise Canceling Popup -->
+<div id="popup-noise-cancel" class="popup">
+    <p>Select Noise Canceling Option</p>
+    <div class="popup-buttons">
+        <button onclick="startLiveNoiseCanceling()">Live Noise Canceling</button>
+        <button onclick="downloadNoiseReducedVersion()">Download Noise-Reduced Version</button>
+        <button onclick="closePopup('popup-noise-cancel')">Cancel</button>
+    </div>
+</div>
 
         <!-- Upgraderingsval -->
         <div id="upgrade-options">
