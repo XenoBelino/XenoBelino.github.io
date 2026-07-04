@@ -1,112 +1,168 @@
-/* Grundläggande stil för hela sidan */
+/* ================= Grundläggande stilar ================= */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4; /* Ljusgrå bakgrund för bättre kontrast */
-    color: black; /* Standard textfärg */
+    background-color: #f4f4f4;
+    color: black;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: center;
 }
 
-/* Stil för knapparna */
-.button, .browse-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    border: none;
-    background-color: #6a0dad;
-    color: white;
-    transition: background-color 0.3s;
+body.dark-mode {
+    background-color: #333;
+    color: #fff;
 }
 
-.button:hover, .browse-button:hover {
-    background-color: #5c0b8a;
+/* ================= Homepage layout ================= */
+.home-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    position: relative;
 }
 
-/* Stil för "Back to Home Page" knappen */
-.back-button {
-    position: fixed;
-    top: 10px;
-    left: 20px;
-    padding: 10px 20px;
-    background-color: #6a0dad;
-    color: white;
+.hero-section {
+    margin-top: 40px;
+}
+
+.hero-section h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
     font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 1000;
-    margin-top: 60px; /* Lägger till avstånd mellan knapparna */
+    line-height: 1.5;
+    max-width: 760px;
+    margin: 0 auto 20px auto;
 }
 
-.back-button:hover {
+/* ================= Video ================= */
+.demo-video-container,
+.video-container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+#demo-video,
+#video-player {
+    width: 100%;
+    max-width: 740px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    background: black;
+    display: block;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.demo-text {
+    max-width: 740px;
+    margin: 15px auto 20px auto;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* ================= Knappar ================= */
+.button,
+.browse-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background-color: #6a0dad;
+    color: white;
+    margin: 5px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button:hover,
+.browse-button:hover {
     background-color: #5c0b8a;
 }
 
-/* Positionering för "Go to Page"-knappen */
-#go-to-page-btn {
-    position: absolute;
-    top: 140px; /* Positionerar knappen under "Back to Home Page" */
-    left: 20px;
-}
-
-/* Stilar för filinläsning och info om vald fil */
-#file-name {
-    color: black; /* Ändrar textfärgen för att synas bättre */
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-/* Stil för volymreglage */
-.volume-slider-container {
-    margin-top: 20px;
-}
-
-/* Grundläggande stil för text */
-h1, p {
-    color: #333; /* Mörk textfärg för bättre synlighet */
-}
-
-/* Stil för texten "No file selected" som är under videospelaren */
-#file-name {
-    color: black; /* Ändrar färgen på texten till svart för bättre synlighet */
-    font-size: 18px; /* Lite större textstorlek */
-}
-
-/* Stil för Change Background-knappen */
+/* ================= Fasta knappar ================= */
 #change-background-btn {
     position: fixed;
-    top: 10px;
-    left: 10px;
-    padding: 10px 20px;
-    background-color: #6a0dad;
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    top: 20px;
+    right: 20px;
     z-index: 1000;
 }
 
-#change-background-btn:hover {
-    background-color: #5c0b8a;
+#back-to-home-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
 }
 
-/* Dark Mode Styles */
-body.dark-mode {
-    background-color: #121212;
+/* ================= Info-section på homepage ================= */
+.info-section {
+    margin: 35px auto 40px auto;
+    max-width: 740px;
+    text-align: left;
+    background-color: white;
+    color: #222;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.info-section h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.info-section p {
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+body.dark-mode .info-section {
+    background-color: #444;
     color: white;
 }
 
-body.dark-mode h1, body.dark-mode p, body.dark-mode #file-name {
+/* ================= Dark mode text ================= */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode p {
     color: white;
 }
 
-body.dark-mode .button, body.dark-mode .browse-button, body.dark-mode .back-button {
-    background-color: #333;
-    color: white;
-}
+/* ================= Mobilanpassning ================= */
+@media (max-width: 600px) {
+    .home-container {
+        padding: 70px 15px 20px 15px;
+    }
 
-body.dark-mode .button:hover, body.dark-mode .browse-button:hover, body.dark-mode .back-button:hover {
-    background-color: #555;
+    .hero-section h1 {
+        font-size: 26px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    #change-background-btn {
+        top: 10px;
+        right: 10px;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .button,
+    .browse-button {
+        font-size: 14px;
+        padding: 9px 14px;
+    }
+
+    .info-section {
+        padding: 18px;
+    }
 }
