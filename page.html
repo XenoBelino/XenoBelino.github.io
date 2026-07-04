@@ -45,7 +45,13 @@ body.dark-mode { background-color: #333; color: #fff; }
     <div id="file-name">No file selected</div>
     <div id="progress-status">Ingen sparad progress</div>
     <button id="browse-btn" class="browse-button">Browse Files</button>
-    <input type="file" id="file-input" style="display:none;" />
+    <input 
+    type="file" 
+    id="file-input" 
+    accept="video/*" 
+    style="display:none;" 
+    onchange="handleFileSelect(event)" 
+    />
 
     <button id="convert-btn" class="button">Convert to MP4</button>
 
