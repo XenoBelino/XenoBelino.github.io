@@ -120,15 +120,17 @@ body.dark-mode { background-color: #333; color: #fff; }
             <span id="original-volume-percent" class="volume-percentage">50%</span>
         </div>
     </div>
+    
+  <div id="progress-bar" style="display:none; width:100%; max-width:740px; height:20px; background:#ccc; margin:20px auto 0; border-radius:10px; overflow:hidden;">
+    <div id="progress-bar-filled" style="height:100%; width:0%; background-color:#4caf50;"></div>
+</div>
 
+<div id="progress-text" style="display:none; margin-top:8px;">0%</div>
+    
     <button id="download-btn" class="button" style="display:none;">Download Upgraded Video</button>
 </div>
     
-<div id="progress-bar" style="display:none; width:100%; height:20px; background:#ccc; margin-top:10px; border-radius:10px; overflow:hidden;">
-    <div id="progress-bar-filled" style="height:100%; width:0%; background-color:#4caf50;"></div>
-</div>
-    
-<div id="progress-text" style="display:none;">0%</div>
+
 <button id="change-background-btn" class="button">Change Background</button>
     <div id="background-options">
   <h3>Choose Theme</h3>
