@@ -792,70 +792,196 @@ function closeNoVideoPopup() {
 // ==========================
 // Noise Cancel
 // ==========================
-function setupNoiseCancel() {
-  let audioContext;
-  let source;
-  let filter;
 
-  const video = document.getElementById("video-player");
+let liveNoiseAudioContext = null;
+let liveNoiseSource = null;
+let liveNoiseHighPass = null;
+let liveNoiseLowPass = null;
+let liveNoiseCompressor = null;
+let liveNoiseEnabled = false;
+
+function setupNoiseCancel() {
   const noiseBtn = document.getElementById("noise-cancel-btn");
 
   if (!noiseBtn) return;
 
   noiseBtn.addEventListener("click", () => {
-    if (!video || !video.src) {
+    if (!uploadedFile) {
       alert("Please load a video first.");
       return;
     }
 
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      source = audioContext.createMediaElementSource(video);
+    showPopup("noise-popup");
+  });
+}
 
-      filter = audioContext.createBiquadFilter();
-      filter.type = "highshelf";
-      filter.frequency.value = 3000;
-      filter.gain.value = -12;
+function setupNoiseCancelPopupButtons() {
+  document.getElementById("live-noise-btn")?.addEventListener("click", () => {
+    closePopup("noise-popup");
+    startLiveNoiseCanceling();
+  });
 
-      source.connect(filter);
-      filter.connect(audioContext.destination);
-    }
+  document.getElementById("download-noise-btn")?.addEventListener("click", () => {
+    closePopup("noise-popup");
+    downloadNoiseReducedVersion();
+  });
 
-    alert("Noise Canceling applied!");
+  document.getElementById("cancel-noise-btn")?.addEventListener("click", () => {
+    closePopup("noise-popup");
   });
 }
 
 function startLiveNoiseCanceling() {
-    const video = document.getElementById("video-player");
-    if (!video || !video.src) return alert("Please load a video first.");
+  const video = document.getElementById("video-player");
 
-    // Här kan du lägga in din noise-cancel-logik
-    alert("Live Noise Canceling started!");
+  if (!video || !video.src || !uploadedFile) {
+    alert("Please load a video first.");
+    return;
+  }
+
+  try {
+    if (!liveNoiseAudioContext) {
+      liveNoiseAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (liveNoiseAudioContext.state === "suspended") {
+      liveNoiseAudioContext.resume();
+    }
+
+    // OBS: createMediaElementSource kan bara göras en gång per video-element
+    if (!liveNoiseSource) {
+      liveNoiseSource = liveNoiseAudioContext.createMediaElementSource(video);
+
+      liveNoiseHighPass = liveNoiseAudioContext.createBiquadFilter();
+      liveNoiseHighPass.type = "highpass";
+      liveNoiseHighPass.frequency.value = 90;
+
+      liveNoiseLowPass = liveNoiseAudioContext.createBiquadFilter();
+      liveNoiseLowPass.type = "lowpass";
+      liveNoiseLowPass.frequency.value = 12000;
+
+      liveNoiseCompressor = liveNoiseAudioContext.createDynamicsCompressor();
+      liveNoiseCompressor.threshold.value = -35;
+      liveNoiseCompressor.knee.value = 30;
+      liveNoiseCompressor.ratio.value = 8;
+      liveNoiseCompressor.attack.value = 0.003;
+      liveNoiseCompressor.release.value = 0.25;
+
+      liveNoiseSource
+        .connect(liveNoiseHighPass)
+        .connect(liveNoiseLowPass)
+        .connect(liveNoiseCompressor)
+        .connect(liveNoiseAudioContext.destination);
+    }
+
+    liveNoiseEnabled = true;
+    alert("Live Noise Canceling applied. This affects playback only, not the downloaded file.");
+
+  } catch (err) {
+    console.error("Live Noise Canceling error:", err);
+    alert("Could not apply Live Noise Canceling: " + err.message);
+  }
 }
 
-function downloadNoiseReducedVersion() {
-    const video = document.getElementById("video-player");
-    if (!video || !video.src) return alert("Please load a video first.");
+async function downloadNoiseReducedVersion() {
+  if (!uploadedFile) {
+    alert("Please load a video first.");
+    return;
+  }
 
-    // Här kan du lägga in logik för att skapa en fil och ladda ner
-    alert("Downloading noise-reduced version...");
+  const progressContainer = document.getElementById("noise-progress-container");
+  const progressBar = document.getElementById("noise-progress-bar");
+  const progressText = document.getElementById("noise-progress-text");
+
+  progressContainer.style.display = "block";
+  progressBar.style.width = "0%";
+  progressText.textContent = "Loading FFmpeg...";
+
+  try {
+    await loadFFmpeg();
+
+    const inputName = "noise_input_" + Date.now() + "." + uploadedFile.name.split(".").pop();
+    const outputName = "noise_reduced_output.mp4";
+
+    ffmpeg.FS("writeFile", inputName, await fetchFile(uploadedFile));
+
+    ffmpeg.setProgress(({ ratio }) => {
+      const percent = Math.min(100, Math.max(0, Math.round(ratio * 100)));
+      progressBar.style.width = percent + "%";
+      progressText.textContent = `${percent}% noise reduction processing`;
+    });
+
+    progressText.textContent = "Processing audio noise reduction...";
+
+    await ffmpeg.run(
+      "-i", inputName,
+
+      // Audio filters:
+      // highpass = tar bort lågt muller
+      // lowpass = tar bort väldigt högt brus
+      // afftdn = noise reduction
+      // loudnorm = jämnar ut volym
+      "-af", "highpass=f=80,lowpass=f=12000,afftdn=nr=12:nf=-35,loudnorm=I=-16:LRA=11:TP=-1.5",
+
+      // Behåll videon utan att rendera om bilden
+      "-c:v", "copy",
+
+      // Koda om ljudet till AAC
+      "-c:a", "aac",
+      "-b:a", "192k",
+
+      outputName
+    );
+
+    const data = ffmpeg.FS("readFile", outputName);
+    const videoBlob = new Blob([data.buffer], { type: "video/mp4" });
+    const videoURL = URL.createObjectURL(videoBlob);
+
+    const video = document.getElementById("video-player");
+    video.pause();
+    video.src = videoURL;
+    video.load();
+
+    createDownloadLink(videoURL, getNoiseReducedFileName());
+
+    progressBar.style.width = "100%";
+    progressText.textContent = "Noise-reduced video is ready!";
+
+    // Städa FFmpeg-minnet
+    try {
+      ffmpeg.FS("unlink", inputName);
+      ffmpeg.FS("unlink", outputName);
+    } catch (cleanupErr) {
+      console.warn("Cleanup warning:", cleanupErr);
+    }
+
+  } catch (err) {
+    console.error("Noise reduction error:", err);
+    alert("Noise reduction failed: " + err.message);
+    progressText.textContent = "Noise reduction failed.";
+  }
 }
 
-// Detta kopplar popup-knapparna till dina befintliga funktioner
-function setupNoiseCancelPopupButtons() {
-    document.getElementById('live-noise-btn')?.addEventListener('click', () => {
-        closePopup('popup-noise-cancel');
-        startLiveNoiseCanceling();
-    });
+function getNoiseReducedFileName() {
+  if (!uploadedFile) return "noise_reduced_video.mp4";
 
-    document.getElementById('download-noise-btn')?.addEventListener('click', () => {
-        closePopup('popup-noise-cancel');
-        downloadNoiseReducedVersion();
-    });
+  const baseName = uploadedFile.name.replace(/\.[^/.]+$/, "");
+  return `${baseName}_noise_reduced.mp4`;
+}
 
-    document.getElementById('cancel-noise-btn')?.addEventListener('click', () => {
-        closePopup('popup-noise-cancel');
-    });
+function createDownloadLink(url, fileName) {
+  const container = document.getElementById("download-link-container");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.textContent = "Download Noise-Reduced Video";
+  link.className = "button";
+
+  container.appendChild(link);
 }
 
 // ==========================
