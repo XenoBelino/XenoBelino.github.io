@@ -78,13 +78,25 @@ body.dark-mode { background-color: #333; color: #fff; }
         </div>
 
         <div id="popup-noise-cancel" class="popup">
-            <p>Select Noise Canceling Option</p>
-            <div class="popup-buttons">
-                <button id="live-noise-btn">Live Noise Canceling</button>
-                <button id="download-noise-btn">Download Noise-Reduced Version</button>
-                <button id="cancel-noise-btn">Cancel</button>
-            </div>
+    <p>
+        Select Noise Canceling Option.
+        Live mode only affects playback.
+        Download mode creates a new noise-reduced video.
+    </p>
+
+    <div class="popup-buttons">
+        <button id="live-noise-btn" type="button">Live Noise Canceling</button>
+        <button id="download-noise-btn" type="button">Download Noise-Reduced Version</button>
+        <button id="cancel-noise-btn" type="button">Cancel</button>
+    </div>
+
+    <div id="noise-progress-container" style="display:none; margin-top:10px;">
+        <div style="width:100%; background:#ccc; height:20px; border-radius:10px; overflow:hidden;">
+            <div id="noise-progress-bar" style="width:0%; background:green; height:20px;"></div>
         </div>
+        <div id="noise-progress-text" style="margin-top:8px;">0%</div>
+    </div>
+</div>
 
         <div id="upgrade-options">
             <h3>Select Resolution</h3>
@@ -105,7 +117,12 @@ body.dark-mode { background-color: #333; color: #fff; }
 
     <button id="download-btn" class="button" style="display:none;">Download Upgraded Video</button>
 </div>
+    
+<div id="progress-bar" style="display:none; width:100%; height:20px; background:#ccc; margin-top:10px; border-radius:10px; overflow:hidden;">
+    <div id="progress-bar-filled" style="height:100%; width:0%; background-color:#4caf50;"></div>
+</div>
 
+<div id="progress-text" style="display:none;">0%</div>
 <button id="change-background-btn" class="button">Change Background</button>
     <div id="background-options">
   <h3>Choose Theme</h3>
@@ -113,6 +130,7 @@ body.dark-mode { background-color: #333; color: #fff; }
   <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
 </div>
 <button type="button" id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">Go to Homepage</button>
+<div id="download-link-container"></div>
 <script type="module" src="main.js"></script>
 </body>
 </html>
