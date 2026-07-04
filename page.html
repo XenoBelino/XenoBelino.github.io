@@ -1,145 +1,595 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Video Player with Settings</title>
-<style>
-/* ================= Grundläggande stilar ================= */
-body { font-family: Arial; background-color: #f4f4f4; color: black; margin: 0; padding: 0; transition: 0.3s; }
-body.dark-mode { background-color: #333; color: #fff; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-.video-container { margin-top: 30px; display: flex; justify-content: center; }
-#video-player { width: 100%; max-width: 740px; height: auto; aspect-ratio: 16/9; background: black; display: block; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+  <title>Video Player with Settings</title>
 
-.button, .browse-button { padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 5px; border: none; background-color: #6a0dad; color: white; margin: 5px; transition: 0.3s; }
-.button:hover, .browse-button:hover { background-color: #5c0b8a; }
+  <style>
+    /* ================= Grundläggande stilar ================= */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: black;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
 
-#change-background-btn { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-#back-to-home-btn { position: fixed; top: 20px; left: 20px; z-index: 1100; }
-#download-btn { position: fixed; right: 20px; bottom: 20px; z-index: 1000; }
+    body.dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
 
-.volume-slider-container { margin-top: 150px; display: flex; flex-direction: column; gap: 20px; padding-bottom: 30px; }
-.volume-slider { width: 60%; accent-color: #007bff; }
-.volume-percentage { margin-left: 10px; }
+    .editor-content {
+      text-align: center;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      position: relative;
+    }
 
-.popup { display: none; position: fixed; background-color: white; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.3); padding: 5px 10px; z-index: 10000; width: 300px; font-size: 13px; text-align: center; line-height: 1.4; left: 50%; transform: translateX(-50%); top: 100px; }
-.popup.dark-mode { background-color: #333; color: white; }
-.popup-buttons { margin-top: 10px; display: flex; justify-content: center; gap: 10px; }
-.popup-buttons button { flex: 1; padding: 6px 10px; font-size: 13px; border-radius: 5px; border: none; cursor: pointer; background-color: #6a0dad; color: white; }
-.popup-buttons button:hover { background-color: #5c0b8a; }
-</style>
+    /* ================= Knappar ================= */
+    .button,
+    .browse-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background-color: #6a0dad;
+      color: white;
+      transition: background-color 0.3s;
+      margin: 5px;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .button:hover,
+    .browse-button:hover {
+      background-color: #5c0b8a;
+    }
+
+    #change-background-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    #back-to-home-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    #download-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1000;
+    }
+
+    #upgrade-video-btn {
+      margin-top: 10px;
+    }
+
+    /* ================= Filnamn ================= */
+    #file-name {
+      color: black;
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    body.dark-mode #file-name {
+      color: white;
+    }
+
+    /* ================= Video ================= */
+    .video-container {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #video-player {
+      width: 100%;
+      max-width: 740px;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      background: black;
+      display: block;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ================= Volym sliders ================= */
+    .volume-slider-container {
+      margin-top: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-bottom: 30px;
+    }
+
+    .volume-row {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .volume-slider {
+      width: 60%;
+      accent-color: #007bff;
+    }
+
+    .volume-percentage {
+      margin-left: 10px;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      background: #007bff;
+      border: none;
+    }
+
+    .volume-slider::-moz-range-thumb {
+      background: #007bff;
+      border: none;
+    }
+
+    .volume-slider::-ms-thumb {
+      background: #007bff;
+      border: none;
+    }
+
+    #corrupted-selected-language {
+      display: none;
+      margin-top: 5px;
+      margin-bottom: 24px;
+      font-weight: 500;
+      font-size: 1em;
+      color: black;
+      text-align: center;
+    }
+
+    body.dark-mode #corrupted-selected-language {
+      color: white;
+    }
+
+    /* ================= Bakgrundsalternativ ================= */
+    #background-options {
+      display: none;
+      position: fixed;
+      top: 60px;
+      right: 28px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      text-align: left;
+      width: 150px;
+    }
+
+    #background-options h3 {
+      color: black;
+      text-align: center;
+    }
+
+    body.dark-mode #background-options {
+      background-color: #333;
+      color: white;
+    }
+
+    body.dark-mode #background-options h3 {
+      color: white;
+    }
+
+    .option-button {
+      padding: 10px 20px;
+      background-color: #6a0dad;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .option-button:hover {
+      background-color: #5c0b8a;
+    }
+
+    /* ================= Progress bar ================= */
+    #progress-bar {
+      width: 100%;
+      max-width: 740px;
+      height: 20px;
+      background: #ccc;
+      margin: 20px auto 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #progress-bar-filled {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      transition: width 0.3s ease;
+      border-radius: 10px 0 0 10px;
+    }
+
+    #progress-text {
+      font-size: 18px;
+      margin-top: 5px;
+      text-align: center;
+      display: none;
+    }
+
+    /* ================= Popups ================= */
+    .popup {
+      display: none;
+      position: fixed;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      padding: 5px 10px;
+      margin-top: 5px;
+      z-index: 10000;
+      width: 300px;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      line-height: 1.4;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 100px;
+    }
+
+    .popup.dark-mode,
+    body.dark-mode .popup {
+      background-color: #333;
+      color: white;
+    }
+
+    .popup-buttons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .popup-buttons button {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 13px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      background-color: #6a0dad;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    .popup-buttons button:hover {
+      background-color: #5c0b8a;
+    }
+
+    /* ================= Upgrade popup ================= */
+    .upgrade-popup-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    #upgrade-options {
+      display: none;
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      z-index: 9999;
+      text-align: center;
+      width: 500px;
+      white-space: normal;
+      max-height: fit-content;
+      overflow: hidden;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+    }
+
+    body.dark-mode #upgrade-options {
+      background-color: #333;
+      color: white;
+    }
+
+    .resolution-btn {
+      display: inline-block;
+      margin: 5px 4px;
+      padding: 10px 18px;
+      font-size: 15px;
+      border-radius: 5px;
+      border: none;
+      background-color: #6a0dad;
+      color: white;
+      cursor: pointer;
+      white-space: nowrap;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .resolution-btn:hover {
+      background-color: #5c0b8a;
+    }
+
+    #popup-warning,
+    #popup-terms,
+    #popup-sufficient,
+    #popup-no-video {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      transform: none;
+      width: 300px;
+      text-align: center;
+    }
+
+    /* ================= Language popup ================= */
+    #language-popup-anchor {
+      position: relative;
+      display: inline-block;
+    }
+
+    #popup-language-detection {
+      max-width: 300px;
+      padding: 15px;
+      font-size: 14px;
+    }
+
+    #popup-language-detection button {
+      margin: 5px 2px;
+      font-size: 13px;
+      padding: 6px 10px;
+    }
+
+    /* ================= Noise progress ================= */
+    #noise-progress-container {
+      display: none;
+      width: 100%;
+      max-width: 740px;
+      margin: 20px auto 0;
+      text-align: center;
+    }
+
+    #noise-progress-wrapper {
+      width: 100%;
+      background: #ccc;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #noise-progress-bar {
+      width: 0%;
+      background: green;
+      height: 20px;
+      transition: width 0.3s ease;
+    }
+
+    #noise-progress-text {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    /* ================= Download link ================= */
+    #download-link-container {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    #download-link-container a {
+      display: inline-block;
+      padding: 10px 16px;
+      background-color: #6a0dad;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    #download-link-container a:hover {
+      background-color: #580aa6;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="editor-content" id="editor-content">
 
-<div id="editor-content">
+    <!-- Introduktion -->
     <div class="intro-section">
-        <h1>Välkommen till Video- och Ljudredigeraren!</h1>
-        <p>Ladda upp en video, justera volym och bakgrund.</p>
+      <h1>Välkommen till Video- och Ljudredigeraren!</h1>
+      <p>Här kan du ladda upp en video, ändra volyminställningar och justera bakgrunden.</p>
     </div>
 
+    <!-- Videospelare -->
     <div id="video-container" class="video-container">
-        <video id="video-player" controls></video>
+      <video id="video-player" controls></video>
     </div>
 
+    <!-- Filnamn och filuppladdning -->
     <div id="file-name">No file selected</div>
     <div id="progress-status">Ingen sparad progress</div>
-    <button id="browse-btn" class="browse-button">Browse Files</button>
+    <div id="progress-info"></div>
+    <div id="status-label"></div>
+
+    <button id="browse-btn" class="browse-button" onclick="triggerFileInput()">Browse Files</button>
+
     <input 
-    type="file" 
-    id="file-input" 
-    accept="video/*" 
-    style="display:none;" 
-    onchange="handleFileSelect(event)" 
+      type="file" 
+      id="file-input" 
+      name="file" 
+      accept="video/*"
+      style="display:none;" 
+      onchange="handleFileSelect(event)" 
     />
 
+    <!-- Konvertera och uppgradera knappar -->
     <button id="convert-btn" class="button">Convert to MP4</button>
 
     <div class="upgrade-popup-wrapper">
-        <button id="upgrade-video-btn" class="button">Upgrade Your Video</button>
-        <button id="noise-cancel-btn" class="button">Noise Canceling</button>
+      <button id="upgrade-video-btn" class="button">Upgrade Your Video</button>
+      <button id="noise-cancel-btn" class="button">Noise Canceling</button>
 
-        <!-- Popups -->
-        <div id="popup-no-video" class="popup">
-            <p>Apply a video before upgrading.</p>
-            <div class="popup-buttons">
-                <button onclick="closePopup('popup-no-video')">OK</button>
-            </div>
+      <!-- Popup 1: Ingen video vald -->
+      <div id="popup-no-video" class="popup">
+        <p>Apply a video before upgrading.</p>
+        <div class="popup-buttons">
+          <button onclick="closePopup('popup-no-video')">OK</button>
         </div>
+      </div>
 
-        <div id="popup-warning" class="popup">
-            <p>⚠️ This upgrade may stress your device.</p>
-            <div class="popup-buttons">
-                <button onclick="proceedToResolution()">OK</button>
-                <button onclick="closePopup('popup-warning')">Cancel</button>
-            </div>
+      <!-- Popup 2: Varning -->
+      <div id="popup-warning" class="popup">
+        <p>⚠️ This upgrade does not use a server. It may stress your device. Proceed with caution.</p>
+        <div class="popup-buttons">
+          <button onclick="proceedToResolution()">OK</button>
+          <button onclick="closePopup('popup-warning')">Cancel</button>
         </div>
+      </div>
 
-        <div id="popup-terms" class="popup">
-            <p id="terms-text">Are you sure you want to upgrade your video?</p>
-            <div class="popup-buttons">
-                <button onclick="acceptTerms()">Accept</button>
-                <button onclick="denyTerms()">Deny</button>
-            </div>
+      <!-- Popup 3: Acceptera villkor -->
+      <div id="popup-terms" class="popup">
+        <p id="terms-text">Are you sure you want to upgrade your video?</p>
+        <div class="popup-buttons">
+          <button onclick="acceptTerms()">Accept the Terms</button>
+          <button onclick="denyTerms()">Deny</button>
         </div>
+      </div>
 
-        <div id="popup-noise-cancel" class="popup">
-    <p>
-        Select Noise Canceling Option.
-        Live mode only affects playback.
-        Download mode creates a new noise-reduced video.
-    </p>
+      <!-- Popup 4: Video tillräcklig -->
+      <div id="popup-sufficient" class="popup">
+        <p id="sufficient-text">Your video is already sufficient.</p>
+        <div class="popup-buttons">
+          <button onclick="closePopup('popup-sufficient')">OK</button>
+        </div>
+      </div>
 
-    <div class="popup-buttons">
-        <button id="live-noise-btn" type="button">Live Noise Canceling</button>
-        <button id="download-noise-btn" type="button">Download Noise-Reduced Version</button>
-        <button id="cancel-noise-btn" type="button">Cancel</button>
+      <!-- Popup: Upgraderingsval -->
+      <div id="upgrade-options">
+        <h3>Select Resolution</h3>
+        <button class="resolution-btn" onclick="handleResolutionClick('720p')">720p</button>
+        <button class="resolution-btn" onclick="handleResolutionClick('1080p')">1080p</button>
+        <button class="resolution-btn" onclick="handleResolutionClick('1440p')">1440p</button>
+        <button class="resolution-btn" onclick="handleResolutionClick('2160p')">2160p</button>
+      </div>
+
+      <!-- Popup: Noise Cancel -->
+      <div id="popup-noise-cancel" class="popup">
+        <p>
+          Select Noise Canceling Option.
+          Live mode only affects playback.
+          Download mode creates a new noise-reduced video.
+        </p>
+
+        <div class="popup-buttons">
+          <button id="live-noise-btn" type="button">Live Noise Canceling</button>
+          <button id="download-noise-btn" type="button">Download Noise-Reduced Version</button>
+          <button id="cancel-noise-btn" type="button">Cancel</button>
+        </div>
+      </div>
     </div>
 
-    <div id="noise-progress-container" style="display:none; margin-top:10px;">
-        <div style="width:100%; background:#ccc; height:20px; border-radius:10px; overflow:hidden;">
-            <div id="noise-progress-bar" style="width:0%; background:green; height:20px;"></div>
-        </div>
-        <div id="noise-progress-text" style="margin-top:8px;">0%</div>
+    <!-- Noise progress, utanför popup så den syns även när popup stängs -->
+    <div id="noise-progress-container">
+      <div id="noise-progress-wrapper">
+        <div id="noise-progress-bar"></div>
+      </div>
+      <div id="noise-progress-text">0%</div>
     </div>
-</div>
 
-        <div id="upgrade-options">
-            <h3>Select Resolution</h3>
-            <button class="resolution-btn" onclick="handleResolutionClick('720p')">720p</button>
-            <button class="resolution-btn" onclick="handleResolutionClick('1080p')">1080p</button>
-            <button class="resolution-btn" onclick="handleResolutionClick('1440p')">1440p</button>
-            <button class="resolution-btn" onclick="handleResolutionClick('2160p')">2160p</button>
-        </div>
-    </div>
+    <!-- Volymkontroller -->
+    <div id="language-popup-anchor"></div>
 
     <div class="volume-slider-container">
-        <div class="volume-row">
-            <label>Original Volume:</label>
-            <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50">
-            <span id="original-volume-percent" class="volume-percentage">50%</span>
-        </div>
+      <div class="volume-row" id="original-volume-container">
+        <label>Original Volume:</label>
+        <input type="range" id="original-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('original')">
+        <span id="original-volume-percent" class="volume-percentage">50%</span>
+      </div>
+
+      <div class="volume-row" id="corrupted-volume-container">
+        <label>Corrupted Volume:</label>
+        <input type="range" id="corrupted-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('corrupted')">
+        <span id="corrupted-volume-percent" class="volume-percentage">50%</span>
+      </div>
+
+      <div id="corrupted-selected-language" class="selected-language"></div>
+
+      <div class="volume-row" id="music-volume-container">
+        <label>Music Volume:</label>
+        <input type="range" id="music-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('music')">
+        <span id="music-volume-percent" class="volume-percentage">50%</span>
+      </div>
+
+      <div class="volume-row" id="final-volume-container">
+        <label>Final Volume:</label>
+        <input type="range" id="final-volume" class="volume-slider" min="0" max="100" value="50" oninput="updateVolumePercentage('final')">
+        <span id="final-volume-percent" class="volume-percentage">50%</span>
+      </div>
     </div>
-    
-  <div id="progress-bar" style="display:none; width:100%; max-width:740px; height:20px; background:#ccc; margin:20px auto 0; border-radius:10px; overflow:hidden;">
-    <div id="progress-bar-filled" style="height:100%; width:0%; background-color:#4caf50;"></div>
-</div>
 
-<div id="progress-text" style="display:none; margin-top:8px;">0%</div>
-    
-    <button id="download-btn" class="button" style="display:none;">Download Upgraded Video</button>
-</div>
-    
+    <!-- Popup: språkdetektering -->
+    <div id="popup-language-detection" class="popup" style="display: none;">
+      <div id="popup-language-detection-content"></div>
+    </div>
 
-<button id="change-background-btn" class="button">Change Background</button>
-    <div id="background-options">
-  <h3>Choose Theme</h3>
-  <button class="option-button" onclick="setLightMode()">Light Mode</button>
-  <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
-</div>
-    
-<button type="button" id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">Go to Homepage</button>
-<div id="download-link-container"></div>
-<script type="module" src="main.js"></script>
+    <!-- Progress bar -->
+    <div id="progress-bar" style="display: none;">
+      <div id="progress-bar-filled"></div>
+    </div>
+
+    <div id="progress-text" style="display: none;">
+      0% of 100% to complete upgrade
+    </div>
+
+    <a id="download-btn" class="button" style="display: none;" download>
+      Download Upgraded Video
+    </a>
+  </div>
+
+  <!-- Fasta knappar -->
+  <button id="change-background-btn" class="button" onclick="toggleBackgroundOptions()">Change Background</button>
+
+  <button id="back-to-home-btn" class="button" onclick="window.location.href='index.html'">
+    Go to Homepage
+  </button>
+
+  <!-- Bakgrundsalternativ -->
+  <div id="background-options">
+    <h3>Choose Theme</h3>
+    <button class="option-button" onclick="setLightMode()">Light Mode</button>
+    <button class="option-button" onclick="setDarkMode()">Dark Mode</button>
+  </div>
+
+  <!-- Nedladdningsknapp för noise/språkval -->
+  <div id="download-link-container"></div>
+
+  <!-- Dold musikspelare för separat uppspelning -->
+  <audio id="music-audio" hidden></audio>
+
+  <!-- Endast main.js för editor-sidan -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
