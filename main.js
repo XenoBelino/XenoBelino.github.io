@@ -1,5 +1,7 @@
 import { createFFmpeg, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/+esm';
+
 const ffmpeg = createFFmpeg({ log: true });
+
 let gainNodeOriginal, gainNodeMusic, gainNodeCorrupted, gainNodeFinal, audioContext, sourceNode;
 let uploadedFile = null;
 let isConverting = false;
@@ -11,12 +13,19 @@ let userAcceptedTerms = false;
 let selectedUpgradeResolution = null;
 let warningAccepted = false;
 let languagePopupShown = false;
-let downloadBtn; // global variabel
-let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let downloadBtn;
+
+// Music/audio
+let audioCtx = null;
 let musicGain = null;
-let noiseAudioContext;
-let noiseSource;
-let noiseFilter;
+
+// Noise Cancel
+let liveNoiseAudioContext = null;
+let liveNoiseSource = null;
+let liveNoiseHighPass = null;
+let liveNoiseLowPass = null;
+let liveNoiseCompressor = null;
+let liveNoiseEnabled = false;
 
 // Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
