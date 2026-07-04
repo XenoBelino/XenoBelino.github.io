@@ -101,6 +101,13 @@ body.dark-mode {
     z-index: 1100;
 }
 
+#go-to-page-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+}
+
 /* ================= Info-section på homepage ================= */
 .info-section {
     margin: 35px auto 40px auto;
