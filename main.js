@@ -956,7 +956,7 @@ async function downloadNoiseReducedVersion() {
       // lowpass = tar bort väldigt högt brus
       // afftdn = noise reduction
       // loudnorm = jämnar ut volym
-      "-af", "highpass=f=80,lowpass=f=12000,afftdn=nr=12:nf=-35,loudnorm=I=-16:LRA=11:TP=-1.5",
+      "-af", "highpass=f=120,lowpass=f=8500,afftdn=nr=28:nf=-45,loudnorm=I=-16:LRA=11:TP=-1.5",
 
       // Behåll videon utan att rendera om bilden
       "-c:v", "copy",
@@ -980,7 +980,7 @@ async function downloadNoiseReducedVersion() {
     createDownloadLink(videoURL, getNoiseReducedFileName());
 
     progressBar.style.width = "100%";
-    progressText.textContent = "Noise-reduced video is ready!";
+    progressText.textContent = "Noise-reduced video is ready. Click download to save it.";
 
     // Städa FFmpeg-minnet
     try {
