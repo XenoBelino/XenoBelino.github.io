@@ -813,23 +813,23 @@ function setupNoiseCancel() {
       return;
     }
 
-    showPopup("noise-popup");
+    showPopup("popup-noise-cancel");
   });
 }
 
 function setupNoiseCancelPopupButtons() {
   document.getElementById("live-noise-btn")?.addEventListener("click", () => {
-    closePopup("noise-popup");
+    closePopup("popup-noise-cancel");
     startLiveNoiseCanceling();
   });
 
   document.getElementById("download-noise-btn")?.addEventListener("click", () => {
-    closePopup("noise-popup");
+    closePopup("popup-noise-cancel");
     downloadNoiseReducedVersion();
   });
 
   document.getElementById("cancel-noise-btn")?.addEventListener("click", () => {
-    closePopup("noise-popup");
+    closePopup("popup-noise-cancel");
   });
 }
 
