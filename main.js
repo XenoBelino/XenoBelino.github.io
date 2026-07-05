@@ -802,13 +802,6 @@ function closeNoVideoPopup() {
 // Noise Cancel
 // ==========================
 
-let liveNoiseAudioContext = null;
-let liveNoiseSource = null;
-let liveNoiseHighPass = null;
-let liveNoiseLowPass = null;
-let liveNoiseCompressor = null;
-let liveNoiseEnabled = false;
-
 function setupNoiseCancel() {
   const noiseBtn = document.getElementById("noise-cancel-btn");
 
