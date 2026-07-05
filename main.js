@@ -1006,6 +1006,10 @@ function getNoiseReducedFileName() {
 
 function createDownloadLink(url, fileName) {
   const container = document.getElementById("download-link-container");
+  const progressContainer = document.getElementById("noise-progress-container");
+  const progressBar = document.getElementById("noise-progress-bar");
+  const progressText = document.getElementById("noise-progress-text");
+
   if (!container) return;
 
   container.innerHTML = "";
@@ -1015,6 +1019,16 @@ function createDownloadLink(url, fileName) {
   link.download = fileName;
   link.textContent = "Download Noise-Reduced Video";
   link.className = "button";
+
+  link.addEventListener("click", () => {
+    setTimeout(() => {
+      container.innerHTML = "";
+
+      if (progressContainer) progressContainer.style.display = "none";
+      if (progressBar) progressBar.style.width = "0%";
+      if (progressText) progressText.textContent = "0%";
+    }, 800);
+  });
 
   container.appendChild(link);
 }
