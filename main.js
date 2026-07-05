@@ -28,38 +28,47 @@ let liveNoiseCompressor = null;
 let liveNoiseEnabled = false;
 
 // Klick utanför popups = stäng
+// Klick utanför popups = stäng
 document.addEventListener("click", function (event) {
-    const homeBtn = document.getElementById("back-to-home-btn");
-    if (homeBtn.contains(event.target)) return; // 🔹 ignorera home-knappen
+  const homeBtn = document.getElementById("back-to-home-btn");
+  const upgradeButton = document.getElementById("upgrade-video-btn");
+  const backgroundButton = document.getElementById("change-background-btn");
+  const bgOptions = document.getElementById("background-options");
+  const noiseButton = document.getElementById("noise-cancel-btn");
+  const noisePopup = document.getElementById("popup-noise-cancel");
 
-    const upgradeButton = document.getElementById("upgrade-video-btn");
-    const popups = document.querySelectorAll(
-  "#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options, #popup-noise-cancel"
-);
-    const noiseButton = document.getElementById("noise-cancel-btn");
-const noisePopup = document.getElementById("popup-noise-cancel");
+  if (homeBtn && homeBtn.contains(event.target)) return;
 
-if (noisePopup && noiseButton) {
+  // Stäng upgrade-popups om man klickar utanför
+  const upgradePopups = document.querySelectorAll(
+    "#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options"
+  );
+
+  const isClickInsideUpgrade =
+    [...upgradePopups].some(popup => popup && popup.contains(event.target)) ||
+    (upgradeButton && upgradeButton.contains(event.target));
+
+  if (!isClickInsideUpgrade) {
+    closeAllUpgradePopups();
+  }
+
+  // Stäng background-menyn om man klickar utanför
+  const isClickInsideBg =
+    (bgOptions && bgOptions.contains(event.target)) ||
+    (backgroundButton && backgroundButton.contains(event.target));
+
+  if (bgOptions && !isClickInsideBg) {
+    bgOptions.style.display = "none";
+  }
+
+  // Stäng noise-popup om man klickar utanför
   const isClickInsideNoise =
-    noisePopup.contains(event.target) || noiseButton.contains(event.target);
+    (noisePopup && noisePopup.contains(event.target)) ||
+    (noiseButton && noiseButton.contains(event.target));
 
-  if (!isClickInsideNoise) {
+  if (noisePopup && !isClickInsideNoise) {
     noisePopup.style.display = "none";
   }
-}
-    const isClickInsidePopup = [...popups].some(popup => popup.contains(event.target)) || upgradeButton.contains(event.target);
-
-    if (!isClickInsidePopup) {
-        closeAllUpgradePopups();
-    }
-
-    const backgroundButton = document.getElementById("change-background-btn");
-    const bgOptions = document.getElementById("background-options");
-    const isClickInsideBg = bgOptions.contains(event.target) || backgroundButton.contains(event.target);
-
-    if (!isClickInsideBg) {
-        bgOptions.style.display = "none";
-    }
 });
  // Visa eller dölj bakgrundsalternativ
     function toggleBackgroundOptions() {
@@ -821,17 +830,23 @@ function setupNoiseCancel() {
 
   if (!noiseBtn || !noisePopup) return;
 
-  noiseBtn.addEventListener("click", () => {
+  noiseBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+
     if (!uploadedFile) {
       alert("Please load a video first.");
       return;
     }
 
     if (noisePopup.style.display === "block") {
-      closePopup("popup-noise-cancel");
+      noisePopup.style.display = "none";
     } else {
-      showPopup("popup-noise-cancel");
+      noisePopup.style.display = "block";
     }
+  });
+
+  noisePopup.addEventListener("click", (event) => {
+    event.stopPropagation();
   });
 }
 
