@@ -33,7 +33,20 @@ document.addEventListener("click", function (event) {
     if (homeBtn.contains(event.target)) return; // 🔹 ignorera home-knappen
 
     const upgradeButton = document.getElementById("upgrade-video-btn");
-    const popups = document.querySelectorAll("#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options");
+    const popups = document.querySelectorAll(
+  "#popup-no-video, #popup-warning, #popup-terms, #popup-sufficient, #upgrade-options, #popup-noise-cancel"
+);
+    const noiseButton = document.getElementById("noise-cancel-btn");
+const noisePopup = document.getElementById("popup-noise-cancel");
+
+if (noisePopup && noiseButton) {
+  const isClickInsideNoise =
+    noisePopup.contains(event.target) || noiseButton.contains(event.target);
+
+  if (!isClickInsideNoise) {
+    noisePopup.style.display = "none";
+  }
+}
     const isClickInsidePopup = [...popups].some(popup => popup.contains(event.target)) || upgradeButton.contains(event.target);
 
     if (!isClickInsidePopup) {
@@ -804,8 +817,9 @@ function closeNoVideoPopup() {
 
 function setupNoiseCancel() {
   const noiseBtn = document.getElementById("noise-cancel-btn");
+  const noisePopup = document.getElementById("popup-noise-cancel");
 
-  if (!noiseBtn) return;
+  if (!noiseBtn || !noisePopup) return;
 
   noiseBtn.addEventListener("click", () => {
     if (!uploadedFile) {
@@ -813,7 +827,11 @@ function setupNoiseCancel() {
       return;
     }
 
-    showPopup("popup-noise-cancel");
+    if (noisePopup.style.display === "block") {
+      closePopup("popup-noise-cancel");
+    } else {
+      showPopup("popup-noise-cancel");
+    }
   });
 }
 
